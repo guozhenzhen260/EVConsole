@@ -26,6 +26,10 @@
             android:name=".MaintainActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".AddInaccount"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>
