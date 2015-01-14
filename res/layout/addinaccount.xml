@@ -15,8 +15,7 @@
             android:layout_gravity="center"
             android:gravity="center_horizontal"
             android:text="现金设备测试"
-            android:textColor="#ffffff"
-            android:textSize="40sp"
+            android:textSize="80sp"
             android:textStyle="bold" />
     </LinearLayout>
 	

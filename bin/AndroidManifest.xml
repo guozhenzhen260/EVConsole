@@ -30,6 +30,10 @@
             android:name=".AddInaccount"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".HuodaoTest"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>

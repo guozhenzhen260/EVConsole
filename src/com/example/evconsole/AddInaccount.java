@@ -11,8 +11,7 @@ public class AddInaccount extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		super.onCreate(savedInstanceState);
-        setContentView(R.layout.addinaccount);// 设置布局文件
+		setContentView(R.layout.addinaccount);// 设置布局文件
 	}
 
 }

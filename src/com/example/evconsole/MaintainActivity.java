@@ -50,8 +50,8 @@ public class MaintainActivity extends Activity
                     startActivity(intent);// 打开AddOutaccount
                     break;
                 case 1:
-                    //intent = new Intent(MainActivity.this, AddInaccount.class);// 使用AddInaccount窗口初始化Intent
-                    //startActivity(intent);// 打开AddInaccount
+                    intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用AddInaccount窗口初始化Intent
+                    startActivity(intent);// 打开AddInaccount
                     break;
                 case 2:
                     //intent = new Intent(MainActivity.this, Outaccountinfo.class);// 使用Outaccountinfo窗口初始化Intent
