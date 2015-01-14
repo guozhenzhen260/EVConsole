@@ -33,9 +33,10 @@ public final class R {
         public static final int sysset=0x7f020009;
     }
     public static final class id {
-        public static final int action_settings=0x7f080005;
+        public static final int action_settings=0x7f080006;
         public static final int btnClose=0x7f080002;
         public static final int btnLogin=0x7f080003;
+        public static final int gvInfo=0x7f080005;
         public static final int tvLogin=0x7f080000;
         public static final int txtLogin=0x7f080001;
         public static final int txtcom=0x7f080004;
