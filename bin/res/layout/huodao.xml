@@ -10,7 +10,7 @@
             android:layout_gravity="center"
             android:gravity="center_horizontal"
             android:text="出货测试"
-            android:textSize="45sp"
+            android:textSize="80sp"
             android:textStyle="bold" />
     </TableRow>
 	<View                              

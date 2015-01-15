@@ -3,6 +3,8 @@ package com.example.evconsole;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.easivend.evprotocol.EVprotocol;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -27,15 +29,24 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-
+    EVprotocol ev=null;
+    int comopen=0;//1串口已经打开，0串口没有打开
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.maintain);
+		setContentView(R.layout.maintain);		
 		Intent intent=getIntent();
 		String str=intent.getStringExtra("comport");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText(str);
+		txtcom.setText("正在准备连接"+str);
+		//打开串口
+		ev=new EVprotocol();
+		comopen = ev.vmcStart(str);
+		if(comopen == 1)
+			txtcom.setText(str+"串口打开成功");
+		else
+			txtcom.setText(str+"串口打开失败");
 		
 		gvInfo = (GridView) findViewById(R.id.gvInfo);// 获取布局文件中的gvInfo组件
         PictureAdapter adapter = new PictureAdapter(titles, images, this);// 创建pictureAdapter对象
@@ -79,6 +90,17 @@ public class MaintainActivity extends Activity
             }
         });
 	}
+	@Override
+	protected void onDestroy() {
+		//关闭串口
+		if(comopen>0)	
+			ev.vmcStop();
+		// TODO Auto-generated method stub
+		super.onDestroy();		
+	}
+
+	
+	
 
 }
 
