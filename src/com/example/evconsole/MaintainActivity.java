@@ -1,9 +1,25 @@
+/****************************************Copyright (c)*************************************************
+**                      Fujian Junpeng Communicaiton Technology Co.,Ltd.
+**                               http://www.easivend.com.cn
+**--------------File Info------------------------------------------------------------------------------
+** File name:           MaintainActivity.java
+** Last modified Date:  2015-01-10
+** Last Version:         
+** Descriptions:        维护菜单主页面          
+**------------------------------------------------------------------------------------------------------
+** Created by:          guozhenzhen 
+** Created date:        2015-01-10
+** Version:             V1.0 
+** Descriptions:        The original version       
+********************************************************************************************************/
+
 package com.example.evconsole;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.easivend.evprotocol.EVprotocol;
+import com.easivend.evprotocol.EVprotocolAPI;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -29,7 +45,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    EVprotocol ev=null;
+    EVprotocolAPI ev=null;
     int comopen=0;//1串口已经打开，0串口没有打开
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -39,14 +55,16 @@ public class MaintainActivity extends Activity
 		Intent intent=getIntent();
 		String str=intent.getStringExtra("comport");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText("正在准备连接"+str);
-		//打开串口
-		ev=new EVprotocol();
+		txtcom.setText("正在准备连接"+str);		
+		//打开串口		
+		ev=new EVprotocolAPI();
 		comopen = ev.vmcStart(str);
 		if(comopen == 1)
 			txtcom.setText(str+"串口打开成功");
 		else
 			txtcom.setText(str+"串口打开失败");
+		
+				
 		
 		gvInfo = (GridView) findViewById(R.id.gvInfo);// 获取布局文件中的gvInfo组件
         PictureAdapter adapter = new PictureAdapter(titles, images, this);// 创建pictureAdapter对象
