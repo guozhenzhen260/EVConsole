@@ -43,13 +43,13 @@ public final class R {
         public static final int btnhuocancel=0x7f080015;
         public static final int btnhuochu=0x7f080014;
         public static final int btnhuoexit=0x7f080016;
-        public static final int btnpayout=0x7f080003;
+        public static final int btnpayout=0x7f080004;
         public static final int btnpool=0x7f080007;
         public static final int cabinet=0x7f08000a;
         public static final int edtbillin=0x7f080000;
         public static final int edtcoinin=0x7f080001;
         public static final int edtcolumn=0x7f08000e;
-        public static final int edtpaymoney=0x7f080004;
+        public static final int edtpaymoney=0x7f080003;
         public static final int edtpayout=0x7f080002;
         public static final int edtprice=0x7f080013;
         public static final int fuhuodao=0x7f08000c;

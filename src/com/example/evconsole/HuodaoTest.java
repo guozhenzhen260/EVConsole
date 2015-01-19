@@ -91,13 +91,13 @@ public class HuodaoTest extends Activity
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	  
-		    	Log.i("EV_thread",
-		    	"cabinet="+String.valueOf(cabinetvar)
+		    	Log.i("EV_JNI",
+		    	"[send]cabinet="+String.valueOf(cabinetvar)
 		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
 		    	+" type="+String.valueOf(typevar)
 		    	+" price="+String.valueOf(Float.parseFloat(edtprice.getText().toString())*100)
 		    	);
-		    	ev.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+		    	EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
 		    			(int)(Float.parseFloat(edtprice.getText().toString())*100));	
 		    }
 		});

@@ -45,7 +45,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    EVprotocolAPI ev=null;
+    //EVprotocolAPI ev=null;
     int comopen=0;//1串口已经打开，0串口没有打开
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -57,8 +57,8 @@ public class MaintainActivity extends Activity
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
 		txtcom.setText("正在准备连接"+str);		
 		//打开串口		
-		ev=new EVprotocolAPI();
-		comopen = ev.vmcStart(str);
+		//ev=new EVprotocolAPI();
+		comopen = EVprotocolAPI.vmcStart(str);
 		if(comopen == 1)
 			txtcom.setText(str+"串口打开成功");
 		else
@@ -112,7 +112,7 @@ public class MaintainActivity extends Activity
 	protected void onDestroy() {
 		//关闭串口
 		if(comopen>0)	
-			ev.vmcStop();
+			EVprotocolAPI.vmcStop();
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}

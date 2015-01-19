@@ -28,7 +28,7 @@ public class Business extends Activity
 		
 		//VideoView
 		video=(VideoView)findViewById(R.id.video);
-		filev=new File("/sdcard/testmedia/huodao.mp4");
+		filev=new File("/sdcard/ads/kangmei.avi");
 		MediaController mc=new MediaController(Business.this);
 		if(filev.exists())
 		{
