@@ -17,9 +17,13 @@ package com.example.evconsole;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.Timertsk;
+
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -55,7 +59,11 @@ public class MaintainActivity extends Activity
 		Intent intent=getIntent();
 		String str=intent.getStringExtra("comport");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText("正在准备连接"+str);		
+		txtcom.setText("正在准备连接"+str);	
+		//开启定时器线程
+		Timer t=new Timer();//建立Timer类对象
+        Timertsk task=new Timertsk();
+        t.schedule(task,100,1000);//100ms后，开始每隔1s执行一次任务
 		//打开串口		
 		//ev=new EVprotocolAPI();
 		comopen = EVprotocolAPI.vmcStart(str);

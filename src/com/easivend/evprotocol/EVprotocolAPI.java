@@ -28,12 +28,21 @@ import android.util.Log;
 
 public class EVprotocolAPI 
 {
+	static int EVproTimer=0;//超时定时器
 	static EVprotocol ev=null;
 	private static int EV_TYPE=0;
 	private static final int EV_INITING=1;//正在初始化
 	private static final int EV_ONLINE=2;//成功连接
 	private static final int EV_OFFLINE=3;//断开连接
 	private static final int EV_RESTART=4;//主控板重启心动
+	private static final int EV_TRADE_RPT=5;//出货返回
+		private static int device=0;//出货柜号		
+		private static int status=0;//出货结果
+		private static int hdid=0;//货道id
+		private static int type=0;//出货类型
+		private static int cost=0;//扣钱
+		private static int totalvalue=0;//剩余金额
+		private static int huodao=0;//剩余存货数量
 	
 	
 	//实例化hand邮箱，并且进行pend
@@ -87,6 +96,20 @@ public class EVprotocolAPI
 						Log.i("EV_JNI","主控板重启心动");
 						EV_TYPE=EV_RESTART;
 					}
+					else if(str_evType.equals("EV_TRADE_RPT"))
+					{
+						//textView_VMCState.setText("主控板重启心动");
+						Log.i("EV_JNI","出货返回");
+						EV_TYPE=EV_TRADE_RPT;
+						//得到出货回传参数
+						device=Integer.parseInt(map.get("cabinet").toString());//出货柜号
+						status=Integer.parseInt(map.get("result").toString());//出货结果
+						hdid=Integer.parseInt(map.get("column").toString());//货道id
+						type=Integer.parseInt(map.get("type").toString());//出货类型
+						cost=Integer.parseInt(map.get("cost").toString());//扣钱
+						totalvalue=Integer.parseInt(map.get("remainAmount").toString());//剩余金额
+						huodao=Integer.parseInt(map.get("remainCount").toString());//剩余存货数量
+					}
 				    
 					break;
 			}	
@@ -104,8 +127,27 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int vmcStart(String portName)
 	{
+		int result=0;	
 		ev=new EVprotocol(EVProhand);
-		return ev.vmcStart(portName);
+		result=ev.vmcStart(portName);
+		//开启成功
+		if(result==1)
+		{
+			result=2;	
+			EVproTimer=20;//设为20s延时
+			while(EVproTimer>0)
+			{
+				if(EV_TYPE==EV_ONLINE)
+				{
+					result=1;
+					EVproTimer=0;
+				}
+			}
+		}	
+		//开启失败
+		
+		
+		return result; 
 	}
 			
 	/*********************************************************************************************************
@@ -132,7 +174,32 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int trade(int cabinet,int column,int type,int cost)
 	{
-		return ev.trade(cabinet,column,type,cost);
+		int result=0;	
+		result=ev.trade(cabinet,column,type,cost);
+		//请求发送成功
+		if(result==1)
+		{
+			result=0;
+			EVproTimer=60;//设为60s延时
+			while(EVproTimer>0)
+			{
+				if(EV_TYPE==EV_TRADE_RPT)
+				{
+					result=1;
+					EVproTimer=0;
+					//情空回传参数
+					device=0;//出货柜号		
+					status=0;//出货结果
+					hdid=0;//货道id
+					type=0;//出货类型
+					cost=0;//扣钱
+					totalvalue=0;//剩余金额
+					huodao=0;//剩余存货数量
+				}
+			}
+		}
+		//请求发送失败
+		return result;
 	}
 	
 }
