@@ -5,7 +5,6 @@
     android:orientation="vertical" >
     <TableRow > 
         <TextView
-            android:id = "@+id/txthuo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -95,6 +94,17 @@
 	        android:text="1" />
     </TableRow> 
     <View                              
+        android:layout_height="2px"
+        android:background="#FF909090"
+    /> 
+    <TableRow > 
+        <TextView
+            android:id="@+id/txthuorst"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:text="出货结果"/>
+    </TableRow>
+	<View                              
         android:layout_height="2px"
         android:background="#FF909090"
     /> 

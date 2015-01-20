@@ -45,25 +45,25 @@ public final class R {
         public static final int btnhuoexit=0x7f080017;
         public static final int btnpayout=0x7f080004;
         public static final int btnpool=0x7f080007;
-        public static final int cabinet=0x7f08000b;
+        public static final int cabinet=0x7f08000a;
         public static final int edtbillin=0x7f080000;
         public static final int edtcoinin=0x7f080001;
-        public static final int edtcolumn=0x7f08000f;
+        public static final int edtcolumn=0x7f08000e;
         public static final int edtpaymoney=0x7f080003;
         public static final int edtpayout=0x7f080002;
-        public static final int edtprice=0x7f080014;
-        public static final int fuhuodao=0x7f08000d;
+        public static final int edtprice=0x7f080013;
+        public static final int fuhuodao=0x7f08000c;
         public static final int gvInfo=0x7f08001e;
-        public static final int mainhuodao=0x7f08000c;
-        public static final int moneychu=0x7f080011;
-        public static final int pcchu=0x7f080012;
+        public static final int mainhuodao=0x7f08000b;
+        public static final int moneychu=0x7f080010;
+        public static final int pcchu=0x7f080011;
         public static final int tvLogin=0x7f080018;
         public static final int txtLogin=0x7f080019;
-        public static final int txtcolumn=0x7f08000e;
+        public static final int txtcolumn=0x7f08000d;
         public static final int txtcom=0x7f08001d;
-        public static final int txthuo=0x7f08000a;
-        public static final int txtprice=0x7f080013;
-        public static final int type=0x7f080010;
+        public static final int txthuorst=0x7f080014;
+        public static final int txtprice=0x7f080012;
+        public static final int type=0x7f08000f;
         public static final int video=0x7f080006;
     }
     public static final class layout {

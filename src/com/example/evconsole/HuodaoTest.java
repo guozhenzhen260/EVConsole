@@ -15,10 +15,15 @@
 
 package com.example.evconsole;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.easivend.evprotocol.EVprotocolAPI;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +36,14 @@ import android.widget.TextView;
 
 public class HuodaoTest extends Activity 
 {
-	private TextView txthuo=null;
+	private int device=0;//出货柜号		
+	private int status=0;//出货结果
+	private int hdid=0;//货道id
+	private int hdtype=0;//出货类型
+	private int cost=0;//扣钱
+	private int totalvalue=0;//剩余金额
+	private int huodao=0;//剩余存货数量
+	private TextView txthuorst=null;
 	private Button btnhuochu=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
@@ -39,13 +51,41 @@ public class HuodaoTest extends Activity
 	private RadioGroup cabinet=null, type=null;
 	private RadioButton mainhuodao=null,fuhuodao=null,moneychu=null,pcchu=null;
 	private int cabinetvar=0,typevar=0;
-	EVprotocolAPI ev=null;
+	private Handler myhHandler=null;
+	//EVprotocolAPI ev=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.huodao);// 设置布局文件
-		txthuo=(TextView)findViewById(R.id.txthuo);
+		myhHandler=new Handler()
+		{
+
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub				
+				switch (msg.what)
+				{
+					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
+						Log.i("EV_JNI","出货结果");	
+						Map<String,Integer> allSet = new HashMap<String,Integer>();
+						allSet=(Map<String, Integer>) msg.obj;
+						device=allSet.get("cabinet");//出货柜号
+						status=allSet.get("result");//出货结果
+						hdid=allSet.get("column");//货道id
+						hdtype=allSet.get("type");//出货类型
+						cost=allSet.get("cost");//扣钱
+						totalvalue=allSet.get("remainAmount");//剩余金额
+						huodao=allSet.get("remainCount");//剩余存货数量
+						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
+								+cost/100+"],totalvalue=["+totalvalue/100+"],huodao=["+huodao+"]");
+						break;
+				}				
+			}
+			
+		};
+		EVprotocolAPI.setHandler(myhHandler);
+		txthuorst=(TextView)findViewById(R.id.txthuorst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
 		btnhuoexit = (Button) findViewById(R.id.btnhuoexit);
@@ -99,12 +139,9 @@ public class HuodaoTest extends Activity
 //		    	+" type="+String.valueOf(typevar)
 //		    	+" price="+String.valueOf(Float.parseFloat(edtprice.getText().toString())*100)
 //		    	);
-		    	int result=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-		    			(int)(Float.parseFloat(edtprice.getText().toString())*100));
-		    	if(result==1)
-		    		txthuo.setText("出货成功");
-		    	else
-		    		txthuo.setText("出货失败");	
+		    	EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+		    			Float.parseFloat(edtprice.getText().toString()));		    	
+		    	//txthuorst.setText(EVprotocolAPI.gethuodaorst());
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件

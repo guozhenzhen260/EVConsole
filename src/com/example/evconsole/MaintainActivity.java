@@ -18,17 +18,18 @@ package com.example.evconsole;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.Timertsk;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -51,19 +52,34 @@ public class MaintainActivity extends Activity
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
     int comopen=0;//1串口已经打开，0串口没有打开
+    String str=null;
+    private Handler myhHandler=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.maintain);		
+		setContentView(R.layout.maintain);	
+		myhHandler=new Handler()
+		{
+
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub				
+				switch (msg.what)
+				{
+					case EVprotocolAPI.EV_ONLINE://接收子线程消息
+						Log.i("EV_JNI","初始化完成");	
+						txtcom.setText(str+"初始化完成");
+						break;
+				}				
+			}
+			
+		};
+		EVprotocolAPI.setHandler(myhHandler);
 		Intent intent=getIntent();
-		String str=intent.getStringExtra("comport");
+		str=intent.getStringExtra("comport");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText("正在准备连接"+str);	
-		//开启定时器线程
-		Timer t=new Timer();//建立Timer类对象
-        Timertsk task=new Timertsk();
-        t.schedule(task,100,1000);//100ms后，开始每隔1s执行一次任务
+		txtcom.setText("正在准备连接"+str);		
 		//打开串口		
 		//ev=new EVprotocolAPI();
 		comopen = EVprotocolAPI.vmcStart(str);
@@ -115,6 +131,7 @@ public class MaintainActivity extends Activity
                 }
             }
         });
+
 	}
 	@Override
 	protected void onDestroy() {

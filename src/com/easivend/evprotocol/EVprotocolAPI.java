@@ -15,11 +15,14 @@
 
 package com.easivend.evprotocol;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.json.JSONObject;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -28,22 +31,16 @@ import android.util.Log;
 
 public class EVprotocolAPI 
 {
-	static int EVproTimer=0;//超时定时器
 	static EVprotocol ev=null;
-	private static int EV_TYPE=0;
-	private static final int EV_INITING=1;//正在初始化
-	private static final int EV_ONLINE=2;//成功连接
-	private static final int EV_OFFLINE=3;//断开连接
-	private static final int EV_RESTART=4;//主控板重启心动
-	private static final int EV_TRADE_RPT=5;//出货返回
-		private static int device=0;//出货柜号		
-		private static int status=0;//出货结果
-		private static int hdid=0;//货道id
-		private static int type=0;//出货类型
-		private static int cost=0;//扣钱
-		private static int totalvalue=0;//剩余金额
-		private static int huodao=0;//剩余存货数量
-	
+	static Handler mainHandler=null;
+	private static int EV_TYPE=0;	
+	public static final int EV_INITING=1;//正在初始化
+	public static final int EV_ONLINE=2;//成功连接
+	public static final int EV_OFFLINE=3;//断开连接
+	public static final int EV_RESTART=4;//主控板重启心动
+	public static final int EV_TRADE_RPT=5;//出货返回	
+	public static final int EV_PAYIN_RPT=6;//投入纸币
+	public static final int EV_PAYOUT_RPT=7;//找零结果
 	
 	//实例化hand邮箱，并且进行pend
 	private static Handler EVProhand=new Handler()
@@ -57,65 +54,132 @@ public class EVprotocolAPI
 			{
 				case 1://接收JNI返回的消息
 					Log.i("EV_JNI",msg.obj.toString());
-					Map<String, Object> map=JsonToolUnpack.getMapListgson(msg.obj.toString());
-					//Log.i("EV_JNI",list.toString());
-					/*
-					 //遍历Map输出
-					Set<Entry<String, Object>> allset=map.entrySet();  //实例化
-			        Iterator<Entry<String, Object>> iter=allset.iterator();
-			        while(iter.hasNext())
-			        {
-			            Entry<String, Object> me=iter.next();
-			            Log.i("EV_JNI",me.getKey()+"-->"+me.getValue());
-			        } 
-			        */
-					//根据key取出内容
-				    String str_evType=map.get("EV_type").toString(); 
-					//Log.i("EV_JNI",str_evType);				    
-				    if(str_evType.equals("EV_INITING"))//正在初始化
-					{
-						//textView_VMCState.setText("正在初始化");
-				    	Log.i("EV_JNI","正在初始化");
-				    	EV_TYPE=EV_INITING;
+//					Map<String, Object> map=JsonToolUnpack.getMapListgson(msg.obj.toString());
+//					//Log.i("EV_JNI",list.toString());
+//					/*
+//					 //遍历Map输出
+//					Set<Entry<String, Object>> allset=map.entrySet();  //实例化
+//			        Iterator<Entry<String, Object>> iter=allset.iterator();
+//			        while(iter.hasNext())
+//			        {
+//			            Entry<String, Object> me=iter.next();
+//			            Log.i("EV_JNI",me.getKey()+"-->"+me.getValue());
+//			        } 
+//			        */
+					try {
+						String text = msg.obj.toString();
+						JSONObject jsonObject = new JSONObject(text); 
+						//根据key取出内容
+						JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
+						String str_evType =  ev_head.getString("EV_type");					
+					    //Log.i("EV_JNI",str_evType);				    
+					    if(str_evType.equals("EV_INITING"))//正在初始化
+						{
+							//textView_VMCState.setText("正在初始化");
+					    	Log.i("EV_JNI","正在初始化");
+					    	EV_TYPE=EV_INITING;
+						}
+						else if(str_evType.equals("EV_ONLINE"))//str_evType.equals("EV_PAYOUT_RPT")
+						{
+							//textView_VMCState.setText("成功连接");
+							Log.i("EV_JNI","成功连接");
+							EV_TYPE=EV_ONLINE;
+							//往Activity线程发送信息
+							Message childmsg=mainHandler.obtainMessage();
+							childmsg.what=EV_ONLINE;
+							mainHandler.sendMessage(childmsg);
+						}
+						else if(str_evType.equals("EV_OFFLINE"))
+						{
+							//textView_VMCState.setText("断开连接");
+							Log.i("EV_JNI","断开连接");
+							EV_TYPE=EV_OFFLINE;
+						}
+						else if(str_evType.equals("EV_RESTART"))
+						{
+							//textView_VMCState.setText("主控板重启心动");
+							Log.i("EV_JNI","主控板重启心动");
+							EV_TYPE=EV_RESTART;
+						}
+						else if(str_evType.equals("EV_STATE_RPT"))
+						{
+							int state = ev_head.getInt("state");
+							if(state == 0)
+								Log.i("EV_JNI","断开连接");
+							else if(state == 1)
+								Log.i("EV_JNI","正在初始化");
+							else if(state == 2)
+								Log.i("EV_JNI","正常");
+							else if(state == 3)
+								Log.i("EV_JNI","故障");
+							else if(state == 4)
+								Log.i("EV_JNI","维护");
+						}
+						else if(str_evType.equals("EV_ENTER_MANTAIN"))
+						{
+							Log.i("EV_JNI","维护");
+						}
+						else if(str_evType.equals("EV_EXIT_MANTAIN"))
+						{
+							Log.i("EV_JNI","退出维护");
+						}
+					    //出货
+						else if(str_evType.equals("EV_TRADE_RPT"))
+						{
+							//textView_VMCState.setText("主控板重启心动");
+							EV_TYPE=EV_TRADE_RPT;
+							//得到出货回传参数
+							Map<String,Integer> allSet = new HashMap<String,Integer>() ;							
+							allSet.put("device", ev_head.getInt("cabinet"));//出货柜号							
+							allSet.put("status", ev_head.getInt("result"));//出货结果
+							allSet.put("hdid", ev_head.getInt("column"));//货道id
+							allSet.put("type", ev_head.getInt("type"));//出货类型
+							allSet.put("cost", ev_head.getInt("cost"));//扣钱
+							allSet.put("totalvalue", ev_head.getInt("remainAmount"));//剩余金额
+							allSet.put("huodao", ev_head.getInt("remainCount"));//剩余存货数量				
+							Log.i("EV_JNI","出货返回");	
+							//往Activity线程发送信息
+							Message childmsg=mainHandler.obtainMessage();
+							childmsg.what=EV_TRADE_RPT;
+							childmsg.obj=allSet;
+							mainHandler.sendMessage(childmsg);							
+						}
+					    //投币上报
+						else if(str_evType.equals("EV_PAYIN_RPT"))//投币上报
+						{
+							int amount = ev_head.getInt("remainAmount");
+							Log.i("EV_JNI","投币:"+Integer.toString(amount));
+							//往Activity线程发送信息
+							Message childmsg=mainHandler.obtainMessage();
+							childmsg.what=EV_PAYIN_RPT;
+							childmsg.obj=amount;
+							mainHandler.sendMessage(childmsg);	
+						}
+					    //找零
+						else if(str_evType.equals("EV_PAYOUT_RPT"))
+						{
+							int amount = ev_head.getInt("remainAmount");
+							Log.i("EV_JNI","找零:"+Integer.toString(amount));
+							//往Activity线程发送信息
+							Message childmsg=mainHandler.obtainMessage();
+							childmsg.what=EV_PAYOUT_RPT;
+							childmsg.obj=amount;
+							mainHandler.sendMessage(childmsg);	
+						}
 					}
-					else if(str_evType.equals("EV_ONLINE"))//str_evType.equals("EV_PAYOUT_RPT")
-					{
-						//textView_VMCState.setText("成功连接");
-						Log.i("EV_JNI","成功连接");
-						EV_TYPE=EV_ONLINE;
+					catch (Exception e) {
+						// TODO: handle exception
 					}
-					else if(str_evType.equals("EV_OFFLINE"))
-					{
-						//textView_VMCState.setText("断开连接");
-						Log.i("EV_JNI","断开连接");
-						EV_TYPE=EV_OFFLINE;
-					}
-					else if(str_evType.equals("EV_RESTART"))
-					{
-						//textView_VMCState.setText("主控板重启心动");
-						Log.i("EV_JNI","主控板重启心动");
-						EV_TYPE=EV_RESTART;
-					}
-					else if(str_evType.equals("EV_TRADE_RPT"))
-					{
-						//textView_VMCState.setText("主控板重启心动");
-						Log.i("EV_JNI","出货返回");
-						EV_TYPE=EV_TRADE_RPT;
-						//得到出货回传参数
-						device=Integer.parseInt(map.get("cabinet").toString());//出货柜号
-						status=Integer.parseInt(map.get("result").toString());//出货结果
-						hdid=Integer.parseInt(map.get("column").toString());//货道id
-						type=Integer.parseInt(map.get("type").toString());//出货类型
-						cost=Integer.parseInt(map.get("cost").toString());//扣钱
-						totalvalue=Integer.parseInt(map.get("remainAmount").toString());//剩余金额
-						huodao=Integer.parseInt(map.get("remainCount").toString());//剩余存货数量
-					}
-				    
 					break;
 			}	
 		}
 		
 	};	
+	
+	public static void setHandler(Handler hand)
+	{
+		mainHandler=hand;
+	}
 	
 	
 	/*********************************************************************************************************
@@ -127,28 +191,10 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int vmcStart(String portName)
 	{
-		int result=0;	
 		ev=new EVprotocol(EVProhand);
-		result=ev.vmcStart(portName);
-		//开启成功
-		if(result==1)
-		{
-			result=2;	
-			EVproTimer=20;//设为20s延时
-			while(EVproTimer>0)
-			{
-				if(EV_TYPE==EV_ONLINE)
-				{
-					result=1;
-					EVproTimer=0;
-				}
-			}
-		}	
-		//开启失败
-		
-		
-		return result; 
+		return ev.vmcStart(portName);
 	}
+	
 			
 	/*********************************************************************************************************
 	** Function name:     	vmcStop
@@ -172,34 +218,22 @@ public class EVprotocolAPI
 	** output parameters:   无
 	** Returned value:      1请求发送成功   0:请求发送失败  
 	*********************************************************************************************************/
-	public static int trade(int cabinet,int column,int type,int cost)
+	public static int trade(int cabinet,int column,int type,float cost)
 	{
-		int result=0;	
-		result=ev.trade(cabinet,column,type,cost);
-		//请求发送成功
-		if(result==1)
-		{
-			result=0;
-			EVproTimer=60;//设为60s延时
-			while(EVproTimer>0)
-			{
-				if(EV_TYPE==EV_TRADE_RPT)
-				{
-					result=1;
-					EVproTimer=0;
-					//情空回传参数
-					device=0;//出货柜号		
-					status=0;//出货结果
-					hdid=0;//货道id
-					type=0;//出货类型
-					cost=0;//扣钱
-					totalvalue=0;//剩余金额
-					huodao=0;//剩余存货数量
-				}
-			}
-		}
-		//请求发送失败
-		return result;
+		return ev.trade(cabinet,column,type,(int)cost*100);
 	}
 	
+	/*********************************************************************************************************
+	** Function name:     	payout
+	** Descriptions:	    VMC出币接口
+	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回出货的结果进行解析
+	** input parameters:    value:要出币的金额(单位:分)
+	** output parameters:   无
+	** Returned value:      1请求发送成功   0:请求发送失败
+	*********************************************************************************************************/
+	public static int payout(float value)
+	{
+		return payout((long)value*100);
+	}
+			
 }
