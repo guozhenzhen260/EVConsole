@@ -50,17 +50,18 @@ public class AddInaccount extends Activity
 				switch (msg.what)
 				{
 					case EVprotocolAPI.EV_PAYIN_RPT://接收子线程消息
-						Log.i("EV_JNI","投币金额");							
+						Log.i("EV_JNI","APP<<投币金额");							
 						edtbillin.setText(msg.obj.toString());
 						break;
 					case EVprotocolAPI.EV_PAYOUT_RPT://接收子线程消息
-						Log.i("EV_JNI","找零金额");							
+						Log.i("EV_JNI","APP<<找零金额");							
 						edtbillin.setText(msg.obj.toString());
 						break;	
 				}				
 			}
 			
 		};
+		EVprotocolAPI.setHandler(myhHandler);
 		edtbillin = (EditText) findViewById(R.id.edtbillin);
 		edtcoinin = (EditText) findViewById(R.id.edtcoinin);
 		edtpayout = (EditText) findViewById(R.id.edtpayout);
@@ -69,6 +70,7 @@ public class AddInaccount extends Activity
 		btnpayout.setOnClickListener(new OnClickListener() {// 为退币按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
+		    	Log.i("EV_JNI","[APPsend>>]"+edtpayout.getText().toString());
 		    	EVprotocolAPI.payout(Float.parseFloat(edtpayout.getText().toString()));
 		    }
 		});

@@ -76,13 +76,13 @@ public class EVprotocolAPI
 					    if(str_evType.equals("EV_INITING"))//正在初始化
 						{
 							//textView_VMCState.setText("正在初始化");
-					    	Log.i("EV_JNI","正在初始化");
+					    	Log.i("EV_JNI","API<<正在初始化");
 					    	EV_TYPE=EV_INITING;
 						}
 						else if(str_evType.equals("EV_ONLINE"))//str_evType.equals("EV_PAYOUT_RPT")
 						{
 							//textView_VMCState.setText("成功连接");
-							Log.i("EV_JNI","成功连接");
+							Log.i("EV_JNI","API<<成功连接");
 							EV_TYPE=EV_ONLINE;
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
@@ -92,36 +92,36 @@ public class EVprotocolAPI
 						else if(str_evType.equals("EV_OFFLINE"))
 						{
 							//textView_VMCState.setText("断开连接");
-							Log.i("EV_JNI","断开连接");
+							Log.i("EV_JNI","API<<断开连接");
 							EV_TYPE=EV_OFFLINE;
 						}
 						else if(str_evType.equals("EV_RESTART"))
 						{
 							//textView_VMCState.setText("主控板重启心动");
-							Log.i("EV_JNI","主控板重启心动");
+							Log.i("EV_JNI","API<<主控板重启心动");
 							EV_TYPE=EV_RESTART;
 						}
 						else if(str_evType.equals("EV_STATE_RPT"))
 						{
 							int state = ev_head.getInt("state");
 							if(state == 0)
-								Log.i("EV_JNI","断开连接");
+								Log.i("EV_JNI","API<<断开连接");
 							else if(state == 1)
-								Log.i("EV_JNI","正在初始化");
+								Log.i("EV_JNI","API<<正在初始化");
 							else if(state == 2)
-								Log.i("EV_JNI","正常");
+								Log.i("EV_JNI","API<<正常");
 							else if(state == 3)
-								Log.i("EV_JNI","故障");
+								Log.i("EV_JNI","API<<故障");
 							else if(state == 4)
-								Log.i("EV_JNI","维护");
+								Log.i("EV_JNI","API<<维护");
 						}
 						else if(str_evType.equals("EV_ENTER_MANTAIN"))
 						{
-							Log.i("EV_JNI","维护");
+							Log.i("EV_JNI","API<<维护");
 						}
 						else if(str_evType.equals("EV_EXIT_MANTAIN"))
 						{
-							Log.i("EV_JNI","退出维护");
+							Log.i("EV_JNI","API<<退出维护");
 						}
 					    //出货
 						else if(str_evType.equals("EV_TRADE_RPT"))
@@ -137,7 +137,7 @@ public class EVprotocolAPI
 							allSet.put("cost", ev_head.getInt("cost"));//扣钱
 							allSet.put("totalvalue", ev_head.getInt("remainAmount"));//剩余金额
 							allSet.put("huodao", ev_head.getInt("remainCount"));//剩余存货数量				
-							Log.i("EV_JNI","出货返回");	
+							Log.i("EV_JNI","API<<出货返回");	
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
 							childmsg.what=EV_TRADE_RPT;
@@ -147,8 +147,8 @@ public class EVprotocolAPI
 					    //投币上报
 						else if(str_evType.equals("EV_PAYIN_RPT"))//投币上报
 						{
-							int amount = ev_head.getInt("remainAmount");
-							Log.i("EV_JNI","投币:"+Integer.toString(amount));
+							Log.i("EV_JNI","API<<投币:"+ev_head.getInt("remainAmount"));
+							float amount = (float)(ev_head.getInt("remainAmount")/100);
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
 							childmsg.what=EV_PAYIN_RPT;
@@ -159,7 +159,7 @@ public class EVprotocolAPI
 						else if(str_evType.equals("EV_PAYOUT_RPT"))
 						{
 							int amount = ev_head.getInt("remainAmount");
-							Log.i("EV_JNI","找零:"+Integer.toString(amount));
+							Log.i("EV_JNI","API<<找零:"+Integer.toString(amount));
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
 							childmsg.what=EV_PAYOUT_RPT;
@@ -220,6 +220,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int trade(int cabinet,int column,int type,float cost)
 	{
+		//Log.i("EV_JNI","[send2trade]");	
 		return ev.trade(cabinet,column,type,(int)cost*100);
 	}
 	
@@ -233,7 +234,10 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int payout(float value)
 	{
-		return payout((long)value*100);
+		long values=0;
+		values=(long)(value*100);
+		Log.i("EV_JNI","[APIpayout>>]"+values);
+		return ev.payout(values);		
 	}
 			
 }

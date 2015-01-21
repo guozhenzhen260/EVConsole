@@ -67,16 +67,16 @@ public class HuodaoTest extends Activity
 				switch (msg.what)
 				{
 					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-						Log.i("EV_JNI","出货结果");	
+						Log.i("EV_JNI","APP<<出货结果");	
 						Map<String,Integer> allSet = new HashMap<String,Integer>();
 						allSet=(Map<String, Integer>) msg.obj;
-						device=allSet.get("cabinet");//出货柜号
-						status=allSet.get("result");//出货结果
-						hdid=allSet.get("column");//货道id
+						device=allSet.get("device");//出货柜号
+						status=allSet.get("status");//出货结果
+						hdid=allSet.get("hdid");//货道id
 						hdtype=allSet.get("type");//出货类型
 						cost=allSet.get("cost");//扣钱
-						totalvalue=allSet.get("remainAmount");//剩余金额
-						huodao=allSet.get("remainCount");//剩余存货数量
+						totalvalue=allSet.get("totalvalue");//剩余金额
+						huodao=allSet.get("huodao");//剩余存货数量
 						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
 								+cost/100+"],totalvalue=["+totalvalue/100+"],huodao=["+huodao+"]");
 						break;
@@ -133,12 +133,12 @@ public class HuodaoTest extends Activity
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	  
-//		    	Log.i("EV_JNI",
-//		    	"[send]cabinet="+String.valueOf(cabinetvar)
-//		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
-//		    	+" type="+String.valueOf(typevar)
-//		    	+" price="+String.valueOf(Float.parseFloat(edtprice.getText().toString())*100)
-//		    	);
+		    	Log.i("EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
+		    	+" type="+String.valueOf(typevar)
+		    	+" price="+String.valueOf(Float.parseFloat(edtprice.getText().toString())*100)
+		    	);
 		    	EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
 		    			Float.parseFloat(edtprice.getText().toString()));		    	
 		    	//txthuorst.setText(EVprotocolAPI.gethuodaorst());
