@@ -21,6 +21,7 @@ import java.util.Timer;
 
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.ToolClass;
 
 
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class MaintainActivity extends Activity
 				switch (msg.what)
 				{
 					case EVprotocolAPI.EV_ONLINE://接收子线程消息
-						Log.i("EV_JNI","初始化完成");	
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<初始化完成");	
 						txtcom.setText(str+"初始化完成");
 						break;
 				}				

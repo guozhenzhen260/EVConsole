@@ -48,14 +48,14 @@ public class EVprotocolAPI
 
 		@Override
 		public void handleMessage(Message msg) {
-			//Log.i("EV_JNI",msg.obj.toString());
+			//ToolClass.Log(ToolClass.INFO,"EV_JNI",msg.obj.toString());
 			// TODO Auto-generated method stub
 			switch (msg.what)
 			{
 				case 1://接收JNI返回的消息
-					Log.i("EV_JNI",msg.obj.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<"+msg.obj.toString());
 //					Map<String, Object> map=JsonToolUnpack.getMapListgson(msg.obj.toString());
-//					//Log.i("EV_JNI",list.toString());
+//					//ToolClass.Log(ToolClass.INFO,"EV_JNI",list.toString());
 //					/*
 //					 //遍历Map输出
 //					Set<Entry<String, Object>> allset=map.entrySet();  //实例化
@@ -63,7 +63,7 @@ public class EVprotocolAPI
 //			        while(iter.hasNext())
 //			        {
 //			            Entry<String, Object> me=iter.next();
-//			            Log.i("EV_JNI",me.getKey()+"-->"+me.getValue());
+//			            ToolClass.Log(ToolClass.INFO,"EV_JNI",me.getKey()+"-->"+me.getValue());
 //			        } 
 //			        */
 					try {
@@ -72,17 +72,15 @@ public class EVprotocolAPI
 						//根据key取出内容
 						JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
 						String str_evType =  ev_head.getString("EV_type");					
-					    //Log.i("EV_JNI",str_evType);				    
+					    //ToolClass.Log(ToolClass.INFO,"EV_JNI",str_evType);				    
 					    if(str_evType.equals("EV_INITING"))//正在初始化
 						{
-							//textView_VMCState.setText("正在初始化");
-					    	Log.i("EV_JNI","API<<正在初始化");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正在初始化");
 					    	EV_TYPE=EV_INITING;
 						}
 						else if(str_evType.equals("EV_ONLINE"))//str_evType.equals("EV_PAYOUT_RPT")
 						{
-							//textView_VMCState.setText("成功连接");
-							Log.i("EV_JNI","API<<成功连接");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<成功连接");
 							EV_TYPE=EV_ONLINE;
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
@@ -91,42 +89,39 @@ public class EVprotocolAPI
 						}
 						else if(str_evType.equals("EV_OFFLINE"))
 						{
-							//textView_VMCState.setText("断开连接");
-							Log.i("EV_JNI","API<<断开连接");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<断开连接");
 							EV_TYPE=EV_OFFLINE;
 						}
 						else if(str_evType.equals("EV_RESTART"))
 						{
-							//textView_VMCState.setText("主控板重启心动");
-							Log.i("EV_JNI","API<<主控板重启心动");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<主控板重启心动");
 							EV_TYPE=EV_RESTART;
 						}
 						else if(str_evType.equals("EV_STATE_RPT"))
 						{
 							int state = ev_head.getInt("state");
 							if(state == 0)
-								Log.i("EV_JNI","API<<断开连接");
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<断开连接");
 							else if(state == 1)
-								Log.i("EV_JNI","API<<正在初始化");
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正在初始化");
 							else if(state == 2)
-								Log.i("EV_JNI","API<<正常");
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正常");
 							else if(state == 3)
-								Log.i("EV_JNI","API<<故障");
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<故障");
 							else if(state == 4)
-								Log.i("EV_JNI","API<<维护");
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<维护");
 						}
 						else if(str_evType.equals("EV_ENTER_MANTAIN"))
 						{
-							Log.i("EV_JNI","API<<维护");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<维护");
 						}
 						else if(str_evType.equals("EV_EXIT_MANTAIN"))
 						{
-							Log.i("EV_JNI","API<<退出维护");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<退出维护");
 						}
 					    //出货
 						else if(str_evType.equals("EV_TRADE_RPT"))
 						{
-							//textView_VMCState.setText("主控板重启心动");
 							EV_TYPE=EV_TRADE_RPT;
 							//得到出货回传参数
 							Map<String,Integer> allSet = new HashMap<String,Integer>() ;							
@@ -137,7 +132,7 @@ public class EVprotocolAPI
 							allSet.put("cost", ev_head.getInt("cost"));//扣钱
 							allSet.put("totalvalue", ev_head.getInt("remainAmount"));//剩余金额
 							allSet.put("huodao", ev_head.getInt("remainCount"));//剩余存货数量				
-							Log.i("EV_JNI","API<<出货返回");	
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<出货返回");	
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
 							childmsg.what=EV_TRADE_RPT;
@@ -147,19 +142,19 @@ public class EVprotocolAPI
 					    //投币上报
 						else if(str_evType.equals("EV_PAYIN_RPT"))//投币上报
 						{
-							Log.i("EV_JNI","API<<投币:"+ev_head.getInt("remainAmount"));
-							float amount = (float)(ev_head.getInt("remainAmount")/100);
+							int amount = ev_head.getInt("remainAmount");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<投币:"+Integer.toString(amount));							
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
 							childmsg.what=EV_PAYIN_RPT;
 							childmsg.obj=amount;
 							mainHandler.sendMessage(childmsg);	
 						}
-					    //找零
+					    //找零金额上报
 						else if(str_evType.equals("EV_PAYOUT_RPT"))
 						{
 							int amount = ev_head.getInt("remainAmount");
-							Log.i("EV_JNI","API<<找零:"+Integer.toString(amount));
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<找零:"+Integer.toString(amount));
 							//往Activity线程发送信息
 							Message childmsg=mainHandler.obtainMessage();
 							childmsg.what=EV_PAYOUT_RPT;
@@ -218,10 +213,10 @@ public class EVprotocolAPI
 	** output parameters:   无
 	** Returned value:      1请求发送成功   0:请求发送失败  
 	*********************************************************************************************************/
-	public static int trade(int cabinet,int column,int type,float cost)
+	public static int trade(int cabinet,int column,int type,long cost)
 	{
-		//Log.i("EV_JNI","[send2trade]");	
-		return ev.trade(cabinet,column,type,(int)cost*100);
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","[send2trade]");	
+		return ev.trade(cabinet,column,type,(int)cost);
 	}
 	
 	/*********************************************************************************************************
@@ -232,12 +227,10 @@ public class EVprotocolAPI
 	** output parameters:   无
 	** Returned value:      1请求发送成功   0:请求发送失败
 	*********************************************************************************************************/
-	public static int payout(float value)
+	public static int payout(long value)
 	{
-		long values=0;
-		values=(long)(value*100);
-		Log.i("EV_JNI","[APIpayout>>]"+values);
-		return ev.payout(values);		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIpayout>>]"+value);
+		return ev.payout((int)value);		
 	}
 			
 }

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.ToolClass;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -40,8 +41,8 @@ public class HuodaoTest extends Activity
 	private int status=0;//出货结果
 	private int hdid=0;//货道id
 	private int hdtype=0;//出货类型
-	private int cost=0;//扣钱
-	private int totalvalue=0;//剩余金额
+	private float cost=0;//扣钱
+	private float totalvalue=0;//剩余金额
 	private int huodao=0;//剩余存货数量
 	private TextView txthuorst=null;
 	private Button btnhuochu=null;// 创建Button对象“出货”
@@ -67,18 +68,20 @@ public class HuodaoTest extends Activity
 				switch (msg.what)
 				{
 					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-						Log.i("EV_JNI","APP<<出货结果");	
 						Map<String,Integer> allSet = new HashMap<String,Integer>();
 						allSet=(Map<String, Integer>) msg.obj;
 						device=allSet.get("device");//出货柜号
 						status=allSet.get("status");//出货结果
 						hdid=allSet.get("hdid");//货道id
 						hdtype=allSet.get("type");//出货类型
-						cost=allSet.get("cost");//扣钱
-						totalvalue=allSet.get("totalvalue");//剩余金额
+						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
+						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
 						huodao=allSet.get("huodao");//剩余存货数量
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
+								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
+						
 						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-								+cost/100+"],totalvalue=["+totalvalue/100+"],huodao=["+huodao+"]");
+								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
 						break;
 				}				
 			}
@@ -133,15 +136,15 @@ public class HuodaoTest extends Activity
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	  
-		    	Log.i("EV_JNI",
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
 		    	+" type="+String.valueOf(typevar)
 		    	+" price="+String.valueOf(Float.parseFloat(edtprice.getText().toString())*100)
 		    	);
 		    	EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-		    			Float.parseFloat(edtprice.getText().toString()));		    	
-		    	//txthuorst.setText(EVprotocolAPI.gethuodaorst());
+		    			ToolClass.MoneySend(Float.parseFloat(edtprice.getText().toString())));	    	
+		    	
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.easivend.evprotocol.ToolClass;
 import com.example.evconsole.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -51,7 +52,7 @@ public class Business extends Activity
 			{
 			  if(!files[i].isDirectory())
 			  {
-				  Log.i("EV_JNI",files[i].toString());
+				  ToolClass.Log(ToolClass.INFO,"EV_JNI",files[i].toString());
 				  mMusicList.add(files[i].toString());
 			  }
 			}
