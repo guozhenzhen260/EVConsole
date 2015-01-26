@@ -24,6 +24,8 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
+import com.easivend.evprotocol.EVprotocol.EV_listener;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -32,7 +34,9 @@ import android.util.Log;
 public class EVprotocolAPI 
 {
 	static EVprotocol ev=null;
-	static Handler mainHandler=null;
+	private static JNIInterface callBack=null;//与activity交互注册回调
+	private static Call_json callJson = new Call_json();//与JNI交互注册回调	
+	private static Map<String,Integer> allSet = new HashMap<String,Integer>() ;
 	private static int EV_TYPE=0;	
 	public static final int EV_INITING=1;//正在初始化
 	public static final int EV_ONLINE=2;//成功连接
@@ -83,9 +87,13 @@ public class EVprotocolAPI
 							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<成功连接");
 							EV_TYPE=EV_ONLINE;
 							//往Activity线程发送信息
-							Message childmsg=mainHandler.obtainMessage();
-							childmsg.what=EV_ONLINE;
-							mainHandler.sendMessage(childmsg);
+//							Message childmsg=mainHandler.obtainMessage();
+//							childmsg.what=EV_ONLINE;
+//							mainHandler.sendMessage(childmsg);
+							//往接口回调信息
+							allSet.clear();
+							allSet.put("EV_TYPE", EV_ONLINE);
+							callBack.jniCallback(allSet);
 						}
 						else if(str_evType.equals("EV_OFFLINE"))
 						{
@@ -124,7 +132,8 @@ public class EVprotocolAPI
 						{
 							EV_TYPE=EV_TRADE_RPT;
 							//得到出货回传参数
-							Map<String,Integer> allSet = new HashMap<String,Integer>() ;							
+							allSet.clear();	
+							allSet.put("EV_TYPE", EV_TRADE_RPT);
 							allSet.put("device", ev_head.getInt("cabinet"));//出货柜号							
 							allSet.put("status", ev_head.getInt("result"));//出货结果
 							allSet.put("hdid", ev_head.getInt("column"));//货道id
@@ -134,10 +143,12 @@ public class EVprotocolAPI
 							allSet.put("huodao", ev_head.getInt("remainCount"));//剩余存货数量				
 							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<出货返回");	
 							//往Activity线程发送信息
-							Message childmsg=mainHandler.obtainMessage();
-							childmsg.what=EV_TRADE_RPT;
-							childmsg.obj=allSet;
-							mainHandler.sendMessage(childmsg);							
+//							Message childmsg=mainHandler.obtainMessage();
+//							childmsg.what=EV_TRADE_RPT;
+//							childmsg.obj=allSet;
+//							mainHandler.sendMessage(childmsg);		
+							//往接口回调信息
+							callBack.jniCallback(allSet);
 						}
 					    //投币上报
 						else if(str_evType.equals("EV_PAYIN_RPT"))//投币上报
@@ -145,10 +156,15 @@ public class EVprotocolAPI
 							int amount = ev_head.getInt("remainAmount");
 							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<投币:"+Integer.toString(amount));							
 							//往Activity线程发送信息
-							Message childmsg=mainHandler.obtainMessage();
-							childmsg.what=EV_PAYIN_RPT;
-							childmsg.obj=amount;
-							mainHandler.sendMessage(childmsg);	
+//							Message childmsg=mainHandler.obtainMessage();
+//							childmsg.what=EV_PAYIN_RPT;
+//							childmsg.obj=amount;
+//							mainHandler.sendMessage(childmsg);	
+							//往接口回调信息
+							allSet.clear();	
+							allSet.put("EV_TYPE", EV_PAYIN_RPT);
+							allSet.put("amount", amount);
+							callBack.jniCallback(allSet);
 						}
 					    //找零金额上报
 						else if(str_evType.equals("EV_PAYOUT_RPT"))
@@ -156,10 +172,15 @@ public class EVprotocolAPI
 							int amount = ev_head.getInt("remainAmount");
 							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<找零:"+Integer.toString(amount));
 							//往Activity线程发送信息
-							Message childmsg=mainHandler.obtainMessage();
-							childmsg.what=EV_PAYOUT_RPT;
-							childmsg.obj=amount;
-							mainHandler.sendMessage(childmsg);	
+//							Message childmsg=mainHandler.obtainMessage();
+//							childmsg.what=EV_PAYOUT_RPT;
+//							childmsg.obj=amount;
+//							mainHandler.sendMessage(childmsg);
+							//往接口回调信息
+							allSet.clear();	
+							allSet.put("EV_TYPE", EV_PAYOUT_RPT);
+							allSet.put("amount", amount);
+							callBack.jniCallback(allSet);
 						}
 					}
 					catch (Exception e) {
@@ -171,11 +192,21 @@ public class EVprotocolAPI
 		
 	};	
 	
-	public static void setHandler(Handler hand)
+		
+	//与activity之间接口的交互
+	public static void setCallBack(JNIInterface call){ 
+        callBack = call;
+    } 
+	//与jni接口的交互
+	public static class Call_json implements EV_listener
 	{
-		mainHandler=hand;
+		public void do_json(String json){
+			Message msg = Message.obtain();
+			msg.what = 1;
+			msg.obj = json;
+			EVProhand.sendMessage(msg);
+		}
 	}
-	
 	
 	/*********************************************************************************************************
 	** Function name:     	vmcStart
@@ -186,7 +217,8 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int vmcStart(String portName)
 	{
-		ev=new EVprotocol(EVProhand);
+		ev= new EVprotocol();
+		ev.addListener(callJson);//注册于jni的监听接口
 		return ev.vmcStart(portName);
 	}
 	
@@ -199,7 +231,8 @@ public class EVprotocolAPI
 	** Returned value:      无（直接返回 不进行回调）
 	*********************************************************************************************************/
 	public static void vmcStop()
-	{
+	{	
+		ev.removeListener(callJson);
 		ev.vmcStop();
 	}
 	
@@ -215,7 +248,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int trade(int cabinet,int column,int type,long cost)
 	{
-		//ToolClass.Log(ToolClass.INFO,"EV_JNI","[send2trade]");	
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIhuo>>]"+cost);
 		return ev.trade(cabinet,column,type,(int)cost);
 	}
 	
@@ -232,5 +265,8 @@ public class EVprotocolAPI
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIpayout>>]"+value);
 		return ev.payout((int)value);		
 	}
+	
+	
+	
 			
 }

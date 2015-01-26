@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.JNIInterface;
 import com.easivend.evprotocol.ToolClass;
 
 import android.app.Activity;
@@ -59,17 +60,18 @@ public class HuodaoTest extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.huodao);// 设置布局文件
-		myhHandler=new Handler()
-		{
-
+		//注册出货监听器
+  	    EVprotocolAPI.setCallBack(new JNIInterface() {
+			
 			@Override
-			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub				
-				switch (msg.what)
+			public void jniCallback(Map<String, Integer> allSet) {
+				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao出货结果");
+				Map<String, Integer> Set= allSet;
+				int jnirst=Set.get("EV_TYPE");
+				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-						Map<String,Integer> allSet = new HashMap<String,Integer>();
-						allSet=(Map<String, Integer>) msg.obj;
 						device=allSet.get("device");//出货柜号
 						status=allSet.get("status");//出货结果
 						hdid=allSet.get("hdid");//货道id
@@ -83,11 +85,10 @@ public class HuodaoTest extends Activity
 						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
 								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
 						break;
-				}				
+				}
 			}
-			
-		};
-		EVprotocolAPI.setHandler(myhHandler);
+		}); 
+		
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
@@ -132,7 +133,8 @@ public class HuodaoTest extends Activity
   				}
   			}
   		});
-		
+  	    
+  	    
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	  
@@ -140,10 +142,10 @@ public class HuodaoTest extends Activity
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
 		    	+" type="+String.valueOf(typevar)
-		    	+" price="+String.valueOf(Float.parseFloat(edtprice.getText().toString())*100)
+		    	+" price="+edtprice.getText().toString()
 		    	);
-		    	EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-		    			ToolClass.MoneySend(Float.parseFloat(edtprice.getText().toString())));	    	
+		    	int rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+		    			ToolClass.MoneySend(Float.parseFloat(edtprice.getText().toString())));	   	
 		    	
 		    }
 		});

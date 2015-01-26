@@ -17,10 +17,12 @@ package com.example.evconsole;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.JNIInterface;
 import com.easivend.evprotocol.ToolClass;
 
 
@@ -54,38 +56,46 @@ public class MaintainActivity extends Activity
     //EVprotocolAPI ev=null;
     int comopen=0;//1串口已经打开，0串口没有打开
     String str=null;
-    private Handler myhHandler=null;
+    //private Handler myhHandler=null;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maintain);	
-		myhHandler=new Handler()
-		{
-
+		//注册串口监听器
+		EVprotocolAPI.setCallBack(new JNIInterface() {
+			
 			@Override
-			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub				
-				switch (msg.what)
+			public void jniCallback(Map<String, Integer> allSet) {
+				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到");	
+				Map<String, Integer> Set= allSet;
+				int jnirst=Set.get("EV_TYPE");
+				txtcom.setText(String.valueOf(jnirst));
+				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_ONLINE://接收子线程消息
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<初始化完成");	
 						txtcom.setText(str+"初始化完成");
 						break;
-				}				
+				}
 			}
-			
-		};
-		EVprotocolAPI.setHandler(myhHandler);
+		}); 
+		
+		
 		Intent intent=getIntent();
 		str=intent.getStringExtra("comport");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText("正在准备连接"+str);		
+		txtcom.setText("正在准备连接"+str);	
+		
 		//打开串口		
 		//ev=new EVprotocolAPI();
 		comopen = EVprotocolAPI.vmcStart(str);
 		if(comopen == 1)
-			txtcom.setText(str+"串口打开成功");
+		{
+			txtcom.setText(str+"串口打开成功");			
+		}
 		else
 			txtcom.setText(str+"串口打开失败");
 		

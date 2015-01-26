@@ -23,10 +23,12 @@
 			android:layout_height="wrap_content"
 			android:text="纸币投入:"/>
         
-         <EditText
-            android:id="@+id/edtbillin"
+         <TextView
+            android:id="@+id/txtbillin"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
+	        android:textSize="40sp"
+            android:textStyle="bold"
 	        android:numeric="decimal"
 	        android:text="0" />
     </TableRow>  
@@ -40,10 +42,12 @@
 			android:layout_height="wrap_content"
 			android:text="硬币投入:"/>
         
-         <EditText
-            android:id="@+id/edtcoinin"
+         <TextView
+            android:id="@+id/txtcoinin"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
+	        android:textSize="40sp"
+            android:textStyle="bold"
 	        android:numeric="decimal"
 	        android:text="0" />
     </TableRow>  
@@ -74,8 +78,8 @@
 			android:layout_height="wrap_content"
 			android:text="找零金额:"/>
         
-         <EditText
-            android:id="@+id/edtpaymoney"
+         <TextView
+            android:id="@+id/txtpaymoney"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
 	        android:numeric="decimal"
@@ -88,6 +92,17 @@
     <TableRow >    
          <Button
              android:id="@+id/btnpayout"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"             
+             android:text="全部退币" />
+    </TableRow>
+    <View                              
+        android:layout_height="2px"
+        android:background="#FF909090"
+    /> 
+    <TableRow >    
+         <Button
+             android:id="@+id/btnpaymoney"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"             
              android:text="找零" />
