@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 1;// 定义数据库版本号
+    private static final int VERSION = 2;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -94,9 +94,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         (
         		"CREATE TABLE vmc_class" +
         		"("+
-        		"classID nvarchar(50),"+
+        		"classID nvarchar(50) PRIMARY KEY,"+
                 "className nvarchar(200),"+         		     		
-        		"classTime DATETIME NOT NULL DEFAULT getdate()" +
+        		"classTime DATETIME NOT NULL" +
         		")"
         		
         );
@@ -107,7 +107,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"("+
         		"classID nvarchar(50),"+
                 "productID nvarchar(200),"+         		     		
-        		"classTime DATETIME NOT NULL DEFAULT getdate()" +
+        		"classTime DATETIME NOT NULL" +
         		")"
         		
         );
@@ -116,7 +116,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         (
         		"CREATE TABLE vmc_product" +
         		"("+
-        		"productID nvarchar(100) PRIMARY KEY,"+
+        		"productID nvarchar(200) PRIMARY KEY,"+
                 "productName nvarchar(200),"+ 
         		"productDesc nvarchar(500)," +
         		"marketPrice Decimal(8,2)," +
@@ -152,7 +152,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"pathCount INT," +
         		"pathRemain INT," +
         		"columnStatus INT NOT NULL DEFAULT 0,"+                     		
-        		"lasttime DATETIME NOT NULL DEFAULT getdate()" +
+        		"lasttime DATETIME NOT NULL" +
         		")"
         		
         );
@@ -176,7 +176,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"realAmount Decimal(8,2)," +
         		"debtAmount Decimal(8,2)," +
         		"realCard Decimal(8,2),"+                     		
-        		"payTime DATETIME NOT NULL DEFAULT getdate()" +
+        		"payTime DATETIME NOT NULL" +
         		")"
         		
         );
@@ -198,7 +198,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"logID nvarchar(100)PRIMARY KEY," +
         		"logType INT," +
         		"logDesc nvarchar(500)," +
-        		"logTime DATETIME NOT NULL DEFAULT getdate()" +
+        		"logTime DATETIME NOT NULL" +
         		")"
         		
         );

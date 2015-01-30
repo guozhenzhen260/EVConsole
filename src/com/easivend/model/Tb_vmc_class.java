@@ -21,9 +21,9 @@ public class Tb_vmc_class
 {
 	private String classID;// 商品类别ID
 	private String className;// 商品类别名称	
-	private Date classTime;//最后更新时间
+	private String classTime;//最后更新时间
 	// 定义有参构造函数，用来初始化收入信息实体类中的各个字段
-	public Tb_vmc_class(String classID, String className, Date classTime) 
+	public Tb_vmc_class(String classID, String className,String classTime) 
 	{
 		super();
 		this.classID = classID;
@@ -42,10 +42,10 @@ public class Tb_vmc_class
 	public void setClassName(String className) {
 		this.className = className;
 	}	
-	public Date getClassTime() {
+	public String getClassTime() {
 		return classTime;
 	}
-	public void setClassTime(Date classTime) {
+	public void setClassTime(String classTime) {
 		this.classTime = classTime;
 	}
 	

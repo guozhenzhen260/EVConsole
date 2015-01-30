@@ -39,7 +39,6 @@ public class Tb_vmc_classproduct
 		return productID;
 	}
 	public void setProductID(String productID) {
-		this.productID = productID;
 	}
 	public Date getClassTime() {
 		return classTime;
