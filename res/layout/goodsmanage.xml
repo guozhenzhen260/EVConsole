@@ -120,16 +120,24 @@
 	    android:layout_height="match_parent"	
 	    android:layout_alignParentTop="true"	
 	    android:orientation="vertical" >
-	    <AnalogClock 
-	        android:id="@+id/clkan"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	   />
-	    <DigitalClock 
-	        android:id="@+id/clkdig"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	   />
+	    
+			<RelativeLayout 
+		         android:layout_width="match_parent"
+			     android:layout_height="match_parent"	    
+			     >
+		         <GridView 
+				    android:id="@+id/gvProduct"
+				    android:layout_width="match_parent"
+				    android:layout_height="match_parent"
+				    android:columnWidth="90dp"
+				    android:gravity="center"
+				    android:horizontalSpacing="10dp"
+				    android:numColumns="auto_fit"
+				    android:stretchMode="spacingWidthUniform"
+				    android:verticalSpacing="10dp" />
+		    </RelativeLayout>
+		
+		
 	</RelativeLayout>    
 
 </LinearLayout>

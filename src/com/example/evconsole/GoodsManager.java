@@ -1,6 +1,7 @@
 package com.example.evconsole;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,15 +12,20 @@ import com.easivend.model.Tb_vmc_class;
 
 import android.app.Activity;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -34,6 +40,13 @@ public class GoodsManager extends TabActivity
 	private ListView lvinfo;// 创建ListView对象
 	private EditText edtclassid=null,edtclassname=null;
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
+	// 定义字符串数组，存储系统功能
+    private String[] titles = new String[] { "现金设备测试", "出货测试", "出格子测试", "商品管理", "预留接口", "预留接口", "预留接口", "退出","现金设备测试", "出货测试", "出格子测试", "商品管理", "预留接口", "预留接口", "预留接口", "退出" };
+    // 定义int数组，存储功能对应的图标
+    private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
+            R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit,R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
+            R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
+    GridView gvProduct=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -166,7 +179,18 @@ public class GoodsManager extends TabActivity
 		        finish();
 		    }
 		});
+    	
+    	//===============
+    	//商品设置页面
+    	//===============
+    	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
+    	ProPictureAdapter adapter = new ProPictureAdapter(titles, images, this);// 创建pictureAdapter对象
+    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+        
 	}
+	//===============
+	//商品分类设置页面
+	//===============
 	// 显示商品分类信息
 	private void showInfo() 
 	{
@@ -194,5 +218,93 @@ public class GoodsManager extends TabActivity
         // TODO Auto-generated method stub
         super.onRestart();// 实现基类中的方法
         showInfo();// 重新显示
+    }
+}
+
+//===============
+//商品设置页面
+//===============
+class ProViewHolder {// 创建ProViewHolder类
+
+    public TextView title;// 创建TextView对象
+    public ImageView image;// 创建ImageView对象
+}
+
+class ProPicture {// 创建ProPicture类
+
+    private String title;// 定义字符串，表示图像标题
+    private int imageId;// 定义int变量，表示图像的二进制值
+	public ProPicture(String title, int imageId) {
+		super();
+		this.title = title;
+		this.imageId = imageId;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public int getImageId() {
+		return imageId;
+	}
+	public void setImageId(int imageId) {
+		this.imageId = imageId;
+	}
+    
+}
+
+class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
+
+    private LayoutInflater inflater;// 创建LayoutInflater对象
+    private List<ProPicture> pictures;// 创建List泛型集合
+
+    // 为类创建构造函数
+    public ProPictureAdapter(String[] titles, int[] images, Context context) {
+        super();
+        pictures = new ArrayList<ProPicture>();// 初始化泛型集合对象
+        inflater = LayoutInflater.from(context);// 初始化LayoutInflater对象
+        for (int i = 0; i < images.length; i++)// 遍历图像数组
+        {
+            ProPicture picture = new ProPicture(titles[i], images[i]);// 使用标题和图像生成ProPicture对象
+            pictures.add(picture);// 将Picture对象添加到泛型集合中
+        }
+    }
+
+    @Override
+    public int getCount() {// 获取泛型集合的长度
+        if (null != pictures) {// 如果泛型集合不为空
+            return pictures.size();// 返回泛型长度
+        } else {
+            return 0;// 返回0
+        }
+    }
+
+    @Override
+    public Object getItem(int arg0) {
+        return pictures.get(arg0);// 获取泛型集合指定索引处的项
+    }
+
+    @Override
+    public long getItemId(int arg0) {
+        return arg0;// 返回泛型集合的索引
+    }
+
+    @Override
+    public View getView(int arg0, View arg1, ViewGroup arg2) {
+        ProViewHolder viewHolder;// 创建ProViewHolder对象
+        if (arg1 == null) {// 判断图像标识是否为空
+
+            arg1 = inflater.inflate(R.layout.productgv, null);// 设置图像标识
+            viewHolder = new ProViewHolder();// 初始化ProViewHolder对象
+            viewHolder.title = (TextView) arg1.findViewById(R.id.proID);// 设置图像标题
+            viewHolder.image = (ImageView) arg1.findViewById(R.id.proImage);// 设置图像的二进制值
+            arg1.setTag(viewHolder);// 设置提示
+        } else {
+            viewHolder = (ProViewHolder) arg1.getTag();// 设置提示
+        }
+        viewHolder.title.setText(pictures.get(arg0).getTitle());// 设置图像标题
+        viewHolder.image.setImageResource(pictures.get(arg0).getImageId());// 设置图像的二进制值
+        return arg1;// 返回图像标识
     }
 }
