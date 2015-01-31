@@ -1,5 +1,7 @@
 package com.example.evconsole;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +16,8 @@ import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -289,6 +293,22 @@ class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
     public long getItemId(int arg0) {
         return arg0;// 返回泛型集合的索引
     }
+    
+    /**
+     * 加载本地图片
+     * @param url
+     * @return
+     */
+     public Bitmap getLoacalBitmap(String url) {
+          try {
+               FileInputStream fis = new FileInputStream(url);
+               return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
+
+            } catch (FileNotFoundException e) {
+               e.printStackTrace();
+               return null;
+          }
+     }
 
     @Override
     public View getView(int arg0, View arg1, ViewGroup arg2) {
@@ -303,8 +323,13 @@ class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         } else {
             viewHolder = (ProViewHolder) arg1.getTag();// 设置提示
         }
+        
         viewHolder.title.setText(pictures.get(arg0).getTitle());// 设置图像标题
-        viewHolder.image.setImageResource(pictures.get(arg0).getImageId());// 设置图像的二进制值
+        /*为什么图片一定要转化为 Bitmap格式的！！ */
+        Bitmap bitmap = getLoacalBitmap("/sdcard/productimage/chaomiandawng.jpg"); //从本地取图片(在cdcard中获取)  //
+        viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
         return arg1;// 返回图像标识
     }
 }
+
+
