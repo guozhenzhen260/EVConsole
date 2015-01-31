@@ -45,12 +45,12 @@ public class GoodsManager extends TabActivity
 	private EditText edtclassid=null,edtclassname=null;
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
 	// 定义字符串数组，存储系统功能
-    private String[] titles = new String[] { "现金设备测试", "出货测试", "出格子测试", "商品管理", "预留接口", "预留接口", "预留接口", "退出","现金设备测试", "出货测试", "出格子测试", "商品管理", "预留接口", "预留接口", "预留接口", "退出" };
-    // 定义int数组，存储功能对应的图标
-    private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
-            R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit,R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
-            R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    GridView gvProduct=null;
+    private String[] proID = new String[9];
+    private String[] proImage = new String[9];
+    private String[] promarket = new String[9];
+    private String[] prosales = new String[9];
+    private GridView gvProduct=null;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -187,8 +187,45 @@ public class GoodsManager extends TabActivity
     	//===============
     	//商品设置页面
     	//===============
+    	proImage[0]="/sdcard/productimage/449.jpg";
+    	proImage[1]="/sdcard/productimage/chaomiandawng.jpg";
+    	proImage[2]="/sdcard/productimage/niurouganbanmian.jpg";
+    	proImage[3]="/sdcard/productimage/P1070588.jpg";
+    	proImage[4]="/sdcard/productimage/P1070589.jpg";
+    	proImage[5]="/sdcard/productimage/shimianbafang.jpg";
+    	proImage[6]="/sdcard/productimage/xiangnaroujiang.jpg";
+    	proImage[7]="/sdcard/productimage/xuebi500ml.jpg";
+    	proImage[8]="/sdcard/productimage/yibao.jpg";
+    	proID[0]="449.jpg";
+    	proID[1]="chaomiandawng.jpg";
+    	proID[2]="niurouganbanmian.jpg";
+    	proID[3]="P1070588.jpg";
+    	proID[4]="P1070589.jpg";
+    	proID[5]="shimianbafang.jpg";
+    	proID[6]="xiangnaroujiang.jpg";
+    	proID[7]="xuebi500ml.jpg";
+    	proID[8]="yibao.jpg";
+    	promarket[0]="20";
+    	promarket[1]="21";
+    	promarket[2]="22";
+    	promarket[3]="23";
+    	promarket[4]="24";
+    	promarket[5]="25";
+    	promarket[6]="26";
+    	promarket[7]="27";
+    	promarket[8]="28";
+    	prosales[0]="10";
+    	prosales[1]="11";
+    	prosales[2]="12";
+    	prosales[3]="13";
+    	prosales[4]="14";
+    	prosales[5]="15";
+    	prosales[6]="16";
+    	prosales[7]="17";
+    	prosales[8]="18";
+    	
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
-    	ProPictureAdapter adapter = new ProPictureAdapter(titles, images, this);// 创建pictureAdapter对象
+    	ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
     	gvProduct.setAdapter(adapter);// 为GridView设置数据源
         
 	}
@@ -228,32 +265,51 @@ public class GoodsManager extends TabActivity
 //===============
 //商品设置页面
 //===============
-class ProViewHolder {// 创建ProViewHolder类
+class ProViewHolder {// 创建ProViewHolder类存放控件集合
 
-    public TextView title;// 创建TextView对象
+    public TextView proID;// 创建商品ID和名称
     public ImageView image;// 创建ImageView对象
+    public TextView promarket;// 创建商品原价
+    public TextView prosales;// 创建商品销售价
 }
 
 class ProPicture {// 创建ProPicture类
 
-    private String title;// 定义字符串，表示图像标题
-    private int imageId;// 定义int变量，表示图像的二进制值
-	public ProPicture(String title, int imageId) {
+    private String proID;// 定义字符串，表示图像标题
+    private String proImage;//图像位置
+    private String promarket;//原价
+    private String prosales;//现价
+	public ProPicture(String proID, String promarket, String prosales,String proImage) {
 		super();
-		this.title = title;
-		this.imageId = imageId;
+		this.proID = proID;
+		this.promarket = promarket;
+		this.prosales = prosales;
+		this.proImage = proImage;
+		
 	}
 	public String getTitle() {
-		return title;
+		return proID;
 	}
-	public void setTitle(String title) {
-		this.title = title;
+	public void setTitle(String proID) {
+		this.proID = proID;
 	}
-	public int getImageId() {
-		return imageId;
+	public String getProImage() {
+		return proImage;
 	}
-	public void setImageId(int imageId) {
-		this.imageId = imageId;
+	public void setProImage(String proImage) {
+		this.proImage = proImage;
+	}
+	public String getPromarket() {
+		return promarket;
+	}
+	public void setPromarket(String promarket) {
+		this.promarket = promarket;
+	}
+	public String getProsales() {
+		return prosales;
+	}
+	public void setProsales(String prosales) {
+		this.prosales = prosales;
 	}
     
 }
@@ -264,13 +320,13 @@ class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
     private List<ProPicture> pictures;// 创建List泛型集合
 
     // 为类创建构造函数
-    public ProPictureAdapter(String[] titles, int[] images, Context context) {
+    public ProPictureAdapter(String[] proID, String[] promarket,String[] prosales,String[] proImage, Context context) {
         super();
         pictures = new ArrayList<ProPicture>();// 初始化泛型集合对象
         inflater = LayoutInflater.from(context);// 初始化LayoutInflater对象
-        for (int i = 0; i < images.length; i++)// 遍历图像数组
+        for (int i = 0; i < proImage.length; i++)// 遍历图像数组
         {
-            ProPicture picture = new ProPicture(titles[i], images[i]);// 使用标题和图像生成ProPicture对象
+            ProPicture picture = new ProPicture(proID[i],promarket[i],prosales[i], proImage[i]);// 使用标题和图像生成ProPicture对象
             pictures.add(picture);// 将Picture对象添加到泛型集合中
         }
     }
@@ -317,16 +373,23 @@ class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
 
             arg1 = inflater.inflate(R.layout.productgv, null);// 设置图像标识
             viewHolder = new ProViewHolder();// 初始化ProViewHolder对象
-            viewHolder.title = (TextView) arg1.findViewById(R.id.proID);// 设置图像标题
+            viewHolder.proID = (TextView) arg1.findViewById(R.id.proID);// 设置图像标题
             viewHolder.image = (ImageView) arg1.findViewById(R.id.proImage);// 设置图像的二进制值
+            viewHolder.promarket = (TextView) arg1.findViewById(R.id.promarket);// 设置图像标题
+            viewHolder.prosales = (TextView) arg1.findViewById(R.id.prosales);// 设置图像标题
+            
             arg1.setTag(viewHolder);// 设置提示
-        } else {
+        } 
+        else
+        {
             viewHolder = (ProViewHolder) arg1.getTag();// 设置提示
         }
         
-        viewHolder.title.setText(pictures.get(arg0).getTitle());// 设置图像标题
+        viewHolder.proID.setText(pictures.get(arg0).getTitle());// 设置图像ID
+        viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置图像原价
+        viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置图像原价
         /*为什么图片一定要转化为 Bitmap格式的！！ */
-        Bitmap bitmap = getLoacalBitmap("/sdcard/productimage/chaomiandawng.jpg"); //从本地取图片(在cdcard中获取)  //
+        Bitmap bitmap = getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
         viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
         return arg1;// 返回图像标识
     }
