@@ -1,56 +1,52 @@
-/****************************************Copyright (c)*************************************************
-**                      Fujian Junpeng Communicaiton Technology Co.,Ltd.
-**                               http://www.easivend.com.cn
-**--------------File Info------------------------------------------------------------------------------
-** File name:           EVprotocol.java
-** Last modified Date:  2015-01-10
-** Last Version:         
-** Descriptions:        vmc_classDAO 柜类型操作文件  
-**------------------------------------------------------------------------------------------------------
-** Created by:          yanbo 
-** Created date:        2015-01-10
-** Version:             V1.0 
-** Descriptions:        The original version       
-********************************************************************************************************/
-
 package com.easivend.dao;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import com.easivend.model.Tb_vmc_class;
-
-
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.format.DateFormat;
 
+import com.easivend.evprotocol.ToolClass;
+import com.easivend.model.Tb_vmc_class;
+import com.easivend.model.Tb_vmc_product;
 
-
-public class vmc_classDAO 
+public class vmc_productDAO
 {
 	private DBOpenHelper helper;// 创建DBOpenHelper对象
     private SQLiteDatabase db;// 创建SQLiteDatabase对象
     //SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
     // 定义构造函数
-	public vmc_classDAO(Context context) 
+	public vmc_productDAO(Context context) 
 	{
 		helper=new DBOpenHelper(context);// 初始化DBOpenHelper对象
 	}
 	//添加
-	public void add(Tb_vmc_class tb_vmc_class)throws SQLException
+	public void add(Tb_vmc_product tb_vmc_product)throws SQLException
 	{
-		
+		int max=0;
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-		// 执行添加		
-		db.execSQL("insert into vmc_class (classID,className,classTime) values (?,?,(datetime('now', 'localtime')))",
-		        new Object[] { tb_vmc_class.getClassID(), tb_vmc_class.getClassName() });
+		//取得排序值
+		Cursor cursor = db.rawQuery("select max(paixu) from vmc_product", null);// 获取收入信息表中的最大编号
+        if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
+        	max=cursor.getInt(0); 
+        }
+        // 执行添加		
+ 		db.execSQL(
+ 				"insert into vmc_product" +
+ 				"(" +
+ 				"productID,productName,productDesc,marketPrice,salesPrice," +
+ 				"shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3,paixu,isdelete" +
+ 				") " +
+ 				"values" +
+ 				"(" +
+ 				"?,?,?,?,?,?,(datetime('now', 'localtime')),(datetime('now', 'localtime')),?,?,?,?,?" +
+ 				")",
+ 		        new Object[] { tb_vmc_product.getProductID(), tb_vmc_product.getProductName(),tb_vmc_product.getProductDesc(), tb_vmc_product.getMarketPrice(),
+ 						tb_vmc_product.getSalesPrice(), tb_vmc_product.getShelfLife(),tb_vmc_product.getAttBatch1(), tb_vmc_product.getAttBatch2(),
+ 						tb_vmc_product.getAttBatch3(), max+1,tb_vmc_product.getIsdelete()});
+     		
 	}
     //修改
 	public void update(Tb_vmc_class tb_vmc_class) {

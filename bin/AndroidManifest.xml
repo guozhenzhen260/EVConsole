@@ -38,6 +38,10 @@
             android:name=".GoodsManager"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".GoodsProSet"
+            android:label="@string/app_name" >
+        </activity>
        
         <activity
             android:name="com.example.business.Business"

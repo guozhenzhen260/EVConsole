@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 2;// 定义数据库版本号
+    private static final int VERSION = 3;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -126,7 +126,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"onloadTime DATETIME," +
         		"attBatch1 nvarchar(50)," +
         		"attBatch2 nvarchar(50)," +
-        		"attBatch3 nvarchar(50)," +        		
+        		"attBatch3 nvarchar(50)," +
+        		"paixu INT NOT NULL," +        		
         		"isdelete INT" +
         		")"
         		

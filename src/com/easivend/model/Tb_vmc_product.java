@@ -25,17 +25,19 @@ public class Tb_vmc_product
 	private float marketPrice;// 商品原价,如”20.00”
 	private float salesPrice;// 优惠价,如”20.00”
 	private int shelfLife;// 保质期
-	private Date downloadTime;//下载时间
-	private Date onloadTime;//本地修改时间,时间字符串如”2013-01-01T12:00:00”
+	private String downloadTime;//下载时间
+	private String onloadTime;//本地修改时间,时间字符串如”2013-01-01T12:00:00”
 	private String attBatch1;// 商品图片路径1
 	private String attBatch2;// 商品图片路径2
 	private String attBatch3;// 商品图片路径3
+	private int paixu;// 排序
 	private int isdelete;// 是否删除（0不删除，1删除）
 	// 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_product(String productID, String productName,
 			String productDesc, float marketPrice, float salesPrice,
-			int shelfLife, Date downloadTime, Date onloadTime,
-			String attBatch1, String attBatch2, String attBatch3, int isdelete) {
+			int shelfLife, String downloadTime, String onloadTime,
+			String attBatch1, String attBatch2, String attBatch3, int paixu,
+			int isdelete) {
 		super();
 		this.productID = productID;
 		this.productName = productName;
@@ -48,6 +50,7 @@ public class Tb_vmc_product
 		this.attBatch1 = attBatch1;
 		this.attBatch2 = attBatch2;
 		this.attBatch3 = attBatch3;
+		this.paixu = paixu;
 		this.isdelete = isdelete;
 	}
 	public String getProductID() {
@@ -86,16 +89,16 @@ public class Tb_vmc_product
 	public void setShelfLife(int shelfLife) {
 		this.shelfLife = shelfLife;
 	}
-	public Date getDownloadTime() {
+	public String getDownloadTime() {
 		return downloadTime;
 	}
-	public void setDownloadTime(Date downloadTime) {
+	public void setDownloadTime(String downloadTime) {
 		this.downloadTime = downloadTime;
 	}
-	public Date getOnloadTime() {
+	public String getOnloadTime() {
 		return onloadTime;
 	}
-	public void setOnloadTime(Date onloadTime) {
+	public void setOnloadTime(String onloadTime) {
 		this.onloadTime = onloadTime;
 	}
 	public String getAttBatch1() {
@@ -116,11 +119,18 @@ public class Tb_vmc_product
 	public void setAttBatch3(String attBatch3) {
 		this.attBatch3 = attBatch3;
 	}
+	public int getPaixu() {
+		return paixu;
+	}
+	public void setPaixu(int paixu) {
+		this.paixu = paixu;
+	}
 	public int getIsdelete() {
 		return isdelete;
 	}
 	public void setIsdelete(int isdelete) {
 		this.isdelete = isdelete;
 	}
+	
 	
 }

@@ -40,10 +40,12 @@ import android.widget.TabHost.TabSpec;
 public class GoodsManager extends TabActivity 
 {
 	private TabHost mytabhost = null;
+	Intent intent = null;// 创建Intent对象
 	private int[] layres=new int[]{R.id.tab_class,R.id.tab_product};//内嵌布局文件的id
 	private ListView lvinfo;// 创建ListView对象
 	private EditText edtclassid=null,edtclassname=null;
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
+	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;
 	// 定义字符串数组，存储系统功能
     private String[] proID = new String[9];
     private String[] proImage = new String[9];
@@ -227,6 +229,59 @@ public class GoodsManager extends TabActivity
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
     	ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
     	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+    	//添加
+    	btnproadd = (Button) findViewById(R.id.btnproadd);
+    	btnproadd.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0)
+		    {
+		    	 intent = new Intent(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+                 startActivity(intent);// 打开AddInaccount	
+		    }
+		});
+    	//修改
+    	btnproupdate = (Button) findViewById(R.id.btnproupdate);
+    	btnproupdate.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0)
+		    {
+		    	intent = new Intent(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+                startActivity(intent);// 打开AddInaccount	
+		    }
+		});
+    	//删除
+    	btnprodel = (Button) findViewById(R.id.btnprodel);
+    	btnprodel.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0)
+		    {
+//		    	String strclassid = edtclassid.getText().toString();
+//		    	String strclassname = edtclassname.getText().toString();
+//		    	if ((strclassid.isEmpty()!=true)&&(strclassname.isEmpty()!=true))
+//		    	{
+//		        	// 创建InaccountDAO对象
+//		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
+//		            // 创建Tb_inaccount对象
+//		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date);
+//		        	classDAO.detele(tb_vmc_class);// 修改
+//		            // 弹出信息提示
+//		            Toast.makeText(GoodsManager.this, "〖删除类别〗成功！", Toast.LENGTH_SHORT).show();
+//		            showInfo();
+//		        } 
+//		        else
+//		        {
+//		            Toast.makeText(GoodsManager.this, "请输入类别编号和名称！", Toast.LENGTH_SHORT).show();
+//		        }
+		    }
+		});
+    	//退出
+    	btnproexit = (Button) findViewById(R.id.btnproexit);
+    	btnproexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		        finish();
+		    }
+		});
         
 	}
 	//===============
