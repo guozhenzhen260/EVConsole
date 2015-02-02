@@ -3,6 +3,7 @@ package com.example.evconsole;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
@@ -23,21 +24,26 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GoodsProSet extends Activity {
+public class GoodsProSet extends Activity 
+{
 	private Uri uri=null;
 	private ImageView ivProduct=null;
 	private Button btnImg=null,btnaddProSave=null,btnaddProexit=null;
 	private EditText edtproductID=null,edtproductName=null,edtmarketPrice=null,edtsalesPrice=null,
 			edtshelfLife=null,edtproductDesc=null;
 	private TextView onloadTime=null;
+	private Spinner spinproductclassID=null;
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.goodsset);// 设置布局文件
@@ -66,7 +72,9 @@ public class GoodsProSet extends Activity {
                /* 取得相片后返回本画面 */  
                startActivityForResult(intent, 1);
 			}
-		});  
+		}); 
+		this.spinproductclassID = (Spinner) super.findViewById(R.id.spinproductclassID);
+		showInfo();//显示列表 
 		//保存
 		btnaddProSave = (Button) findViewById(R.id.btnaddProSave);
 		btnaddProSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -79,7 +87,10 @@ public class GoodsProSet extends Activity {
 		    	float salesPrice = Float.parseFloat(edtsalesPrice.getText().toString());
 		    	int shelfLife = Integer.parseInt(edtshelfLife.getText().toString());
 		    	String productDesc = edtproductDesc.getText().toString();
-		    	//String attBatch1=uri.toString();
+		    	//商品类别
+		    	String strInfo= spinproductclassID.getSelectedItem().toString();
+		    	String classID= strInfo.substring(0, strInfo.indexOf('<'));// 从收入信息中截取收入编号
+		    	//商品图片路径
 		    	String attBatch1=ToolClass.getRealFilePath(GoodsProSet.this,uri);
 		    	String attBatch2="";
 		    	String attBatch3="";
@@ -91,13 +102,13 @@ public class GoodsProSet extends Activity {
 		    		{
 		    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID+" productName="+productName+" marketPrice="
 		    					+marketPrice+" salesPrice="+salesPrice+" shelfLife="+shelfLife+" productDesc="+productDesc+" attBatch1="
-		    					+attBatch1+" attBatch2="+attBatch2+" attBatch3="+attBatch3);
+		    					+attBatch1+" attBatch2="+attBatch2+" attBatch3="+attBatch3+" classID="+classID);
 		    			// 创建InaccountDAO对象
 		    			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);
 			            //创建Tb_inaccount对象
 		    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(productID, productName,productDesc,marketPrice,
 		    					salesPrice,shelfLife,date,date,attBatch1,attBatch2,attBatch3,0,0);
-		    			productDAO.add(tb_vmc_product);// 添加收入信息
+		    			productDAO.add(tb_vmc_product,classID);// 添加收入信息
 			        	// 弹出信息提示
 			            Toast.makeText(GoodsProSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
 			            finish();
@@ -126,8 +137,33 @@ public class GoodsProSet extends Activity {
 		
 	}
 	
-	  @Override  
-	  protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
+	// 显示商品分类信息
+	private void showInfo() 
+	{
+	    String[] strInfos = null;// 定义字符串数组，用来存储收入信息
+	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
+	    vmc_classDAO classdao = new vmc_classDAO(GoodsProSet.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
+	    strInfos = new String[listinfos.size()+1];// 设置字符串数组的长度
+	    int m = 0;// 定义一个开始标识
+	    //添加全部，即不分类这一项
+	    strInfos[m++] = "0<---|--->全部";        
+	    // 遍历List泛型集合
+	    for (Tb_vmc_class tb_inaccount : listinfos) 
+	    {
+	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
+	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
+	        m++;// 标识加1
+	    }
+	    // 使用字符串数组初始化ArrayAdapter对象
+	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
+	    spinproductclassID.setAdapter(arrayAdapter);// 为ListView列表设置数据源
+	}
+	@Override  
+	//选取图片返回值
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{  
 	     if (resultCode == RESULT_OK) {  
 	         uri = data.getData();  
 	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString());  

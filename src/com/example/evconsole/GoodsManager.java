@@ -8,7 +8,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.easivend.dao.vmc_classDAO;
+import com.easivend.dao.vmc_productDAO;
+import com.easivend.evprotocol.ToolClass;
 import com.easivend.model.Tb_vmc_class;
+import com.easivend.model.Tb_vmc_product;
 
 
 
@@ -47,10 +50,10 @@ public class GoodsManager extends TabActivity
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
 	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;
 	// 定义字符串数组，存储系统功能
-    private String[] proID = new String[9];
-    private String[] proImage = new String[9];
-    private String[] promarket = new String[9];
-    private String[] prosales = new String[9];
+    private String[] proID = null;
+    private String[] proImage = null;
+    private String[] promarket = null;
+    private String[] prosales = null;
     private GridView gvProduct=null;
     
 	@Override
@@ -189,42 +192,7 @@ public class GoodsManager extends TabActivity
     	//===============
     	//商品设置页面
     	//===============
-    	proImage[0]="/sdcard/productimage/449.jpg";
-    	proImage[1]="/sdcard/productimage/chaomiandawng.jpg";
-    	proImage[2]="/sdcard/productimage/niurouganbanmian.jpg";
-    	proImage[3]="/sdcard/productimage/P1070588.jpg";
-    	proImage[4]="/sdcard/productimage/P1070589.jpg";
-    	proImage[5]="/sdcard/productimage/shimianbafang.jpg";
-    	proImage[6]="/sdcard/productimage/xiangnaroujiang.jpg";
-    	proImage[7]="/sdcard/productimage/xuebi500ml.jpg";
-    	proImage[8]="/sdcard/productimage/yibao.jpg";
-    	proID[0]="449.jpg";
-    	proID[1]="chaomiandawng.jpg";
-    	proID[2]="niurouganbanmian.jpg";
-    	proID[3]="P1070588.jpg";
-    	proID[4]="P1070589.jpg";
-    	proID[5]="shimianbafang.jpg";
-    	proID[6]="xiangnaroujiang.jpg";
-    	proID[7]="xuebi500ml.jpg";
-    	proID[8]="yibao.jpg";
-    	promarket[0]="20";
-    	promarket[1]="21";
-    	promarket[2]="22";
-    	promarket[3]="23";
-    	promarket[4]="24";
-    	promarket[5]="25";
-    	promarket[6]="26";
-    	promarket[7]="27";
-    	promarket[8]="28";
-    	prosales[0]="10";
-    	prosales[1]="11";
-    	prosales[2]="12";
-    	prosales[3]="13";
-    	prosales[4]="14";
-    	prosales[5]="15";
-    	prosales[6]="16";
-    	prosales[7]="17";
-    	prosales[8]="18";
+    	showProInfo();
     	
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
     	ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
@@ -292,9 +260,9 @@ public class GoodsManager extends TabActivity
 	{
 	    String[] strInfos = null;// 定义字符串数组，用来存储收入信息
 	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
-	    vmc_classDAO inaccountinfo = new vmc_classDAO(GoodsManager.this);// 创建InaccountDAO对象
+	    vmc_classDAO classdao = new vmc_classDAO(GoodsManager.this);// 创建InaccountDAO对象
 	    // 获取所有收入信息，并存储到List泛型集合中
-	    List<Tb_vmc_class> listinfos = inaccountinfo.getScrollData(0, (int) inaccountinfo.getCount());
+	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
 	    strInfos = new String[listinfos.size()];// 设置字符串数组的长度
 	    int m = 0;// 定义一个开始标识
 	    // 遍历List泛型集合
@@ -315,6 +283,35 @@ public class GoodsManager extends TabActivity
         super.onRestart();// 实现基类中的方法
         showInfo();// 重新显示
     }
+	//===============
+	//商品设置页面
+	//===============
+	// 商品表中的所有商品信息补充到商品数据结构数组中
+	private void showProInfo() 
+	{
+	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
+	    vmc_productDAO productdao = new vmc_productDAO(GoodsManager.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+	    List<Tb_vmc_product> listinfos = productdao.getScrollData(0, (int) productdao.getCount());
+	    proID = new String[listinfos.size()];// 设置字符串数组的长度
+	    proImage = new String[listinfos.size()];// 设置字符串数组的长度
+	    promarket = new String[listinfos.size()];// 设置字符串数组的长度
+	    prosales = new String[listinfos.size()];// 设置字符串数组的长度
+	    int m = 0;// 定义一个开始标识
+	    // 遍历List泛型集合
+	    for (Tb_vmc_product tb_inaccount : listinfos) 
+	    {
+	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
+	    	proID[m] = tb_inaccount.getProductID()+tb_inaccount.getProductName();
+	    	proImage[m] = tb_inaccount.getAttBatch1();
+	    	promarket[m] = String.valueOf(tb_inaccount.getMarketPrice());
+	    	prosales[m] = String.valueOf(tb_inaccount.getSalesPrice());
+	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID[m]+" marketPrice="
+					+promarket[m]+" salesPrice="+prosales[m]+" attBatch1="
+					+proImage[m]+" attBatch2="+tb_inaccount.getAttBatch2()+" attBatch3="+tb_inaccount.getAttBatch3());
+	        m++;// 标识加1
+	    }
+	}
 }
 
 //===============
