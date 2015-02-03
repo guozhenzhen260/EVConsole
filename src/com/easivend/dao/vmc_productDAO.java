@@ -61,23 +61,84 @@ public class vmc_productDAO
 				"?,?,(datetime('now', 'localtime'))" +
 				")",
 		        new Object[] { classID,tb_vmc_product.getProductID()});
- 		}	
+ 		}
+ 		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
 	}
     //修改
-	public void update(Tb_vmc_class tb_vmc_class) {
-//        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-//        // 执行修改
-//        db.execSQL("update vmc_class set className = ?,classTime=(datetime('now', 'localtime')) where classID = ?", 
-//        		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getClassID()});
-    }
-	//删除单条
-	public void detele(Tb_vmc_class tb_vmc_class) 
-	{       
-//        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-//        // 执行删除收入信息操作
-//        db.execSQL("delete from vmc_class where classID = ?", 
-//        		new Object[] { tb_vmc_class.getClassID()});
+	public void update(Tb_vmc_product tb_vmc_product,String classID)throws SQLException
+	{
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象		
+        // 执行修改商品		
+ 		db.execSQL(
+ 				"update vmc_product set " +
+ 				"productName=?,productDesc=?,marketPrice=?,salesPrice=?,shelfLife=?," +
+ 				"downloadTime=(datetime('now', 'localtime')),onloadTime=(datetime('now', 'localtime'))," +
+ 				"attBatch1=?,attBatch2=?,attBatch3=? " +
+ 				"where productID=?",
+ 		        new Object[] { tb_vmc_product.getProductName(),tb_vmc_product.getProductDesc(), tb_vmc_product.getMarketPrice(),
+ 						tb_vmc_product.getSalesPrice(), tb_vmc_product.getShelfLife(),tb_vmc_product.getAttBatch1(), tb_vmc_product.getAttBatch2(),
+ 						tb_vmc_product.getAttBatch3(),tb_vmc_product.getProductID()});
+ 		
+ 		// 执行添加商品与类别关联表	
+ 		//查找原先商品ID对应的类别ID
+ 		String clsID=findclass(tb_vmc_product.getProductID()); 	
+ 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象		
         
+ 		//如果需要进行商品分类
+ 		if(Integer.parseInt(classID)>0)
+ 		{
+ 			if(clsID.isEmpty()==true)//如果原先没有商品分类
+ 			{
+ 				db.execSQL(
+ 						"insert into vmc_classproduct" +
+ 						"(" +
+ 						"classID,productID,classTime" +
+ 						") " +
+ 						"values" +
+ 						"(" +
+ 						"?,?,(datetime('now', 'localtime'))" +
+ 						")",
+ 				        new Object[] { classID,tb_vmc_product.getProductID()});
+ 			}
+ 			//如果原先有商品分类
+ 			else 
+ 			{
+				db.execSQL(
+						"update vmc_classproduct set " +
+						"classID=?,classTime=(datetime('now', 'localtime')) " +
+						"where productID=?",
+				        new Object[] { classID,tb_vmc_product.getProductID()});
+ 			}
+ 		}	
+ 		//不需要进行商品分类
+ 		else
+ 		{
+ 			if(clsID.isEmpty()!=true)//如果原先有商品分类
+ 			{
+ 				db.execSQL(
+						"delete from vmc_classproduct " +
+						"where productID=?",
+				        new Object[] { tb_vmc_product.getProductID()});
+ 			}
+ 		}
+ 		db.close();
+	}
+	//删除单条
+	public void detele(Tb_vmc_product tb_vmc_product) 
+	{       
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        // 执行删除商品表
+        db.execSQL("delete from vmc_product where productID=?", 
+        		new Object[] { tb_vmc_product.getProductID()});
+        //删除商品分类关联表
+        db.execSQL(
+				"delete from vmc_classproduct " +
+				"where productID=?",
+		        new Object[] { tb_vmc_product.getProductID()});
     }
 	/**
      * 通过ID刪除多条信息
@@ -125,6 +186,11 @@ public class vmc_productDAO
     				cursor.getInt(cursor.getColumnIndex("isdelete"))
     		);
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
         return null;// 如果没有信息，则返回null
     }
     
@@ -143,6 +209,11 @@ public class vmc_productDAO
             // 将遍历到的支出信息存储到Tb_outaccount类中
             return cursor.getString(cursor.getColumnIndex("classID"));    		
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
         return "";// 如果没有信息，则返回null
     }
 
@@ -177,6 +248,11 @@ public class vmc_productDAO
         		)
            );
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
         return tb_inaccount;// 返回集合
     }
 
@@ -192,6 +268,11 @@ public class vmc_productDAO
 
             return cursor.getLong(0);// 返回总记录数
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
         return 0;// 如果没有数据，则返回0
     }
 

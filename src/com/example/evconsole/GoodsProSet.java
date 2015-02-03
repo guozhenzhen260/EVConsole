@@ -35,6 +35,7 @@ import android.widget.Toast;
 public class GoodsProSet extends Activity 
 {
 	private Uri uri=null;
+	private String proID=null,imgDir=null;
 	private ImageView ivProduct=null;
 	private Button btnImg=null,btnaddProSave=null,btnaddProexit=null;
 	private EditText edtproductID=null,edtproductName=null,edtmarketPrice=null,edtsalesPrice=null,
@@ -64,7 +65,7 @@ public class GoodsProSet extends Activity
 		//从商品页面中取得锁选中的商品
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
-		String proID=bundle.getString("proID");
+		proID=bundle.getString("proID");
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID);
 		//如果商品ID有存在则刷新页面为修改商品的页面
 		if(proID.isEmpty()!=true)
@@ -72,8 +73,9 @@ public class GoodsProSet extends Activity
 			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);// 创建InaccountDAO对象
 		    // 获取所有收入信息，并存储到List泛型集合中
 		    Tb_vmc_product tb_inaccount = productDAO.find(proID);
+		    imgDir=tb_inaccount.getAttBatch1().toString();
 		    /*为什么图片一定要转化为 Bitmap格式的！！ */
-	        Bitmap bitmap = ToolClass.getLoacalBitmap(tb_inaccount.getAttBatch1().toString()); //从本地取图片(在cdcard中获取)  //
+	        Bitmap bitmap = ToolClass.getLoacalBitmap(imgDir); //从本地取图片(在cdcard中获取)  //
 	        ivProduct.setImageBitmap(bitmap);// 设置图像的二进制值
 	        
 		    edtproductID.setText(tb_inaccount.getProductID().toString());
@@ -82,6 +84,7 @@ public class GoodsProSet extends Activity
 		    edtsalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
 		    edtshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));
 		    edtproductDesc.setText(tb_inaccount.getProductDesc().toString());
+		    onloadTime.setText(tb_inaccount.getOnloadTime().toString());
 		    //设置下拉框默认值
 		    String classID=productDAO.findclass(proID);
 		    int position=0;
@@ -130,10 +133,9 @@ public class GoodsProSet extends Activity
 		    	//商品类别
 		    	String strInfo= spinproductclassID.getSelectedItem().toString();
 		    	String classID= strInfo.substring(0, strInfo.indexOf('<'));// 从收入信息中截取收入编号
-		    	//商品图片路径
-		    	String attBatch1=ToolClass.getRealFilePath(GoodsProSet.this,uri);
+		    	String attBatch1=imgDir;
 		    	String attBatch2="";
-		    	String attBatch3="";
+		    	String attBatch3="";		    	    	
 		    	if ((productID.isEmpty()!=true)&&(productName.isEmpty()!=true)
 		    			&&(edtmarketPrice.getText().toString().isEmpty()!=true)		    				    			
 		    		)
@@ -148,7 +150,14 @@ public class GoodsProSet extends Activity
 			            //创建Tb_inaccount对象
 		    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(productID, productName,productDesc,marketPrice,
 		    					salesPrice,shelfLife,date,date,attBatch1,attBatch2,attBatch3,0,0);
-		    			productDAO.add(tb_vmc_product,classID);// 添加收入信息
+		    			if(proID.isEmpty()==true)
+		    			{
+		    				productDAO.add(tb_vmc_product,classID);// 添加商品信息
+		    			}
+		    			else 
+		    			{	
+		    				productDAO.update(tb_vmc_product,classID);// 修改商品信息
+						}
 			        	// 弹出信息提示
 			            Toast.makeText(GoodsProSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
 			            //退出时，返回intent
@@ -220,6 +229,7 @@ public class GoodsProSet extends Activity
 	             Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));  
 	             /* 将Bitmap设定到ImageView */  
 	             ivProduct.setImageBitmap(bitmap);  
+	             imgDir=ToolClass.getRealFilePath(GoodsProSet.this,uri);
 	         } catch (FileNotFoundException e) {  
 	             Log.e("Exception", e.getMessage(),e);  
 	         }  

@@ -51,6 +51,7 @@ public class vmc_classDAO
 		// 执行添加		
 		db.execSQL("insert into vmc_class (classID,className,classTime) values (?,?,(datetime('now', 'localtime')))",
 		        new Object[] { tb_vmc_class.getClassID(), tb_vmc_class.getClassName() });
+		db.close(); 
 	}
     //修改
 	public void update(Tb_vmc_class tb_vmc_class) {
@@ -58,7 +59,8 @@ public class vmc_classDAO
         // 执行修改
         db.execSQL("update vmc_class set className = ?,classTime=(datetime('now', 'localtime')) where classID = ?", 
         		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getClassID()});
-    }
+        db.close(); 
+	}
 	//删除单条
 	public void detele(Tb_vmc_class tb_vmc_class) 
 	{       
@@ -66,7 +68,7 @@ public class vmc_classDAO
         // 执行删除收入信息操作
         db.execSQL("delete from vmc_class where classID = ?", 
         		new Object[] { tb_vmc_class.getClassID()});
-        
+        db.close(); 
     }
 	/**
      * 通过ID刪除多条信息
@@ -88,6 +90,7 @@ public class vmc_classDAO
             db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
             // 执行删除收入信息操作
             db.execSQL("delete from vmc_class where classID in (" + sb + ")", (Object[]) ids);
+            db.close(); 
         }
     }
 
@@ -113,6 +116,11 @@ public class vmc_classDAO
             tb_inaccount.add(new Tb_vmc_class(cursor.getString(cursor.getColumnIndex("classID")), cursor.getString(cursor.getColumnIndex("className")),
             		cursor.getString(cursor.getColumnIndex("classTime"))));
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
         return tb_inaccount;// 返回集合
     }
 
@@ -128,6 +136,11 @@ public class vmc_classDAO
 
             return cursor.getLong(0);// 返回总记录数
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
         return 0;// 如果没有数据，则返回0
     }
 
@@ -142,6 +155,11 @@ public class vmc_classDAO
         while (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
             return cursor.getInt(0);// 获取访问到的数据，即最大编号
         }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
         return 0;// 如果没有数据，则返回0
     }
 }

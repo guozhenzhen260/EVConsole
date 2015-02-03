@@ -16,8 +16,11 @@ import com.easivend.model.Tb_vmc_product;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -208,10 +211,10 @@ public class GoodsManager extends TabActivity
 				// TODO Auto-generated method stub
 				strInfo = productID[arg2];// 记录收入信息               
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo);
-				intent = new Intent();
-		    	intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
-                intent.putExtra("proID", strInfo);
-		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
+//				intent = new Intent();
+//		    	intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+//                intent.putExtra("proID", strInfo);
+//		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 			}// 为GridView设置项单击事件
     		
     	});
@@ -245,23 +248,40 @@ public class GoodsManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0)
 		    {
-//		    	String strclassid = edtclassid.getText().toString();
-//		    	String strclassname = edtclassname.getText().toString();
-//		    	if ((strclassid.isEmpty()!=true)&&(strclassname.isEmpty()!=true))
-//		    	{
-//		        	// 创建InaccountDAO对象
-//		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
-//		            // 创建Tb_inaccount对象
-//		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date);
-//		        	classDAO.detele(tb_vmc_class);// 修改
-//		            // 弹出信息提示
-//		            Toast.makeText(GoodsManager.this, "〖删除类别〗成功！", Toast.LENGTH_SHORT).show();
-//		            showInfo();
-//		        } 
-//		        else
-//		        {
-//		            Toast.makeText(GoodsManager.this, "请输入类别编号和名称！", Toast.LENGTH_SHORT).show();
-//		        }
+		    	//创建警告对话框
+		    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)
+		    		.setTitle("对话框")//标题
+		    		.setMessage("您确定要删除该商品吗？")//表示对话框中得内容
+		    		.setIcon(R.drawable.ic_launcher)//设置logo
+		    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+		    			{				
+			    				@Override
+			    				public void onClick(DialogInterface dialog, int which) 
+			    				{
+			    					// TODO Auto-generated method stub	
+			    					// 创建InaccountDAO对象
+					    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
+						            //创建Tb_inaccount对象
+					    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
+					    					0,0,date,date,"","","",0,0);				    			
+					    			productDAO.detele(tb_vmc_product);// 添加商品信息
+					    			showProInfo(); 
+									ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
+					    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
+			    				}
+		    		      }
+		    			)		    		        
+	    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+	    		        	{			
+	    						@Override
+	    						public void onClick(DialogInterface dialog, int which) 
+	    						{
+	    							// TODO Auto-generated method stub				
+	    						}
+	    		        	}
+	    		        )
+	    		        .create();//创建一个对话框
+	    		        alert.show();//显示对话框
 		    }
 		});
     	//退出
