@@ -40,6 +40,8 @@ public class GoodsProSet extends Activity
 	private EditText edtproductID=null,edtproductName=null,edtmarketPrice=null,edtsalesPrice=null,
 			edtshelfLife=null,edtproductDesc=null;
 	private TextView onloadTime=null;
+	private ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象 
+	private String[] strInfos = null,proclassID = null;// 定义字符串数组，用来存储收入信息
 	private Spinner spinproductclassID=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -57,6 +59,44 @@ public class GoodsProSet extends Activity
 		edtsalesPrice = (EditText) findViewById(R.id.edtsalesPrice);
 		edtshelfLife = (EditText) findViewById(R.id.edtshelfLife);		
 		edtproductDesc = (EditText) findViewById(R.id.edtproductDesc);
+		this.spinproductclassID = (Spinner) super.findViewById(R.id.spinproductclassID);
+		showInfo();//显示下拉列表
+		//从商品页面中取得锁选中的商品
+		Intent intent=getIntent();
+		Bundle bundle=intent.getExtras();
+		String proID=bundle.getString("proID");
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID);
+		//如果商品ID有存在则刷新页面为修改商品的页面
+		if(proID.isEmpty()!=true)
+		{
+			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);// 创建InaccountDAO对象
+		    // 获取所有收入信息，并存储到List泛型集合中
+		    Tb_vmc_product tb_inaccount = productDAO.find(proID);
+		    /*为什么图片一定要转化为 Bitmap格式的！！ */
+	        Bitmap bitmap = ToolClass.getLoacalBitmap(tb_inaccount.getAttBatch1().toString()); //从本地取图片(在cdcard中获取)  //
+	        ivProduct.setImageBitmap(bitmap);// 设置图像的二进制值
+	        
+		    edtproductID.setText(tb_inaccount.getProductID().toString());
+		    edtproductName.setText(tb_inaccount.getProductName().toString());
+		    edtmarketPrice.setText(String.valueOf(tb_inaccount.getMarketPrice()));
+		    edtsalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
+		    edtshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));
+		    edtproductDesc.setText(tb_inaccount.getProductDesc().toString());
+		    //设置下拉框默认值
+		    String classID=productDAO.findclass(proID);
+		    int position=0;
+		    for(int i=0;i<proclassID.length;i++)
+		    {
+		    	if(classID.equals(proclassID[i]))
+		    	{
+		    		position=i;
+		    		break;
+		    	}
+		    }
+		    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品classID="+classID+",pos="+position);
+		    spinproductclassID.setSelection(position);	   
+		}
+		
 		//选择图片
 		btnImg = (Button)findViewById(R.id.btnImg);  
 		btnImg.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +113,8 @@ public class GoodsProSet extends Activity
                startActivityForResult(intent, 1);
 			}
 		}); 
-		this.spinproductclassID = (Spinner) super.findViewById(R.id.spinproductclassID);
-		showInfo();//显示列表 
+		
+		
 		//保存
 		btnaddProSave = (Button) findViewById(R.id.btnaddProSave);
 		btnaddProSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -111,6 +151,10 @@ public class GoodsProSet extends Activity
 		    			productDAO.add(tb_vmc_product,classID);// 添加收入信息
 			        	// 弹出信息提示
 			            Toast.makeText(GoodsProSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
+			            //退出时，返回intent
+			            Intent intent=new Intent();
+			            intent.putExtra("back", "ok");
+			            setResult(GoodsManager.RESULT_OK,intent);
 			            finish();
 			            
 		    		} catch (Exception e)
@@ -131,6 +175,10 @@ public class GoodsProSet extends Activity
 		btnaddProexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
+		    	//退出时，返回intent
+	            Intent intent=new Intent();
+	            intent.putExtra("back", "none");
+	            setResult(GoodsManager.RESULT_CANCELED,intent);
 		        finish();
 		    }
 		});
@@ -139,13 +187,12 @@ public class GoodsProSet extends Activity
 	
 	// 显示商品分类信息
 	private void showInfo() 
-	{
-	    String[] strInfos = null;// 定义字符串数组，用来存储收入信息
-	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
+	{	    
 	    vmc_classDAO classdao = new vmc_classDAO(GoodsProSet.this);// 创建InaccountDAO对象
 	    // 获取所有收入信息，并存储到List泛型集合中
 	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
 	    strInfos = new String[listinfos.size()+1];// 设置字符串数组的长度
+	    proclassID = new String[listinfos.size()+1];// 设置字符串数组的长度
 	    int m = 0;// 定义一个开始标识
 	    //添加全部，即不分类这一项
 	    strInfos[m++] = "0<---|--->全部";        
@@ -154,6 +201,7 @@ public class GoodsProSet extends Activity
 	    {
 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
 	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
+	        proclassID[m] = tb_inaccount.getClassID();
 	        m++;// 标识加1
 	    }
 	    // 使用字符串数组初始化ArrayAdapter对象

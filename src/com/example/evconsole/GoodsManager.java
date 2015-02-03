@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rasterizer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,13 +45,15 @@ public class GoodsManager extends TabActivity
 {
 	private TabHost mytabhost = null;
 	Intent intent = null;// 创建Intent对象
+	String strInfo=null;
+	private final static int REQUEST_CODE=1;//声明请求标识
 	private int[] layres=new int[]{R.id.tab_class,R.id.tab_product};//内嵌布局文件的id
 	private ListView lvinfo;// 创建ListView对象
 	private EditText edtclassid=null,edtclassname=null;
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
 	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;
 	// 定义字符串数组，存储系统功能
-    private String[] proID = null;
+    private String[] proID = null,productID = null;
     private String[] proImage = null;
     private String[] promarket = null;
     private String[] prosales = null;
@@ -87,9 +90,9 @@ public class GoodsManager extends TabActivity
             // 覆写onItemClick方法
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String strInfo = String.valueOf(((TextView) view).getText());// 记录收入信息
-                String strid = strInfo.substring(0, strInfo.indexOf('<'));// 从收入信息中截取收入编号
-                String strname = strInfo.substring(strInfo.indexOf('>')+1);// 从收入信息中截取收入编号
+                String strInfoclass = String.valueOf(((TextView) view).getText());// 记录收入信息
+                String strid = strInfoclass.substring(0, strInfoclass.indexOf('<'));// 从收入信息中截取收入编号
+                String strname = strInfoclass.substring(strInfoclass.indexOf('>')+1);// 从收入信息中截取收入编号
                 edtclassid.setText(strid);
                 edtclassname.setText(strname);
             }
@@ -197,14 +200,31 @@ public class GoodsManager extends TabActivity
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
     	ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
     	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+    	gvProduct.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				strInfo = productID[arg2];// 记录收入信息               
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo);
+				intent = new Intent();
+		    	intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+                intent.putExtra("proID", strInfo);
+		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
+			}// 为GridView设置项单击事件
+    		
+    	});
     	//添加
     	btnproadd = (Button) findViewById(R.id.btnproadd);
     	btnproadd.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0)
 		    {
-		    	 intent = new Intent(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
-                 startActivity(intent);// 打开AddInaccount	
+		    	 intent = new Intent();
+		    	 intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+                 intent.putExtra("proID", "");
+		    	 startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 		    }
 		});
     	//修改
@@ -213,8 +233,10 @@ public class GoodsManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0)
 		    {
-		    	intent = new Intent(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
-                startActivity(intent);// 打开AddInaccount	
+		    	 intent = new Intent();
+		    	 intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+                 intent.putExtra("proID", strInfo);
+		    	 startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 		    }
 		});
     	//删除
@@ -294,6 +316,7 @@ public class GoodsManager extends TabActivity
 	    // 获取所有收入信息，并存储到List泛型集合中
 	    List<Tb_vmc_product> listinfos = productdao.getScrollData(0, (int) productdao.getCount());
 	    proID = new String[listinfos.size()];// 设置字符串数组的长度
+	    productID = new String[listinfos.size()];// 设置字符串数组的长度
 	    proImage = new String[listinfos.size()];// 设置字符串数组的长度
 	    promarket = new String[listinfos.size()];// 设置字符串数组的长度
 	    prosales = new String[listinfos.size()];// 设置字符串数组的长度
@@ -302,7 +325,8 @@ public class GoodsManager extends TabActivity
 	    for (Tb_vmc_product tb_inaccount : listinfos) 
 	    {
 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
-	    	proID[m] = tb_inaccount.getProductID()+tb_inaccount.getProductName();
+	    	proID[m] = tb_inaccount.getProductID()+"-"+tb_inaccount.getProductName();
+	    	productID[m] = tb_inaccount.getProductID();
 	    	proImage[m] = tb_inaccount.getAttBatch1();
 	    	promarket[m] = String.valueOf(tb_inaccount.getMarketPrice());
 	    	prosales[m] = String.valueOf(tb_inaccount.getSalesPrice());
@@ -312,7 +336,29 @@ public class GoodsManager extends TabActivity
 	        m++;// 标识加1
 	    }
 	}
+	//接收GoodsProSet返回信息
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		if(requestCode==REQUEST_CODE)
+		{
+			if(resultCode==GoodsManager.RESULT_OK)
+			{
+				Bundle bundle=data.getExtras();
+				String str=bundle.getString("back");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品ret="+str);
+				showProInfo(); 
+				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
+		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+			}			
+		}
+	}
 }
+
+//===============
+//商品分类设置页面
+//===============
+
 
 //===============
 //商品设置页面
@@ -402,22 +448,7 @@ class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         return arg0;// 返回泛型集合的索引
     }
     
-    /**
-     * 加载本地图片
-     * @param url
-     * @return
-     */
-     public Bitmap getLoacalBitmap(String url) {
-          try {
-               FileInputStream fis = new FileInputStream(url);
-               return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
-
-            } catch (FileNotFoundException e) {
-               e.printStackTrace();
-               return null;
-          }
-     }
-
+    
     @Override
     public View getView(int arg0, View arg1, ViewGroup arg2) {
         ProViewHolder viewHolder;// 创建ProViewHolder对象
@@ -441,7 +472,7 @@ class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置图像原价
         viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置图像原价
         /*为什么图片一定要转化为 Bitmap格式的！！ */
-        Bitmap bitmap = getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
         viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
         return arg1;// 返回图像标识
     }

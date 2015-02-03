@@ -16,6 +16,8 @@
 
 package com.easivend.evprotocol;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -33,6 +35,8 @@ import android.R.integer;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -187,5 +191,21 @@ public class ToolClass
 	    }
 	    return data;
 	}
+	
+	/**
+     * 加载本地图片
+     * @param url
+     * @return
+     */
+     public static Bitmap getLoacalBitmap(String url) {
+          try {
+               FileInputStream fis = new FileInputStream(url);
+               return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
+
+            } catch (FileNotFoundException e) {
+               e.printStackTrace();
+               return null;
+          }
+     }
 	
 }

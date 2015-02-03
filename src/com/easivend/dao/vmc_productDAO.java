@@ -12,6 +12,7 @@ import com.easivend.evprotocol.ToolClass;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_product;
 
+
 public class vmc_productDAO
 {
 	private DBOpenHelper helper;// 创建DBOpenHelper对象
@@ -99,6 +100,50 @@ public class vmc_productDAO
 //            // 执行删除收入信息操作
 //            db.execSQL("delete from vmc_class where classID in (" + sb + ")", (Object[]) ids);
 //        }
+    }
+    
+    /**
+     * 查找一条商品信息
+     * 
+     * @param id
+     * @return
+     */
+    public Tb_vmc_product find(String productID) 
+    {
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select * from vmc_product where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
+        if (cursor.moveToNext()) {// 遍历查找到的支出信息
+
+            // 将遍历到的支出信息存储到Tb_outaccount类中
+            return new Tb_vmc_product(
+    				cursor.getString(cursor.getColumnIndex("productID")), cursor.getString(cursor.getColumnIndex("productName")),
+    				cursor.getString(cursor.getColumnIndex("productDesc")),cursor.getFloat(cursor.getColumnIndex("marketPrice")),
+    				cursor.getFloat(cursor.getColumnIndex("salesPrice")),cursor.getInt(cursor.getColumnIndex("shelfLife")),
+    				cursor.getString(cursor.getColumnIndex("downloadTime")),cursor.getString(cursor.getColumnIndex("onloadTime")),
+    				cursor.getString(cursor.getColumnIndex("attBatch1")), cursor.getString(cursor.getColumnIndex("attBatch2")),
+    				cursor.getString(cursor.getColumnIndex("attBatch3")),cursor.getInt(cursor.getColumnIndex("paixu")),
+    				cursor.getInt(cursor.getColumnIndex("isdelete"))
+    		);
+        }
+        return null;// 如果没有信息，则返回null
+    }
+    
+    /**
+     * 查找一条商品对应的类别的信息
+     * 
+     * @param id
+     * @return
+     */
+    public String findclass(String productID) 
+    {
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select classID from vmc_classproduct where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
+        if (cursor.moveToNext()) {// 遍历查找到的支出信息
+
+            // 将遍历到的支出信息存储到Tb_outaccount类中
+            return cursor.getString(cursor.getColumnIndex("classID"));    		
+        }
+        return "";// 如果没有信息，则返回null
     }
 
     /**
