@@ -361,8 +361,44 @@ public class GoodsManager extends TabActivity
 				
 			}
 		});
-    	
-    	
+    	//上移排序序号
+    	btnsortup.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0)
+		    {
+		    	if(strInfo.isEmpty()!=true)
+		    	{
+			    	// 创建InaccountDAO对象
+	    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
+		            //创建Tb_inaccount对象
+	    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
+	    					0,0,date,date,"","","",0,0);				    			
+	    			productDAO.sortupdown(tb_vmc_product,1);// 添加商品信息
+	    			showProInfo("",datasort); 
+					ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
+	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
+		    	}
+		    }
+		});
+    	//下移排序序号
+    	btnsortdown.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0)
+		    {
+		    	if(strInfo.isEmpty()!=true)
+		    	{
+			    	// 创建InaccountDAO对象
+	    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
+		            //创建Tb_inaccount对象
+	    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
+	    					0,0,date,date,"","","",0,0);				    			
+	    			productDAO.sortupdown(tb_vmc_product,2);// 添加商品信息
+	    			showProInfo("",datasort); 
+					ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
+	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
+		    	}
+		    }
+		});
 	}
 	//===============
 	//商品分类设置页面

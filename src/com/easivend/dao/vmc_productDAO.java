@@ -3,6 +3,7 @@ package com.easivend.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.R.id;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -162,6 +163,89 @@ public class vmc_productDAO
 //            db.execSQL("delete from vmc_class where classID in (" + sb + ")", (Object[]) ids);
 //        }
     }
+    
+    /**
+     * 上移或下移排序序号
+     * 
+     * @param type=1上移,2下移
+     */
+  	public void sortupdown(Tb_vmc_product tb_vmc_product,int type) 
+  	{   
+  		int index=0,max=0;
+  		Cursor cursor = null;
+  		int nextid=0;
+  		
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+	    //取得当前排序值
+	  	cursor = db.rawQuery("select paixu from vmc_product where productID=?", 
+        		 new String[] { tb_vmc_product.getProductID()});// 获取收入信息表中的最大编号
+	    if (cursor.moveToLast()) 
+	    {// 访问Cursor中的最后一条数据
+	    	index=cursor.getInt(0); 
+	    }
+	    
+	    //上移
+	    if(type==1)
+	    {
+	    	//不是第一个值
+	    	if(index>1)
+	    	{
+	    		//取得上一排序值的id
+	    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
+	            		 new String[] { String.valueOf(index-1)});// 获取收入信息表中的最大编号
+	    	    if (cursor.moveToLast()) 
+	    	    {// 访问Cursor中的最后一条数据
+	    	    	nextid=cursor.getInt(0); 
+	    	    }
+	    	    //上一个值+1
+	    	    db.execSQL(
+						"update vmc_product set " +
+						"paixu=? " +
+						"where productID=?",
+				        new Object[] { index,nextid});
+	    	    //本值-1
+	    	    db.execSQL(
+						"update vmc_product set " +
+						"paixu=? " +
+						"where productID=?",
+				        new Object[] { index-1,tb_vmc_product.getProductID()});
+	    	}
+	    }
+	    //下移
+	    else 
+	    {
+	    	//取得最大排序值
+	  		cursor = db.rawQuery("select max(paixu) from vmc_product", null);// 获取收入信息表中的最大编号
+	          if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
+	          	max=cursor.getInt(0); 
+	          }
+	        //不是最后一个值  
+	        if(index<max)
+	        {
+	    		//取得上一排序值的id
+	    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
+	            		 new String[] { String.valueOf(index+1)});// 获取收入信息表中的最大编号
+	    	    if (cursor.moveToLast()) 
+	    	    {// 访问Cursor中的最后一条数据
+	    	    	nextid=cursor.getInt(0); 
+	    	    }
+	    	    //上一个值-1
+	    	    db.execSQL(
+						"update vmc_product set " +
+						"paixu=? " +
+						"where productID=?",
+				        new Object[] { index,nextid});
+	    	    //本值+1
+	    	    db.execSQL(
+						"update vmc_product set " +
+						"paixu=? " +
+						"where productID=?",
+				        new Object[] { index+1,tb_vmc_product.getProductID()});
+	    	}
+	    }
+	    
+	    
+      }
     
     /**
      * 查找一条商品信息
