@@ -26,11 +26,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rasterizer;
 import android.os.Bundle;
+import android.provider.ContactsContract.Contacts.Data;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -38,6 +42,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,11 +53,11 @@ public class GoodsManager extends TabActivity
 {
 	private TabHost mytabhost = null;
 	Intent intent = null;// 创建Intent对象
-	String strInfo=null;
+	String strInfo="";
 	private final static int REQUEST_CODE=1;//声明请求标识
 	private int[] layres=new int[]{R.id.tab_class,R.id.tab_product};//内嵌布局文件的id
 	private ListView lvinfo;// 创建ListView对象
-	private EditText edtclassid=null,edtclassname=null;
+	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
 	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;
 	// 定义字符串数组，存储系统功能
@@ -61,7 +66,13 @@ public class GoodsManager extends TabActivity
     private String[] promarket = null;
     private String[] prosales = null;
     private GridView gvProduct=null;
-    
+    //排序有关的定义
+    private ArrayAdapter<String> arrayadapter = null;
+    private List<String> dataSortID = null,dataSortName=null;
+    private Spinner spinprodsort=null;
+    private String datasort="shoudong";
+    private Button btnsortup=null,btnsortdown=null;
+    		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -198,8 +209,7 @@ public class GoodsManager extends TabActivity
     	//===============
     	//商品设置页面
     	//===============
-    	showProInfo();
-    	
+    	showProInfo("",datasort);    	
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
     	ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
     	gvProduct.setAdapter(adapter);// 为GridView设置数据源
@@ -265,7 +275,7 @@ public class GoodsManager extends TabActivity
 					    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
 					    					0,0,date,date,"","","",0,0);				    			
 					    			productDAO.detele(tb_vmc_product);// 添加商品信息
-					    			showProInfo(); 
+					    			showProInfo("",datasort); 
 									ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
 					    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 			    				}
@@ -292,7 +302,67 @@ public class GoodsManager extends TabActivity
 		        finish();
 		    }
 		});
-        
+    	//检索
+    	edtfindProduct = (EditText) findViewById(R.id.edtfindProduct);
+    	edtfindProduct.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub				
+				showProInfo(edtfindProduct.getText().toString(),datasort); 
+				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, GoodsManager.this);// 创建pictureAdapter对象
+		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		}); 
+    	btnsortup = (Button) findViewById(R.id.btnsortup);
+    	btnsortdown = (Button) findViewById(R.id.btnsortdown);
+    	//排序
+    	this.spinprodsort = (Spinner) super.findViewById(R.id.spinprodsort);
+    	showsortInfo();
+    	spinprodsort.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			//当选项改变时触发
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				datasort=dataSortID.get(arg2);
+				showProInfo(edtfindProduct.getText().toString(),datasort); 
+				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, GoodsManager.this);// 创建pictureAdapter对象
+		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+		    	if(datasort.equals("shoudong"))
+		    	{
+		    		btnsortup.setEnabled(true);
+		    		btnsortdown.setEnabled(true);
+		    	}
+		    	else
+		    	{
+		    		btnsortup.setEnabled(false);
+		    		btnsortdown.setEnabled(false);
+		    	}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+    	
+    	
 	}
 	//===============
 	//商品分类设置页面
@@ -329,12 +399,21 @@ public class GoodsManager extends TabActivity
 	//商品设置页面
 	//===============
 	// 商品表中的所有商品信息补充到商品数据结构数组中
-	private void showProInfo() 
+	private void showProInfo(String param,String sort) 
 	{
 	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
+	    List<Tb_vmc_product> listinfos=null;
 	    vmc_productDAO productdao = new vmc_productDAO(GoodsManager.this);// 创建InaccountDAO对象
-	    // 获取所有收入信息，并存储到List泛型集合中
-	    List<Tb_vmc_product> listinfos = productdao.getScrollData(0, (int) productdao.getCount());
+	    if(param.isEmpty()==true)
+	    {
+		    // 获取所有收入信息，并存储到List泛型集合中
+		    listinfos = productdao.getScrollData(0, (int) productdao.getCount(),sort);
+	    }
+	    else
+	    {
+		    // 获取所有收入信息，并存储到List泛型集合中
+		    listinfos = productdao.getScrollData(param,sort);
+	    }
 	    proID = new String[listinfos.size()];// 设置字符串数组的长度
 	    productID = new String[listinfos.size()];// 设置字符串数组的长度
 	    proImage = new String[listinfos.size()];// 设置字符串数组的长度
@@ -367,11 +446,35 @@ public class GoodsManager extends TabActivity
 				Bundle bundle=data.getExtras();
 				String str=bundle.getString("back");
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品ret="+str);
-				showProInfo(); 
+				showProInfo("",datasort); 
 				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
 			}			
 		}
+	}
+	// spinner显示商品检索信息
+	private void showsortInfo() 
+	{	    
+	    // 获取所有收入信息，并存储到List泛型集合中
+	    dataSortID = new ArrayList<String>();
+	    dataSortName = new ArrayList<String>();
+	    dataSortID.add("sale");
+	    dataSortName.add("sale销售情况");
+	    dataSortID.add("marketPrice");
+	    dataSortName.add("marketPrice原价");
+	    dataSortID.add("salesPrice");
+	    dataSortName.add("salesPrice销售价");
+	    dataSortID.add("shelfLife");
+	    dataSortName.add("shelfLife过保质期");
+	    dataSortID.add("colucount");
+	    dataSortName.add("colucount剩余数量");
+	    dataSortID.add("onloadTime");
+	    dataSortName.add("onloadTime上架时间");
+	    dataSortID.add("shoudong");
+	    dataSortName.add("shoudong手动更改");	    
+	    // 使用字符串数组初始化ArrayAdapter对象
+	    arrayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataSortName);
+	    spinprodsort.setAdapter(arrayadapter);// 为ListView列表设置数据源
 	}
 }
 

@@ -119,71 +119,113 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"	
 	    android:layout_alignParentTop="true"	
-	    android:orientation="vertical" >	    
-			<RelativeLayout 
-			     android:id="@+id/tabGrid"
-		         android:layout_width="wrap_content"
-			     android:layout_height="wrap_content"	    
-			     >
-		         <GridView 
-				    android:id="@+id/gvProduct"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:columnWidth="90dp"
-				    android:gravity="center"
-				    android:horizontalSpacing="10dp"
-				    android:numColumns="auto_fit"
-				    android:stretchMode="spacingWidthUniform"
-				    android:verticalSpacing="10dp" />
-		         
-		    </RelativeLayout>
-			<RelativeLayout 
-		         android:layout_width="wrap_content"
-			     android:layout_height="wrap_content"	
-			     android:layout_below="@+id/tabGrid"    
-			     >
-		         <TextView 		    
-		             	android:id="@+id/tvProduct"
-		             	android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_alignParentLeft="true" 
-				        android:layout_marginLeft="20dp"                              
-				        android:layout_marginTop="20dp"                               
-						android:text="检索:"/>
-		         <EditText
-			            android:id="@+id/edtfindProduct"			            
-			            android:layout_toRightOf="@+id/tvProduct"
-				        android:layout_width="wrap_content" 
-				        android:layout_height="wrap_content"
-				        android:text="" />
-		         <Button
-			             android:id="@+id/btnproadd"
-			             android:layout_below="@+id/tvProduct"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
-			             android:text="添加" />
-		         <Button
-			             android:id="@+id/btnproupdate"
-			             android:layout_below="@+id/tvProduct"
-			             android:layout_toRightOf="@+id/btnproadd"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
-			             android:text="修改" />
-		         <Button
-			             android:id="@+id/btnprodel"
-			             android:layout_below="@+id/tvProduct"
-			             android:layout_toRightOf="@+id/btnproupdate"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
-			             android:text="删除" />
-		         <Button
-			             android:id="@+id/btnproexit"
-			             android:layout_below="@+id/tvProduct"
-			             android:layout_toRightOf="@+id/btnprodel"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
-			             android:text="退出" />
-			</RelativeLayout>
+	    android:orientation="vertical" >
+			<ScrollView 
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent"
+			    android:orientation="vertical" >	
+				<LinearLayout 
+				    android:layout_width="match_parent"
+				    android:layout_height="match_parent"
+				    android:orientation="vertical" >	    
+					<RelativeLayout 
+					     android:id="@+id/tabGrid"
+				         android:layout_width="wrap_content"
+					     android:layout_height="wrap_content"	    
+					     >
+				         <GridView 
+						    android:id="@+id/gvProduct"
+						    android:layout_width="wrap_content"
+						    android:layout_height="wrap_content"
+						    android:columnWidth="90dp"
+						    android:gravity="center"
+						    android:horizontalSpacing="10dp"
+						    android:numColumns="auto_fit"
+						    android:stretchMode="spacingWidthUniform"
+						    android:verticalSpacing="10dp" />
+				         
+				    </RelativeLayout>
+					<RelativeLayout 
+				         android:layout_width="wrap_content"
+					     android:layout_height="wrap_content"	
+					     android:layout_below="@+id/tabGrid"    
+					     >
+				         <TextView 		    
+				             	android:id="@+id/tvProduct"
+				             	android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_alignParentLeft="true" 
+						        android:layout_marginLeft="20dp"                              
+						        android:layout_marginTop="20dp"                               
+								android:text="检索:"/>
+				         <EditText
+					            android:id="@+id/edtfindProduct"			            
+					            android:layout_toRightOf="@+id/tvProduct"
+						        android:layout_width="wrap_content" 
+						        android:layout_height="wrap_content"
+						        android:text="" />
+				         <Button
+					             android:id="@+id/btnproadd"
+					             android:layout_below="@+id/tvProduct"
+					             android:layout_width="wrap_content"
+					             android:layout_height="wrap_content"             
+					             android:text="添加" />
+				         <Button
+					             android:id="@+id/btnproupdate"
+					             android:layout_below="@+id/tvProduct"
+					             android:layout_toRightOf="@+id/btnproadd"
+					             android:layout_width="wrap_content"
+					             android:layout_height="wrap_content"
+					             android:text="修改" />
+				         <Button
+					             android:id="@+id/btnprodel"
+					             android:layout_below="@+id/tvProduct"
+					             android:layout_toRightOf="@+id/btnproupdate"
+					             android:layout_width="wrap_content"
+					             android:layout_height="wrap_content"
+					             android:text="删除" />
+				         <Button
+					             android:id="@+id/btnproexit"
+					             android:layout_below="@+id/tvProduct"
+					             android:layout_toRightOf="@+id/btnprodel"
+					             android:layout_width="wrap_content"
+					             android:layout_height="wrap_content"
+					             android:text="退出" />
+				         <TextView 		    
+				             	android:id="@+id/tvProsort"
+				             	android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_alignParentLeft="true" 
+								android:layout_below="@+id/btnproadd"
+						        android:layout_marginLeft="20dp"                              
+						        android:layout_marginTop="20dp"                               
+								android:text="排序方式:"/>
+				         <Spinner
+					            android:id="@+id/spinprodsort"
+					            android:layout_below="@+id/btnproadd"
+					            android:layout_toRightOf="@+id/tvProsort"
+						        android:layout_width="wrap_content" 
+						        android:layout_height="wrap_content"
+						        android:text="" />
+				         <Button
+					             android:id="@+id/btnsortup"
+					             android:layout_below="@+id/btnproadd"
+					             android:layout_toRightOf="@+id/spinprodsort"
+					             android:layout_width="wrap_content"
+					             android:layout_height="wrap_content" 
+					             android:enabled="false"            
+					             android:text="上移" />
+				         <Button
+					             android:id="@+id/btnsortdown"
+					             android:layout_below="@+id/btnproadd"
+					             android:layout_toRightOf="@+id/btnsortup"
+					             android:layout_width="wrap_content"
+					             android:layout_height="wrap_content"
+					             android:enabled="false" 
+					             android:text="下移" />
+					</RelativeLayout>
+				</LinearLayout>	
+			</ScrollView>		
 	</RelativeLayout>    
 
 </LinearLayout>

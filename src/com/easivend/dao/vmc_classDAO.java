@@ -162,4 +162,5 @@ public class vmc_classDAO
  		db.close(); 
         return 0;// 如果没有数据，则返回0
     }
+	
 }

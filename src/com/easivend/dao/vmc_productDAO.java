@@ -218,20 +218,150 @@ public class vmc_productDAO
     }
 
     /**
-     * 获取指定条数商品类别信息
+     * 获取指定条数商品信息
      * 
      * @param start
      *            起始位置
      * @param count
      *            每页显示数量
+     *        datasort排序方法    
      * @return
      */
-    public List<Tb_vmc_product> getScrollData(int start, int count) 
+    public List<Tb_vmc_product> getScrollData(int start, int count,String datasort) 
     {
         List<Tb_vmc_product> tb_inaccount = new ArrayList<Tb_vmc_product>();// 创建集合对象
+        Cursor cursor = null;
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品sort="+datasort);
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        // 获取所有收入信息
-        Cursor cursor = db.rawQuery("select * from vmc_product limit ?,?", new String[] { String.valueOf(start), String.valueOf(count) });
+        if(datasort.equals("sale"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by paixu asc", new String[] {  });
+        }
+        else if(datasort.equals("marketPrice"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by marketPrice asc", new String[] {  });
+        }
+        else if(datasort.equals("salesPrice"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by salesPrice asc", new String[] {  });
+        }
+        else if(datasort.equals("shelfLife"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by (datetime('now', 'localtime'))-onloadTime asc", new String[] {  });
+        }
+        else if(datasort.equals("colucount"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by paixu asc", new String[] {  });
+        }
+        else if(datasort.equals("onloadTime"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by onloadTime asc", new String[] {  });
+        }
+        else if(datasort.equals("shoudong"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select * from vmc_product order by paixu asc", new String[] {  });
+        }
+       
+        //遍历所有的收入信息
+        while (cursor.moveToNext()) 
+        {	
+            // 将遍历到的收入信息添加到集合中
+            tb_inaccount.add(new Tb_vmc_product
+        		(
+        				cursor.getString(cursor.getColumnIndex("productID")), cursor.getString(cursor.getColumnIndex("productName")),
+        				cursor.getString(cursor.getColumnIndex("productDesc")),cursor.getFloat(cursor.getColumnIndex("marketPrice")),
+        				cursor.getFloat(cursor.getColumnIndex("salesPrice")),cursor.getInt(cursor.getColumnIndex("shelfLife")),
+        				cursor.getString(cursor.getColumnIndex("downloadTime")),cursor.getString(cursor.getColumnIndex("onloadTime")),
+        				cursor.getString(cursor.getColumnIndex("attBatch1")), cursor.getString(cursor.getColumnIndex("attBatch2")),
+        				cursor.getString(cursor.getColumnIndex("attBatch3")),cursor.getInt(cursor.getColumnIndex("paixu")),
+        				cursor.getInt(cursor.getColumnIndex("isdelete"))
+        		)
+           );
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
+        return tb_inaccount;// 返回集合
+    }
+    
+    /**
+     * 重载函数，获取指定搜索条件商品信息
+     * 
+     * @param param搜索条件
+     *        datasort排序方法    
+     * 
+     *            
+     * @return
+     */
+    public List<Tb_vmc_product> getScrollData(String param,String datasort) 
+    {
+    	String params="";
+        List<Tb_vmc_product> tb_inaccount = new ArrayList<Tb_vmc_product>();// 创建集合对象
+        Cursor cursor = null;
+        params="%"+param+"%";
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productName="+params+" sort="+datasort);
+        
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        if(datasort.equals("sale"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ?  order by paixu asc", new String[] { params });
+        }
+        else if(datasort.equals("marketPrice"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ? order by marketPrice asc", new String[] { params });
+        }
+        else if(datasort.equals("salesPrice"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ? order by salesPrice asc", new String[] { params });
+        }
+        else if(datasort.equals("shelfLife"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ?  order by (datetime('now', 'localtime'))-onloadTime asc", new String[] { params });
+        }
+        else if(datasort.equals("colucount"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ? order by paixu asc", new String[] { params });
+        }
+        else if(datasort.equals("onloadTime"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ? order by onloadTime asc", new String[] { params });
+        }
+        else if(datasort.equals("shoudong"))
+        {
+        	// 获取所有收入信息
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productName like ? order by paixu asc", new String[] { params });
+        }
+        
+        
         //遍历所有的收入信息
         while (cursor.moveToNext()) 
         {	
