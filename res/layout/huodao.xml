@@ -47,7 +47,7 @@
         
          <EditText
             android:id="@+id/edtcolumn"
-	        android:layout_width="wrap_content" 
+	        android:layout_width="150px"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
 	        android:numeric="integer"
@@ -87,7 +87,7 @@
         
          <EditText
             android:id="@+id/edtprice"
-	        android:layout_width="wrap_content" 
+	        android:layout_width="150px"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1.00"
 	        android:numeric="decimal"

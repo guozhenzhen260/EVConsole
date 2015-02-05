@@ -108,7 +108,7 @@ public class vmc_classDAO
         List<Tb_vmc_class> tb_inaccount = new ArrayList<Tb_vmc_class>();// 创建集合对象
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         // 获取所有收入信息
-        Cursor cursor = db.rawQuery("select * from vmc_class limit ?,?", new String[] { String.valueOf(start), String.valueOf(count) });
+        Cursor cursor = db.rawQuery("select classID,className,classTime from vmc_class limit ?,?", new String[] { String.valueOf(start), String.valueOf(count) });
         //遍历所有的收入信息
         while (cursor.moveToNext()) 
         {	

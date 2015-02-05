@@ -173,7 +173,7 @@ public class vmc_productDAO
   	{   
   		int index=0,max=0;
   		Cursor cursor = null;
-  		int nextid=0;
+  		String nextid="";
   		
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
 	    //取得当前排序值
@@ -188,14 +188,14 @@ public class vmc_productDAO
 	    if(type==1)
 	    {
 	    	//不是第一个值
-	    	if(index>1)
+	    	if(index>0)
 	    	{
 	    		//取得上一排序值的id
 	    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
 	            		 new String[] { String.valueOf(index-1)});// 获取收入信息表中的最大编号
 	    	    if (cursor.moveToLast()) 
 	    	    {// 访问Cursor中的最后一条数据
-	    	    	nextid=cursor.getInt(0); 
+	    	    	nextid=cursor.getString(0); 
 	    	    }
 	    	    //上一个值+1
 	    	    db.execSQL(
@@ -222,14 +222,14 @@ public class vmc_productDAO
 	        //不是最后一个值  
 	        if(index<max)
 	        {
-	    		//取得上一排序值的id
+	    		//取得下一排序值的id
 	    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
 	            		 new String[] { String.valueOf(index+1)});// 获取收入信息表中的最大编号
 	    	    if (cursor.moveToLast()) 
 	    	    {// 访问Cursor中的最后一条数据
-	    	    	nextid=cursor.getInt(0); 
+	    	    	nextid=cursor.getString(0); 
 	    	    }
-	    	    //上一个值-1
+	    	    //下一个值-1
 	    	    db.execSQL(
 						"update vmc_product set " +
 						"paixu=? " +
@@ -243,7 +243,11 @@ public class vmc_productDAO
 				        new Object[] { index+1,tb_vmc_product.getProductID()});
 	    	}
 	    }
-	    
+	    if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
 	    
       }
     
@@ -256,7 +260,9 @@ public class vmc_productDAO
     public Tb_vmc_product find(String productID) 
     {
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select * from vmc_product where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
+        Cursor cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
         if (cursor.moveToNext()) {// 遍历查找到的支出信息
 
             // 将遍历到的支出信息存储到Tb_outaccount类中
@@ -320,37 +326,51 @@ public class vmc_productDAO
         if(datasort.equals("sale"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by paixu asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by paixu asc", null);
         }
         else if(datasort.equals("marketPrice"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by marketPrice asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by marketPrice asc", null);
         }
         else if(datasort.equals("salesPrice"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by salesPrice asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by salesPrice asc", null);
         }
         else if(datasort.equals("shelfLife"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by (datetime('now', 'localtime'))-onloadTime asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by (datetime('now', 'localtime'))-onloadTime asc", null);
         }
         else if(datasort.equals("colucount"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by paixu asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by paixu asc", null);
         }
         else if(datasort.equals("onloadTime"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by onloadTime asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by onloadTime asc", null);
         }
         else if(datasort.equals("shoudong"))
         {
         	// 获取所有收入信息
-            cursor = db.rawQuery("select * from vmc_product order by paixu asc", new String[] {  });
+            cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product order by paixu asc", null);
         }
        
         //遍历所有的收入信息

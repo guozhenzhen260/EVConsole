@@ -61,6 +61,7 @@ public class GoodsProSet extends Activity
 		edtshelfLife = (EditText) findViewById(R.id.edtshelfLife);		
 		edtproductDesc = (EditText) findViewById(R.id.edtproductDesc);
 		this.spinproductclassID = (Spinner) super.findViewById(R.id.spinproductclassID);
+		
 		showInfo();//显示下拉列表
 		//从商品页面中取得锁选中的商品
 		Intent intent=getIntent();
