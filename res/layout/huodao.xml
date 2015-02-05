@@ -5,6 +5,7 @@
     android:orientation="vertical" >
     <TableRow > 
         <TextView
+            android:minWidth="160px"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -39,6 +40,7 @@
     /> 
     <TableRow > 
         <TextView 
+            android:minWidth="160px"
 		    android:id="@+id/txtcolumn"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -47,7 +49,8 @@
         
          <EditText
             android:id="@+id/edtcolumn"
-	        android:layout_width="150px"
+	        android:minWidth="150px"
+			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
 	        android:numeric="integer"
@@ -79,6 +82,7 @@
     /> 
     <TableRow > 
         <TextView 
+            android:minWidth="160px"
 		    android:id="@+id/txtprice"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -87,7 +91,8 @@
         
          <EditText
             android:id="@+id/edtprice"
-	        android:layout_width="150px"
+	        android:minWidth="150px"
+			android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1.00"
 	        android:numeric="decimal"
@@ -99,6 +104,7 @@
     /> 
     <TableRow > 
         <TextView
+            android:minWidth="160px"
             android:id="@+id/txthuorst"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

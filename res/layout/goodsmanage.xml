@@ -36,14 +36,16 @@
 				            <LinearLayout 
 				                android:layout_width="wrap_content"
 				            	android:layout_height="wrap_content"> 
-				            	<TextView 		    
-									android:layout_width="wrap_content"
+				            	<TextView 	
+				            	    android:minWidth="160px"	  
+				            	    android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
 									android:text="类别ID:"/>
 						        
 						         <EditText
 						            android:id="@+id/edtclassid"
-							        android:layout_width="150px" 
+							        android:minWidth="150px"
+							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
 							        android:textSize="40sp"
 						            android:textStyle="bold"		        
@@ -58,14 +60,16 @@
 					        <LinearLayout 
 				                android:layout_width="wrap_content"
 				            	android:layout_height="wrap_content"> 
-				            	<TextView 		    
+				            	<TextView 	
+				            	    android:minWidth="160px"	    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
 									android:text="类别名称:"/>
 						        
 						         <EditText
 						            android:id="@+id/edtclassname"
-							        android:layout_width="150px" 
+							        android:minWidth="150px"
+							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
 							        android:textSize="40sp"
 						            android:textStyle="bold"		       
@@ -153,7 +157,8 @@
 					     android:layout_height="wrap_content"	
 					     android:layout_below="@+id/tabGrid"    
 					     >
-				         <TextView 		    
+				         <TextView 		 
+				                android:minWidth="160px"   
 				             	android:id="@+id/tvProduct"
 				             	android:layout_width="wrap_content"
 								android:layout_height="wrap_content"
@@ -164,7 +169,8 @@
 				         <EditText
 					            android:id="@+id/edtfindProduct"			            
 					            android:layout_toRightOf="@+id/tvProduct"
-						        android:layout_width="150px" 
+						        android:minWidth="150px"
+							        android:layout_width="wrap_content" 
 						        android:layout_height="wrap_content"
 						        android:text="" />
 				         <Button
@@ -195,6 +201,7 @@
 					             android:layout_height="wrap_content"
 					             android:text="退出" />
 				         <TextView 		    
+				                android:minWidth="160px"
 				             	android:id="@+id/tvProsort"
 				             	android:layout_width="wrap_content"
 								android:layout_height="wrap_content"

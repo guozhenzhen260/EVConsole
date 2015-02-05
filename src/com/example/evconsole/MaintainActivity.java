@@ -49,7 +49,7 @@ public class MaintainActivity extends Activity
 	TextView txtcom=null;
 	private GridView gvInfo;// 创建GridView对象
 	// 定义字符串数组，存储系统功能
-    private String[] titles = new String[] { "现金设备测试", "出货测试", "出格子测试", "商品管理", "预留接口", "预留接口", "预留接口", "退出" };
+    private String[] titles = new String[] { "现金设备测试", "出货测试", "出格子测试", "商品管理", "预留接口", "参数配置", "预留接口", "退出" };
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
@@ -130,8 +130,8 @@ public class MaintainActivity extends Activity
                     //startActivity(intent);// 打开Showinfo
                     break;
                 case 5:
-                    //intent = new Intent(MainActivity.this, Sysset.class);// 使用Sysset窗口初始化Intent
-                    //startActivity(intent);// 打开Sysset
+                	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
+                    startActivity(intent);// 打开ParamManager
                     break;
                 case 6:
                     //intent = new Intent(MainActivity.this, Accountflag.class);// 使用Accountflag窗口初始化Intent

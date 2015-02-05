@@ -36,6 +36,7 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
             	<TextView 		    
+            	    android:minWidth="160px"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -43,7 +44,8 @@
 		        
 		         <EditText
 		            android:id="@+id/edtproductID"
-			        android:layout_width="150px" 
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
 			        android:text="" />
             </LinearLayout>	        
@@ -58,6 +60,7 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
             	<TextView 		    
+            	    android:minWidth="160px"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -65,7 +68,8 @@
 		        
 		         <EditText
 		            android:id="@+id/edtproductName"
-			        android:layout_width="150px" 
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
 			        android:text="" />
             </LinearLayout>	        
@@ -80,6 +84,7 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
             	<TextView 		    
+            	    android:minWidth="160px"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -87,7 +92,8 @@
 		        
 		         <EditText
 		            android:id="@+id/edtmarketPrice"
-			        android:layout_width="150px" 
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
 			        android:numeric="decimal"
 			        android:text="0" />
@@ -102,7 +108,8 @@
                 android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
-            	<TextView 		    
+            	<TextView 		  
+            	    android:minWidth="160px"  
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000" 
@@ -110,7 +117,8 @@
 		        
 		         <EditText
 		            android:id="@+id/edtsalesPrice"
-			        android:layout_width="150px" 
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
 			        android:numeric="decimal"
 			        android:text="0" />
@@ -125,14 +133,16 @@
                 android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
-            	<TextView 		    
+            	<TextView 		 
+            	    android:minWidth="160px"   
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="保质期:"/>
 		        
 		         <EditText
 		            android:id="@+id/edtshelfLife"
-			        android:layout_width="150px" 
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
 			        android:numeric="integer"
 			        android:text="0" />
@@ -147,7 +157,8 @@
                 android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
-            	<TextView 		    
+            	<TextView 		 
+            	    android:minWidth="160px"   
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="商品类别:"/>
@@ -168,14 +179,16 @@
                 android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
-            	<TextView 		    
+            	<TextView 		
+            	    android:minWidth="160px"    
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="商品描述:"/>
 		        
 		         <EditText
 		            android:id="@+id/edtproductDesc"
-			        android:layout_width="150px" 
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
 			        android:text="" />
             </LinearLayout>	        
@@ -189,12 +202,14 @@
                 android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
-            	<TextView 		    
+            	<TextView 	
+            	    android:minWidth="160px"	    
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="修改时间:"/>
 		        
 		         <TextView
+		            android:minWidth="160px"
 		            android:id="@+id/onloadTime"
 			        android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
