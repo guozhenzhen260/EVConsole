@@ -1,3 +1,18 @@
+/****************************************Copyright (c)*************************************************
+**                      Fujian Junpeng Communicaiton Technology Co.,Ltd.
+**                               http://www.easivend.com.cn
+**--------------File Info------------------------------------------------------------------------------
+** File name:           EVprotocol.java
+** Last modified Date:  2015-01-10
+** Last Version:         
+** Descriptions:        vmc_productDAO 商品表操作文件  
+**------------------------------------------------------------------------------------------------------
+** Created by:          yanbo 
+** Created date:        2015-01-10
+** Version:             V1.0 
+** Descriptions:        The original version       
+********************************************************************************************************/
+
 package com.easivend.dao;
 
 import java.util.ArrayList;

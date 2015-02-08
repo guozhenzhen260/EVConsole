@@ -35,16 +35,17 @@ public class Tb_vmc_system_parameter
     private int weixing;// 微信开关0关，1开，默认0
     private int printer;// 打印机开关0关，1开，默认0
     private int language;// 语言模式0中文，1英文，默认0
-    private Date rstTime;//重启时间
+    private String rstTime;//重启时间
     private int rstDay;// 重启间隔天数
     private int baozhiProduct;// 显示过保质期商品0不显示，1显示
     private int emptyProduct;// 显示无货的商品0不显示，1显示    
+    private int proSortType;// 显示排序方式    
     // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_system_parameter(String devID, String devhCode, int isNet,
 			int isfenClass, int isbuyCar, int liebiaoKuan, String mainPwd,
 			int amount, int card, int zhifubaofaca, int zhifubaoer,
-			int weixing, int printer, int language, Date rstTime, int rstDay,
-			int baozhiProduct, int emptyProduct) {
+			int weixing, int printer, int language, String rstTime, int rstDay,
+			int baozhiProduct, int emptyProduct,int proSortType) {
 		super();
 		this.devID = devID;
 		this.devhCode = devhCode;
@@ -64,6 +65,7 @@ public class Tb_vmc_system_parameter
 		this.rstDay = rstDay;
 		this.baozhiProduct = baozhiProduct;
 		this.emptyProduct = emptyProduct;
+		this.proSortType = proSortType;
 	}
 
 	public String getDevID() {
@@ -178,11 +180,11 @@ public class Tb_vmc_system_parameter
 		this.language = language;
 	}
 
-	public Date getRstTime() {
+	public String getRstTime() {
 		return rstTime;
 	}
 
-	public void setRstTime(Date rstTime) {
+	public void setRstTime(String rstTime) {
 		this.rstTime = rstTime;
 	}
 
@@ -208,6 +210,14 @@ public class Tb_vmc_system_parameter
 
 	public void setEmptyProduct(int emptyProduct) {
 		this.emptyProduct = emptyProduct;
+	}
+
+	public int getProSortType() {
+		return proSortType;
+	}
+
+	public void setProSortType(int proSortType) {
+		this.proSortType = proSortType;
 	}
     
     

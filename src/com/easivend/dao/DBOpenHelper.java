@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 3;// 定义数据库版本号
+    private static final int VERSION = 4;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -52,7 +52,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"rstTime DATETIME," +
         		"rstDay int," +
         		"baozhiProduct INT NOT NULL DEFAULT 0," +
-        		"emptyProduct INT NOT NULL DEFAULT 0" +
+        		"emptyProduct INT NOT NULL DEFAULT 0," +
+        		"proSortType INT NOT NULL DEFAULT 6" +
         		")"
         		
         );
