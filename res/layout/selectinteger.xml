@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <TableRow>
+        <TextView 
+            android:text = "输入数值:"
+            android:layout_marginLeft="20dip"
+            android:textSize="8pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <EditText 
+            android:width="60pt"
+            android:layout_height="wrap_content"
+        />
+    </TableRow>
+	<View                              
+        android:layout_height="2px"
+        android:background="#FF909090"
+    />
+</TableLayout>

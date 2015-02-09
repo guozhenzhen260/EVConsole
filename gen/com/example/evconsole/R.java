@@ -156,6 +156,8 @@ public final class R {
         public static final int maintain=0x7f030007;
         public static final int parammanage=0x7f030008;
         public static final int productgv=0x7f030009;
+        public static final int selectinteger=0x7f03000a;
+        public static final int selecttimepick=0x7f03000b;
     }
     public static final class menu {
         public static final int maintain=0x7f070000;

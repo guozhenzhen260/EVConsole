@@ -1,5 +1,6 @@
 package com.example.evconsole;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +12,20 @@ import com.easivend.model.Tb_vmc_system_parameter;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +44,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -70,6 +79,10 @@ public class ParamManager extends TabActivity
 	
 	private ExpandableListView emachinelistview = null;
 	private ExpandableListAdapter adapter = null;
+	private ImageView ivmachineLogo=null;
+	private Button btnmachineImg=null;
+	private Uri uri=null;
+	private String imgDir=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -308,19 +321,47 @@ public class ParamManager extends TabActivity
     	//===========================
     	//运行参数配置
     	//===========================
+    	this.ivmachineLogo = (ImageView) findViewById(R.id.ivmachineLogo);
     	this.emachinelistview = (ExpandableListView) super.findViewById(R.id.emachinelistview);
-        this.adapter = new MyExpanseListAdapter(this);
+    	
+    	this.adapter = new MyExpanseListAdapter(this);
         this.emachinelistview.setAdapter(this.adapter);
+        
         this.emachinelistview.setOnChildClickListener(new OnChildClickListener() {
 			
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
 				// TODO Auto-generated method stub
-				Toast.makeText(ParamManager.this, "子选项,group="+groupPosition+",child="+childPosition, Toast.LENGTH_LONG).show();
+				//Toast.makeText(ParamManager.this, "子选项,group="+groupPosition+",child="+childPosition, Toast.LENGTH_LONG).show();
+				if((groupPosition==0&&childPosition==0)||(groupPosition==1&&childPosition==0))
+				{	
+					emachineListviewSet(1);				
+				}
+				else 
+				{
+					emachineListviewSet(2);	
+				}
 				return false;
 			}
 		});
+        //选择图片
+        btnmachineImg = (Button)findViewById(R.id.btnmachineImg);  
+        btnmachineImg.setOnClickListener(new View.OnClickListener() {
+  			
+  			@Override
+  			public void onClick(View v) {
+  				// TODO Auto-generated method stub
+  				Intent intent = new Intent();  
+                 /* 开启Pictures画面Type设定为image */  
+                 intent.setType("image/*");  
+                 /* 使用Intent.ACTION_GET_CONTENT这个Action */  
+                 intent.setAction(Intent.ACTION_GET_CONTENT);   
+                 /* 取得相片后返回本画面 */  
+                 startActivityForResult(intent, 1);
+  			}
+  		}); 
+        
 	}
 	//===========================
 	//机器参数配置
@@ -514,8 +555,65 @@ public class ParamManager extends TabActivity
     //===========================
   	//运行参数配置页面
   	//===========================
+    @Override  
+	//选取图片返回值
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    	if (resultCode == RESULT_OK) {  
+	         uri = data.getData();  
+	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString());  
+	         ContentResolver cr = this.getContentResolver();  
+	         try {  
+	             Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));  
+	             /* 将Bitmap设定到ImageView */  
+	             ivmachineLogo.setImageBitmap(bitmap);  
+	             imgDir=ToolClass.getRealFilePath(ParamManager.this,uri);
+	         } catch (FileNotFoundException e) {  
+	             Log.e("Exception", e.getMessage(),e);  
+	         }  
+	     }  
+    	super.onActivityResult(requestCode, resultCode, data);  
+    }
     
-    
+    //dialogtype==1启动数值选择框,2启动时间选择框
+    private void emachineListviewSet(int dialogtype)
+    {    	
+    	View myview=null;
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(ParamManager.this);
+		if(dialogtype==1)//数值选择框
+		{
+			myview=factory.inflate(R.layout.selectinteger, null);
+		}
+		else if(dialogtype==2)//时间选择框
+		{
+			myview=factory.inflate(R.layout.selecttimepick, null);
+		}
+			
+		Dialog dialog = new AlertDialog.Builder(ParamManager.this)
+		.setTitle("设置")
+		.setPositiveButton("保存", new DialogInterface.OnClickListener() 		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				// TODO Auto-generated method stub
+				;
+			}
+		})
+		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub				
+			}
+    	}
+    )
+		.setView(myview)//这里将对话框布局文件加入到对话框中
+		.create();
+		dialog.show();	    	
+    }
 }
 
 //===========================
@@ -525,7 +623,7 @@ public class ParamManager extends TabActivity
 class MyExpanseListAdapter extends BaseExpandableListAdapter 
 {
 	//组名称
-	private String group[]=new String[]{"音量设置","温度设置","照明","制冷","除臭"};
+	private String group[]=new String[]{">>>音量设置",">>>温度设置",">>>照明",">>>制冷",">>>除臭"};
 	//子名称
 	private String child[][]=new String[][]{{"工作日开启音量:","工作日开启时间段","节假日开启音量:","节假日开启时间段"},{"温度值:","工作日开启时间段","节假日开启时间段"},
 			{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"}};
@@ -555,9 +653,9 @@ class MyExpanseListAdapter extends BaseExpandableListAdapter
 		AbsListView.LayoutParams params=new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,35); 
 		TextView textView=new TextView(this.context);
 		textView.setLayoutParams(params);
-		textView.setTextSize(15.0f);
-		textView.setGravity(Gravity.LEFT);
-		textView.setPadding(40, 8, 3, 3);
+		//textView.setTextSize(25.0f);
+		//textView.setGravity(Gravity.LEFT);
+		//textView.setPadding(40, 8, 3, 3);
 		return textView;
 	}
 
@@ -615,5 +713,6 @@ class MyExpanseListAdapter extends BaseExpandableListAdapter
 		// TODO Auto-generated method stub
 		return true;
 	}
-
+	
+	
 }
