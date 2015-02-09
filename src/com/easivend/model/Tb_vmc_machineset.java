@@ -19,7 +19,7 @@ package com.easivend.model;
 
 public class Tb_vmc_machineset 
 {
-	private int islogo;// 是否使用logo，1使用,默认0
+	private String logoStr;// 是否使用logo，1使用,默认0
     private int audioWork;// 工作日开启音量大小，0到100
     private String audioWorkstart;//工作日开启时间
     private String audioWorkend;//工作日结束时间
@@ -44,7 +44,7 @@ public class Tb_vmc_machineset
     private String chouSunstart;//除臭节假日开启时间
     private String chouSunend;//除臭节假日结束时间
     // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
-	public Tb_vmc_machineset(int islogo, int audioWork,
+	public Tb_vmc_machineset(String logoStr, int audioWork,
 			String audioWorkstart, String audioWorkend, int audioSun,
 			String audioSunstart, String audioSunend, int tempWork,
 			String tempWorkstart, String tempWorkend, String tempSunstart,
@@ -54,7 +54,7 @@ public class Tb_vmc_machineset
 			String chouWorkstart, String chouWorkend, String chouSunstart,
 			String chouSunend) {
 		super();
-		this.islogo = islogo;
+		this.logoStr = logoStr;
 		this.audioWork = audioWork;
 		this.audioWorkstart = audioWorkstart;
 		this.audioWorkend = audioWorkend;
@@ -79,11 +79,11 @@ public class Tb_vmc_machineset
 		this.chouSunstart = chouSunstart;
 		this.chouSunend = chouSunend;
 	}	
-	public int getIslogo() {
-		return islogo;
+	public String getLogoStr() {
+		return logoStr;
 	}
-	public void setIslogo(int islogo) {
-		this.islogo = islogo;
+	public void setLogoStr(String logoStr) {
+		this.logoStr = logoStr;
 	}
 	public int getAudioWork() {
 		return audioWork;

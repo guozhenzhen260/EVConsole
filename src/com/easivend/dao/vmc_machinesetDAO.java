@@ -50,7 +50,7 @@ public class vmc_machinesetDAO
 	 		db.execSQL(
 	 				"insert into vmc_machineset" +
 	 				"(" +
-	 				"islogo,audioWork,audioWorkstart,audioWorkend,audioSun," +
+	 				"logoStr,audioWork,audioWorkstart,audioWorkend,audioSun," +
 	 				"audioSunstart,audioSunend,tempWork,tempWorkstart,tempWorkend,tempSunstart,tempSunend,ligntWorkstart," +
 	 				"ligntWorkend,ligntSunstart,ligntSunend,coldWorkstart,coldWorkend,coldSunstart," +
 	 				"coldSunend,chouWorkstart,chouWorkend,chouSunstart,chouSunend" +
@@ -59,7 +59,7 @@ public class vmc_machinesetDAO
 	 				"(" +
 	 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
 	 				")",
-	 		        new Object[] { tb_vmc_machineset.getIslogo(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
+	 		        new Object[] { tb_vmc_machineset.getLogoStr(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
 	 						tb_vmc_machineset.getAudioSun(), tb_vmc_machineset.getAudioSunstart(),tb_vmc_machineset.getAudioSunend(), tb_vmc_machineset.getTempWork(),
 	 						tb_vmc_machineset.getTempWorkstart(), tb_vmc_machineset.getTempWorkend(), tb_vmc_machineset.getTempSunstart(), tb_vmc_machineset.getTempSunend(),
 	 						tb_vmc_machineset.getLigntWorkstart(), tb_vmc_machineset.getLigntWorkend(), tb_vmc_machineset.getLigntSunstart(), tb_vmc_machineset.getLigntSunend(),
@@ -73,12 +73,12 @@ public class vmc_machinesetDAO
      		db.execSQL(
      				"update vmc_machineset " +
      				"set " +
-     				"islogo=?,audioWork=?,audioWorkstart=?,audioWorkend=?,audioSun=?," +
+     				"logoStr=?,audioWork=?,audioWorkstart=?,audioWorkend=?,audioSun=?," +
      				"audioSunstart=?,audioSunend=?,tempWork=?,tempWorkstart=?,tempWorkend=?,tempSunstart=?,tempSunend=?,ligntWorkstart=?," +
      				"ligntWorkend=?,ligntSunstart=?,ligntSunend=?,coldWorkstart=?,coldWorkend=?,coldSunstart=?,coldSunend=?,"+ 
 					"chouWorkstart=?,chouWorkend=?,chouSunstart=?,chouSunend=?"
      				,
-     				new Object[] { tb_vmc_machineset.getIslogo(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
+     				new Object[] { tb_vmc_machineset.getLogoStr(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
 	 						tb_vmc_machineset.getAudioSun(), tb_vmc_machineset.getAudioSunstart(),tb_vmc_machineset.getAudioSunend(), tb_vmc_machineset.getTempWork(),
 	 						tb_vmc_machineset.getTempWorkstart(), tb_vmc_machineset.getTempWorkend(), tb_vmc_machineset.getTempSunstart(), tb_vmc_machineset.getTempSunend(),
 	 						tb_vmc_machineset.getLigntWorkstart(), tb_vmc_machineset.getLigntWorkend(), tb_vmc_machineset.getLigntSunstart(), tb_vmc_machineset.getLigntSunend(),
@@ -101,7 +101,7 @@ public class vmc_machinesetDAO
     public Tb_vmc_machineset find() 
     {
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select islogo,audioWork,audioWorkstart,audioWorkend,audioSun," +
+        Cursor cursor = db.rawQuery("select logoStr,audioWork,audioWorkstart,audioWorkend,audioSun," +
         		"audioSunstart,audioSunend,tempWork,tempWorkstart,tempWorkend,tempSunstart,tempSunend,ligntWorkstart," +
  				"ligntWorkend,ligntSunstart,ligntSunend,coldWorkstart,coldWorkend,coldSunstart," +
  				"coldSunend,chouWorkstart,chouWorkend,chouSunstart,chouSunend from vmc_machineset", null );// 根据编号查找支出信息，并存储到Cursor类中
@@ -109,7 +109,7 @@ public class vmc_machinesetDAO
         {// 遍历查找到的支出信息
 
             // 将遍历到的支出信息存储到Tb_outaccount类中
-            return new Tb_vmc_machineset(cursor.getInt(cursor.getColumnIndex("islogo")), cursor.getInt(cursor.getColumnIndex("audioWork")),
+            return new Tb_vmc_machineset(cursor.getString(cursor.getColumnIndex("logoStr")), cursor.getInt(cursor.getColumnIndex("audioWork")),
     				cursor.getString(cursor.getColumnIndex("audioWorkstart")),cursor.getString(cursor.getColumnIndex("audioWorkend")),cursor.getInt(cursor.getColumnIndex("audioSun")),cursor.getString(cursor.getColumnIndex("audioSunstart")),
     				cursor.getString(cursor.getColumnIndex("audioSunend")),cursor.getInt(cursor.getColumnIndex("tempWork")), cursor.getString(cursor.getColumnIndex("tempWorkstart")), cursor.getString(cursor.getColumnIndex("tempWorkend")),
     				cursor.getString(cursor.getColumnIndex("tempSunstart")), cursor.getString(cursor.getColumnIndex("tempSunend")), cursor.getString(cursor.getColumnIndex("ligntWorkstart")), cursor.getString(cursor.getColumnIndex("ligntWorkend")),

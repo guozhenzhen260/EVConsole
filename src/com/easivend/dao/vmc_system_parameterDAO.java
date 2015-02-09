@@ -96,6 +96,7 @@ public class vmc_system_parameterDAO
      */
     public Tb_vmc_system_parameter find() 
     {
+    	Tb_vmc_system_parameter tb_vmc_system_parameter=null;
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select devID,devhCode,isNet,isfenClass,isbuyCar," +
  				"liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer," +
@@ -104,7 +105,7 @@ public class vmc_system_parameterDAO
         {// 遍历查找到的支出信息
 
             // 将遍历到的支出信息存储到Tb_outaccount类中
-            return new Tb_vmc_system_parameter(cursor.getString(cursor.getColumnIndex("devID")), cursor.getString(cursor.getColumnIndex("devhCode")),
+            tb_vmc_system_parameter=new Tb_vmc_system_parameter(cursor.getString(cursor.getColumnIndex("devID")), cursor.getString(cursor.getColumnIndex("devhCode")),
     				cursor.getInt(cursor.getColumnIndex("isNet")),cursor.getInt(cursor.getColumnIndex("isfenClass")),cursor.getInt(cursor.getColumnIndex("isbuyCar")),cursor.getInt(cursor.getColumnIndex("liebiaoKuan")),
     				cursor.getString(cursor.getColumnIndex("mainPwd")),cursor.getInt(cursor.getColumnIndex("amount")), cursor.getInt(cursor.getColumnIndex("card")), cursor.getInt(cursor.getColumnIndex("zhifubaofaca")),
     				cursor.getInt(cursor.getColumnIndex("zhifubaoer")), cursor.getInt(cursor.getColumnIndex("weixing")), cursor.getInt(cursor.getColumnIndex("printer")), cursor.getInt(cursor.getColumnIndex("language")),
@@ -113,11 +114,15 @@ public class vmc_system_parameterDAO
     				
     		);
         }
+        else
+        {
+        	
+		}        
         if (!cursor.isClosed()) 
  		{  
  			cursor.close();  
  		}  
  		db.close();
-        return null;// 如果没有信息，则返回null
+        return tb_vmc_system_parameter;// 如果没有信息，则返回null
     }
 }
