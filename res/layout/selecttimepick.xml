@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
     <TableRow>
         <TextView 
-            android:text = "起始时间:"
+            android:text = "起始时间:"            
             android:layout_marginLeft="20dip"
             android:textSize="8pt"
             android:layout_width="wrap_content"
@@ -12,6 +12,7 @@
         />
         <TimePicker 
             android:width="60pt"
+            android:id="@+id/diaStartTime"
             android:layout_height="wrap_content"
         />
     </TableRow>
@@ -29,6 +30,7 @@
         />
         <TimePicker 
             android:width="60pt"
+            android:id="@+id/diaEndTime"
             android:layout_height="wrap_content"
         />
     </TableRow>

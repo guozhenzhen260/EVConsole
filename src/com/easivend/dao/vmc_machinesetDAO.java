@@ -39,7 +39,7 @@ public class vmc_machinesetDAO
 		int max=0;
 		//取得排序值
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select count(machID) from vmc_machineset", null);// 获取收入信息的记录数
+        Cursor cursor = db.rawQuery("select count(*) from vmc_machineset", null);// 获取收入信息的记录数
         if (cursor.moveToNext()) {// 判断Cursor中是否有数据
 
             max=cursor.getInt(0);// 返回总记录数
@@ -100,6 +100,7 @@ public class vmc_machinesetDAO
      */
     public Tb_vmc_machineset find() 
     {
+    	Tb_vmc_machineset tb_vmc_machineset=null;
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select logoStr,audioWork,audioWorkstart,audioWorkend,audioSun," +
         		"audioSunstart,audioSunend,tempWork,tempWorkstart,tempWorkend,tempSunstart,tempSunend,ligntWorkstart," +
@@ -109,7 +110,7 @@ public class vmc_machinesetDAO
         {// 遍历查找到的支出信息
 
             // 将遍历到的支出信息存储到Tb_outaccount类中
-            return new Tb_vmc_machineset(cursor.getString(cursor.getColumnIndex("logoStr")), cursor.getInt(cursor.getColumnIndex("audioWork")),
+            tb_vmc_machineset=new Tb_vmc_machineset(cursor.getString(cursor.getColumnIndex("logoStr")), cursor.getInt(cursor.getColumnIndex("audioWork")),
     				cursor.getString(cursor.getColumnIndex("audioWorkstart")),cursor.getString(cursor.getColumnIndex("audioWorkend")),cursor.getInt(cursor.getColumnIndex("audioSun")),cursor.getString(cursor.getColumnIndex("audioSunstart")),
     				cursor.getString(cursor.getColumnIndex("audioSunend")),cursor.getInt(cursor.getColumnIndex("tempWork")), cursor.getString(cursor.getColumnIndex("tempWorkstart")), cursor.getString(cursor.getColumnIndex("tempWorkend")),
     				cursor.getString(cursor.getColumnIndex("tempSunstart")), cursor.getString(cursor.getColumnIndex("tempSunend")), cursor.getString(cursor.getColumnIndex("ligntWorkstart")), cursor.getString(cursor.getColumnIndex("ligntWorkend")),
@@ -118,11 +119,15 @@ public class vmc_machinesetDAO
     				cursor.getString(cursor.getColumnIndex("chouSunstart")), cursor.getString(cursor.getColumnIndex("chouSunend"))
     		);
         }
+        else
+        {
+        	tb_vmc_machineset=new Tb_vmc_machineset("", 0, "", "", 0, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+		}
         if (!cursor.isClosed()) 
  		{  
  			cursor.close();  
  		}  
  		db.close();
-        return null;// 如果没有信息，则返回null
+        return tb_vmc_machineset;// 如果没有信息，则返回null
     }
 }

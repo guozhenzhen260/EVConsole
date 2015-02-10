@@ -35,7 +35,7 @@ public final class R {
     public static final class id {
         public static final int ItemImage=0x7f080009;
         public static final int ItemTitle=0x7f08000a;
-        public static final int action_settings=0x7f08006e;
+        public static final int action_settings=0x7f080073;
         public static final int bigradiobtn=0x7f08004d;
         public static final int btnBusiness=0x7f08003e;
         public static final int btnClose=0x7f08003c;
@@ -58,6 +58,8 @@ public final class R {
         public static final int btnmachineImg=0x7f080068;
         public static final int btnmachineSave=0x7f080055;
         public static final int btnmachineexit=0x7f080056;
+        public static final int btnmachinerunCancel=0x7f08006a;
+        public static final int btnmachinerunSave=0x7f080069;
         public static final int btnpaymoney=0x7f080005;
         public static final int btnpayout=0x7f080004;
         public static final int btnpool=0x7f080008;
@@ -72,6 +74,9 @@ public final class R {
         public static final int btnzhifubaoer=0x7f08005f;
         public static final int btnzhifubaofaca=0x7f08005d;
         public static final int cabinet=0x7f08002c;
+        public static final int diaEndTime=0x7f080072;
+        public static final int diaStartTime=0x7f080071;
+        public static final int dialoginte=0x7f080070;
         public static final int edtclassid=0x7f08000d;
         public static final int edtclassname=0x7f08000e;
         public static final int edtcolumn=0x7f080030;
@@ -89,7 +94,7 @@ public final class R {
         public static final int edtrstTime=0x7f080050;
         public static final int edtsalesPrice=0x7f080025;
         public static final int edtshelfLife=0x7f080026;
-        public static final int emachinelistview=0x7f080069;
+        public static final int emachinelistview=0x7f08006b;
         public static final int fuhuodao=0x7f08002e;
         public static final int grpisfenClass=0x7f080045;
         public static final int grpliebiaoKuan=0x7f08004a;
@@ -105,10 +110,10 @@ public final class R {
         public static final int normalradiobtn=0x7f08004c;
         public static final int onloadTime=0x7f080029;
         public static final int pcchu=0x7f080033;
-        public static final int proID=0x7f08006b;
-        public static final int proImage=0x7f08006a;
-        public static final int promarket=0x7f08006c;
-        public static final int prosales=0x7f08006d;
+        public static final int proID=0x7f08006d;
+        public static final int proImage=0x7f08006c;
+        public static final int promarket=0x7f08006e;
+        public static final int prosales=0x7f08006f;
         public static final int smallradiobtn=0x7f08004b;
         public static final int spinparamsort=0x7f080054;
         public static final int spinprodsort=0x7f08001d;

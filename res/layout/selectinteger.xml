@@ -13,6 +13,8 @@
         />
         <EditText 
             android:width="60pt"
+            android:numeric="integer"
+            android:id="@+id/dialoginte"
             android:layout_height="wrap_content"
         />
     </TableRow>

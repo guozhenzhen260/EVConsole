@@ -661,25 +661,45 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"		
 	    android:orientation="vertical" >
-	    <LinearLayout 
+	    <RelativeLayout
 		        android:layout_width="match_parent"
 			    android:layout_height="match_parent"		
 			    android:orientation="vertical" >	
 			    <ImageView  
 			        android:id="@+id/ivmachineLogo"  
+			        android:layout_alignParentLeft="true" 
 			        android:layout_width="wrap_content"   
 			        android:layout_height="wrap_content"   
 			     /> 		        
 		         <Button   
 			        android:id="@+id/btnmachineImg"  
+			        android:layout_alignParentLeft="true" 
+			        android:layout_below="@+id/ivmachineLogo"
 			        android:text="选择Logo"
 			        android:layout_width="wrap_content"   
 			        android:layout_height="wrap_content"   
-			    /> 			     	    
+			    /> 	
+			    <Button   
+			        android:id="@+id/btnmachinerunSave"  
+			        android:layout_toRightOf="@+id/btnmachineImg"
+			        android:layout_below="@+id/ivmachineLogo"
+			        android:text="保存"
+			        android:layout_width="wrap_content"   
+			        android:layout_height="wrap_content"   
+			    /> 
+			    <Button   
+			        android:id="@+id/btnmachinerunCancel"  
+			        android:layout_toRightOf="@+id/btnmachinerunSave"
+			        android:layout_below="@+id/ivmachineLogo"
+			        android:text="返回"
+			        android:layout_width="wrap_content"   
+			        android:layout_height="wrap_content"   
+			    /> 		     	    
 				<ExpandableListView
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
+			        android:layout_below="@+id/btnmachineImg"
 			        android:id="@+id/emachinelistview" />
-				</LinearLayout>	 			    
+		</RelativeLayout>	 			    
 	</LinearLayout>
 </LinearLayout>

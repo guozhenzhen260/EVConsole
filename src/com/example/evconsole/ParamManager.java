@@ -4,9 +4,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.easivend.dao.vmc_machinesetDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.ToolClass;
+import com.easivend.model.Tb_vmc_machineset;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 
@@ -77,12 +79,21 @@ public class ParamManager extends TabActivity
 	private List<String> dataSortID = null,dataSortName=null;
 	private int mHour=0,mMinute=0;
 	
-	private ExpandableListView emachinelistview = null;
-	private ExpandableListAdapter adapter = null;
+	//组名称
+	public static String group[]=new String[]{">>>音量设置",">>>温度设置",">>>照明",">>>制冷",">>>除臭"};
+	//子名称
+	public static String child[][]=new String[][]{{"工作日开启音量:","工作日开启时间段","节假日开启音量:","节假日开启时间段"},{"温度值:","工作日开启时间段","节假日开启时间段"},
+			{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"}};
+	//子名称的值
+	public static String childValue[][]=new String[][]{{"","","",""},{"","",""},
+		{"",""},{"",""},{"",""}};
+
+	private ExpandableListView emachinelistview = null;	
 	private ImageView ivmachineLogo=null;
-	private Button btnmachineImg=null;
+	private Button btnmachineImg=null,btnmachinerunSave=null,btnmachinerunCancel=null;
 	private Uri uri=null;
 	private String imgDir=null;
+	private Tb_vmc_machineset tb_vmc_machineset=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -323,9 +334,9 @@ public class ParamManager extends TabActivity
     	//===========================
     	this.ivmachineLogo = (ImageView) findViewById(R.id.ivmachineLogo);
     	this.emachinelistview = (ExpandableListView) super.findViewById(R.id.emachinelistview);
-    	
-    	this.adapter = new MyExpanseListAdapter(this);
-        this.emachinelistview.setAdapter(this.adapter);
+    	loadrunparam();
+    	ExpandableListAdapter adapter = new MyExpanseListAdapter(this);
+        this.emachinelistview.setAdapter(adapter);
         
         this.emachinelistview.setOnChildClickListener(new OnChildClickListener() {
 			
@@ -334,13 +345,13 @@ public class ParamManager extends TabActivity
 					int groupPosition, int childPosition, long id) {
 				// TODO Auto-generated method stub
 				//Toast.makeText(ParamManager.this, "子选项,group="+groupPosition+",child="+childPosition, Toast.LENGTH_LONG).show();
-				if((groupPosition==0&&childPosition==0)||(groupPosition==1&&childPosition==0))
+				if((groupPosition==0&&childPosition==0)||(groupPosition==0&&childPosition==2)||(groupPosition==1&&childPosition==0))
 				{	
-					emachineListviewSet(1);				
+					emachineListviewSet(1,groupPosition,childPosition);				
 				}
 				else 
 				{
-					emachineListviewSet(2);	
+					emachineListviewSet(2,groupPosition,childPosition);	
 				}
 				return false;
 			}
@@ -361,6 +372,22 @@ public class ParamManager extends TabActivity
                  startActivityForResult(intent, 1);
   			}
   		}); 
+        btnmachinerunSave = (Button)findViewById(R.id.btnmachinerunSave);  
+  		btnmachinerunSave.setOnClickListener(new OnClickListener() {// 为保存按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) 
+		    {
+		    	saverunparam();
+		    }
+		});
+        btnmachinerunCancel = (Button)findViewById(R.id.btnmachinerunCancel);  
+        btnmachinerunCancel.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) 
+		    {
+		    	finish();
+		    }
+		});
         
 	}
 	//===========================
@@ -574,46 +601,231 @@ public class ParamManager extends TabActivity
 	     }  
     	super.onActivityResult(requestCode, resultCode, data);  
     }
-    
+    //导入运行参数数据
+    private void loadrunparam()
+    {
+    	vmc_machinesetDAO machinesetDAO = new vmc_machinesetDAO(ParamManager.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	tb_vmc_machineset = machinesetDAO.find();
+    	
+    	if(tb_vmc_machineset!=null)
+    	{
+//	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<参数devID="+tb_inaccount.getDevID().toString()+" devhCode="+tb_inaccount.getDevhCode().toString()+" isNet="
+//					+tb_inaccount.getIsNet()+" isfenClass="+tb_inaccount.getIsfenClass()+" isbuyCar="+tb_inaccount.getIsbuyCar()+" liebiaoKuan="+tb_inaccount.getLiebiaoKuan()+" mainPwd="
+//					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
+//					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
+//					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
+//					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()); 
+    		imgDir=tb_vmc_machineset.getLogoStr();
+    		if(imgDir!=null)
+    		{
+	    		/*为什么图片一定要转化为 Bitmap格式的！！ */
+		        Bitmap bitmap = ToolClass.getLoacalBitmap(imgDir); //从本地取图片(在cdcard中获取)  //
+		        ivmachineLogo.setImageBitmap(bitmap);// 设置图像的二进制值
+    		}
+    		ParamManager.childValue[0][0]=String.valueOf(tb_vmc_machineset.getAudioWork());
+    		ParamManager.childValue[0][1]="起始时间:"+tb_vmc_machineset.getAudioWorkstart()+"  结束时间:"+tb_vmc_machineset.getAudioWorkend();
+    		ParamManager.childValue[0][2]=String.valueOf(tb_vmc_machineset.getAudioSun());
+    		ParamManager.childValue[0][3]="起始时间:"+tb_vmc_machineset.getAudioSunstart()+"  结束时间:"+tb_vmc_machineset.getAudioSunend();
+    		
+    		ParamManager.childValue[1][0]=String.valueOf(tb_vmc_machineset.getTempWork());
+    		ParamManager.childValue[1][1]="起始时间:"+tb_vmc_machineset.getTempWorkstart()+"  结束时间:"+tb_vmc_machineset.getTempWorkend();
+    		ParamManager.childValue[1][2]="起始时间:"+tb_vmc_machineset.getTempSunstart()+"  结束时间:"+tb_vmc_machineset.getTempSunend();
+    		
+    		ParamManager.childValue[2][0]="起始时间:"+tb_vmc_machineset.getLigntWorkstart()+"  结束时间:"+tb_vmc_machineset.getLigntWorkend();
+    		ParamManager.childValue[2][1]="起始时间:"+tb_vmc_machineset.getLigntSunstart()+"  结束时间:"+tb_vmc_machineset.getLigntSunend();
+    		
+    		ParamManager.childValue[3][0]="起始时间:"+tb_vmc_machineset.getColdWorkstart()+"  结束时间:"+tb_vmc_machineset.getColdWorkend();
+    		ParamManager.childValue[3][1]="起始时间:"+tb_vmc_machineset.getColdSunstart()+"  结束时间:"+tb_vmc_machineset.getColdSunend();
+    		
+    		ParamManager.childValue[4][0]="起始时间:"+tb_vmc_machineset.getChouWorkstart()+"  结束时间:"+tb_vmc_machineset.getChouWorkend();
+    		ParamManager.childValue[4][1]="起始时间:"+tb_vmc_machineset.getChouSunstart()+"  结束时间:"+tb_vmc_machineset.getChouSunend();
+    	}
+	}
     //dialogtype==1启动数值选择框,2启动时间选择框
-    private void emachineListviewSet(int dialogtype)
+    private void emachineListviewSet(int dialogtype,final int groupPosition,final int childPosition)
     {    	
-    	View myview=null;
+    	View myview=null;    	
 		// TODO Auto-generated method stub
 		LayoutInflater factory = LayoutInflater.from(ParamManager.this);
 		if(dialogtype==1)//数值选择框
 		{
 			myview=factory.inflate(R.layout.selectinteger, null);
+			final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+			
+			Dialog dialog = new AlertDialog.Builder(ParamManager.this)
+			.setTitle("设置")
+			.setPositiveButton("保存", new DialogInterface.OnClickListener() 	
+			{
+					
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// TODO Auto-generated method stub
+					//Toast.makeText(ParamManager.this, "数值="+dialoginte.getText().toString(), Toast.LENGTH_LONG).show();
+					updaterunparam(groupPosition,childPosition,Integer.parseInt(dialoginte.getText().toString()),"","");
+				}
+			})
+			.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+	    	{			
+				@Override
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					// TODO Auto-generated method stub				
+				}
+	    	})
+			.setView(myview)//这里将对话框布局文件加入到对话框中
+			.create();
+			dialog.show();	 
 		}
 		else if(dialogtype==2)//时间选择框
 		{
 			myview=factory.inflate(R.layout.selecttimepick, null);
+			final TimePicker diaStartTime=(TimePicker) myview.findViewById(R.id.diaStartTime);
+			final TimePicker diaEndTime=(TimePicker) myview.findViewById(R.id.diaEndTime);
+			
+			Dialog dialog = new AlertDialog.Builder(ParamManager.this)
+			.setTitle("设置")
+			.setPositiveButton("保存", new DialogInterface.OnClickListener() 	
+			{
+					
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// TODO Auto-generated method stub					
+					//Toast.makeText(ParamManager.this, "起始时间="+diaStartTime.getCurrentHour().toString()+":"+diaStartTime.getCurrentMinute().toString()
+					//		+"结束时间="+diaEndTime.getCurrentHour().toString()+":"+diaEndTime.getCurrentMinute().toString(), Toast.LENGTH_LONG).show();
+					updaterunparam(groupPosition,childPosition,0,diaStartTime.getCurrentHour().toString()+":"+diaStartTime.getCurrentMinute().toString(),diaEndTime.getCurrentHour().toString()+":"+diaEndTime.getCurrentMinute().toString());
+				}
+			})
+			.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+	    	{			
+				@Override
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					// TODO Auto-generated method stub				
+				}
+	    	})
+			.setView(myview)//这里将对话框布局文件加入到对话框中
+			.create();
+			dialog.show();	
 		}
 			
-		Dialog dialog = new AlertDialog.Builder(ParamManager.this)
-		.setTitle("设置")
-		.setPositiveButton("保存", new DialogInterface.OnClickListener() 		{
-				
-			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				// TODO Auto-generated method stub
-				;
-			}
-		})
-		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-    	{			
-			@Override
-			public void onClick(DialogInterface dialog, int which) 
-			{
-				// TODO Auto-generated method stub				
-			}
-    	}
-    )
-		.setView(myview)//这里将对话框布局文件加入到对话框中
-		.create();
-		dialog.show();	    	
+			 	
     }
+    //更新运行参数数据
+    private void updaterunparam(int groupPosition,int childPosition,int value,String StartTime,String EndTime)
+    {
+    	
+    	if(groupPosition==0)
+    	{
+    		if(childPosition==0)
+    		{
+    			tb_vmc_machineset.setAudioWork(value);
+    			ParamManager.childValue[groupPosition][childPosition]=String.valueOf(value);
+    		}
+    		else if(childPosition==1)
+    		{
+    			tb_vmc_machineset.setAudioWorkstart(StartTime);
+    			tb_vmc_machineset.setAudioWorkend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    		else if(childPosition==2)
+    		{
+    			tb_vmc_machineset.setAudioSun(value);
+    			ParamManager.childValue[groupPosition][childPosition]=String.valueOf(value);
+    		}
+    		else if(childPosition==3)
+    		{
+    			tb_vmc_machineset.setAudioSunstart(StartTime);
+    			tb_vmc_machineset.setAudioSunend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    	}
+    	else if(groupPosition==1)
+    	{
+    		if(childPosition==0)
+    		{
+    			tb_vmc_machineset.setTempWork(value);
+    			ParamManager.childValue[groupPosition][childPosition]=String.valueOf(value);
+    		}
+    		else if(childPosition==1)
+    		{
+    			tb_vmc_machineset.setTempWorkstart(StartTime);
+    			tb_vmc_machineset.setTempWorkend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    		else if(childPosition==2)
+    		{
+    			tb_vmc_machineset.setTempSunstart(StartTime);
+    			tb_vmc_machineset.setTempSunend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    	}
+    	else if(groupPosition==2)
+    	{
+    		if(childPosition==0)
+    		{
+    			tb_vmc_machineset.setLigntWorkstart(StartTime);
+    			tb_vmc_machineset.setLigntWorkend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    		else if(childPosition==1)
+    		{
+    			tb_vmc_machineset.setLigntSunstart(StartTime);
+    			tb_vmc_machineset.setLigntSunend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    	}
+    	else if(groupPosition==3)
+    	{
+    		if(childPosition==0)
+    		{
+    			tb_vmc_machineset.setColdWorkstart(StartTime);
+    			tb_vmc_machineset.setColdWorkend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    		else if(childPosition==1)
+    		{
+    			tb_vmc_machineset.setColdSunstart(StartTime);
+    			tb_vmc_machineset.setColdSunend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    	}
+    	else if(groupPosition==4)
+    	{
+    		if(childPosition==0)
+    		{
+    			tb_vmc_machineset.setChouWorkstart(StartTime);
+    			tb_vmc_machineset.setChouWorkend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    		else if(childPosition==1)
+    		{
+    			tb_vmc_machineset.setChouSunstart(StartTime);
+    			tb_vmc_machineset.setChouSunend(EndTime);
+    			ParamManager.childValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    		}
+    	}  
+    	ExpandableListAdapter adapter = new MyExpanseListAdapter(this);
+        this.emachinelistview.setAdapter(adapter);
+	}
+    //保存运行参数数据
+    private void saverunparam()
+    {
+    	vmc_machinesetDAO machinesetDAO = new vmc_machinesetDAO(ParamManager.this);// 创建InaccountDAO对象
+    	tb_vmc_machineset.setLogoStr(imgDir);
+    	try {			
+	    	machinesetDAO.add(tb_vmc_machineset);    
+	    	// 弹出信息提示
+	        Toast.makeText(ParamManager.this, "数据更新成功！", Toast.LENGTH_SHORT).show();	            
+        
+		} catch (Exception e)
+		{
+			// TODO: handle exception
+			Toast.makeText(ParamManager.this, "数据添加失败！", Toast.LENGTH_SHORT).show();
+		}	    		    	
+	}
 }
 
 //===========================
@@ -622,11 +834,6 @@ public class ParamManager extends TabActivity
 //专门填充数据的适配器类
 class MyExpanseListAdapter extends BaseExpandableListAdapter 
 {
-	//组名称
-	private String group[]=new String[]{">>>音量设置",">>>温度设置",">>>照明",">>>制冷",">>>除臭"};
-	//子名称
-	private String child[][]=new String[][]{{"工作日开启音量:","工作日开启时间段","节假日开启音量:","节假日开启时间段"},{"温度值:","工作日开启时间段","节假日开启时间段"},
-			{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"}};
 	private Context context=null;
 
 	//构造方法
@@ -638,7 +845,7 @@ class MyExpanseListAdapter extends BaseExpandableListAdapter
 	//取得指定的子选项
 	public Object getChild(int arg0, int arg1) {
 		// TODO Auto-generated method stub
-		return this.child[arg0][arg1];
+		return ParamManager.child[arg0][arg1]+ParamManager.childValue[arg0][arg1];
 	}
 
 	@Override
@@ -672,19 +879,19 @@ class MyExpanseListAdapter extends BaseExpandableListAdapter
 	@Override
 	public int getChildrenCount(int groupPosition) {
 		// TODO Auto-generated method stub
-		return this.child[groupPosition].length;
+		return ParamManager.child[groupPosition].length;
 	}
 
 	@Override
 	public Object getGroup(int groupPosition) {
 		// TODO Auto-generated method stub
-		return this.group[groupPosition];
+		return ParamManager.group[groupPosition];
 	}
 
 	@Override
 	public int getGroupCount() {
 		// TODO Auto-generated method stub
-		return this.group.length;
+		return ParamManager.group.length;
 	}
 
 	@Override
