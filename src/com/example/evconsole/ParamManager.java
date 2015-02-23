@@ -339,6 +339,13 @@ public class ParamManager extends TabActivity
 		    }
 		});
     	btnweixing = (Button) findViewById(R.id.btnweixing);
+    	btnweixing.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, WeixingTest.class);// 使用AddInaccount窗口初始化Intent
+		        startActivity(intent);// 打开AddInaccount
+		    }
+		});
     	btnprinter = (Button) findViewById(R.id.btnprinter);
     	loaddeviceparam();
     	
