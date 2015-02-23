@@ -35,7 +35,7 @@ public final class R {
     public static final class id {
         public static final int ItemImage=0x7f080009;
         public static final int ItemTitle=0x7f08000a;
-        public static final int action_settings=0x7f080073;
+        public static final int action_settings=0x7f080077;
         public static final int bigradiobtn=0x7f08004d;
         public static final int btnBusiness=0x7f08003e;
         public static final int btnClose=0x7f08003c;
@@ -73,6 +73,8 @@ public final class R {
         public static final int btnweixing=0x7f080061;
         public static final int btnzhifubaoer=0x7f08005f;
         public static final int btnzhifubaofaca=0x7f08005d;
+        public static final int btnzhifubaotestcancel=0x7f080076;
+        public static final int btnzhifubaotestok=0x7f080075;
         public static final int cabinet=0x7f08002c;
         public static final int diaEndTime=0x7f080072;
         public static final int diaStartTime=0x7f080071;
@@ -94,6 +96,7 @@ public final class R {
         public static final int edtrstTime=0x7f080050;
         public static final int edtsalesPrice=0x7f080025;
         public static final int edtshelfLife=0x7f080026;
+        public static final int edtzhifubaotest=0x7f080074;
         public static final int emachinelistview=0x7f08006b;
         public static final int fuhuodao=0x7f08002e;
         public static final int grpisfenClass=0x7f080045;
@@ -102,6 +105,7 @@ public final class R {
         public static final int gvInfo=0x7f080040;
         public static final int gvProduct=0x7f080015;
         public static final int hunradiobtn=0x7f080046;
+        public static final int imgzhifubaotest=0x7f080073;
         public static final int ivProduct=0x7f080020;
         public static final int ivmachineLogo=0x7f080067;
         public static final int lvclass=0x7f08000c;
@@ -163,6 +167,7 @@ public final class R {
         public static final int productgv=0x7f030009;
         public static final int selectinteger=0x7f03000a;
         public static final int selecttimepick=0x7f03000b;
+        public static final int zhifubaotest=0x7f03000c;
     }
     public static final class menu {
         public static final int maintain=0x7f070000;

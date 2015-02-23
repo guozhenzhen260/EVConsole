@@ -323,7 +323,21 @@ public class ParamManager extends TabActivity
     	
     	btncard = (Button) findViewById(R.id.btncard);
     	btnzhifubaofaca = (Button) findViewById(R.id.btnzhifubaofaca);
+    	btnzhifubaofaca.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, ZhifubaoTest.class);// 使用AddInaccount窗口初始化Intent
+		        startActivity(intent);// 打开AddInaccount
+		    }
+		});
     	btnzhifubaoer = (Button) findViewById(R.id.btnzhifubaoer);
+    	btnzhifubaoer.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, ZhifubaoTest.class);// 使用AddInaccount窗口初始化Intent
+		        startActivity(intent);// 打开AddInaccount
+		    }
+		});
     	btnweixing = (Button) findViewById(R.id.btnweixing);
     	btnprinter = (Button) findViewById(R.id.btnprinter);
     	loaddeviceparam();
