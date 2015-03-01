@@ -327,7 +327,8 @@ public class ParamManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	Intent intent = new Intent(ParamManager.this, ZhifubaoTest.class);// 使用AddInaccount窗口初始化Intent
-		        startActivity(intent);// 打开AddInaccount
+		    	intent.putExtra("id", edtdevhCode.getText().toString());
+		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
     	btnzhifubaoer = (Button) findViewById(R.id.btnzhifubaoer);
@@ -335,7 +336,7 @@ public class ParamManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	Intent intent = new Intent(ParamManager.this, ZhifubaoTest.class);// 使用AddInaccount窗口初始化Intent
-		        
+		        intent.putExtra("id", edtdevhCode.getText().toString());
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});

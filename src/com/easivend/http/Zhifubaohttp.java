@@ -28,8 +28,27 @@ import com.easivend.alipay.HttpRespons;
 
 public class Zhifubaohttp implements Runnable
 {
-	private final int SETMAIN=1;//what标记,主线程接收到子线程支付宝金额二维码
-	private final int SETCHILD=2;//what标记,发送给子线程支付宝交易
+	//交易
+	public final static int SETCHILD=2;//what标记,发送给子线程支付宝交易
+	public final static int SETMAIN=1;//what标记,发送给主线程支付宝金额二维码	
+	public final static int SETFAILPROCHILD=5;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILBUSCHILD=6;//what标记,发送给主线程交易信息失败
+	//查询
+	public final static int SETQUERYCHILD=7;//what标记,发送给子线程支付宝查询
+	public final static int SETQUERYMAIN=8;//what标记,发送给主线程查询结果
+	public final static int SETFAILQUERYPROCHILD=9;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILQUERYBUSCHILD=10;//what标记,发送给主线程交易信息失败
+	//退款
+	public final static int SETPAYOUTCHILD=11;//what标记,发送给子线程支付宝退款
+	public final static int SETPAYOUTMAIN=12;//what标记,发送给主线程退款结果
+	public final static int SETFAILPAYOUTPROCHILD=13;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILPAYOUTBUSCHILD=14;//what标记,发送给主线程交易信息失败
+	//撤销交易
+	public final static int SETDELETECHILD=15;//what标记,发送给子线程支付宝撤销交易
+	public final static int SETDELETEMAIN=16;//what标记,发送给主线程退款结果
+	public final static int SETFAILDELETEPROCHILD=17;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILDELETEBUSCHILD=18;//what标记,发送给主线程交易信息失败
+	
 	private final int SETWEIMAIN=3;//what标记,主线程接收到子线程微信金额二维码
 	private final int SETWEICHILD=4;//what标记,发送给子线程微信交易
 	private Handler mainhand=null,childhand=null;
@@ -56,26 +75,23 @@ public class Zhifubaohttp implements Runnable
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
 						Map<String, String> sPara = new HashMap<String, String>();
 						//1.添加订单信息
-						SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
-				        String datetime = tempDate.format(new java.util.Date()).toString(); 
 						JSONObject ev=null;
 						try {
-							ev = new JSONObject(msg.obj.toString());
-							
-							sPara.put("out_trade_no", ev.getString("id")+datetime);//订单编号
-							sPara.put("total_fee",ev.getString("money"));//订单总金额		
+							ev = new JSONObject(msg.obj.toString());							
+							sPara.put("out_trade_no", ev.getString("out_trade_no"));//订单编号
+							sPara.put("total_fee",ev.getString("total_fee"));//订单总金额		
 						} catch (JSONException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						sPara.put("subject","支付宝二维码测试");//订单标题
+						sPara.put("subject","支付宝二维码");//订单标题
 						//商品明细
 						String json=null;
 					    try {
 					    	JSONObject temp=new JSONObject();
-							temp.put("goodsName","测试水");
+							temp.put("goodsName","商品水");
 							temp.put("quantity","1");
-						    temp.put("price",ev.getString("money"));
+						    temp.put("price",ev.getString("total_fee"));
 						    JSONArray singArray=new JSONArray();//定义操作数组
 						    singArray.put(temp);
 						    json=singArray.toString();	
@@ -85,6 +101,7 @@ public class Zhifubaohttp implements Runnable
 						}
 					    sPara.put("goods_detail",json);//商品明细
 					    sPara.put("it_b_pay","10m");//交易关闭时间
+					    Log.i("EV_JNI","Send0.2="+sPara.toString());
 						//2.生成支付请求消息
 						Map<String, String> map1 = AlipayConfigAPI.PostAliBuy(sPara);
 				        try {          	       	                    	       	
@@ -98,12 +115,31 @@ public class Zhifubaohttp implements Runnable
 				           //5.解包返回的信息
 				           InputStream is = new ByteArrayInputStream(strpicString.getBytes());// 获取返回数据
 				           Map<String, String> map2=AlipayConfigAPI.PendAliBuy(is);
-				           //通过支付宝提供的订单直接生成二维码
-				           String result=strpicString.substring(strpicString.indexOf("<qr_code>")+9, strpicString.indexOf("</qr_code>"));
-				           Log.i("EV_JNI","rec3="+result);
-				           Message tomain=mainhand.obtainMessage();
-						   tomain.what=SETMAIN;
-						   tomain.obj=result;
+				           Log.i("EV_JNI","rec2="+map2.toString());
+				           //向主线程返回信息
+				           Message tomain=mainhand.obtainMessage();	
+				           //协议失败
+				           if(map2.get("is_success").equals("F"))
+				           {
+				        	   tomain.what=SETFAILPROCHILD;
+							   tomain.obj=map2.get("error");
+				           }
+				           else
+				           {
+				        	   //业务处理失败
+				        	   if(map2.get("result_code").equals("FAIL"))
+					           {
+					        	   tomain.what=SETFAILBUSCHILD;
+								   tomain.obj=map2.get("detail_error_code")+map2.get("detail_error_des");
+					           }
+				        	   //通过支付宝提供的订单直接生成二维码
+				        	   else if(map2.get("result_code").equals("SUCCESS"))
+					           {
+					        	   tomain.what=SETMAIN;
+								   tomain.obj=map2.get("qr_code");
+					           }
+				           }
+				           Log.i("EV_JNI","rec3="+tomain.obj);				           
 						   mainhand.sendMessage(tomain); // 发送消息
 						   
 						   
@@ -144,6 +180,181 @@ public class Zhifubaohttp implements Runnable
 						
 						
 					break;
+				case SETQUERYCHILD://子线程接收主线程消息
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+					Map<String, String> sPara2 = new HashMap<String, String>();
+					//1.添加订单信息
+					JSONObject ev2=null;
+					try {
+						ev2 = new JSONObject(msg.obj.toString());							
+						sPara2.put("out_trade_no", ev2.getString("out_trade_no"));//订单编号
+								
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}					
+				    Log.i("EV_JNI","Send0.2="+sPara2.toString());
+					//2.生成支付请求消息
+					Map<String, String> map3 = AlipayConfigAPI.PostAliQuery(sPara2);
+			        try {          	       	                    	       	
+			           HttpRequester request = new HttpRequester();              
+			           String url = "https://mapi.alipay.com/gateway.do?" + "_input_charset=" + AlipayConfig.getInput_charset();           
+			           //3.发送支付订单信息
+			           HttpRespons hr = request.sendPost(url, map3);
+			           //4.得到返回字符串
+			           String strpicString=hr.getContent();	
+			           Log.i("EV_JNI","rec1="+strpicString);
+			           //5.解包返回的信息
+			           InputStream is = new ByteArrayInputStream(strpicString.getBytes());// 获取返回数据
+			           Map<String, String> map4=AlipayConfigAPI.PendAliQuery(is);
+			           Log.i("EV_JNI","rec2="+map4.toString());
+			           //向主线程返回信息
+			           Message tomain=mainhand.obtainMessage();	
+			           //协议失败
+			           if(map4.get("is_success").equals("F"))
+			           {
+			        	   tomain.what=SETFAILQUERYPROCHILD;
+						   tomain.obj=map4.get("error");
+			           }
+			           else
+			           {
+			        	   //业务处理失败
+			        	   if(map4.get("result_code").equals("FAIL"))
+				           {
+				        	   tomain.what=SETFAILQUERYBUSCHILD;
+							   tomain.obj=map4.get("detail_error_code")+map4.get("detail_error_des");
+				           }
+			        	   //通过支付宝提供的订单直接生成二维码
+			        	   else if(map4.get("result_code").equals("SUCCESS"))
+				           {
+				        	   tomain.what=SETQUERYMAIN;
+							   tomain.obj=map4.get("trade_status");
+				           }
+			           }
+			           Log.i("EV_JNI","rec3="+tomain.obj);				           
+					   mainhand.sendMessage(tomain); // 发送消息
+					   
+			       } catch (Exception e) {  
+			           e.printStackTrace();  
+			       }
+				break;
+				case SETPAYOUTCHILD://子线程接收主线程消息
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+					Map<String, String> sPara3 = new HashMap<String, String>();
+					//1.添加订单信息
+					JSONObject ev3=null;
+					try {
+						ev3 = new JSONObject(msg.obj.toString());							
+						sPara3.put("out_trade_no", ev3.getString("out_trade_no"));//订单编号
+						sPara3.put("refund_amount", ev3.getString("refund_amount"));
+						sPara3.put("out_request_no", ev3.getString("out_request_no"));
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}					
+				    Log.i("EV_JNI","Send0.2="+sPara3.toString());
+					//2.生成支付请求消息
+					Map<String, String> map5 = AlipayConfigAPI.PostAliPayout(sPara3);
+			        try {          	       	                    	       	
+			           HttpRequester request = new HttpRequester();              
+			           String url = "https://mapi.alipay.com/gateway.do?" + "_input_charset=" + AlipayConfig.getInput_charset();           
+			           //3.发送支付订单信息
+			           HttpRespons hr = request.sendPost(url, map5);
+			           //4.得到返回字符串
+			           String strpicString=hr.getContent();	
+			           Log.i("EV_JNI","rec1="+strpicString);
+			           //5.解包返回的信息
+			           InputStream is = new ByteArrayInputStream(strpicString.getBytes());// 获取返回数据
+			           Map<String, String> map6=AlipayConfigAPI.PendAliPayout(is);
+			           Log.i("EV_JNI","rec2="+map6.toString());
+			           //向主线程返回信息
+			           Message tomain=mainhand.obtainMessage();	
+			           //协议失败
+			           if(map6.get("is_success").equals("F"))
+			           {
+			        	   tomain.what=SETFAILPAYOUTPROCHILD;
+						   tomain.obj=map6.get("error");
+			           }
+			           else
+			           {
+			        	   //业务处理失败
+			        	   if(map6.get("result_code").equals("FAIL"))
+				           {
+				        	   tomain.what=SETFAILPAYOUTBUSCHILD;
+							   tomain.obj=map6.get("detail_error_code")+map6.get("detail_error_des");
+				           }
+			        	   //通过支付宝提供的订单直接生成二维码
+			        	   else if(map6.get("result_code").equals("SUCCESS"))
+				           {
+				        	   tomain.what=SETPAYOUTMAIN;							   
+				           }
+			           }
+			           Log.i("EV_JNI","rec3="+tomain.obj);				           
+					   mainhand.sendMessage(tomain); // 发送消息
+					   
+			       } catch (Exception e) {  
+			           e.printStackTrace();  
+			       }
+				break;	
+				case SETDELETECHILD://子线程接收主线程消息
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+					Map<String, String> sPara4 = new HashMap<String, String>();
+					//1.添加订单信息
+					JSONObject ev4=null;
+					try {
+						ev4 = new JSONObject(msg.obj.toString());							
+						sPara4.put("out_trade_no", ev4.getString("out_trade_no"));//订单编号
+								
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}					
+				    Log.i("EV_JNI","Send0.2="+sPara4.toString());
+					//2.生成支付请求消息
+					Map<String, String> map7 = AlipayConfigAPI.PostAliDelete(sPara4);
+			        try {          	       	                    	       	
+			           HttpRequester request = new HttpRequester();              
+			           String url = "https://mapi.alipay.com/gateway.do?" + "_input_charset=" + AlipayConfig.getInput_charset();           
+			           //3.发送支付订单信息
+			           HttpRespons hr = request.sendPost(url, map7);
+			           //4.得到返回字符串
+			           String strpicString=hr.getContent();	
+			           Log.i("EV_JNI","rec1="+strpicString);
+			           //5.解包返回的信息
+			           InputStream is = new ByteArrayInputStream(strpicString.getBytes());// 获取返回数据
+			           Map<String, String> map8=AlipayConfigAPI.PendAliDelete(is);
+			           Log.i("EV_JNI","rec2="+map8.toString());
+			           //向主线程返回信息
+			           Message tomain=mainhand.obtainMessage();	
+			           //协议失败
+			           if(map8.get("is_success").equals("F"))
+			           {
+			        	   tomain.what=SETFAILDELETEPROCHILD;
+						   tomain.obj=map8.get("error");
+			           }
+			           else
+			           {
+			        	   //业务处理失败
+			        	   if(map8.get("result_code").equals("FAIL"))
+				           {
+				        	   tomain.what=SETFAILDELETEBUSCHILD;
+							   tomain.obj=map8.get("detail_error_code")+map8.get("detail_error_des");
+				           }
+			        	   //通过支付宝提供的订单直接生成二维码
+			        	   else if(map8.get("result_code").equals("SUCCESS"))
+				           {
+				        	   tomain.what=SETDELETEMAIN;
+							   tomain.obj=map8.get("trade_status");
+				           }
+			           }
+			           Log.i("EV_JNI","rec3="+tomain.obj);				           
+					   mainhand.sendMessage(tomain); // 发送消息
+					   
+			       } catch (Exception e) {  
+			           e.printStackTrace();  
+			       }
+				break;
+				
 				case SETWEICHILD://子线程接收主线程微信消息
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
 					Map<String, String> swPara = new HashMap<String, String>();
