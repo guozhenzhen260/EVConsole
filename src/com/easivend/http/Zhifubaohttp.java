@@ -1,9 +1,11 @@
 package com.easivend.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +18,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.easivend.evprotocol.AlipayConfig;
+import com.easivend.alipay.AlipayConfig;
+import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.alipay.AlipaySubmit;
 import com.easivend.evprotocol.ToolClass;
 import com.easivend.weixing.WeixingSubmit;
@@ -25,7 +28,6 @@ import com.easivend.alipay.HttpRespons;
 
 public class Zhifubaohttp implements Runnable
 {
-	private PostZhifubaoInterface callBack=null;//与activity交互注册回调
 	private final int SETMAIN=1;//what标记,主线程接收到子线程支付宝金额二维码
 	private final int SETCHILD=2;//what标记,发送给子线程支付宝交易
 	private final int SETWEIMAIN=3;//what标记,主线程接收到子线程微信金额二维码
@@ -52,22 +54,28 @@ public class Zhifubaohttp implements Runnable
 				{
 				case SETCHILD://子线程接收主线程消息
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
-						//往支付宝服务器发送交易信息
 						Map<String, String> sPara = new HashMap<String, String>();
-						 sPara.put("service","alipay.acquire.precreate");
-						 sPara.put("partner","2088711021642556");//支付宝 PID号
-						 sPara.put("_input_charset","utf-8");//编码		
-						 sPara.put("seller_email", "2544282805@qq.com");//卖家支付宝帐户		 
-						 sPara.put("product_code","QR_CODE_OFFLINE");//二维码
-						 sPara.put("total_fee","0.1");//订单总金额		   
-						 sPara.put("out_trade_no","205211376305670");//商户网站唯一订单号		 
-						 sPara.put("subject","订单下载");	 
-					    String json=null;
+						//1.添加订单信息
+						SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+				        String datetime = tempDate.format(new java.util.Date()).toString(); 
+						JSONObject ev=null;
+						try {
+							ev = new JSONObject(msg.obj.toString());
+							
+							sPara.put("out_trade_no", ev.getString("id")+datetime);//订单编号
+							sPara.put("total_fee",ev.getString("money"));//订单总金额		
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						sPara.put("subject","支付宝二维码测试");//订单标题
+						//商品明细
+						String json=null;
 					    try {
 					    	JSONObject temp=new JSONObject();
-							temp.put("goodsName","water");
+							temp.put("goodsName","测试水");
 							temp.put("quantity","1");
-						    temp.put("price","0.1");
+						    temp.put("price",ev.getString("money"));
 						    JSONArray singArray=new JSONArray();//定义操作数组
 						    singArray.put(temp);
 						    json=singArray.toString();	
@@ -75,24 +83,30 @@ public class Zhifubaohttp implements Runnable
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					     sPara.put("goods_detail",json);	 
-						 Map<String, String> map1 = AlipaySubmit.buildRequestPara(sPara);
-						 Log.i("EV_JNI","Send1="+map1);
-				       try {          	       	                    	       	
+					    sPara.put("goods_detail",json);//商品明细
+					    sPara.put("it_b_pay","10m");//交易关闭时间
+						//2.生成支付请求消息
+						Map<String, String> map1 = AlipayConfigAPI.PostAliBuy(sPara);
+				        try {          	       	                    	       	
 				           HttpRequester request = new HttpRequester();              
-				           String url = "https://mapi.alipay.com/gateway.do?" + "_input_charset=" + AlipayConfig.input_charset;           
+				           String url = "https://mapi.alipay.com/gateway.do?" + "_input_charset=" + AlipayConfig.getInput_charset();           
+				           //3.发送支付订单信息
 				           HttpRespons hr = request.sendPost(url, map1);
-				           //result=hr.getContent();           
-				           String strpicString=hr.getContent();	//得到返回字符串
-				           
-				           
+				           //4.得到返回字符串
+				           String strpicString=hr.getContent();	
+				           Log.i("EV_JNI","rec1="+strpicString);
+				           //5.解包返回的信息
+				           InputStream is = new ByteArrayInputStream(strpicString.getBytes());// 获取返回数据
+				           Map<String, String> map2=AlipayConfigAPI.PendAliBuy(is);
 				           //通过支付宝提供的订单直接生成二维码
 				           String result=strpicString.substring(strpicString.indexOf("<qr_code>")+9, strpicString.indexOf("</qr_code>"));
-				           Log.i("EV_JNI","rec1="+result);
+				           Log.i("EV_JNI","rec3="+result);
 				           Message tomain=mainhand.obtainMessage();
 						   tomain.what=SETMAIN;
 						   tomain.obj=result;
 						   mainhand.sendMessage(tomain); // 发送消息
+						   
+						   
 //				           //下载图片
 //				           result=strpicString.substring(strpicString.indexOf("<pic_url>")+9, strpicString.indexOf("</pic_url>"));
 //						   //txt.setText(strpicString); // 清空内容编辑框	
@@ -130,7 +144,7 @@ public class Zhifubaohttp implements Runnable
 						
 						
 					break;
-				case SETWEICHILD://子线程接收主线程消息
+				case SETWEICHILD://子线程接收主线程微信消息
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
 					Map<String, String> swPara = new HashMap<String, String>();
 					 

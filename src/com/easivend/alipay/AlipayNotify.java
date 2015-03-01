@@ -6,7 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-import com.easivend.evprotocol.AlipayConfig;
+import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.MD5;
 
 /* *

@@ -1,7 +1,9 @@
 package com.example.evconsole;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.easivend.evprotocol.ToolClass;
-import com.easivend.http.PostZhifubaoInterface;
 import com.easivend.http.Zhifubaohttp;
 
 import android.app.Activity;
@@ -58,7 +60,16 @@ public class ZhifubaoTest extends Activity
 		    	childhand=zhifubaohttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
 				childmsg.what=SETCHILD;
-				childmsg.obj=mainhand.getLooper().getThread().getName()+"-->Hello World";
+				JSONObject ev=null;
+				try {
+					ev=new JSONObject();
+					ev.put("id", "0001");
+					ev.put("money", edtzhifubaotest.getText());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				childmsg.obj=ev;
 				childhand.sendMessage(childmsg);
 		    }
 		});

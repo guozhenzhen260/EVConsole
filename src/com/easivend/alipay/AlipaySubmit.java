@@ -2,7 +2,7 @@ package com.easivend.alipay;
 
 import java.util.Map;
 
-import com.easivend.evprotocol.AlipayConfig;
+import com.easivend.alipay.AlipayConfig;
 
 import com.easivend.alipay.MD5;
 

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.json.JSONObject;
 
@@ -151,6 +152,56 @@ public class ToolClass
             e.printStackTrace();
         }
     }
+    
+    /**
+     * 读取配置
+     */
+    public static Map<String, String> ReadConfigFile() 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard";
+    	final String NOSDCARD_DIR=File.separator;
+    	String  sDir =null,str=null;
+    	Map<String, String> list=null;
+    	    	
+        try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	 
+        	 
+        	  
+    	  	 //打开文件
+    		  FileInputStream input = new FileInputStream(sDir+File.separator+"easivendconfig.txt");
+    		 //输出信息
+  	          Scanner scan=new Scanner(input);
+  	          while(scan.hasNext())
+  	          {
+  	           	str=scan.next()+"\n";
+  	          }
+  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str);
+  	         //将json格式解包
+  	         list=new HashMap<String,String>();      			
+			JSONObject object=new JSONObject(str);      				
+			Gson gson=new Gson();
+			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+			//Log.i("EV_JNI",perobj.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+    	  
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
 	
 	//发送金额函数，浮点的元,转为以分为单位发送到底下
 	public static long MoneySend(float sendMoney)
