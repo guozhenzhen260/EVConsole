@@ -80,6 +80,7 @@ public class ZhifubaoTest extends Activity
 		Intent intent=getIntent();
 		final String id=intent.getStringExtra("id");
 		Log.i("EV_JNI","Send0.0="+id);
+		//·¢ËÍ¶©µ¥
 		btnzhifubaotestok = (Button)findViewById(R.id.btnzhifubaotestok);
 		btnzhifubaotestok.setOnClickListener(new OnClickListener() {
 		    @Override

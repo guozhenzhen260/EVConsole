@@ -24,11 +24,11 @@ public class AlipayConfigAPI {
     {
     	String str=null;
     	//alipay
-    	str=list.get("partner");    	
+    	str=list.get("alipartner");    	
     	AlipayConfig.setPartner(str);
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<partner="+str);
     	
-    	str=list.get("seller_email");
+    	str=list.get("aliseller_email");
     	AlipayConfig.setSeller_email(str);
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<seller_email="+str);
     	

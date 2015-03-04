@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.evprotocol.ToolClass;
+import com.easivend.weixing.WeiConfigAPI;
 import com.example.business.Business;
 
 import android.app.Activity;
@@ -47,7 +48,8 @@ public class Login extends Activity
         Map<String, String> list=ToolClass.ReadConfigFile();
         String com = list.get("com");	
         txtlogin.setText(com);
-        AlipayConfigAPI.SetAliConfig(list);//设置阿里和微信账号
+        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
+        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取登录按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
         btnclose.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
