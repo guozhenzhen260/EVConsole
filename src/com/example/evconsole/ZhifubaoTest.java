@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 import com.easivend.http.Zhifubaohttp;
 
 import android.app.Activity;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 import android.app.Activity;
 import android.content.Intent;

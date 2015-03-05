@@ -9,7 +9,11 @@ import java.util.List;
 
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ProPictureAdapter;
+import com.easivend.common.ShowSortAdapter;
+import com.easivend.common.ToolClass;
+import com.easivend.common.Vmc_ClassAdapter;
+import com.easivend.common.Vmc_ProductAdapter;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_product;
 
@@ -60,15 +64,12 @@ public class GoodsManager extends TabActivity
 	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
 	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
 	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;
-	// 定义字符串数组，存储系统功能
-    private String[] proID = null,productID = null;
-    private String[] proImage = null;
-    private String[] promarket = null;
-    private String[] prosales = null;
+	// 定义商品列表
+	Vmc_ProductAdapter productAdapter=null;
     private GridView gvProduct=null;
     //排序有关的定义
+    private ShowSortAdapter showSortAdapter=null;
     private ArrayAdapter<String> arrayadapter = null;
-    private List<String> dataSortID = null,dataSortName=null;
     private Spinner spinprodsort=null;
     private String datasort="shoudong";
     private Button btnsortup=null,btnsortdown=null;
@@ -209,9 +210,11 @@ public class GoodsManager extends TabActivity
     	//===============
     	//商品设置页面
     	//===============
-    	showProInfo("",datasort);    	
+    	// 商品表中的所有商品信息补充到商品数据结构数组中
+    	productAdapter=new Vmc_ProductAdapter();
+    	productAdapter.showProInfo(this,"",datasort);     	
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
-    	ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
+    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), this);// 创建pictureAdapter对象
     	gvProduct.setAdapter(adapter);// 为GridView设置数据源
     	gvProduct.setOnItemClickListener(new OnItemClickListener() {
 
@@ -219,6 +222,7 @@ public class GoodsManager extends TabActivity
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
+				String productID[]=productAdapter.getProductID();
 				strInfo = productID[arg2];// 记录收入信息               
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo);
 //				intent = new Intent();
@@ -275,8 +279,8 @@ public class GoodsManager extends TabActivity
 					    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
 					    					0,0,date,date,"","","",0,0);				    			
 					    			productDAO.detele(tb_vmc_product);// 添加商品信息
-					    			showProInfo("",datasort); 
-									ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
+					    			productAdapter.showProInfo(GoodsManager.this,"",datasort); 
+									ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
 					    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 			    				}
 		    		      }
@@ -309,8 +313,8 @@ public class GoodsManager extends TabActivity
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub				
-				showProInfo(edtfindProduct.getText().toString(),datasort); 
-				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, GoodsManager.this);// 创建pictureAdapter对象
+				productAdapter.showProInfo(GoodsManager.this,edtfindProduct.getText().toString(),datasort); 
+				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源				
 			}
 			
@@ -331,7 +335,10 @@ public class GoodsManager extends TabActivity
     	btnsortdown = (Button) findViewById(R.id.btnsortdown);
     	//排序
     	this.spinprodsort = (Spinner) super.findViewById(R.id.spinprodsort);
-    	showsortInfo();
+    	// 使用字符串数组初始化ArrayAdapter对象
+    	showSortAdapter=new ShowSortAdapter();    	
+	    arrayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, showSortAdapter.getDataSortName());
+	    spinprodsort.setAdapter(arrayadapter);// 为ListView列表设置数据源
     	spinprodsort.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -339,9 +346,10 @@ public class GoodsManager extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				List<String> dataSortID=showSortAdapter.getDataSortID();
 				datasort=dataSortID.get(arg2);
-				showProInfo(edtfindProduct.getText().toString(),datasort); 
-				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, GoodsManager.this);// 创建pictureAdapter对象
+				productAdapter.showProInfo(GoodsManager.this,edtfindProduct.getText().toString(),datasort); 
+				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
 		    	if(datasort.equals("shoudong"))
 		    	{
@@ -374,8 +382,8 @@ public class GoodsManager extends TabActivity
 	    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
 	    					0,0,date,date,"","","",0,0);				    			
 	    			productDAO.sortupdown(tb_vmc_product,1);// 添加商品信息
-	    			showProInfo("",datasort); 
-					ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
+	    			productAdapter.showProInfo(GoodsManager.this,"",datasort); 
+					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
 	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 		    	}
 		    }
@@ -393,8 +401,8 @@ public class GoodsManager extends TabActivity
 	    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
 	    					0,0,date,date,"","","",0,0);				    			
 	    			productDAO.sortupdown(tb_vmc_product,2);// 添加商品信息
-	    			showProInfo("",datasort); 
-					ProPictureAdapter adapter = new ProPictureAdapter(proID, promarket, prosales, proImage, GoodsManager.this);
+	    			productAdapter.showProInfo(GoodsManager.this,"",datasort); 
+					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
 	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 		    	}
 		    }
@@ -406,20 +414,9 @@ public class GoodsManager extends TabActivity
 	// 显示商品分类信息
 	private void showInfo() 
 	{
-	    String[] strInfos = null;// 定义字符串数组，用来存储收入信息
 	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
-	    vmc_classDAO classdao = new vmc_classDAO(GoodsManager.this);// 创建InaccountDAO对象
-	    // 获取所有收入信息，并存储到List泛型集合中
-	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
-	    strInfos = new String[listinfos.size()];// 设置字符串数组的长度
-	    int m = 0;// 定义一个开始标识
-	    // 遍历List泛型集合
-	    for (Tb_vmc_class tb_inaccount : listinfos) 
-	    {
-	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
-	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
-	        m++;// 标识加1
-	    }
+	    Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
+	    String[] strInfos = vmc_classAdapter.showListInfo(GoodsManager.this);
 	    // 使用字符串数组初始化ArrayAdapter对象
 	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
 	    lvinfo.setAdapter(arrayAdapter);// 为ListView列表设置数据源
@@ -433,44 +430,7 @@ public class GoodsManager extends TabActivity
     }
 	//===============
 	//商品设置页面
-	//===============
-	// 商品表中的所有商品信息补充到商品数据结构数组中
-	private void showProInfo(String param,String sort) 
-	{
-	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
-	    List<Tb_vmc_product> listinfos=null;
-	    vmc_productDAO productdao = new vmc_productDAO(GoodsManager.this);// 创建InaccountDAO对象
-	    if(param.isEmpty()==true)
-	    {
-		    // 获取所有收入信息，并存储到List泛型集合中
-		    listinfos = productdao.getScrollData(0, (int) productdao.getCount(),sort);
-	    }
-	    else
-	    {
-		    // 获取所有收入信息，并存储到List泛型集合中
-		    listinfos = productdao.getScrollData(param,sort);
-	    }
-	    proID = new String[listinfos.size()];// 设置字符串数组的长度
-	    productID = new String[listinfos.size()];// 设置字符串数组的长度
-	    proImage = new String[listinfos.size()];// 设置字符串数组的长度
-	    promarket = new String[listinfos.size()];// 设置字符串数组的长度
-	    prosales = new String[listinfos.size()];// 设置字符串数组的长度
-	    int m = 0;// 定义一个开始标识
-	    // 遍历List泛型集合
-	    for (Tb_vmc_product tb_inaccount : listinfos) 
-	    {
-	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
-	    	proID[m] = tb_inaccount.getProductID()+"-"+tb_inaccount.getProductName();
-	    	productID[m] = tb_inaccount.getProductID();
-	    	proImage[m] = tb_inaccount.getAttBatch1();
-	    	promarket[m] = String.valueOf(tb_inaccount.getMarketPrice());
-	    	prosales[m] = String.valueOf(tb_inaccount.getSalesPrice());
-	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID[m]+" marketPrice="
-					+promarket[m]+" salesPrice="+prosales[m]+" attBatch1="
-					+proImage[m]+" attBatch2="+tb_inaccount.getAttBatch2()+" attBatch3="+tb_inaccount.getAttBatch3());
-	        m++;// 标识加1
-	    }
-	}
+	//===============	
 	//接收GoodsProSet返回信息
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -482,159 +442,12 @@ public class GoodsManager extends TabActivity
 				Bundle bundle=data.getExtras();
 				String str=bundle.getString("back");
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品ret="+str);
-				showProInfo("",datasort); 
-				ProPictureAdapter adapter = new ProPictureAdapter(proID,promarket,prosales,proImage, this);// 创建pictureAdapter对象
+				productAdapter.showProInfo(GoodsManager.this,"",datasort); 
+				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
 			}			
 		}
 	}
-	// spinner显示商品检索信息
-	private void showsortInfo() 
-	{	    
-	    // 获取所有收入信息，并存储到List泛型集合中
-	    dataSortID = new ArrayList<String>();
-	    dataSortName = new ArrayList<String>();
-	    dataSortID.add("sale");
-	    dataSortName.add("sale销售情况");
-	    dataSortID.add("marketPrice");
-	    dataSortName.add("marketPrice原价");
-	    dataSortID.add("salesPrice");
-	    dataSortName.add("salesPrice销售价");
-	    dataSortID.add("shelfLife");
-	    dataSortName.add("shelfLife过保质期");
-	    dataSortID.add("colucount");
-	    dataSortName.add("colucount剩余数量");
-	    dataSortID.add("onloadTime");
-	    dataSortName.add("onloadTime上架时间");
-	    dataSortID.add("shoudong");
-	    dataSortName.add("shoudong手动更改");	    
-	    // 使用字符串数组初始化ArrayAdapter对象
-	    arrayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataSortName);
-	    spinprodsort.setAdapter(arrayadapter);// 为ListView列表设置数据源
-	}
+	
+	
 }
-
-//===============
-//商品分类设置页面
-//===============
-
-
-//===============
-//商品设置页面
-//===============
-class ProViewHolder {// 创建ProViewHolder类存放控件集合
-
-    public TextView proID;// 创建商品ID和名称
-    public ImageView image;// 创建ImageView对象
-    public TextView promarket;// 创建商品原价
-    public TextView prosales;// 创建商品销售价
-}
-
-class ProPicture {// 创建ProPicture类
-
-    private String proID;// 定义字符串，表示图像标题
-    private String proImage;//图像位置
-    private String promarket;//原价
-    private String prosales;//现价
-	public ProPicture(String proID, String promarket, String prosales,String proImage) {
-		super();
-		this.proID = proID;
-		this.promarket = promarket;
-		this.prosales = prosales;
-		this.proImage = proImage;
-		
-	}
-	public String getTitle() {
-		return proID;
-	}
-	public void setTitle(String proID) {
-		this.proID = proID;
-	}
-	public String getProImage() {
-		return proImage;
-	}
-	public void setProImage(String proImage) {
-		this.proImage = proImage;
-	}
-	public String getPromarket() {
-		return promarket;
-	}
-	public void setPromarket(String promarket) {
-		this.promarket = promarket;
-	}
-	public String getProsales() {
-		return prosales;
-	}
-	public void setProsales(String prosales) {
-		this.prosales = prosales;
-	}
-    
-}
-
-class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
-
-    private LayoutInflater inflater;// 创建LayoutInflater对象
-    private List<ProPicture> pictures;// 创建List泛型集合
-
-    // 为类创建构造函数
-    public ProPictureAdapter(String[] proID, String[] promarket,String[] prosales,String[] proImage, Context context) {
-        super();
-        pictures = new ArrayList<ProPicture>();// 初始化泛型集合对象
-        inflater = LayoutInflater.from(context);// 初始化LayoutInflater对象
-        for (int i = 0; i < proImage.length; i++)// 遍历图像数组
-        {
-            ProPicture picture = new ProPicture(proID[i],promarket[i],prosales[i], proImage[i]);// 使用标题和图像生成ProPicture对象
-            pictures.add(picture);// 将Picture对象添加到泛型集合中
-        }
-    }
-
-    @Override
-    public int getCount() {// 获取泛型集合的长度
-        if (null != pictures) {// 如果泛型集合不为空
-            return pictures.size();// 返回泛型长度
-        } else {
-            return 0;// 返回0
-        }
-    }
-
-    @Override
-    public Object getItem(int arg0) {
-        return pictures.get(arg0);// 获取泛型集合指定索引处的项
-    }
-
-    @Override
-    public long getItemId(int arg0) {
-        return arg0;// 返回泛型集合的索引
-    }
-    
-    
-    @Override
-    public View getView(int arg0, View arg1, ViewGroup arg2) {
-        ProViewHolder viewHolder;// 创建ProViewHolder对象
-        if (arg1 == null) {// 判断图像标识是否为空
-
-            arg1 = inflater.inflate(R.layout.productgv, null);// 设置图像标识
-            viewHolder = new ProViewHolder();// 初始化ProViewHolder对象
-            viewHolder.proID = (TextView) arg1.findViewById(R.id.proID);// 设置图像标题
-            viewHolder.image = (ImageView) arg1.findViewById(R.id.proImage);// 设置图像的二进制值
-            viewHolder.promarket = (TextView) arg1.findViewById(R.id.promarket);// 设置图像标题
-            viewHolder.prosales = (TextView) arg1.findViewById(R.id.prosales);// 设置图像标题
-            
-            arg1.setTag(viewHolder);// 设置提示
-        } 
-        else
-        {
-            viewHolder = (ProViewHolder) arg1.getTag();// 设置提示
-        }
-        
-        viewHolder.proID.setText(pictures.get(arg0).getTitle());// 设置图像ID
-        viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置图像原价
-        viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置图像原价
-        /*为什么图片一定要转化为 Bitmap格式的！！ */
-        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-        viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
-        return arg1;// 返回图像标识
-    }
-}
-
-

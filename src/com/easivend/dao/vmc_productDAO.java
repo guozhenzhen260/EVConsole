@@ -24,7 +24,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_product;
 

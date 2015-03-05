@@ -21,7 +21,7 @@ import java.util.Map;
 
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 
 import android.app.Activity;
 import android.os.Bundle;

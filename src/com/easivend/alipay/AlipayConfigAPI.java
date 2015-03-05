@@ -16,7 +16,7 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.easivend.alipay.AlipayConfig;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 
 public class AlipayConfigAPI {
 	//…Ë÷√÷ß∏∂±¶’À∫≈

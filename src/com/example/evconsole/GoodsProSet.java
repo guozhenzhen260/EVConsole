@@ -7,7 +7,8 @@ import java.util.List;
 
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
+import com.easivend.common.Vmc_ClassAdapter;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_product;
 
@@ -40,9 +41,8 @@ public class GoodsProSet extends Activity
 	private Button btnImg=null,btnaddProSave=null,btnaddProexit=null;
 	private EditText edtproductID=null,edtproductName=null,edtmarketPrice=null,edtsalesPrice=null,
 			edtshelfLife=null,edtproductDesc=null;
-	private TextView onloadTime=null;
-	private ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象 
-	private String[] strInfos = null,proclassID = null;// 定义字符串数组，用来存储收入信息
+	private TextView onloadTime=null;	
+	private String[] proclassID = null;// 定义字符串数组，用来存储商品id信息
 	private Spinner spinproductclassID=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -197,26 +197,14 @@ public class GoodsProSet extends Activity
 	
 	// 显示商品分类信息
 	private void showInfo() 
-	{	    
-	    vmc_classDAO classdao = new vmc_classDAO(GoodsProSet.this);// 创建InaccountDAO对象
-	    // 获取所有收入信息，并存储到List泛型集合中
-	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
-	    strInfos = new String[listinfos.size()+1];// 设置字符串数组的长度
-	    proclassID = new String[listinfos.size()+1];// 设置字符串数组的长度
-	    int m = 0;// 定义一个开始标识
-	    //添加全部，即不分类这一项
-	    strInfos[m++] = "0<---|--->全部";        
-	    // 遍历List泛型集合
-	    for (Tb_vmc_class tb_inaccount : listinfos) 
-	    {
-	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
-	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
-	        proclassID[m] = tb_inaccount.getClassID();
-	        m++;// 标识加1
-	    }
+	{	  
+		ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象 
+		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
+	    String[] strInfos = vmc_classAdapter.showSpinInfo(GoodsProSet.this);	    
 	    // 使用字符串数组初始化ArrayAdapter对象
 	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
 	    spinproductclassID.setAdapter(arrayAdapter);// 为ListView列表设置数据源
+	    proclassID=vmc_classAdapter.getProclassID();
 	}
 	@Override  
 	//选取图片返回值

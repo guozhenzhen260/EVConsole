@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.json.JSONObject;
 
+import com.easivend.common.ToolClass;
 import com.easivend.evprotocol.EVprotocol.EV_listener;
 
 import android.os.Handler;

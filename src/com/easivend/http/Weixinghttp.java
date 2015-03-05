@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.easivend.alipay.AlipayConfigAPI;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 import com.easivend.weixing.WeiConfigAPI;
 
 import android.os.Handler;

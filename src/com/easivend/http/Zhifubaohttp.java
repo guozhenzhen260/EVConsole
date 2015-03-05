@@ -21,7 +21,7 @@ import android.util.Log;
 import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.alipay.AlipaySubmit;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 import com.easivend.weixing.WeixingSubmit;
 import com.easivend.alipay.HttpRequester;
 import com.easivend.alipay.HttpRespons;

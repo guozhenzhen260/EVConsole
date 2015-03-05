@@ -14,7 +14,7 @@
 ********************************************************************************************************/
 
 
-package com.easivend.evprotocol;
+package com.easivend.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -154,7 +154,7 @@ public class ToolClass
     }
     
     /**
-     * 读取配置
+     * 读取配置文件
      */
     public static Map<String, String> ReadConfigFile() 
     {
@@ -273,7 +273,6 @@ public class ToolClass
       * @return void
       * @throws
       */
-
      //要转换的地址或字符串,可以是中文
      public static Bitmap createQRImage(String url)
      {

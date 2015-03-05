@@ -22,7 +22,7 @@ import android.util.Xml;
 
 import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipaySubmit;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 
 public class WeiConfigAPI 
 {

@@ -20,7 +20,7 @@ package com.example.evconsole;
 import java.util.Map;
 
 import com.easivend.alipay.AlipayConfigAPI;
-import com.easivend.evprotocol.ToolClass;
+import com.easivend.common.ToolClass;
 import com.easivend.weixing.WeiConfigAPI;
 import com.example.business.Business;
 
