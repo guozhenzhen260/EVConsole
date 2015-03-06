@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.evconsole.Login"
+            android:name="com.easivend.app.maintain.Login"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,40 +23,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MaintainActivity"
+            android:name="com.easivend.app.maintain.MaintainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".AddInaccount"
+            android:name="com.easivend.app.maintain.AddInaccount"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".HuodaoTest"
+            android:name="com.easivend.app.maintain.HuodaoTest"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".GoodsManager"
+            android:name="com.easivend.app.maintain.GoodsManager"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".GoodsProSet"
+            android:name="com.easivend.app.maintain.GoodsProSet"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".ParamManager"
+            android:name="com.easivend.app.maintain.ParamManager"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".ZhifubaoTest"
+            android:name="com.easivend.app.maintain.ZhifubaoTest"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".WeixingTest"
+            android:name="com.easivend.app.maintain.WeixingTest"
             android:label="@string/app_name" >
         </activity>
        
         <activity
-            android:name="com.example.business.Business"
+            android:name="com.easivend.app.business.Business"
             android:label="@string/app_name" >
         </activity>
     </application>
