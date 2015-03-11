@@ -16,29 +16,74 @@
 package com.easivend.app.maintain;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
+import com.easivend.dao.vmc_cabinetDAO;
+import com.easivend.dao.vmc_classDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.model.Tb_vmc_cabinet;
+import com.easivend.model.Tb_vmc_class;
+import com.easivend.common.HuoPictureAdapter;
+import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.common.Vmc_CabinetAdapter;
+import com.easivend.common.Vmc_ClassAdapter;
+import com.easivend.common.Vmc_HuoAdapter;
+import com.easivend.common.Vmc_ProductAdapter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.TabActivity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SlidingDrawer;
+import android.widget.SlidingDrawer.OnDrawerCloseListener;
+import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class HuodaoTest extends Activity 
+public class HuodaoTest extends TabActivity 
 {
+	private TabHost mytabhost = null;
+	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest};//内嵌布局文件的id
+	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetexit=null;
+	private Spinner spinhuosetCab=null;
+	private String[] cabinetID=null;
+	Map<String, Integer> huoSet= new TreeMap<String,Integer>();
+	// 定义货道列表
+	Vmc_HuoAdapter huoAdapter=null;
+	GridView gvhuodao=null;
+	
+	
 	private int device=0;//出货柜号		
 	private int status=0;//出货结果
 	private int hdid=0;//货道id
@@ -60,14 +105,27 @@ public class HuodaoTest extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.huodao);// 设置布局文件
-		//注册出货监听器
+		//setContentView(R.layout.huodao);// 设置布局文件
+		this.mytabhost = super.getTabHost();//取得TabHost对象
+        LayoutInflater.from(this).inflate(R.layout.huodao, this.mytabhost.getTabContentView(),true);
+        //增加Tab的组件
+        TabSpec myTabhuodaomana=this.mytabhost.newTabSpec("tab0");
+        myTabhuodaomana.setIndicator("货道设置");
+        myTabhuodaomana.setContent(this.layres[0]);
+    	this.mytabhost.addTab(myTabhuodaomana); 
+    	
+    	TabSpec myTabhuodaotest=this.mytabhost.newTabSpec("tab1");
+    	myTabhuodaotest.setIndicator("货道测试");
+    	myTabhuodaotest.setContent(this.layres[1]);
+    	this.mytabhost.addTab(myTabhuodaotest); 
+    	
+    	//注册出货监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
 			
 			@Override
 			public void jniCallback(Map<String, Integer> allSet) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao出货结果");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao货道相关");
 				Map<String, Integer> Set= allSet;
 				int jnirst=Set.get("EV_TYPE");
 				switch (jnirst)
@@ -86,9 +144,83 @@ public class HuodaoTest extends Activity
 						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
 								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
 						break;
+					case EVprotocolAPI.EV_COLUMN_RPT://接收子线程消息
+						huoSet.clear();
+						//输出内容
+				        java.util.Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
+				        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+				        while(iter.hasNext())
+				        {
+				            Entry<String, Integer> me=iter.next();
+				            if(me.getKey().equals("EV_TYPE")!=true)
+				            	huoSet.put(me.getKey(), me.getValue());
+				        } 
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
+						showhuodao();						
+						break;
 				}
 			}
 		}); 
+    	//===============
+    	//货道设置页面
+    	//===============
+  	    
+  	    huoAdapter=new Vmc_HuoAdapter();
+  	    this.gvhuodao=(GridView) findViewById(R.id.gvhuodao); 
+    	spinhuosetCab= (Spinner) findViewById(R.id.spinhuosetCab); 
+    	//显示柜信息
+    	showabinet();
+    	this.spinhuosetCab.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				EVprotocolAPI.getColumn(Integer.parseInt(cabinetID[arg2]));
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+    	btnhuosetadd = (Button) findViewById(R.id.btnhuosetadd);
+    	btnhuosetadd.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	cabinetAdd();
+		    }
+		});
+    	btnhuosetdel = (Button) findViewById(R.id.btnhuosetdel);
+    	btnhuosetexit = (Button) findViewById(R.id.btnhuosetexit);
+    	btnhuosetexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	finish();
+		    }
+		});    	
+    	
+    	//动态设置控件高度
+    	//
+    	DisplayMetrics  dm = new DisplayMetrics();  
+        //取得窗口属性  
+        getWindowManager().getDefaultDisplay().getMetrics(dm);  
+        //窗口的宽度  
+        int screenWidth = dm.widthPixels;          
+        //窗口高度  
+        int screenHeight = dm.heightPixels;      
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
+				+"],["+screenHeight+"]");	
+		
+    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvhuodao.getLayoutParams(); // 取控件mGrid当前的布局参数
+    	linearParams.height =  screenHeight-500;// 当控件的高强制设成75象素
+    	gvhuodao.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+  	   
+    	//===============
+    	//出货测试页面
+    	//===============
+		
 		
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
@@ -164,5 +296,92 @@ public class HuodaoTest extends Activity
 		    }
 		});
 	}
-	
+	//===============
+	//货道设置页面
+	//===============
+	//添加柜号
+	private void cabinetAdd()
+	{
+		final String[] values=null;
+		View myview=null;    	
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(HuodaoTest.this);
+		myview=factory.inflate(R.layout.selectcabinet, null);
+		final EditText dialogcab=(EditText) myview.findViewById(R.id.dialogcab);
+		final Spinner dialogspincabtype=(Spinner) myview.findViewById(R.id.dialogspincabtype);
+		
+		
+		Dialog dialog = new AlertDialog.Builder(HuodaoTest.this)
+		.setTitle("设置")
+		.setPositiveButton("保存", new DialogInterface.OnClickListener() 	
+		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				// TODO Auto-generated method stub	
+				
+				//Toast.makeText(HuodaoTest.this, "数值="+dialogspincabtype.getSelectedItemId(), Toast.LENGTH_LONG).show();
+				String no = dialogcab.getText().toString();
+		    	int type = (int)dialogspincabtype.getSelectedItemId()+1;
+		    	if ((no.isEmpty()!=true)&&(type!=0))
+		    	{
+		    		addabinet(no,type);
+		    	}
+		    	else
+		        {
+		            Toast.makeText(HuodaoTest.this, "请输入货柜编号和类型！", Toast.LENGTH_SHORT).show();
+		        }
+			}
+		})
+		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub				
+			}
+    	})
+		.setView(myview)//这里将对话框布局文件加入到对话框中
+		.create();
+		dialog.show();	
+	}
+	//往数据库添加柜类型表的值
+	private void addabinet(String no,int type)
+	{
+		try 
+		{
+			// 创建InaccountDAO对象
+			vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
+            // 创建Tb_inaccount对象
+        	Tb_vmc_cabinet tb_vmc_cabinet = new Tb_vmc_cabinet(no, type);
+        	cabinetDAO.add(tb_vmc_cabinet);// 添加收入信息
+        	showabinet();//显示柜信息
+        	// 弹出信息提示
+            Toast.makeText(HuodaoTest.this, "〖货柜〗数据添加成功！", Toast.LENGTH_SHORT).show();
+            
+		} catch (Exception e)
+		{
+			// TODO: handle exception
+			Toast.makeText(HuodaoTest.this, "货柜添加失败！", Toast.LENGTH_SHORT).show();
+		}
+	}
+	//显示全部柜信息
+	private void showabinet()
+	{
+		ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象 
+		Vmc_CabinetAdapter vmc_cabAdapter=new Vmc_CabinetAdapter();
+	    String[] strInfos = vmc_cabAdapter.showSpinInfo(HuodaoTest.this);	    
+	    // 使用字符串数组初始化ArrayAdapter对象
+	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
+	    spinhuosetCab.setAdapter(arrayAdapter);// 为ListView列表设置数据源
+	    cabinetID=vmc_cabAdapter.getCabinetID();    	
+	}
+	//导入本柜全部货道信息
+	private void showhuodao()
+	{
+		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet);
+		HuoPictureAdapter adapter = new HuoPictureAdapter(cabinetID[0],huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+		gvhuodao.setAdapter(adapter);// 为GridView设置数据源
+	}
 }

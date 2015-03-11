@@ -55,7 +55,7 @@ public class MaintainActivity extends Activity
 	private GridView gvInfo;// 创建GridView对象
 	private ProgressBar barmaintain=null;
 	// 定义字符串数组，存储系统功能
-    private String[] titles = new String[] { "商品管理", "出货测试", "出格子测试", "预留接口", "预留接口", "参数配置", "预留接口", "退出" };
+    private String[] titles = new String[] { "商品管理", "货道管理", "预留接口", "预留接口", "预留接口", "参数配置", "预留接口", "退出" };
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };

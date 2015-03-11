@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.easivend.common.ToolClass;
@@ -37,15 +39,16 @@ public class EVprotocolAPI
 	static EVprotocol ev=null;
 	private static JNIInterface callBack=null;//与activity交互注册回调
 	private static Call_json callJson = new Call_json();//与JNI交互注册回调	
-	private static Map<String,Integer> allSet = new HashMap<String,Integer>() ;
+	private static Map<String,Integer> allSet = new TreeMap<String,Integer>() ;
 	private static int EV_TYPE=0;	
 	public static final int EV_INITING=1;//正在初始化
 	public static final int EV_ONLINE=2;//成功连接
 	public static final int EV_OFFLINE=3;//断开连接
 	public static final int EV_RESTART=4;//主控板重启心动
-	public static final int EV_TRADE_RPT=5;//出货返回	
-	public static final int EV_PAYIN_RPT=6;//投入纸币
-	public static final int EV_PAYOUT_RPT=7;//找零结果
+	public static final int EV_TRADE_RPT=5;//出货返回
+	public static final int EV_COLUMN_RPT=6;//货道状态上报
+	public static final int EV_PAYIN_RPT=7;//投入纸币
+	public static final int EV_PAYOUT_RPT=8;//找零结果
 	
 	//实例化hand邮箱，并且进行pend
 	private static Handler EVProhand=new Handler()
@@ -149,6 +152,24 @@ public class EVprotocolAPI
 //							childmsg.obj=allSet;
 //							mainHandler.sendMessage(childmsg);		
 							//往接口回调信息
+							callBack.jniCallback(allSet);
+						}
+					    //货道状态上报
+						else if(str_evType.equals("EV_COLUMN_RPT"))
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道状态上报");
+							EV_TYPE=EV_COLUMN_RPT;
+							JSONArray arr=ev_head.getJSONArray("column");//返回json数组
+							//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道2:"+arr.toString());
+							//往接口回调信息
+							allSet.clear();	
+							allSet.put("EV_TYPE", EV_COLUMN_RPT);
+							for(int i=0;i<arr.length();i++)
+							{
+								JSONObject object2=arr.getJSONObject(i);
+								allSet.put(String.valueOf(object2.getInt("no")), object2.getInt("state"));								
+							}
+							//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道3:"+allSet.toString());
 							callBack.jniCallback(allSet);
 						}
 					    //投币上报
@@ -268,6 +289,18 @@ public class EVprotocolAPI
 	}
 	
 	
-	
+	/*********************************************************************************************************
+	** Function name:     	getColumn
+	** Descriptions:	    VMC获取货道接口
+	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
+	** input parameters:    cabinet:1主柜,2副柜
+	** output parameters:   无
+	** Returned value:      1请求发送成功   0:请求发送失败
+	*********************************************************************************************************/
+	public  static int getColumn(int cabinet)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIgetColumn>>]"+cabinet);
+		return ev.getColumn(cabinet);		
+	}
 			
 }

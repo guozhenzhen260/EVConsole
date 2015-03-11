@@ -33,16 +33,9 @@ public class EVprotocol {
 			ev_thread = new EV_Thread(this);
 			ev_thread.start();
 		}
-		ev = this;//如果有构造则将指针传递给静态变量
 	} 
 	
-	private static EVprotocol ev = null;
-	public static EVprotocol obtain(){ //节约内存消耗
-		if(ev == null){
-			ev = new EVprotocol();
-		}
-		return ev;
-	}
+	
 	
 	//加载JNI动态链接库
 	static{
@@ -105,12 +98,35 @@ public class EVprotocol {
 	/*********************************************************************************************************
 	** Function name:     	payout
 	** Descriptions:	    VMC出币接口
-	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回出货的结果进行解析
+	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
 	** input parameters:    value:要出币的金额(单位:分)
 	** output parameters:   无
 	** Returned value:      1请求发送成功   0:请求发送失败
 	*********************************************************************************************************/
 	public  native int payout(long value);
+	
+	
+	/*********************************************************************************************************
+	** Function name:     	payback
+	** Descriptions:	    VMC退币接口
+	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
+	** input parameters:    无
+	** output parameters:   无
+	** Returned value:      1请求发送成功   0:请求发送失败
+	*********************************************************************************************************/
+	public  native int payback();
+	
+	
+	/*********************************************************************************************************
+	** Function name:     	getColumn
+	** Descriptions:	    VMC获取货道接口
+	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
+	** input parameters:    cabinet:柜号
+	** output parameters:   无
+	** Returned value:      1请求发送成功   0:请求发送失败
+	*********************************************************************************************************/
+	public  native int getColumn(int cabinet);
+	
 	
 	
 	
