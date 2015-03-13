@@ -9,7 +9,10 @@ import java.util.Set;
 
 import android.content.Context;
 
+import com.easivend.app.maintain.GoodsProSet;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
+import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
 
 public class Vmc_HuoAdapter 
@@ -20,21 +23,14 @@ public class Vmc_HuoAdapter
     private String[] huolasttime = null;
     private String[] proImage = null;
     // 商品表中的所有商品信息补充到商品数据结构数组中
-    public void showProInfo(Context context,String param,Map<String, Integer> set) 
+    public void showProInfo(Context context,String param,Map<String, Integer> set,String cabID) 
  	{
-// 	    List<Tb_vmc_product> listinfos=null;//数据表list类集
-// 	    // 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_product表中
-// 	    vmc_productDAO productdao = new vmc_productDAO(context);
-// 	    if(param.isEmpty()==true)
-// 	    {
-// 		    // 获取所有收入信息，并存储到List泛型集合中
-// 		    listinfos = productdao.getScrollData(0, (int) productdao.getCount(),sort);
-// 	    }
-// 	    else
-// 	    {
-// 		    // 获取所有收入信息，并存储到List泛型集合中
-// 		    listinfos = productdao.getScrollData(param,sort);
-// 	    }
+ 	    List<Tb_vmc_column> listinfos=null;//数据表list类集
+ 	    // 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
+ 	    vmc_columnDAO columnDAO = new vmc_columnDAO(context);;
+ 	    // 获取所有收入信息，并存储到List泛型集合中
+ 		listinfos = columnDAO.getScrollData(cabID);
+ 	   
     	
  	    huoID = new String[set.size()];// 设置字符串数组的长度
  	    huoproID = new String[set.size()];// 设置字符串数组的长度
@@ -54,23 +50,28 @@ public class Vmc_HuoAdapter
            huolasttime[m]="0";
            proImage[m]="0";
            //System.out.println(me.getKey()+"--"+me.getValue());
+           //遍历货道对应的商品信息
+           // 遍历List泛型集合
+    	   for (Tb_vmc_column tb_inaccount : listinfos) 
+    	   {
+    	    	if(
+    	    			(cabID.equals(tb_inaccount.getCabineID())==true)
+    	    			&&(huoID[m].equals(tb_inaccount.getColumnID())==true)
+    	          )
+    	    	{
+	    	    	// 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
+	    	    	huoproID[m] = tb_inaccount.getProductID();
+	    	    	huoRemain[m] = String.valueOf(tb_inaccount.getPathRemain());
+	    	    	huolasttime[m] = tb_inaccount.getLasttime();  
+	    	    	//得到这个商品id对应的图片
+	    	    	vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
+	    		    // 获取所有收入信息，并存储到List泛型集合中
+	    		    Tb_vmc_product tb_product = productDAO.find(huoproID[m]);
+	    		    proImage[m] = tb_product.getAttBatch1().toString();
+    	    	}
+    	   }
            m++;// 标识加1
        } 
-// 	    int m = 0;// 定义一个开始标识
-// 	    // 遍历List泛型集合
-// 	    for (Tb_vmc_product tb_inaccount : listinfos) 
-// 	    {
-// 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
-// 	    	proID[m] = tb_inaccount.getProductID()+"-"+tb_inaccount.getProductName();
-// 	    	productID[m] = tb_inaccount.getProductID();
-// 	    	proImage[m] = tb_inaccount.getAttBatch1();
-// 	    	promarket[m] = String.valueOf(tb_inaccount.getMarketPrice());
-// 	    	prosales[m] = String.valueOf(tb_inaccount.getSalesPrice());
-// 	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID[m]+" marketPrice="
-// 					+promarket[m]+" salesPrice="+prosales[m]+" attBatch1="
-// 					+proImage[m]+" attBatch2="+tb_inaccount.getAttBatch2()+" attBatch3="+tb_inaccount.getAttBatch3());
-// 	        m++;// 标识加1
-// 	    }
  	    
  	}
 	public String[] getHuoID() {

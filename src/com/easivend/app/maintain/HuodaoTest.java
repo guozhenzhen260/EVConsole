@@ -52,6 +52,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -82,7 +83,7 @@ public class HuodaoTest extends TabActivity
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
 	GridView gvhuodao=null;
-	
+	private final static int REQUEST_CODE=1;//声明请求标识
 	
 	private int device=0;//出货柜号		
 	private int status=0;//出货结果
@@ -147,7 +148,7 @@ public class HuodaoTest extends TabActivity
 					case EVprotocolAPI.EV_COLUMN_RPT://接收子线程消息
 						huoSet.clear();
 						//输出内容
-				        java.util.Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
+				        Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
 				        Iterator<Entry<String, Integer>> iter=allmap.iterator();
 				        while(iter.hasNext())
 				        {
@@ -185,6 +186,25 @@ public class HuodaoTest extends TabActivity
 				
 			}
 		});
+    	//修改或添加货道对应商品
+    	gvhuodao.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub cabinetID[0],
+				String huo[]=huoAdapter.getHuoID();
+				String huoID = huo[arg2];// 记录收入信息               
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetID[0]+huoID+"status="+huoSet.get(huoID));
+				Intent intent = new Intent();
+		    	intent.setClass(HuodaoTest.this, HuodaoSet.class);// 使用AddInaccount窗口初始化Intent
+                intent.putExtra("huoID", huoID);
+                intent.putExtra("cabID", cabinetID[0]);
+                intent.putExtra("huoStatus", String.valueOf(huoSet.get(huoID)));
+		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
+			}// 为GridView设置项单击事件
+    		
+    	});
     	btnhuosetadd = (Button) findViewById(R.id.btnhuosetadd);
     	btnhuosetadd.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -292,13 +312,34 @@ public class HuodaoTest extends TabActivity
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		        finish();
+		    	finish();
 		    }
 		});
 	}
 	//===============
 	//货道设置页面
 	//===============
+	//接收GoodsProSet返回信息
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		if(requestCode==REQUEST_CODE)
+		{
+			if(resultCode==HuodaoTest.RESULT_OK)
+			{
+				showhuodao();
+			}			
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+    	//退出时，返回intent
+        Intent intent=new Intent();
+        setResult(MaintainActivity.RESULT_CANCELED,intent);
+		super.onDestroy();		
+	}
+	
 	//添加柜号
 	private void cabinetAdd()
 	{
@@ -380,8 +421,9 @@ public class HuodaoTest extends TabActivity
 	//导入本柜全部货道信息
 	private void showhuodao()
 	{
-		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet);
+		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet,cabinetID[0]);
 		HuoPictureAdapter adapter = new HuoPictureAdapter(cabinetID[0],huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
 		gvhuodao.setAdapter(adapter);// 为GridView设置数据源
 	}
+		
 }

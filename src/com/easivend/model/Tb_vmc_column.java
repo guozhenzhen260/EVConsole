@@ -25,10 +25,10 @@ public class Tb_vmc_column
     private int pathCount;// 货道总数
     private int pathRemain;// 货道剩余商品数量
     private int columnStatus;// 货道状态0,未设置,1正确，2故障，3卖完
-    private Date lasttime;//货道最新更新时间
+    private String lasttime;//货道最新更新时间
  // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_column(String cabineID, String columnID, String productID,
-			int pathCount, int pathRemain, int columnStatus, Date lasttime) {
+			int pathCount, int pathRemain, int columnStatus, String lasttime) {
 		super();
 		this.cabineID = cabineID;
 		this.columnID = columnID;
@@ -74,10 +74,10 @@ public class Tb_vmc_column
 	public void setColumnStatus(int columnStatus) {
 		this.columnStatus = columnStatus;
 	}
-	public Date getLasttime() {
+	public String getLasttime() {
 		return lasttime;
 	}
-	public void setLasttime(Date lasttime) {
+	public void setLasttime(String lasttime) {
 		this.lasttime = lasttime;
 	}
     

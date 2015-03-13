@@ -37,6 +37,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -45,6 +46,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -117,13 +119,14 @@ public class MaintainActivity extends Activity
                 Intent intent = null;// 创建Intent对象
                 switch (arg2) {
                 case 0:
-                	barmaintain.setVisibility(View.VISIBLE);
+                	barmaintain.setVisibility(View.VISIBLE);                	
                 	intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);// 打开GoodsManager
                     break;
                 case 1:
+                	barmaintain.setVisibility(View.VISIBLE); 
                     intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用HuodaoTest窗口初始化Intent
-                    startActivity(intent);// 打开HuodaoTest
+                    startActivityForResult(intent,REQUEST_CODE);// 打开HuodaoTest
                     break;
                 case 2:
                     //intent = new Intent(MainActivity.this, Inaccountinfo.class);// 使用Inaccountinfo窗口初始化Intent
@@ -163,7 +166,7 @@ public class MaintainActivity extends Activity
 		if(requestCode==REQUEST_CODE)
 		{
 			if(resultCode==GoodsManager.RESULT_CANCELED)
-			{
+			{				
 				barmaintain.setVisibility(View.GONE);
 			}			
 		}
@@ -177,11 +180,6 @@ public class MaintainActivity extends Activity
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}
-	
-	
-	
-	
-
 }
 
 

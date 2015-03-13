@@ -54,6 +54,10 @@
             android:name="com.easivend.app.maintain.WeixingTest"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.easivend.app.maintain.HuodaoSet"
+            android:label="@string/app_name" >
+        </activity>
        
         <activity
             android:name="com.easivend.app.business.Business"

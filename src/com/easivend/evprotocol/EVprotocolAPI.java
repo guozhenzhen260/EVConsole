@@ -207,6 +207,7 @@ public class EVprotocolAPI
 					}
 					catch (Exception e) {
 						// TODO: handle exception
+						e.printStackTrace();
 					}
 					break;
 			}	
