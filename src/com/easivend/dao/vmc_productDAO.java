@@ -155,6 +155,7 @@ public class vmc_productDAO
 				"delete from vmc_classproduct " +
 				"where productID=?",
 		        new Object[] { tb_vmc_product.getProductID()});
+        db.close();
     }
 	/**
      * 通过ID刪除多条信息

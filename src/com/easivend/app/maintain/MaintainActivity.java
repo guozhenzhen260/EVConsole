@@ -53,7 +53,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MaintainActivity extends Activity
 {
-	TextView txtcom=null;
+	TextView txtcom=null,txtbentcom=null;
 	private GridView gvInfo;// 创建GridView对象
 	private ProgressBar barmaintain=null;
 	// 定义字符串数组，存储系统功能
@@ -62,8 +62,8 @@ public class MaintainActivity extends Activity
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
-    int comopen=0;//1串口已经打开，0串口没有打开
-    String str=null;
+    int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开
+    String com=null,bentcom=null;
     final static int REQUEST_CODE=1;
     //private Handler myhHandler=null;
     
@@ -81,12 +81,22 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到");	
 				Map<String, Integer> Set= allSet;
 				int jnirst=Set.get("EV_TYPE");
-				txtcom.setText(String.valueOf(jnirst));
+				//txtcom.setText(String.valueOf(jnirst));
 				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_ONLINE://接收子线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<初始化完成");	
-						txtcom.setText(str+"初始化完成");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成");	
+						txtcom.setText(com+"[主柜]初始化完成");
+						//打开格子柜
+						bentopen = EVprotocolAPI.bentoRegister(bentcom);
+						if(bentopen == 1)
+						{
+							txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
+						}
+						else
+						{
+							txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
+						}
 						break;
 				}
 			}
@@ -94,19 +104,33 @@ public class MaintainActivity extends Activity
 		
 		
 		Intent intent=getIntent();
-		str=intent.getStringExtra("comport");
+		com=intent.getStringExtra("com");
+		bentcom=intent.getStringExtra("bentcom");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText("正在准备连接"+str);	
-		
+		txtcom.setText("主柜正在准备连接"+com);	
+		EVprotocolAPI.vmcEVStart();//开启监听
 		//打开串口		
-		//ev=new EVprotocolAPI();
-		comopen = EVprotocolAPI.vmcStart(str);
+		comopen = EVprotocolAPI.vmcStart(com);
 		if(comopen == 1)
 		{
-			txtcom.setText(str+"串口打开成功");			
+			txtcom.setText(com+"[主柜]串口打开成功");			
 		}
 		else
-			txtcom.setText(str+"串口打开失败");
+		{
+			txtcom.setText(com+"[主柜]串口打开失败");
+		}
+		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
+		txtbentcom.setText("[格子柜]正在准备连接"+bentcom);	
+//		//打开格子柜
+//		//bentopen = EVprotocolAPI.bentoRegister(bentcom);
+//		if(bentopen == 1)
+//		{
+//			txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
+//		}
+//		else
+//		{
+//			txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
+//		}
 		
 				
 		barmaintain= (ProgressBar) findViewById(R.id.barmaintain);
@@ -174,9 +198,12 @@ public class MaintainActivity extends Activity
 	
 	@Override
 	protected void onDestroy() {
+		EVprotocolAPI.vmcEVStop();//关闭监听
 		//关闭串口
 		if(comopen>0)	
 			EVprotocolAPI.vmcStop();
+		if(bentopen>0)
+			EVprotocolAPI.bentoRelease();
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}

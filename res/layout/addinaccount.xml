@@ -23,11 +23,11 @@
             android:minWidth="160px"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="纸币投入:"/>
+			android:text="当前投入:"/>
         
          <TextView
             android:minWidth="160px"
-            android:id="@+id/txtbillin"
+            android:id="@+id/txtpayin"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
 	        android:textSize="40sp"
@@ -44,16 +44,18 @@
             android:minWidth="160px"    
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="硬币投入:"/>
+			android:textColor="#FF0000" 
+			android:text="总投入:"/>
         
          <TextView
             android:minWidth="160px"
-            android:id="@+id/txtcoinin"
+            android:id="@+id/txtreamin"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
 	        android:textSize="40sp"
             android:textStyle="bold"
 	        android:numeric="decimal"
+	        android:textColor="#FF0000" 
 	        android:text="0" />
     </TableRow>  
     <View                              
@@ -84,6 +86,7 @@
             android:minWidth="160px"	    
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textColor="#FF0000" 
 			android:text="找零金额:"/>
         
          <TextView
@@ -92,6 +95,7 @@
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
 	        android:numeric="decimal"
+	        android:textColor="#FF0000" 
 	        android:text="0" />         
     </TableRow> 
 	<View                              

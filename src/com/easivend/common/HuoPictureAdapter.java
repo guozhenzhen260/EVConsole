@@ -92,7 +92,7 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.huoID.setText("货道:"+cabinetID+pictures.get(arg0).getHuoID());// 设置图像ID
         viewHolder.huoproID.setText("商品ID:"+pictures.get(arg0).getHuoproID());// 设置图像原价
         viewHolder.huoRemain.setText("余量:"+pictures.get(arg0).getHuoRemain());// 设置图像原价
-        viewHolder.huolasttime.setText("上架:"+pictures.get(arg0).getHuolasttime());
+        viewHolder.huolasttime.setText(pictures.get(arg0).getHuolasttime());
         /*为什么图片一定要转化为 Bitmap格式的！！ */
         Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
         if(bitmap!=null)

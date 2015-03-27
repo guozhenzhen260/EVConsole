@@ -21,23 +21,20 @@ public class vmc_cabinetDAO
 	{
 		helper=new DBOpenHelper(context);// 初始化DBOpenHelper对象
 	}
-	//添加
+	//添加柜数据
 	public void add(Tb_vmc_cabinet tb_vmc_cabinet)throws SQLException
 	{
-		
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
 		// 执行添加		
 		db.execSQL("insert into vmc_cabinet (cabID,cabType) values (?,?)",
-		        new Object[] { tb_vmc_cabinet.getCabID(), tb_vmc_cabinet.getCabType() });
+				new Object[] { tb_vmc_cabinet.getCabID(), tb_vmc_cabinet.getCabType() });
+        
+        
 		db.close(); 
 	}
 	/**
      * 获取全部柜信息
-     * 
-     * @param start
-     *            起始位置
-     * @param count
-     *            每页显示数量
+     *     
      * @return
      */
     public List<Tb_vmc_cabinet> getScrollData() 
@@ -50,7 +47,7 @@ public class vmc_cabinetDAO
         while (cursor.moveToNext()) 
         {	
             // 将遍历到的收入信息添加到集合中
-            tb_inaccount.add(new Tb_vmc_cabinet(cursor.getString(cursor.getColumnIndex("cabID")), cursor.getInt(cursor.getColumnIndex("cabType"))));
+            tb_inaccount.add(new Tb_vmc_cabinet(cursor.getString(cursor.getColumnIndex("cabID")),cursor.getInt(cursor.getColumnIndex("cabType"))));
         }
         if (!cursor.isClosed()) 
  		{  
@@ -59,4 +56,15 @@ public class vmc_cabinetDAO
  		db.close(); 
         return tb_inaccount;// 返回集合
     }
+    
+    //删除该柜
+  	public void detele(String cabID) 
+  	{       
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+          // 执行删除该柜商品表
+          db.execSQL("delete from vmc_cabinet where cabID=?", 
+          		new Object[] { cabID});    
+          
+          db.close(); 
+  	}
 }

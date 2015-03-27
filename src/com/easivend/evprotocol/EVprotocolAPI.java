@@ -49,6 +49,7 @@ public class EVprotocolAPI
 	public static final int EV_COLUMN_RPT=6;//货道状态上报
 	public static final int EV_PAYIN_RPT=7;//投入纸币
 	public static final int EV_PAYOUT_RPT=8;//找零结果
+	public static final int EV_STATE_RPT=9;//初始化完成
 	
 	//实例化hand邮箱，并且进行pend
 	private static Handler EVProhand=new Handler()
@@ -111,13 +112,13 @@ public class EVprotocolAPI
 						}
 						else if(str_evType.equals("EV_STATE_RPT"))
 						{
-							int state = ev_head.getInt("state");
+							int state = ev_head.getInt("vmcState");
 							if(state == 0)
 								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<断开连接");
 							else if(state == 1)
 								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正在初始化");
-							else if(state == 2)
-								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正常");
+							else if(state == 2)							
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正常");								
 							else if(state == 3)
 								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<故障");
 							else if(state == 4)
@@ -175,8 +176,11 @@ public class EVprotocolAPI
 					    //投币上报
 						else if(str_evType.equals("EV_PAYIN_RPT"))//投币上报
 						{
-							int amount = ev_head.getInt("remainAmount");
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<投币:"+Integer.toString(amount));							
+							int payin_amount= ev_head.getInt("payin_amount");
+							int reamin_amount = ev_head.getInt("reamin_amount");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<投币:"+Integer.toString(payin_amount)
+									+"总共:"+Integer.toString(reamin_amount));							
+							
 							//往Activity线程发送信息
 //							Message childmsg=mainHandler.obtainMessage();
 //							childmsg.what=EV_PAYIN_RPT;
@@ -185,15 +189,18 @@ public class EVprotocolAPI
 							//往接口回调信息
 							allSet.clear();	
 							allSet.put("EV_TYPE", EV_PAYIN_RPT);
-							allSet.put("amount", amount);
+							allSet.put("payin_amount", payin_amount);
+							allSet.put("reamin_amount", reamin_amount);
 							callBack.jniCallback(allSet);
 						}
 					    //找零金额上报
 						else if(str_evType.equals("EV_PAYOUT_RPT"))
 						{
-							int amount = ev_head.getInt("remainAmount");
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<找零:"+Integer.toString(amount));
-							//往Activity线程发送信息
+							int payout_amount= ev_head.getInt("payout_amount");
+							int reamin_amount = ev_head.getInt("reamin_amount");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<找零:"+Integer.toString(payout_amount)
+									+"剩余:"+Integer.toString(reamin_amount));	//往Activity线程发送信息
+							
 //							Message childmsg=mainHandler.obtainMessage();
 //							childmsg.what=EV_PAYOUT_RPT;
 //							childmsg.obj=amount;
@@ -201,7 +208,8 @@ public class EVprotocolAPI
 							//往接口回调信息
 							allSet.clear();	
 							allSet.put("EV_TYPE", EV_PAYOUT_RPT);
-							allSet.put("amount", amount);
+							allSet.put("payout_amount", payout_amount);
+							allSet.put("reamin_amount", reamin_amount);
 							callBack.jniCallback(allSet);
 						}
 					}
@@ -230,7 +238,29 @@ public class EVprotocolAPI
 			EVProhand.sendMessage(msg);
 		}
 	}
-	
+	/*********************************************************************************************************
+	** Function name:     	vmcEVStart
+	** Descriptions:	    VMC主控板监听开启接口
+	** input parameters:    
+	** output parameters:   无
+	** Returned value:      
+	*********************************************************************************************************/
+	public static void vmcEVStart()
+	{
+		ev= new EVprotocol();
+		ev.addListener(callJson);//注册于jni的监听接口
+	}
+	/*********************************************************************************************************
+	** Function name:     	vmcEVStop
+	** Descriptions:	    VMC主控板监听关闭
+	** input parameters:    
+	** output parameters:   无
+	** Returned value:      
+	*********************************************************************************************************/
+	public static void vmcEVStop()
+	{
+		ev.removeListener(callJson);
+	}
 	/*********************************************************************************************************
 	** Function name:     	vmcStart
 	** Descriptions:	    VMC主控板开启接口
@@ -239,9 +269,7 @@ public class EVprotocolAPI
 	** Returned value:      1:开启成功      -1:开启失败  （直接返回 不进行回调）
 	*********************************************************************************************************/
 	public static int vmcStart(String portName)
-	{
-		ev= new EVprotocol();
-		ev.addListener(callJson);//注册于jni的监听接口
+	{		
 		return ev.vmcStart(portName);
 	}
 	
@@ -254,9 +282,22 @@ public class EVprotocolAPI
 	** Returned value:      无（直接返回 不进行回调）
 	*********************************************************************************************************/
 	public static void vmcStop()
-	{	
-		ev.removeListener(callJson);
+	{			
 		ev.vmcStop();
+	}
+	
+	/*********************************************************************************************************
+	** Function name:     	getColumn
+	** Descriptions:	    VMC获取货道接口
+	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
+	** input parameters:    cabinet:1主柜,2副柜
+	** output parameters:   无
+	** Returned value:      1请求发送成功   0:请求发送失败
+	*********************************************************************************************************/
+	public  static int getColumn(int cabinet)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIgetColumn>>]"+cabinet);
+		return ev.getColumn(cabinet);		
 	}
 	
 	/*********************************************************************************************************
@@ -276,6 +317,77 @@ public class EVprotocolAPI
 	}
 	
 	/*********************************************************************************************************
+	** Function name:     	bentoRegister
+	** Descriptions:	             便利柜初始化接口
+	** input parameters:    portName 串口号 例如/dev/tty0
+	** output parameters:   无
+	** Returned value:      1:初始化成功      -1:初始化失败 (失败原因为串口打开失败)
+	*********************************************************************************************************/
+	public  static int bentoRegister(String portName)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+portName);		
+		return ev.bentoRegister(portName);
+	}
+	
+	
+	
+	/*********************************************************************************************************
+	** Function name:     	bentoRelease
+	** Descriptions:	             便利柜释放资源接口（与bentoRegister配套调用）
+	** input parameters:    无
+	** output parameters:   无
+	** Returned value:      1:成功      （调用必定成功）
+	*********************************************************************************************************/
+	public  static int bentoRelease()
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenclose>>]");		
+		return ev.bentoRelease();
+	}
+	
+
+	/*********************************************************************************************************
+	** Function name:     	bentoOpen
+	** Descriptions:	             便利柜开格子接口
+	** input parameters:    cabinet:柜号     box:格子号
+	** output parameters:   无
+	** Returned value:      1:打开成功      0:打开失败
+	*********************************************************************************************************/
+	public static int bentoOpen(int cabinet,int box)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+cabinet+box);
+		return ev.bentoOpen(cabinet,box);
+	}
+	
+	
+	/*********************************************************************************************************
+	** Function name:     	bentoLight
+	** Descriptions:	             便利柜照明控制接口
+	** input parameters:    cabinet:柜号     flag:1 表示照明开    0:表示照明关
+	** output parameters:   无
+	** Returned value:      1:打开成功      0:打开失败
+	*********************************************************************************************************/
+	public  static int bentoLight(int cabinet,int flag)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+cabinet+" "+flag);
+		return ev.bentoLight(cabinet,flag);
+	}
+	
+	/*********************************************************************************************************
+	** Function name:     	bentoCheck
+	** Descriptions:	             便利柜状态查询接口
+	** input parameters:    cabinet:柜号     
+	** output parameters:   无
+	** Returned value:      返回的是一个JSON包 例如{{}}
+	*********************************************************************************************************/
+	public  static String bentoCheck(int cabinet)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+cabinet);
+		String ret=ev.bentoCheck(cabinet);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<柜子数"+ret);
+		return ret;
+	}
+				
+	/*********************************************************************************************************
 	** Function name:     	payout
 	** Descriptions:	    VMC出币接口
 	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回出货的结果进行解析
@@ -289,19 +401,31 @@ public class EVprotocolAPI
 		return ev.payout((int)value);		
 	}
 	
-	
 	/*********************************************************************************************************
-	** Function name:     	getColumn
-	** Descriptions:	    VMC获取货道接口
+	** Function name:     	payback
+	** Descriptions:	    VMC退币接口
 	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
-	** input parameters:    cabinet:1主柜,2副柜
+	** input parameters:    无
 	** output parameters:   无
 	** Returned value:      1请求发送成功   0:请求发送失败
 	*********************************************************************************************************/
-	public  static int getColumn(int cabinet)
+	public  static int payback()
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIgetColumn>>]"+cabinet);
-		return ev.getColumn(cabinet);		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIback>>]");
+		return ev.payback();		
+	}
+	
+	/*********************************************************************************************************
+	** Function name:     	cashControl
+	** Descriptions:	             控制现金设备 直接返回 不进行回调
+	** input parameters:    flag 1:开启现金设备  0关闭现金设备
+	** output parameters:   无
+	** Returned value:      1成功  0失败
+	*********************************************************************************************************/
+	public  static int cashControl(int flag)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcashControl>>]"+flag);
+		return ev.cashControl(flag);		
 	}
 			
 }

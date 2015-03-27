@@ -130,7 +130,9 @@ public class GoodsProSet extends Activity
 		    	String productName = edtproductName.getText().toString();
 		    	float marketPrice = Float.parseFloat(edtmarketPrice.getText().toString());
 		    	float salesPrice = Float.parseFloat(edtsalesPrice.getText().toString());
-		    	int shelfLife = Integer.parseInt(edtshelfLife.getText().toString());
+		    	int shelfLife= 0;
+		    	if(edtshelfLife.getText().toString().isEmpty()!=true)
+		    		shelfLife = Integer.parseInt(edtshelfLife.getText().toString());		    	
 		    	String productDesc = edtproductDesc.getText().toString();
 		    	//商品类别
 		    	String strInfo= spinproductclassID.getSelectedItem().toString();

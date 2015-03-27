@@ -233,6 +233,30 @@
             	    android:minWidth="160px"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:textColor="#FF0000"  
+					android:text="*货道状态:"/>
+		        
+		         <TextView
+		            android:id="@+id/txthuocolumnStatus"
+			        android:minWidth="150px"
+					android:layout_width="wrap_content" 
+			        android:layout_height="wrap_content"
+			        android:text="" />
+            </LinearLayout>	        
+	    </TableRow>
+	    <View                              
+	        android:layout_height="2px"
+	        android:background="#FF909090"
+	    />
+	    <TableRow > 
+	        <LinearLayout 
+                android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:orientation="horizontal"> 
+            	<TextView 		    
+            	    android:minWidth="160px"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
 					android:text="保质期:"/>
 		        
 		         <TextView

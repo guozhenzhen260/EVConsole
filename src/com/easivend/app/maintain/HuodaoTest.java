@@ -24,10 +24,12 @@ import java.util.TreeMap;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
+import com.easivend.model.Tb_vmc_column;
 import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
@@ -60,6 +62,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SlidingDrawer;
@@ -75,10 +78,12 @@ import android.widget.Toast;
 public class HuodaoTest extends TabActivity 
 {
 	private TabHost mytabhost = null;
+	private ProgressBar barhuomanager=null;
 	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest};//内嵌布局文件的id
 	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetexit=null;
-	private Spinner spinhuosetCab=null;
-	private String[] cabinetID=null;
+	private Spinner spinhuosetCab=null,spinhuotestCab=null;
+	private String[] cabinetID=null;//用来分离出货柜编号
+	private int[] cabinetType = null;//用来分离出货柜类型
 	Map<String, Integer> huoSet= new TreeMap<String,Integer>();
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
@@ -92,14 +97,12 @@ public class HuodaoTest extends TabActivity
 	private float cost=0;//扣钱
 	private float totalvalue=0;//剩余金额
 	private int huodao=0;//剩余存货数量
-	private TextView txthuorst=null;
+	private TextView txthuorst=null,txthuotestrst=null;
 	private Button btnhuochu=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
 	private EditText edtcolumn=null,edtprice=null;
-	private RadioGroup cabinet=null, type=null;
-	private RadioButton mainhuodao=null,fuhuodao=null,moneychu=null,pcchu=null;
-	private int cabinetvar=0,typevar=0;
+	private int cabinetvar=0,cabinetTypevar=0;
 	private Handler myhHandler=null;
 	//EVprotocolAPI ev=null;
 	@Override
@@ -144,6 +147,7 @@ public class HuodaoTest extends TabActivity
 						
 						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
 								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
+						sethuorst(status);
 						break;
 					case EVprotocolAPI.EV_COLUMN_RPT://接收子线程消息
 						huoSet.clear();
@@ -165,10 +169,11 @@ public class HuodaoTest extends TabActivity
     	//===============
     	//货道设置页面
     	//===============
-  	    
+  	    barhuomanager= (ProgressBar) findViewById(R.id.barhuomanager);
   	    huoAdapter=new Vmc_HuoAdapter();
   	    this.gvhuodao=(GridView) findViewById(R.id.gvhuodao); 
     	spinhuosetCab= (Spinner) findViewById(R.id.spinhuosetCab); 
+    	spinhuotestCab= (Spinner) findViewById(R.id.spinhuotestCab); 
     	//显示柜信息
     	showabinet();
     	this.spinhuosetCab.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -177,7 +182,23 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				EVprotocolAPI.getColumn(Integer.parseInt(cabinetID[arg2]));
+				//只有有柜号的时候，才请求加载柜内货道信息
+				if(cabinetID!=null)
+				{
+					barhuomanager.setVisibility(View.VISIBLE); 
+					//格子柜
+					if(cabinetType[arg2]==5)
+					{
+						EVprotocolAPI.bentoCheck(Integer.parseInt(cabinetID[arg2]));
+						barhuomanager.setVisibility(View.GONE);  
+					}
+					//普通柜
+					else 
+					{
+						EVprotocolAPI.getColumn(Integer.parseInt(cabinetID[arg2]));
+					}
+					
+				}				
 			}
 
 			@Override
@@ -205,14 +226,22 @@ public class HuodaoTest extends TabActivity
 			}// 为GridView设置项单击事件
     		
     	});
+    	//添加柜
     	btnhuosetadd = (Button) findViewById(R.id.btnhuosetadd);
-    	btnhuosetadd.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+    	btnhuosetadd.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	cabinetAdd();
 		    }
 		});
+    	//删除柜
     	btnhuosetdel = (Button) findViewById(R.id.btnhuosetdel);
+    	btnhuosetdel.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	cabinetDel();
+		    }
+		});
     	btnhuosetexit = (Button) findViewById(R.id.btnhuosetexit);
     	btnhuosetexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -241,65 +270,70 @@ public class HuodaoTest extends TabActivity
     	//出货测试页面
     	//===============
 		
-		
+    	//spinhuoCab= (Spinner) findViewById(R.id.spinhuoCab); 
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
+		txthuotestrst=(TextView)findViewById(R.id.txthuotestrst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
 		btnhuoexit = (Button) findViewById(R.id.btnhuoexit);
 		edtcolumn = (EditText) findViewById(R.id.edtcolumn);
 		edtprice = (EditText) findViewById(R.id.edtprice);
-		//得到那个柜出货
-		this.cabinet = (RadioGroup) super.findViewById(R.id.cabinet);
-	    this.mainhuodao = (RadioButton) super.findViewById(R.id.mainhuodao);
-	    this.fuhuodao = (RadioButton) super.findViewById(R.id.fuhuodao);		
-	    this.cabinet.setOnCheckedChangeListener(new OnCheckedChangeListener() {			
+		this.spinhuotestCab.setOnItemSelectedListener(new OnItemSelectedListener() {
+
 			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// 主柜出货
-				if(mainhuodao.getId()==checkedId)
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				//只有有柜号的时候，才请求加载柜内货道信息
+				if(cabinetID!=null)
 				{
-					cabinetvar=1;
-				}
-				//副柜出货
-				else if(fuhuodao.getId()==checkedId)
-				{
-					cabinetvar=2;
-				}
+					cabinetvar=Integer.parseInt(cabinetID[arg2]); 
+					cabinetTypevar=cabinetType[arg2]; 
+				}				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
-	    //得到出货方式
-  		this.type = (RadioGroup) super.findViewById(R.id.type);
-  	    this.moneychu = (RadioButton) super.findViewById(R.id.moneychu);
-  	    this.pcchu = (RadioButton) super.findViewById(R.id.pcchu);		
-  	    this.type.setOnCheckedChangeListener(new OnCheckedChangeListener() {			
-  			@Override
-  			public void onCheckedChanged(RadioGroup group, int checkedId) {
-  				// 现金出货
-  				if(moneychu.getId()==checkedId)
-  				{
-  					typevar=0;
-  				}
-  				//PC出货
-  				else if(pcchu.getId()==checkedId)
-  				{
-  					typevar=2;
-  				}
-  			}
-  		});
-  	    
-  	    
+		
+		
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	  
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" cabType="+String.valueOf(cabinetTypevar)
 		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
-		    	+" type="+String.valueOf(typevar)
 		    	+" price="+edtprice.getText().toString()
 		    	);
-		    	int rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-		    			ToolClass.MoneySend(Float.parseFloat(edtprice.getText().toString())));	   	
-		    	
+		    	if (
+		    			(edtcolumn.getText().toString().isEmpty()!=true)
+		    		  &&(edtprice.getText().toString().isEmpty()!=true)	
+		    	)
+		    	{
+		    		float price=Float.parseFloat(edtprice.getText().toString());
+		    		int typevar=0;
+		    		if(price>0)
+		    			typevar=0;
+		    		else 
+		    			typevar=2;
+		    		int rst=0;
+		    		//格子柜
+					if(cabinetTypevar==5)
+					{
+						EVprotocolAPI.bentoOpen(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
+					}
+					//普通柜
+					else 
+					{
+						rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+				    			ToolClass.MoneySend(price));	
+					}
+			    	   	
+		    	}
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
@@ -327,6 +361,7 @@ public class HuodaoTest extends TabActivity
 		{
 			if(resultCode==HuodaoTest.RESULT_OK)
 			{
+				barhuomanager.setVisibility(View.VISIBLE);  
 				showhuodao();
 			}			
 		}
@@ -395,7 +430,7 @@ public class HuodaoTest extends TabActivity
 			// 创建InaccountDAO对象
 			vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
             // 创建Tb_inaccount对象
-        	Tb_vmc_cabinet tb_vmc_cabinet = new Tb_vmc_cabinet(no, type);
+        	Tb_vmc_cabinet tb_vmc_cabinet = new Tb_vmc_cabinet(no,type);
         	cabinetDAO.add(tb_vmc_cabinet);// 添加收入信息
         	showabinet();//显示柜信息
         	// 弹出信息提示
@@ -415,15 +450,104 @@ public class HuodaoTest extends TabActivity
 	    String[] strInfos = vmc_cabAdapter.showSpinInfo(HuodaoTest.this);	    
 	    // 使用字符串数组初始化ArrayAdapter对象
 	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
-	    spinhuosetCab.setAdapter(arrayAdapter);// 为ListView列表设置数据源
-	    cabinetID=vmc_cabAdapter.getCabinetID();    	
+	    spinhuosetCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
+	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
+	    cabinetID=vmc_cabAdapter.getCabinetID();    
+	    cabinetType=vmc_cabAdapter.getCabinetType();    
 	}
 	//导入本柜全部货道信息
 	private void showhuodao()
-	{
+	{		 
 		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet,cabinetID[0]);
 		HuoPictureAdapter adapter = new HuoPictureAdapter(cabinetID[0],huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
-		gvhuodao.setAdapter(adapter);// 为GridView设置数据源
+		gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
+		barhuomanager.setVisibility(View.GONE);  
 	}
-		
+	//删除柜号以及柜内货道全部信息
+	private void cabinetDel()
+	{
+		//创建警告对话框
+    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+    		.setTitle("对话框")//标题
+    		.setMessage("您确定要删除该柜吗？")//表示对话框中得内容
+    		.setIcon(R.drawable.ic_launcher)//设置logo
+    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+    			{				
+	    				@Override
+	    				public void onClick(DialogInterface dialog, int which) 
+	    				{
+	    					// TODO Auto-generated method stub	
+	    					// 创建InaccountDAO对象
+	    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoTest.this);
+				            columnDAO.deteleCab(cabinetID[0]);// 删除该柜货道信息
+				            
+				            vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
+				            cabinetDAO.detele(cabinetID[0]);// 删除该柜信息
+	    					// 弹出信息提示
+				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();				            
+				            finish();
+	    				}
+    		      }
+    			)		    		        
+		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+		        	{			
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
+						{
+							// TODO Auto-generated method stub				
+						}
+		        	}
+		        )
+		        .create();//创建一个对话框
+		        alert.show();//显示对话框
+	}
+	
+	//===============
+	//货道测试页面
+	//===============
+	private void sethuorst(int status)
+	{
+		switch(status)
+		{
+			case 0:
+				txthuotestrst.setText("出货成功");
+				break;
+			case 2:
+				txthuotestrst.setText("出货失败");
+				break;
+			case 16:
+				txthuotestrst.setText("单价为0");
+				break;
+			case 17:
+				txthuotestrst.setText("货道故障");
+				break;
+			case 18:
+				txthuotestrst.setText("缺货");
+				break;
+			case 19:
+				txthuotestrst.setText("无此货道");
+				break;
+			case 20:
+				txthuotestrst.setText("商品ID为0");
+				break;
+			case 21:
+				txthuotestrst.setText("PC设置暂不可用");
+				break;
+			case 22:
+				txthuotestrst.setText("type>0和cost>0的关系");
+				break;
+			case 23:
+				txthuotestrst.setText("type=0和cost=0的关系");
+				break;
+			case 24:
+				txthuotestrst.setText("系统进入故障状态时");
+				break;	
+			case 25:
+				txthuotestrst.setText("用户投币金额小于扣款金额时");
+				break;	
+			case 26:
+				txthuotestrst.setText("投币压抄不成功,不可以支付");
+				break;		
+		}
+	}
 }

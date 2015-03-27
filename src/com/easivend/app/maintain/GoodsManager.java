@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract.Contacts.Data;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -408,6 +410,22 @@ public class GoodsManager extends TabActivity
 		    	}
 		    }
 		});
+    	//动态设置控件高度
+    	//
+    	DisplayMetrics  dm = new DisplayMetrics();  
+        //取得窗口属性  
+        getWindowManager().getDefaultDisplay().getMetrics(dm);  
+        //窗口的宽度  
+        int screenWidth = dm.widthPixels;          
+        //窗口高度  
+        int screenHeight = dm.heightPixels;      
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
+				+"],["+screenHeight+"]");	
+		
+    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
+    	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
+    	gvProduct.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+  	   
 	}
 	//===============
 	//商品分类设置页面

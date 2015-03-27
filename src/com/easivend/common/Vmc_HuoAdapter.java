@@ -62,7 +62,7 @@ public class Vmc_HuoAdapter
 	    	    	// 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
 	    	    	huoproID[m] = tb_inaccount.getProductID();
 	    	    	huoRemain[m] = String.valueOf(tb_inaccount.getPathRemain());
-	    	    	huolasttime[m] = tb_inaccount.getLasttime();  
+	    	    	huolasttime[m] = tb_inaccount.getLasttime().substring(0, 10);  
 	    	    	//得到这个商品id对应的图片
 	    	    	vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
 	    		    // 获取所有收入信息，并存储到List泛型集合中

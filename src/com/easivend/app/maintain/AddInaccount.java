@@ -25,6 +25,7 @@ import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,8 +39,8 @@ import android.widget.TextView;
 public class AddInaccount extends Activity
 {
 	private EditText edtpayout=null;
-	private TextView txtbillin=null,txtcoinin=null,txtpaymoney=null;
-	private Button btnpayout=null,btnbillexit=null;// 创建Button对象“退出”
+	private TextView txtpayin=null,txtreamin=null,txtpaymoney=null;
+	private Button btnpayout=null,btnbillexit=null,btnpaymoney=null;// 创建Button对象“退出”
 	private Handler myhHandler=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class AddInaccount extends Activity
 			
 			@Override
 			public void jniCallback(Map<String, Integer> allSet) {
-				float amount=0;
+				float payin_amount=0,reamin_amount=0,payout_amount=0;
 				// TODO Auto-generated method stub	
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<payinout结果");
 				Map<String, Integer> Set= allSet;
@@ -61,32 +62,49 @@ public class AddInaccount extends Activity
 				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_PAYIN_RPT://接收子线程投币金额消息						
-						amount=ToolClass.MoneyRec((Integer) allSet.get("amount"));
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<投币金额"+String.valueOf(amount));							
-						txtbillin.setText(String.valueOf(amount));
+						payin_amount=ToolClass.MoneyRec((Integer) allSet.get("payin_amount"));
+						reamin_amount=ToolClass.MoneyRec((Integer) allSet.get("reamin_amount"));
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<投币:"+payin_amount
+								+"总共:"+reamin_amount);							
+						txtpayin.setText(String.valueOf(payin_amount));
+						txtreamin.setText(String.valueOf(reamin_amount));
 						break;
 					case EVprotocolAPI.EV_PAYOUT_RPT://接收子线程找零金额消息
-						amount=ToolClass.MoneyRec((Integer) allSet.get("amount"));
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<找零金额"+String.valueOf(amount));							
-						txtpaymoney.setText(String.valueOf(amount));
+						payout_amount=ToolClass.MoneyRec((Integer) allSet.get("payout_amount"));
+						reamin_amount=ToolClass.MoneyRec((Integer) allSet.get("reamin_amount"));
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<找零金额"+String.valueOf(payout_amount));							
+						txtpaymoney.setText(String.valueOf(payout_amount));
 						break;	
 				}				
 			}
 			
 		});
 		
-		txtbillin = (TextView) findViewById(R.id.txtbillin);
-		txtcoinin = (TextView) findViewById(R.id.txtcoinin);
+  	    txtpayin = (TextView) findViewById(R.id.txtpayin);
+  	    txtreamin = (TextView) findViewById(R.id.txtreamin);
 		edtpayout = (EditText) findViewById(R.id.edtpayout);
 		txtpaymoney = (TextView) findViewById(R.id.txtpaymoney);
+		EVprotocolAPI.cashControl(1);//打开收币设备	
+		//全部退币
 		btnpayout = (Button) findViewById(R.id.btnpayout);
 		btnpayout.setOnClickListener(new OnClickListener() {// 为退币按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPsend>>]back");
+		    	EVprotocolAPI.payback();
+		    	txtpayin.setText("0");
+		    	txtreamin.setText("0");
+		    }
+		});
+		//找零
+		btnpaymoney= (Button) findViewById(R.id.btnpaymoney);
+		btnpaymoney.setOnClickListener(new OnClickListener() {// 为退币按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPsend>>]"+edtpayout.getText().toString());
 		    	EVprotocolAPI.payout(ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())));
-		    	txtbillin.setText("0");
-		    	txtcoinin.setText("0");
+		    	txtpayin.setText("0");
+		    	txtreamin.setText("0");
 		    }
 		});
 		btnbillexit = (Button) findViewById(R.id.btnbillexit);
@@ -96,6 +114,12 @@ public class AddInaccount extends Activity
 		        finish();
 		    }
 		});
+		
+	}
+	@Override
+	protected void onDestroy() {		
+		EVprotocolAPI.cashControl(0);//关闭收币设备	
+		super.onDestroy();
 	}
 
 }

@@ -18,6 +18,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,9 +40,9 @@ public class HuodaoSet extends Activity
 	private ImageView ivhuoProID=null;
 	private Button btnhuoProID=null,btnhuoaddSave=null,btnhuodelSave=null,btnhuoexit=null;
 	private TextView txthuoCabID=null,txthuoColID=null,txthuoProID=null,txthuoProName=null,txthuomarketPrice=null,
-			txthuosalesPrice=null,txthuoshelfLife=null,txthuolasttime=null,txthuoIslast=null;	
+			txthuosalesPrice=null,txthuocolumnStatus=null,txthuoshelfLife=null,txthuolasttime=null,txthuoIslast=null;	
 	private EditText edthuopathCount=null,edthuopathRemain=null;
-	private String huoID=null,cabID=null,huostatus=null,productID=null,imgDir=null;;
+	private String huoID=null,cabID=null,temphuostatus=null,huostatus=null,productID=null,imgDir=null;;
 	private View popview=null;
 	private PopupWindow popWin=null;
 	private GridView gvselectProduct=null;
@@ -59,22 +61,68 @@ public class HuodaoSet extends Activity
 		txthuoProName = (TextView) findViewById(R.id.txthuoProName);
 		txthuomarketPrice = (TextView) findViewById(R.id.txthuomarketPrice);
 		txthuosalesPrice = (TextView) findViewById(R.id.txthuosalesPrice);
+		txthuocolumnStatus = (TextView) findViewById(R.id.txthuocolumnStatus);
 		txthuoshelfLife = (TextView) findViewById(R.id.txthuoshelfLife);
 		txthuolasttime = (TextView) findViewById(R.id.txthuolasttime);
 		txthuoIslast = (TextView) findViewById(R.id.txthuoIslast);
 		edthuopathCount = (EditText) findViewById(R.id.edthuopathCount);	
+		edthuopathCount.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub				
+				updatehuodaostatus();				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		}); 
 		edthuopathRemain = (EditText) findViewById(R.id.edthuopathRemain);	
+		edthuopathRemain.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub				
+				updatehuodaostatus();			
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		}); 
 		//从商品页面中取得锁选中的商品
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
 		huoID=bundle.getString("huoID");
 		cabID=bundle.getString("cabID");
-		huostatus=bundle.getString("huoStatus");
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+huoID+"cabID="+cabID+"status="+huostatus);
+		temphuostatus=bundle.getString("huoStatus");		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+huoID+"cabID="+cabID+"status="+temphuostatus);
 		txthuoCabID.setText(cabID);
 		txthuoColID.setText(huoID);
 		//如果该货道有绑定商品ID有存在则刷新页面为修改商品的页面
 		updateHuodao(cabID,huoID);
+		
+		//修改货道状态参数		
+		updatehuodaostatus();
 		//选择绑定的商品
 		btnhuoProID = (Button) findViewById(R.id.btnhuoProID);
 		btnhuoProID.setOnClickListener(new OnClickListenerpop());
@@ -92,15 +140,19 @@ public class HuodaoSet extends Activity
 		    @Override
 		    public void onClick(View arg0) 
 		    {
-		    	int pathCount= Integer.parseInt(edthuopathCount.getText().toString());
-		    	int pathRemain= Integer.parseInt(edthuopathRemain.getText().toString());
+		    	int pathCount= 0;
+		    	int pathRemain= 0;
+		    	if(edthuopathCount.getText().toString().isEmpty()!=true)
+		    		pathCount= Integer.parseInt(edthuopathCount.getText().toString());
+		    	if(edthuopathRemain.getText().toString().isEmpty()!=true)
+		    		pathRemain= Integer.parseInt(edthuopathRemain.getText().toString());
 		    	
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道cabineID="+cabID+" columnID="+huoID+" productID="
     					+productID+" pathCount="+pathCount+" pathRemain="+pathRemain+" columnStatus="+huostatus);
     			
 		    	if ((productID.isEmpty()!=true)&&(edthuopathCount.getText().toString().isEmpty()!=true)
 		    			&&(edthuopathRemain.getText().toString().isEmpty()!=true)
-		    			&&(pathCount>0)&&(pathRemain>0)
+		    			&&(pathCount>0)
 		    		)
 		    	{
 		    		try 
@@ -246,7 +298,7 @@ public class HuodaoSet extends Activity
 			txthuolasttime.setText(tb_vmc_column.getLasttime());
 			HuodaoSet.this.productID=tb_vmc_column.getProductID();
 			updateProduct(HuodaoSet.this.productID);//更新商品信息到页面中
-		}
+		}		
 	}
 	//更新商品信息到页面中
 	private void updateProduct(String productID)
@@ -264,5 +316,35 @@ public class HuodaoSet extends Activity
 		txthuomarketPrice.setText(String.valueOf(tb_inaccount.getMarketPrice()));
 		txthuosalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
 		txthuoshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));		
+	}
+	//更新货道信息
+	private void updatehuodaostatus()
+	{
+		if(temphuostatus.equals("1")==true)//货道故障
+			huostatus="2";
+		else if(temphuostatus.equals("0")==true)//货道正常
+		{
+			int tempCount= 0;
+	    	int tempRemain= 0;
+	    	if(edthuopathCount.getText().toString().isEmpty()!=true)
+	    		tempCount= Integer.parseInt(edthuopathCount.getText().toString());
+	    	if(edthuopathRemain.getText().toString().isEmpty()!=true)
+	    		tempRemain= Integer.parseInt(edthuopathRemain.getText().toString());
+	    	
+			if ((edthuopathCount.getText().toString().isEmpty()!=true)
+	    			&&(edthuopathRemain.getText().toString().isEmpty()!=true)
+	    			&&(tempCount>0)&&(tempRemain>0)
+	    		)//正常
+	    		huostatus="1";
+	    	else                             //缺货
+	    		huostatus="3";	
+		}
+		
+		if(huostatus.equals("1")==true)
+			txthuocolumnStatus.setText("正常");
+		else if(huostatus.equals("2")==true)
+			txthuocolumnStatus.setText("故障");
+		else if(huostatus.equals("3")==true)
+			txthuocolumnStatus.setText("缺货");
 	}
 }

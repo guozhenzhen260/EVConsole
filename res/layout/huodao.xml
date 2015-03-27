@@ -59,7 +59,15 @@
 		            android:layout_toRightOf="@+id/txthuosetno"
 			        android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
-			        android:text="" />		         
+			        android:text="" />	
+			    <ProgressBar
+			        android:id="@+id/barhuomanager"
+			        android:layout_below="@+id/spinhuosetCab"
+			        style="?android:attr/progressBarStyleLarge"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:visibility="gone"
+			        android:indeterminate="true" />  	        
 			</RelativeLayout>											
 		</LinearLayout>			
 	</RelativeLayout>    
@@ -83,27 +91,25 @@
 		            android:text="出货测试"
 		            android:textSize="45sp"
 		            android:textStyle="bold" />
-		    </TableRow>
-			<View                              
+		    </TableRow>			
+		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <RadioGroup
-		            	android:id = "@+id/cabinet"
-				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content"
-				        android:orientation="horizontal">
-				        <RadioButton 
-				   	        android:id = "@+id/mainhuodao"
-				   	        android:text="主柜出货"
-				   	    />
-				   	    <RadioButton 
-				   	        android:id = "@+id/fuhuodao"
-				   	        android:text="副柜出货"
-				   	    />
-				</RadioGroup>
-		    </TableRow>
+		        <TextView 
+		            android:minWidth="160px"
+				    android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="货柜:"/>
+		        <Spinner
+		            android:id="@+id/spinhuotestCab"
+		            android:layout_width="wrap_content" 
+			        android:layout_height="wrap_content"
+			        android:text="" />
+		         
+		    </TableRow>  
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
@@ -125,27 +131,7 @@
 			        android:layout_weight="1"
 			        android:numeric="integer"
 			        android:text="11" />
-		    </TableRow>  
-		    <View                              
-		        android:layout_height="2px"
-		        android:background="#FF909090"
-		    /> 
-		    <TableRow > 
-		        <RadioGroup
-		            	android:id = "@+id/type"
-				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content"
-				        android:orientation="horizontal">
-				        <RadioButton 
-				   	        android:id = "@+id/moneychu"
-				   	        android:text="现金出货"
-				   	    />
-				   	    <RadioButton 
-				   	        android:id = "@+id/pcchu"
-				   	        android:text="PC出货"
-				   	    />
-				</RadioGroup>
-		    </TableRow> 
+		    </TableRow>  		    
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
@@ -166,7 +152,7 @@
 			        android:layout_height="wrap_content"
 			        android:layout_weight="1.00"
 			        android:numeric="decimal"
-			        android:text="1" />
+			        android:text="0" />
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
@@ -175,10 +161,32 @@
 		    <TableRow > 
 		        <TextView
 		            android:minWidth="160px"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="出货结果:"/>
+		        <TextView
+		            android:minWidth="160px"
+		            android:id="@+id/txthuotestrst"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text=""/>
+		    </TableRow> 
+		    <View                              
+		        android:layout_height="2px"
+		        android:background="#FF909090"
+		    /> 
+		    <TableRow > 
+		        <TextView
+		            android:minWidth="160px"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:text="返回信息:"/>
+		        <TextView
+		            android:minWidth="160px"
 		            android:id="@+id/txthuorst"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		             android:text="出货结果"/>
+		            android:text=""/>
 		    </TableRow>
 			<View                              
 		        android:layout_height="2px"

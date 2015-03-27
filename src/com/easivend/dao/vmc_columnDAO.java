@@ -92,8 +92,18 @@ public class vmc_columnDAO
         // 执行删除商品表
         db.execSQL("delete from vmc_column where cabID=? and columnID=?", 
         		new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});        
-    }
-		
+        db.close(); 
+	}
+	//删除该柜全部货道信息
+  	public void deteleCab(String cabID) 
+  	{       
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+          // 执行删除该柜商品表
+          db.execSQL("delete from vmc_column where cabID=?", 
+          		new Object[] { cabID});    
+          
+          db.close(); 
+  	}		
 	/**
      * 查找一条商品信息
      * 

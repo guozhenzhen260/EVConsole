@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 5;// 定义数据库版本号
+    private static final int VERSION = 7;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -138,7 +138,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         (
         		"CREATE TABLE vmc_cabinet" +
         		"("+
-        		"cabID nvarchar(100) PRIMARY KEY,"+                     		
+        		"cabID nvarchar(100) PRIMARY KEY,"+  
         		"cabType INT NOT NULL DEFAULT 0" +
         		")"
         		

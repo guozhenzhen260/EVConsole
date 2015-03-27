@@ -17,12 +17,12 @@ package com.easivend.model;
 
 public class Tb_vmc_cabinet 
 {
-	private String cabID;// 货柜号[pk]
+	private String cabID;// 货柜号[pk]	
     private int cabType;// 货柜类型,0无货道,1弹簧货道，2 老式升降台，3 升降台+传送带，4 升降台+弹簧，5格子柜
  // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
-	public Tb_vmc_cabinet(String cabID, int cabType) {
+	public Tb_vmc_cabinet(String cabID,int cabType) {
 		super();
-		this.cabID = cabID;
+		this.cabID = cabID;		
 		this.cabType = cabType;
 	}
 	public String getCabID() {
@@ -30,7 +30,7 @@ public class Tb_vmc_cabinet
 	}
 	public void setCabID(String cabID) {
 		this.cabID = cabID;
-	}
+	}	
 	public int getCabType() {
 		return cabType;
 	}

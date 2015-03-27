@@ -47,7 +47,8 @@ public class Login extends Activity
 
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         Map<String, String> list=ToolClass.ReadConfigFile();
-        String com = list.get("com");	
+        final String com = list.get("com");
+        final String bentcom = list.get("bentcom");
         txtlogin.setText(com);
         AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
         WeiConfigAPI.SetWeiConfig(list);//设置微信账号
@@ -64,7 +65,8 @@ public class Login extends Activity
             public void onClick(View arg0)
             {
                 Intent intent = new Intent(Login.this, MaintainActivity.class);// 创建Intent对象
-                intent.putExtra("comport", txtlogin.getText().toString());
+                intent.putExtra("com", com);
+                intent.putExtra("bentcom", bentcom);
                 startActivity(intent);// 启动主Activity               
             }
         });
@@ -74,7 +76,8 @@ public class Login extends Activity
             public void onClick(View arg0) 
             {
                 Intent intent = new Intent(Login.this, Business.class);// 创建Intent对象
-                intent.putExtra("comport", txtlogin.getText().toString());
+                intent.putExtra("com", com);
+                intent.putExtra("bentcom", bentcom);
                 startActivity(intent);// 启动主Activity               
             }
         });
