@@ -84,6 +84,7 @@ public class HuodaoTest extends TabActivity
 	private Spinner spinhuosetCab=null,spinhuotestCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
+	private int cabinetsetvar=0,cabinetTypesetvar=0;
 	Map<String, Integer> huoSet= new TreeMap<String,Integer>();
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
@@ -186,10 +187,24 @@ public class HuodaoTest extends TabActivity
 				if(cabinetID!=null)
 				{
 					barhuomanager.setVisibility(View.VISIBLE); 
+					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+					cabinetTypesetvar=cabinetType[arg2]; 
 					//格子柜
 					if(cabinetType[arg2]==5)
 					{
-						EVprotocolAPI.bentoCheck(Integer.parseInt(cabinetID[arg2]));
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
+						try {
+							huoSet.clear();
+							huoSet=EVprotocolAPI.bentoCheck(Integer.parseInt(cabinetID[arg2]));
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
+							showhuodao();	
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						barhuomanager.setVisibility(View.GONE);  
 					}
 					//普通柜
@@ -453,7 +468,13 @@ public class HuodaoTest extends TabActivity
 	    spinhuosetCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
-	    cabinetType=vmc_cabAdapter.getCabinetType();    
+	    cabinetType=vmc_cabAdapter.getCabinetType(); 
+	    //只有有柜号的时候，才请求加载柜内货道信息
+		if(cabinetID!=null)
+		{
+		    cabinetsetvar=Integer.parseInt(cabinetID[0]); 
+		    cabinetTypesetvar=cabinetType[0]; 
+		}
 	}
 	//导入本柜全部货道信息
 	private void showhuodao()

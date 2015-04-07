@@ -17,6 +17,7 @@ package com.easivend.evprotocol;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -117,8 +118,14 @@ public class EVprotocolAPI
 								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<断开连接");
 							else if(state == 1)
 								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正在初始化");
-							else if(state == 2)							
-								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正常");								
+							else if(state == 2)		
+							{
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正常");	
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_ONLINE);
+								callBack.jniCallback(allSet);
+							}
 							else if(state == 3)
 								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<故障");
 							else if(state == 4)
@@ -379,12 +386,28 @@ public class EVprotocolAPI
 	** output parameters:   无
 	** Returned value:      返回的是一个JSON包 例如{{}}
 	*********************************************************************************************************/
-	public  static String bentoCheck(int cabinet)
+	public  static Map<String,Integer> bentoCheck(int cabinet) throws Exception
 	{
+		Map<String,Integer> allSetbent = new LinkedHashMap<String,Integer>() ;
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+cabinet);
 		String ret=ev.bentoCheck(cabinet);
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<柜子数"+ret);
-		return ret;
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<"+ret);
+		
+		
+		JSONObject jsonObject = new JSONObject(ret); 
+		//根据key取出内容
+		JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
+		JSONArray arr=ev_head.getJSONArray("column");//返回json数组
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<arr="+arr);
+		//返回信息
+		allSetbent.clear();	
+		for(int i=0;i<arr.length();i++)
+		{
+			JSONObject object2=arr.getJSONObject(i);
+			allSetbent.put(String.valueOf(object2.getInt("no")), object2.getInt("state"));								
+		}
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<bent="+allSetbent);
+		return allSetbent;
 	}
 				
 	/*********************************************************************************************************

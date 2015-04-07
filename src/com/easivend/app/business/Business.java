@@ -12,12 +12,14 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -36,6 +38,24 @@ public class Business extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.business);
+		videoView=(VideoView)findViewById(R.id.video);
+		//动态设置控件高度
+    	//
+    	DisplayMetrics  dm = new DisplayMetrics();  
+        //取得窗口属性  
+        getWindowManager().getDefaultDisplay().getMetrics(dm);  
+        //窗口的宽度  
+        int screenWidth = dm.widthPixels;          
+        //窗口高度  
+        int screenHeight = dm.heightPixels;      
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
+				+"],["+screenHeight+"]");	
+		
+    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) videoView.getLayoutParams(); // 取控件videoView当前的布局参数
+    	//linearParams.height =  (int)screenHeight/3;// 当控件的高强制设成75象素
+    	linearParams.weight= screenHeight;
+    	videoView.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+    	
 		listFiles(); 
 		startVideo();		
 	}
@@ -60,8 +80,7 @@ public class Business extends Activity
     } 
     //打开播放器
     private void startVideo()
-    {  
-    	videoView=(VideoView)findViewById(R.id.video);
+    { 
     	videoView.requestFocus(); 
     	play();  
     	//播放完成事件监听器

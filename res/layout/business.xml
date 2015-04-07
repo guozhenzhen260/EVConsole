@@ -6,7 +6,158 @@
     <VideoView
         android:id="@+id/video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="410dp"
         android:layout_below="@+id/btnpool" />
-
+	
+	<RelativeLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	    <TextView
+	        android:id="@+id/tvadsTip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:text="请输入商品柜号"
+	        android:textColor="#8C6931"
+	        android:textSize="40dp" />
+	     <EditText
+	        android:id="@+id/txtadsTip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"	        
+	        android:minWidth="300dp"
+	        android:layout_below="@+id/tvadsTip"        
+	        />
+	    <Button
+	        android:id="@+id/btnads1"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_below="@+id/tvadsTip"	       
+	        android:textColor="#8C6931"
+	        android:text="1" />   
+	    <Button
+	        android:id="@+id/btnads2"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads1"
+	        android:layout_below="@+id/tvadsTip"
+	        android:textColor="#8C6931"
+	        android:text="2" />
+	    <Button
+	        android:id="@+id/btnads3"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads2"
+	        android:layout_below="@+id/tvadsTip"
+	        android:textColor="#8C6931"
+	        android:text="3" />  
+	   <Button
+	        android:id="@+id/btnads4"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_below="@+id/btnads1"	       
+	        android:textColor="#8C6931"
+	        android:text="4" />   
+	   <Button
+	        android:id="@+id/btnads5"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads4"
+	        android:layout_below="@+id/btnads2"
+	        android:textColor="#8C6931"
+	        android:text="5" />
+	   <Button
+	        android:id="@+id/btnads6"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads5"
+	        android:layout_below="@+id/btnads3"
+	        android:textColor="#8C6931"
+	        android:text="6" />
+	   <Button
+	        android:id="@+id/btnads7"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_below="@+id/btnads4"	       
+	        android:textColor="#8C6931"
+	        android:text="7" />   
+	   <Button
+	        android:id="@+id/btnads8"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads7"
+	        android:layout_below="@+id/btnads5"
+	        android:textColor="#8C6931"
+	        android:text="8" />
+	   <Button
+	        android:id="@+id/btnads9"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads8"
+	        android:layout_below="@+id/btnads6"
+	        android:textColor="#8C6931"
+	        android:text="9" />  
+	   <Button
+	        android:id="@+id/btnadscancel"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_below="@+id/btnads7"	       
+	        android:textColor="#8C6931"
+	        android:text="取消" />   
+	   <Button
+	        android:id="@+id/btnads0"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnadscancel"
+	        android:layout_below="@+id/btnads8"
+	        android:textColor="#8C6931"
+	        android:text="0" />
+	   <Button
+	        android:id="@+id/btnadsenter"
+	        android:layout_width="100dp"
+	        android:layout_height="60dp"
+	        android:layout_toRightOf="@+id/btnads0"
+	        android:layout_below="@+id/btnads9"
+	        android:textColor="#8C6931"
+	        android:text="确认" /> 
+	   
+	   <Button
+	        android:id="@+id/btnadsclass"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_below="@+id/btnadscancel"	       
+	        android:textColor="#8C6931"
+	        android:text="商品分类" 
+	        android:textSize="40dp"/>  
+	  <Button
+	        android:id="@+id/btnadscuxiao"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_below="@+id/btnadscancel"	
+	        android:layout_toRightOf="@+id/btnadsclass"       
+	        android:textColor="#8C6931"
+	        android:text="促销信息" 
+	        android:textSize="40dp"/>  
+	  <Button
+	        android:id="@+id/btnadsbuysale"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_below="@+id/btnadsclass"	
+	        android:textColor="#8C6931"
+	        android:text="购买演示" 
+	        android:textSize="40dp"/>  
+	  <Button
+	        android:id="@+id/btnadsquhuo"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_below="@+id/btnadsclass"	
+	        android:layout_toRightOf="@+id/btnadsbuysale"       
+	        android:textColor="#8C6931"
+	        android:text="取货码" 
+	        android:textSize="40dp"/>                    
+	</RelativeLayout>    
 </LinearLayout>

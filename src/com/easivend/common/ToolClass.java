@@ -48,6 +48,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore.Images.ImageColumns;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class ToolClass 
@@ -316,6 +317,6 @@ public class ToolClass
      		e.printStackTrace();
      	}
 		return null;
-     }
-	
+     }    
+    
 }

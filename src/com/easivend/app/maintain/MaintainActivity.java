@@ -57,7 +57,7 @@ public class MaintainActivity extends Activity
 	private GridView gvInfo;// 创建GridView对象
 	private ProgressBar barmaintain=null;
 	// 定义字符串数组，存储系统功能
-    private String[] titles = new String[] { "商品管理", "货道管理", "预留接口", "预留接口", "预留接口", "参数配置", "预留接口", "退出" };
+    private String[] titles = new String[] { "商品管理", "货道管理", "参数配置", "预留接口", "预留接口", "预留接口", "预留接口", "退出" };
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
@@ -86,17 +86,7 @@ public class MaintainActivity extends Activity
 				{
 					case EVprotocolAPI.EV_ONLINE://接收子线程消息
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成");	
-						txtcom.setText(com+"[主柜]初始化完成");
-						//打开格子柜
-						bentopen = EVprotocolAPI.bentoRegister(bentcom);
-						if(bentopen == 1)
-						{
-							txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
-						}
-						else
-						{
-							txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
-						}
+						txtcom.setText(com+"[主柜]初始化完成");						
 						break;
 				}
 			}
@@ -122,15 +112,15 @@ public class MaintainActivity extends Activity
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
 		txtbentcom.setText("[格子柜]正在准备连接"+bentcom);	
 //		//打开格子柜
-//		//bentopen = EVprotocolAPI.bentoRegister(bentcom);
-//		if(bentopen == 1)
-//		{
-//			txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
-//		}
-//		else
-//		{
-//			txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
-//		}
+		bentopen = EVprotocolAPI.bentoRegister(bentcom);
+		if(bentopen == 1)
+		{
+			txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
+		}
+		else
+		{
+			txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
+		}
 		
 				
 		barmaintain= (ProgressBar) findViewById(R.id.barmaintain);
@@ -153,9 +143,9 @@ public class MaintainActivity extends Activity
                     startActivityForResult(intent,REQUEST_CODE);// 打开HuodaoTest
                     break;
                 case 2:
-                    //intent = new Intent(MainActivity.this, Inaccountinfo.class);// 使用Inaccountinfo窗口初始化Intent
-                    //startActivity(intent);// 打开Inaccountinfo
                 	barmaintain.setVisibility(View.VISIBLE);
+                	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
+                    startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
                     break;    
                 case 3:
 //                    intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
@@ -167,9 +157,9 @@ public class MaintainActivity extends Activity
                 	barmaintain.setVisibility(View.GONE);
                     break;
                 case 5:
-                	barmaintain.setVisibility(View.VISIBLE);
-                	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
-                    startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager
+                	//barmaintain.setVisibility(View.VISIBLE);
+                	//intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
+                    //startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager
                     break;
                 case 6:
                     //intent = new Intent(MainActivity.this, Accountflag.class);// 使用Accountflag窗口初始化Intent
