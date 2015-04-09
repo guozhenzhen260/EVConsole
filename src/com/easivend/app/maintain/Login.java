@@ -37,7 +37,7 @@ import android.widget.Toast;
 public class Login extends Activity 
 {
 	private EditText txtlogin;// 创建EditText对象
-    private Button btnlogin, btnclose,btnbusiness;// 创建两个Button对象
+    private Button btnlogin, btnclose;// 创建两个Button对象
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,18 +69,7 @@ public class Login extends Activity
                 intent.putExtra("bentcom", bentcom);
                 startActivity(intent);// 启动主Activity               
             }
-        });
-        btnbusiness = (Button) findViewById(R.id.btnBusiness);// 获取交易按钮
-        btnbusiness.setOnClickListener(new OnClickListener() {// 为交易按钮设置监听事件
-            @Override
-            public void onClick(View arg0) 
-            {
-                Intent intent = new Intent(Login.this, Business.class);// 创建Intent对象
-                intent.putExtra("com", com);
-                intent.putExtra("bentcom", bentcom);
-                startActivity(intent);// 启动主Activity               
-            }
-        });
+        });        
 	}
 	
 }

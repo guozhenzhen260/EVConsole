@@ -190,12 +190,12 @@ public class HuodaoTest extends TabActivity
 					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
 					cabinetTypesetvar=cabinetType[arg2]; 
 					//格子柜
-					if(cabinetType[arg2]==5)
+					if(cabinetTypesetvar==5)
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
 						try {
 							huoSet.clear();
-							huoSet=EVprotocolAPI.bentoCheck(Integer.parseInt(cabinetID[arg2]));
+							huoSet=EVprotocolAPI.bentoCheck(cabinetsetvar);
 							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
 							showhuodao();	
 						} catch (NumberFormatException e) {
@@ -210,7 +210,7 @@ public class HuodaoTest extends TabActivity
 					//普通柜
 					else 
 					{
-						EVprotocolAPI.getColumn(Integer.parseInt(cabinetID[arg2]));
+						EVprotocolAPI.getColumn(cabinetsetvar);
 					}
 					
 				}				
@@ -231,11 +231,11 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub cabinetID[0],
 				String huo[]=huoAdapter.getHuoID();
 				String huoID = huo[arg2];// 记录收入信息               
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetID[0]+huoID+"status="+huoSet.get(huoID));
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID+"status="+huoSet.get(huoID));
 				Intent intent = new Intent();
 		    	intent.setClass(HuodaoTest.this, HuodaoSet.class);// 使用AddInaccount窗口初始化Intent
                 intent.putExtra("huoID", huoID);
-                intent.putExtra("cabID", cabinetID[0]);
+                intent.putExtra("cabID", String.valueOf(cabinetsetvar));
                 intent.putExtra("huoStatus", String.valueOf(huoSet.get(huoID)));
 		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 			}// 为GridView设置项单击事件
@@ -470,17 +470,18 @@ public class HuodaoTest extends TabActivity
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
 	    cabinetType=vmc_cabAdapter.getCabinetType(); 
 	    //只有有柜号的时候，才请求加载柜内货道信息
-		if(cabinetID!=null)
-		{
-		    cabinetsetvar=Integer.parseInt(cabinetID[0]); 
-		    cabinetTypesetvar=cabinetType[0]; 
-		}
+//		if(cabinetID!=null)
+//		{
+//		    cabinetsetvar=Integer.parseInt(cabinetID[0]); 
+//		    cabinetTypesetvar=cabinetType[0]; 
+//		}
 	}
 	//导入本柜全部货道信息
 	private void showhuodao()
 	{		 
-		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet,cabinetID[0]);
-		HuoPictureAdapter adapter = new HuoPictureAdapter(cabinetID[0],huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet,String.valueOf(cabinetsetvar));
+		
+		HuoPictureAdapter adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
 		gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
 		barhuomanager.setVisibility(View.GONE);  
 	}
@@ -500,10 +501,10 @@ public class HuodaoTest extends TabActivity
 	    					// TODO Auto-generated method stub	
 	    					// 创建InaccountDAO对象
 	    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoTest.this);
-				            columnDAO.deteleCab(cabinetID[0]);// 删除该柜货道信息
+				            columnDAO.deteleCab(String.valueOf(cabinetsetvar));// 删除该柜货道信息
 				            
 				            vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
-				            cabinetDAO.detele(cabinetID[0]);// 删除该柜信息
+				            cabinetDAO.detele(String.valueOf(cabinetsetvar));// 删除该柜信息
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();				            
 				            finish();

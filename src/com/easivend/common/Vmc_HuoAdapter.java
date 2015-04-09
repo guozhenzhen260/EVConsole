@@ -27,7 +27,7 @@ public class Vmc_HuoAdapter
  	{
  	    List<Tb_vmc_column> listinfos=null;//数据表list类集
  	    // 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
- 	    vmc_columnDAO columnDAO = new vmc_columnDAO(context);;
+ 	    vmc_columnDAO columnDAO = new vmc_columnDAO(context);
  	    // 获取所有收入信息，并存储到List泛型集合中
  		listinfos = columnDAO.getScrollData(cabID);
  	   
@@ -64,10 +64,13 @@ public class Vmc_HuoAdapter
 	    	    	huoRemain[m] = String.valueOf(tb_inaccount.getPathRemain());
 	    	    	huolasttime[m] = tb_inaccount.getLasttime().substring(0, 10);  
 	    	    	//得到这个商品id对应的图片
-	    	    	vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
-	    		    // 获取所有收入信息，并存储到List泛型集合中
-	    		    Tb_vmc_product tb_product = productDAO.find(huoproID[m]);
-	    		    proImage[m] = tb_product.getAttBatch1().toString();
+	    	    	if(huoproID[m].equals("0")!=true)
+	    	    	{
+		    	    	vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
+		    		    // 获取所有收入信息，并存储到List泛型集合中
+		    		    Tb_vmc_product tb_product = productDAO.find(huoproID[m]);
+		    		    proImage[m] = tb_product.getAttBatch1().toString();
+	    	    	}
     	    	}
     	   }
            m++;// 标识加1

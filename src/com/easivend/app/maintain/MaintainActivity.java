@@ -23,6 +23,7 @@ import java.util.Timer;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.app.business.Business;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
@@ -57,7 +58,7 @@ public class MaintainActivity extends Activity
 	private GridView gvInfo;// 创建GridView对象
 	private ProgressBar barmaintain=null;
 	// 定义字符串数组，存储系统功能
-    private String[] titles = new String[] { "商品管理", "货道管理", "参数配置", "预留接口", "预留接口", "预留接口", "预留接口", "退出" };
+    private String[] titles = new String[] { "商品管理", "货道管理", "参数配置", "预留接口", "预留接口", "预留接口", "交易页面", "退出" };
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
             R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
@@ -162,8 +163,8 @@ public class MaintainActivity extends Activity
                     //startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager
                     break;
                 case 6:
-                    //intent = new Intent(MainActivity.this, Accountflag.class);// 使用Accountflag窗口初始化Intent
-                    //startActivity(intent);// 打开Accountflag
+                    intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+                    startActivity(intent);// 打开Accountflag
                     break;
                 case 7:
                     finish();// 关闭当前Activity

@@ -45,6 +45,7 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         {
             HuoPicture picture = new HuoPicture(huoID[i],huoproID[i],huoRemain[i], huolasttime[i],proImage[i]);// 使用标题和图像生成ProPicture对象
             pictures.add(picture);// 将Picture对象添加到泛型集合中
+            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img="+huoID[i]+","+proImage[i]);
         }
     }
 
@@ -93,10 +94,14 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.huoproID.setText("商品ID:"+pictures.get(arg0).getHuoproID());// 设置图像原价
         viewHolder.huoRemain.setText("余量:"+pictures.get(arg0).getHuoRemain());// 设置图像原价
         viewHolder.huolasttime.setText(pictures.get(arg0).getHuolasttime());
-        /*为什么图片一定要转化为 Bitmap格式的！！ */
-        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-        if(bitmap!=null)
-        	viewHolder.huoImage.setImageBitmap(bitmap);// 设置图像的二进制值
+        if(pictures.get(arg0).getProImage().equals("0")!=true)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pro="+pictures.get(arg0).getHuoID()+","+pictures.get(arg0).getProImage());
+	        /*为什么图片一定要转化为 Bitmap格式的！！ */
+	        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+	        if(bitmap!=null)
+	        	viewHolder.huoImage.setImageBitmap(bitmap);// 设置图像的二进制值
+        }
         return arg1;// 返回图像标识
     }
 }

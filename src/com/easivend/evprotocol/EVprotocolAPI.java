@@ -389,6 +389,8 @@ public class EVprotocolAPI
 	public  static Map<String,Integer> bentoCheck(int cabinet) throws Exception
 	{
 		Map<String,Integer> allSetbent = new LinkedHashMap<String,Integer>() ;
+		String tempno=null;
+		
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+cabinet);
 		String ret=ev.bentoCheck(cabinet);
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<"+ret);
@@ -404,7 +406,12 @@ public class EVprotocolAPI
 		for(int i=0;i<arr.length();i++)
 		{
 			JSONObject object2=arr.getJSONObject(i);
-			allSetbent.put(String.valueOf(object2.getInt("no")), object2.getInt("state"));								
+			if(object2.getInt("no")<10)
+				tempno="0"+String.valueOf(object2.getInt("no"));
+			else 
+				tempno=String.valueOf(object2.getInt("no"));
+			
+			allSetbent.put(tempno, object2.getInt("state"));								
 		}
 		//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<bent="+allSetbent);
 		return allSetbent;
