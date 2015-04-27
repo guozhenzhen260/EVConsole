@@ -27,7 +27,9 @@ import com.easivend.model.Tb_vmc_class;
 
 public class Vmc_ClassAdapter 
 {
-	private String[] proclassID = null;//用来分离出产品编号
+	private String[] proclassID = null;//用来分离出类型编号
+	private String[] proclassName = null;//用来分离出类型名称
+	private String[] proImage = null;//用来分离出类型图片
 	
 	// 显示商品分类信息有几样就显示几样,一般给list使用，用来添加类别
 	public String[] showListInfo(Context context) 
@@ -57,15 +59,23 @@ public class Vmc_ClassAdapter
 	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
 	    strInfos = new String[listinfos.size()+1];// 设置字符串数组的长度
 	    proclassID = new String[listinfos.size()+1];// 设置字符串数组的长度
+	    proclassName = new String[listinfos.size()+1];// 设置字符串数组的长度
+	    proImage = new String[listinfos.size()+1];// 设置字符串数组的长度
 	    int m = 0;// 定义一个开始标识
 	    //添加全部，即不分类这一项
-	    strInfos[m++] = "0<---|--->全部";        
+	    strInfos[m] = "0<---|--->全部";  
+	    proclassID[m] = "0";
+	    proclassName[m]="返回";
+	    proImage[m]="0";
+	    m++;
 	    // 遍历List泛型集合
 	    for (Tb_vmc_class tb_inaccount : listinfos) 
 	    {
 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
 	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
 	        proclassID[m] = tb_inaccount.getClassID();
+	        proclassName[m] = tb_inaccount.getClassName();
+	        proImage[m]="0";
 	        m++;// 标识加1
 	    }
 	    return strInfos;
@@ -75,6 +85,18 @@ public class Vmc_ClassAdapter
 	}
 	public void setProclassID(String[] proclassID) {
 		this.proclassID = proclassID;
+	}
+	public String[] getProclassName() {
+		return proclassName;
+	}
+	public void setProclassName(String[] proclassName) {
+		this.proclassName = proclassName;
+	}
+	public String[] getProImage() {
+		return proImage;
+	}
+	public void setProImage(String[] proImage) {
+		this.proImage = proImage;
 	}
 	
 	

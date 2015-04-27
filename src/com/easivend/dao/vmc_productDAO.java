@@ -505,6 +505,52 @@ public class vmc_productDAO
  		db.close();
         return tb_inaccount;// 返回集合
     }
+    
+    /**
+     * 重载函数，获取指定类型商品信息
+     * 
+     * @param param搜索条件
+     *        datasort排序方法    
+     * 
+     *            
+     * @return
+     */
+    public List<Tb_vmc_product> getScrollData(String classID) 
+    {
+    	List<Tb_vmc_product> tb_inaccount = new ArrayList<Tb_vmc_product>();// 创建集合对象
+        Cursor cursor = null;
+        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productName="+params+" sort="+datasort);
+        
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象        
+    	// 获取所有收入信息
+        cursor = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+        		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+        		"paixu,isdelete from vmc_product where productID in" +
+        		"(select productID from vmc_classproduct where classID=?)", new String[] { classID });
+         
+        //遍历所有的收入信息
+        while (cursor.moveToNext()) 
+        {	
+            // 将遍历到的收入信息添加到集合中
+            tb_inaccount.add(new Tb_vmc_product
+        		(
+        				cursor.getString(cursor.getColumnIndex("productID")), cursor.getString(cursor.getColumnIndex("productName")),
+        				cursor.getString(cursor.getColumnIndex("productDesc")),cursor.getFloat(cursor.getColumnIndex("marketPrice")),
+        				cursor.getFloat(cursor.getColumnIndex("salesPrice")),cursor.getInt(cursor.getColumnIndex("shelfLife")),
+        				cursor.getString(cursor.getColumnIndex("downloadTime")),cursor.getString(cursor.getColumnIndex("onloadTime")),
+        				cursor.getString(cursor.getColumnIndex("attBatch1")), cursor.getString(cursor.getColumnIndex("attBatch2")),
+        				cursor.getString(cursor.getColumnIndex("attBatch3")),cursor.getInt(cursor.getColumnIndex("paixu")),
+        				cursor.getInt(cursor.getColumnIndex("isdelete"))
+        		)
+           );
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
+        return tb_inaccount;// 返回集合
+    }
 
     /**
      * 获取总记录数

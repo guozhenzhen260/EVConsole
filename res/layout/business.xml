@@ -21,11 +21,14 @@
 	        android:text="请输入商品柜号"
 	        android:textColor="#8C6931"
 	        android:textSize="40dp" />
-	     <EditText
+	     <TextView
 	        android:id="@+id/txtadsTip"
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"	        
+	        android:layout_height="wrap_content"
+	        android:text="[       ]"	        
 	        android:minWidth="300dp"
+	        android:textColor="#8C6931"
+	        android:textSize="40dp"
 	        android:layout_below="@+id/tvadsTip"        
 	        />
 	    <Button

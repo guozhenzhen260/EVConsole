@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.ToolClass;
+import com.easivend.evprotocol.EVprotocolAPI;
 import com.example.evconsole.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -21,11 +23,17 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 public class Business extends Activity
 {
+	TextView txtadsTip=null;
+	Button btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
+		   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnads0=null,btnadsenter=null,
+		   btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null;
+	Intent intent=null;
 	//VideoView
 	private VideoView videoView=null;
 	private File filev;
@@ -58,6 +66,33 @@ public class Business extends Activity
     	
 		listFiles(); 
 		startVideo();		
+		//=======
+		//操作模块
+		//=======
+		txtadsTip = (TextView) findViewById(R.id.txtadsTip);
+		btnads1 = (Button) findViewById(R.id.btnads1);
+		btnads2 = (Button) findViewById(R.id.btnads2);
+		btnads3 = (Button) findViewById(R.id.btnads3);
+		btnads4 = (Button) findViewById(R.id.btnads4);
+		btnads5 = (Button) findViewById(R.id.btnads5);
+		btnads6 = (Button) findViewById(R.id.btnads6);
+		btnads7 = (Button) findViewById(R.id.btnads7);
+		btnads8 = (Button) findViewById(R.id.btnads8);
+		btnads9 = (Button) findViewById(R.id.btnads9);
+		btnadscancel = (Button) findViewById(R.id.btnadscancel);
+		btnads0 = (Button) findViewById(R.id.btnads0);
+		btnadsenter = (Button) findViewById(R.id.btnadsenter);
+		btnadsclass = (Button) findViewById(R.id.btnadsclass);
+		btnadsclass.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	intent = new Intent(Business.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
+                startActivity(intent);// 打开Accountflag
+		    }
+		});
+		btnadscuxiao = (Button) findViewById(R.id.btnadscuxiao);
+		btnadsbuysale = (Button) findViewById(R.id.btnadsbuysale);
+		btnadsquhuo = (Button) findViewById(R.id.btnadsquhuo);
 	}
 	
 	 /* 播放列表 */  
