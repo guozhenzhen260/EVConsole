@@ -16,7 +16,9 @@
 package com.easivend.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_column;
@@ -169,6 +171,66 @@ public class vmc_columnDAO
  		}  
  		db.close();
         return tb_inaccount;// 返回集合
+    }
+    
+    /**
+     * 获取存货数量
+     * 
+     * @return
+     */
+    public int getproductCount(String productID) {
+    	int count=0;
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select pathRemain from vmc_column where productID=?", 
+        		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
+        //遍历所有的收入信息
+        while (cursor.moveToNext()) 
+        {	
+            // 将遍历到的收入信息添加到集合中
+        	count+=cursor.getInt(cursor.getColumnIndex("pathRemain"));           
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
+        return count;// 如果没有数据，则返回0
+    }
+    
+    /**
+     * 获取出货货道
+     * 
+     * @return
+     */
+    public List<String> getproductColumn(String productID) {
+    	List<String> alllist=new ArrayList<String>();
+    	
+    	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where pathRemain>0 and productID=?", 
+        		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
+        //遍历所有的收入信息
+        if (cursor.moveToNext()) 
+        {	
+            // 将遍历到的收入信息添加到集合中
+        	alllist.add(cursor.getString(cursor.getColumnIndex("cabID")));//柜号
+        	alllist.add(cursor.getString(cursor.getColumnIndex("columnID")));//货道号
+        	Cursor cursor2 = db.rawQuery("select cabType from vmc_cabinet where cabID=?", 
+            		new String[] { cursor.getString(cursor.getColumnIndex("cabID"))});// 根据编号查找支出信息，并存储到Cursor类中
+        	if (cursor2.moveToNext()) 
+        	{
+        		alllist.add(String.valueOf(cursor2.getInt(cursor2.getColumnIndex("cabType"))));//柜类型        		
+        	}
+        	if (!cursor2.isClosed()) 
+     		{  
+     			cursor2.close();  
+     		} 
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}         
+ 		db.close();
+        return alllist;// 如果没有数据，则返回0
     }
 	
 }

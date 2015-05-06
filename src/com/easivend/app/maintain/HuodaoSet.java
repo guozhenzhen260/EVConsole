@@ -245,13 +245,13 @@ public class HuodaoSet extends Activity
 			//找到了了布局文件中的view
 			HuodaoSet.this.popview = inflater.inflate(R.layout.goodsselect, null);
 			//新建弹出菜单实例，使用布局文件中的view,长600,宽800，有焦距
-			HuodaoSet.this.popWin = new PopupWindow(HuodaoSet.this.popview,600,800,true);
+			HuodaoSet.this.popWin = new PopupWindow(HuodaoSet.this.popview,300,800,true);
 			//开始处理popWin中的控件
 			HuodaoSet.this.gvselectProduct = (GridView)HuodaoSet.this.popview.findViewById(R.id.gvselectProduct);
 			HuodaoSet.this.btnselectexit = (Button)HuodaoSet.this.popview.findViewById(R.id.btnselectexit);
 			// 商品表中的所有商品信息补充到商品数据结构数组中
 			final Vmc_ProductAdapter productAdapter=new Vmc_ProductAdapter();
-	    	productAdapter.showProInfo(HuodaoSet.this,"","shoudong"); 
+	    	productAdapter.showProInfo(HuodaoSet.this,"","shoudong",""); 
 	    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), HuodaoSet.this);// 创建pictureAdapter对象
 	    	gvselectProduct.setAdapter(adapter);// 为GridView设置数据源
 			
