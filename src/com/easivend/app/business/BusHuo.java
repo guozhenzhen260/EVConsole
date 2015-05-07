@@ -86,11 +86,15 @@ public class BusHuo extends Activity
 						{
 							data[tempx][0]=String.valueOf(R.drawable.yes);
 							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
+							//扣除存货余量
+							columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
 						}
 						else
 						{
 							data[tempx][0]=String.valueOf(R.drawable.no);
 							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
+							//扣除存货余量
+							columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
 						}
 						updateListview();
 						tempx++;
@@ -104,6 +108,8 @@ public class BusHuo extends Activity
 								data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
 								updateListview();
 								tempx++;
+								//扣除存货余量
+								columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
 							}
 							else if(huorst==0)
 							{
@@ -111,6 +117,8 @@ public class BusHuo extends Activity
 								data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
 								updateListview();
 								tempx++;
+								//扣除存货余量
+								columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
 							}
 				 	    }
 						if(tempx>=count)
@@ -171,7 +179,9 @@ public class BusHuo extends Activity
 				data[tempx][0]=String.valueOf(R.drawable.yes);
 				data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
 				updateListview();
-				tempx++;				
+				tempx++;	
+				//扣除存货余量
+				columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
 			}
 			else if(huorst==0)
 			{
@@ -179,11 +189,14 @@ public class BusHuo extends Activity
 				data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
 				updateListview();
 				tempx++;
+				//扣除存货余量
+				columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
 			}
  	    }
  	    if(tempx>=count)
  	    {
  	    	ivbushuoquhuo.setVisibility(View.VISIBLE);
+ 	    	//延时10s
  	    	new Handler().postDelayed(new Runnable() 
 			{
                 @Override
