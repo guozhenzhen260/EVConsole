@@ -22,7 +22,7 @@ public class BusgoodsSelect extends Activity
 	ImageButton imgbtnbusgoodselbuy=null,imgbtnbusgoodselcancel=null,imgbtnbusgoodselsub=null,imgbtnbusgoodseladd=null;
 	private String proID = null;
 	private String productID = null;
-	private String proImage = null;
+	private String proImage = null;	
     private String prosales = null;
     private String procount = null;
     private String reamin_amount = null;
@@ -83,10 +83,12 @@ public class BusgoodsSelect extends Activity
 		    	if(Integer.parseInt(txtbusgoodselNum.getText().toString())>0)
 		    	{
 			    	Intent intent = null;// 创建Intent对象                
-	            	intent = new Intent(BusgoodsSelect.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+	            	intent = new Intent(BusgoodsSelect.this, BusZhiSelect.class);// 使用Accountflag窗口初始化Intent
 	            	intent.putExtra("proID", proID);
 	            	intent.putExtra("productID", productID);
-	            	intent.putExtra("proImage", proImage);
+	            	intent.putExtra("proType", "1");//1代表通过商品ID出货,2代表通过货道出货
+	            	intent.putExtra("cabID", "0");//出货柜号,proType=1时无效
+	            	intent.putExtra("huoID", "0");//出货货道号,proType=1时无效
 	            	intent.putExtra("prosales", prosales);
 	            	intent.putExtra("count", txtbusgoodselNo.getText().toString());
 	            	intent.putExtra("reamin_amount", reamin_amount);

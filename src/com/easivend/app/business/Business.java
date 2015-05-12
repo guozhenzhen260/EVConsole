@@ -5,11 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.model.Tb_vmc_product;
 import com.example.evconsole.R;
+
+import android.R.string;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +23,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.StaticLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -24,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -35,9 +43,11 @@ public class Business extends Activity
 {
 	TextView txtadsTip=null;
 	Button btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
-		   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnads0=null,btnadsenter=null,
-		   btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null;	
+			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnads0=null,btnadsenter=null;
+	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null;	
 	Intent intent=null;
+	private static int count=0;
+	private static String huo="";
 	//VideoView
 	private VideoView videoView=null;
 	private File filev;
@@ -49,6 +59,13 @@ public class Business extends Activity
     private List<String> imgMusicList = new ArrayList<String>();  
     private boolean viewvideo=false;
     private final int SPLASH_DISPLAY_LENGHT = 30000; // 延迟30秒
+    //发送出货指令
+    private String proID = null;
+	private String productID = null;
+	private String cabID = null;
+	private String huoID = null;
+    private String prosales = null;
+    private String reamin_amount = "0";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{		
@@ -82,18 +99,84 @@ public class Business extends Activity
 		//=======
 		txtadsTip = (TextView) findViewById(R.id.txtadsTip);
 		btnads1 = (Button) findViewById(R.id.btnads1);
+		btnads1.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("1",1);
+		    }
+		});
 		btnads2 = (Button) findViewById(R.id.btnads2);
+		btnads2.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("2",1);
+		    }
+		});
 		btnads3 = (Button) findViewById(R.id.btnads3);
+		btnads3.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("3",1);
+		    }
+		});
 		btnads4 = (Button) findViewById(R.id.btnads4);
+		btnads4.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("4",1);
+		    }
+		});
 		btnads5 = (Button) findViewById(R.id.btnads5);
+		btnads5.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("5",1);
+		    }
+		});
 		btnads6 = (Button) findViewById(R.id.btnads6);
+		btnads6.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("6",1);
+		    }
+		});
 		btnads7 = (Button) findViewById(R.id.btnads7);
+		btnads7.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("7",1);
+		    }
+		});
 		btnads8 = (Button) findViewById(R.id.btnads8);
+		btnads8.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("8",1);
+		    }
+		});
 		btnads9 = (Button) findViewById(R.id.btnads9);
-		btnadscancel = (Button) findViewById(R.id.btnadscancel);
+		btnads9.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("9",1);
+		    }
+		});
 		btnads0 = (Button) findViewById(R.id.btnads0);
+		btnads0.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("0",1);
+		    }
+		});
+		btnadscancel = (Button) findViewById(R.id.btnadscancel);
+		btnadscancel.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	chuhuo("0",0);
+		    }
+		});
 		btnadsenter = (Button) findViewById(R.id.btnadsenter);
-		btnadsclass = (Button) findViewById(R.id.btnadsclass);
+		btnadsclass = (ImageButton) findViewById(R.id.btnadsclass);
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -101,9 +184,9 @@ public class Business extends Activity
                 startActivity(intent);// 打开Accountflag
 		    }
 		});
-		btnadscuxiao = (Button) findViewById(R.id.btnadscuxiao);
-		btnadsbuysale = (Button) findViewById(R.id.btnadsbuysale);
-		btnadsquhuo = (Button) findViewById(R.id.btnadsquhuo);
+		btnadscuxiao = (ImageButton) findViewById(R.id.btnadscuxiao);
+		btnadsbuysale = (ImageButton) findViewById(R.id.btnadsbuysale);
+		btnadsquhuo = (ImageButton) findViewById(R.id.btnadsquhuo);
 	}
 	
 	 /* 播放列表 */  
@@ -261,5 +344,71 @@ public class Business extends Activity
         startVideo();  
     } 
     
-    
+    //num出货柜号,type=1输入数字，type=0回退数字
+    private void chuhuo(String num,int type)
+    {    	
+		if(type==1)
+		{
+			if(count<3)
+	    	{
+	    		count++;
+	    		huo=huo+num;
+	    		txtadsTip.setText(huo);
+	    	}
+		}
+		else if(type==0)
+		{
+			if(count>0)
+			{
+				count--;
+				huo=huo.substring(0,huo.length()-1);
+				if(count==0)
+					txtadsTip.setText("");
+				else
+					txtadsTip.setText(huo);
+			}
+		}  
+		if(count==3)
+		{
+			cabID=huo.substring(0,1);
+		    huoID=huo.substring(1,huo.length());
+		    vmc_columnDAO columnDAO = new vmc_columnDAO(Business.this);// 创建InaccountDAO对象		    
+		    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
+		    if(tb_inaccount!=null)
+		    {
+			    productID=tb_inaccount.getProductID().toString();
+			    prosales=String.valueOf(tb_inaccount.getSalesPrice());
+			    proID=productID+"-"+tb_inaccount.getProductName().toString();
+			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+						+productID+" proType="
+						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+						+"1"+" reamin_amount="+reamin_amount);
+			    count=0;
+			    huo="";
+			    txtadsTip.setText("");
+				Intent intent = null;// 创建Intent对象                
+	        	intent = new Intent(Business.this, BusZhiSelect.class);// 使用Accountflag窗口初始化Intent
+	        	intent.putExtra("proID", proID);
+	        	intent.putExtra("productID", productID);
+	        	intent.putExtra("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
+	        	intent.putExtra("cabID", cabID);//出货柜号,proType=1时无效
+	        	intent.putExtra("huoID", huoID);//出货货道号,proType=1时无效
+	        	intent.putExtra("prosales", prosales);
+	        	intent.putExtra("count", "1");
+	        	intent.putExtra("reamin_amount", reamin_amount);
+	        	startActivity(intent);// 打开Accountflag
+		    }
+		    else
+		    {
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+						+productID+" proType="
+						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+						+"1"+" reamin_amount="+reamin_amount);
+			    count=0;
+			    huo="";
+			    txtadsTip.setText("");
+			}
+		    
+		}
+    }
 }

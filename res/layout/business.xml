@@ -19,30 +19,63 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" >
-	    <TextView
-	        android:id="@+id/tvadsTip"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center"
-	        android:text="请输入商品柜号"
+	    <ImageButton
+	        android:id="@+id/btnadsclass"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
 	        android:textColor="#8C6931"
-	        android:textSize="40dp" />
+	        android:src="@drawable/spfl"
+	        android:textSize="40dp"/>  
+	    <ImageButton
+	        android:id="@+id/btnadscuxiao"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_toRightOf="@+id/btnadsclass"       
+	        android:textColor="#8C6931"
+	        android:src="@drawable/hdxx"
+	        android:textSize="40dp"/>  
+	    <ImageButton
+	        android:id="@+id/btnadsbuysale"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_below="@+id/btnadsclass"	
+	        android:textColor="#8C6931"
+	        android:src="@drawable/gmys"
+	        android:textSize="40dp"/>  
+	    <ImageButton
+	        android:id="@+id/btnadsquhuo"
+	        android:layout_width="360dp"
+	        android:layout_height="120dp"
+	        android:layout_below="@+id/btnadsclass"	
+	        android:layout_toRightOf="@+id/btnadsbuysale"       
+	        android:textColor="#8C6931"
+	        android:src="@drawable/qhm"
+	        android:textSize="40dp"/>  
+	    <ImageView 
+	   	    android:id = "@+id/ivadsspgh"
+	   	    android:layout_width="360dp"
+			android:layout_height="wrap_content"	
+			android:layout_alignParentLeft="true"
+			android:layout_below="@+id/btnadsbuysale"
+			android:src="@drawable/spgh"			
+	   	/> 
 	     <TextView
 	        android:id="@+id/txtadsTip"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="[       ]"	        
+	        android:text=""	        
 	        android:minWidth="300dp"
-	        android:textColor="#8C6931"
-	        android:textSize="40dp"
-	        android:layout_below="@+id/tvadsTip"        
+	        android:textSize="40sp"
+        	android:textStyle="bold"
+        	android:textColor="#FF0000" 
+	        android:layout_below="@+id/ivadsspgh"        
 	        />
 	    <Button
 	        android:id="@+id/btnads1"
 	        android:layout_width="100dp"
 	        android:layout_height="60dp"
-	        android:layout_toRightOf="@+id/txtadsTip"
-	        android:layout_below="@+id/tvadsTip"	       
+	        android:layout_toRightOf="@+id/ivadsspgh"
+	        android:layout_below="@+id/btnadsbuysale"	       
 	        android:textColor="#8C6931"
 	        android:text="1" />   
 	    <Button
@@ -50,7 +83,7 @@
 	        android:layout_width="100dp"
 	        android:layout_height="60dp"
 	        android:layout_toRightOf="@+id/btnads1"
-	        android:layout_below="@+id/tvadsTip"
+	        android:layout_below="@+id/btnadsbuysale"
 	        android:textColor="#8C6931"
 	        android:text="2" />
 	    <Button
@@ -58,14 +91,14 @@
 	        android:layout_width="100dp"
 	        android:layout_height="60dp"
 	        android:layout_toRightOf="@+id/btnads2"
-	        android:layout_below="@+id/tvadsTip"
+	        android:layout_below="@+id/btnadsbuysale"
 	        android:textColor="#8C6931"
 	        android:text="3" />  
 	   <Button
 	        android:id="@+id/btnads4"
 	        android:layout_width="100dp"
 	        android:layout_height="60dp"
-	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_toRightOf="@+id/ivadsspgh"
 	        android:layout_below="@+id/btnads1"	       
 	        android:textColor="#8C6931"
 	        android:text="4" />   
@@ -89,7 +122,7 @@
 	        android:id="@+id/btnads7"
 	        android:layout_width="100dp"
 	        android:layout_height="60dp"
-	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_toRightOf="@+id/ivadsspgh"
 	        android:layout_below="@+id/btnads4"	       
 	        android:textColor="#8C6931"
 	        android:text="7" />   
@@ -113,7 +146,7 @@
 	        android:id="@+id/btnadscancel"
 	        android:layout_width="100dp"
 	        android:layout_height="60dp"
-	        android:layout_toRightOf="@+id/txtadsTip"
+	        android:layout_toRightOf="@+id/ivadsspgh"
 	        android:layout_below="@+id/btnads7"	       
 	        android:textColor="#8C6931"
 	        android:text="取消" />   
@@ -132,41 +165,7 @@
 	        android:layout_toRightOf="@+id/btnads0"
 	        android:layout_below="@+id/btnads9"
 	        android:textColor="#8C6931"
-	        android:text="确认" /> 
-	   
-	   <Button
-	        android:id="@+id/btnadsclass"
-	        android:layout_width="360dp"
-	        android:layout_height="120dp"
-	        android:layout_below="@+id/btnadscancel"	       
-	        android:textColor="#8C6931"
-	        android:text="商品分类" 
-	        android:textSize="40dp"/>  
-	  <Button
-	        android:id="@+id/btnadscuxiao"
-	        android:layout_width="360dp"
-	        android:layout_height="120dp"
-	        android:layout_below="@+id/btnadscancel"	
-	        android:layout_toRightOf="@+id/btnadsclass"       
-	        android:textColor="#8C6931"
-	        android:text="促销信息" 
-	        android:textSize="40dp"/>  
-	  <Button
-	        android:id="@+id/btnadsbuysale"
-	        android:layout_width="360dp"
-	        android:layout_height="120dp"
-	        android:layout_below="@+id/btnadsclass"	
-	        android:textColor="#8C6931"
-	        android:text="购买演示" 
-	        android:textSize="40dp"/>  
-	  <Button
-	        android:id="@+id/btnadsquhuo"
-	        android:layout_width="360dp"
-	        android:layout_height="120dp"
-	        android:layout_below="@+id/btnadsclass"	
-	        android:layout_toRightOf="@+id/btnadsbuysale"       
-	        android:textColor="#8C6931"
-	        android:text="取货码" 
-	        android:textSize="40dp"/>                    
+	        android:text="确认" />    
+	                     
 	</RelativeLayout>    
 </LinearLayout>

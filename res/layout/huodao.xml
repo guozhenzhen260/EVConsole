@@ -40,8 +40,14 @@
 			             android:layout_height="wrap_content"
 			             android:text="删除柜" />
 		         <Button
-			             android:id="@+id/btnhuosetexit"
+			             android:id="@+id/btnhuosetbu"
 			             android:layout_toRightOf="@+id/btnhuosetdel"
+			             android:layout_width="wrap_content"
+			             android:layout_height="wrap_content"
+			             android:text="补满本柜" />
+		         <Button
+			             android:id="@+id/btnhuosetexit"
+			             android:layout_toRightOf="@+id/btnhuosetbu"
 			             android:layout_width="wrap_content"
 			             android:layout_height="wrap_content"
 			             android:text="退出" />

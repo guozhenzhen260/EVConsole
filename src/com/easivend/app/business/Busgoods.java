@@ -31,6 +31,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Busgoods extends Activity 
 {
+	public static Busgoods BusgoodsAct=null;
 	// 定义商品列表
 	Vmc_ProductAdapter productAdapter=null;
 	GridView gvbusgoodsProduct=null;
@@ -48,6 +49,7 @@ public class Busgoods extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.busgoods);
+		BusgoodsAct = this;
 		this.gvbusgoodsProduct=(GridView) findViewById(R.id.gvbusgoodsProduct);
 		this.imgbtnbusgoodsback=(ImageButton)findViewById(R.id.imgbtnbusgoodsback);
 		//动态设置控件高度
@@ -154,6 +156,8 @@ public class Busgoods extends Activity
 	    				public void onClick(DialogInterface dialog, int which) 
 	    				{
 	    					// TODO Auto-generated method stub	
+	    					if(BusgoodsClass.BusgoodsClassAct!=null)
+	    						BusgoodsClass.BusgoodsClassAct.finish(); 
 	    					finish();
 	    				}
     		      }

@@ -29,7 +29,9 @@ public class BusHuo extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 10000; // 延迟10秒
 	private String proID = null;
 	private String productID = null;
-	private String proImage = null;
+	private String proType = null;
+	private String cabID = null;
+	private String huoID = null;
     private float prosales = 0;
     private int count = 0;
     private float reamin_amount = 0;
@@ -58,9 +60,20 @@ public class BusHuo extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.bushuo);
+		setContentView(R.layout.bushuo);	
+		//删除前面的activity
+		if(BusgoodsClass.BusgoodsClassAct!=null)
+			BusgoodsClass.BusgoodsClassAct.finish(); 
+		if(Busgoods.BusgoodsAct!=null)
+			Busgoods.BusgoodsAct.finish(); 
 		if(BusgoodsSelect.BusgoodsSelectAct!=null)
 			BusgoodsSelect.BusgoodsSelectAct.finish(); 
+		if(BusZhiSelect.BusZhiSelectAct!=null)
+    		BusZhiSelect.BusZhiSelectAct.finish(); 
+		if(BusZhiAmount.BusZhiAmountAct!=null)
+			BusZhiAmount.BusZhiAmountAct.finish(); 
+		if(BusZhier.BusZhierAct!=null)
+			BusZhier.BusZhierAct.finish(); 
 		//注册出货监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
 			
@@ -144,14 +157,17 @@ public class BusHuo extends Activity
 		Bundle bundle=intent.getExtras();
 		proID=bundle.getString("proID");
 		productID=bundle.getString("productID");
-		proImage=bundle.getString("proImage");
+		proType=bundle.getString("proType");
+		cabID=bundle.getString("cabID");
+		huoID=bundle.getString("huoID");
 		prosales=Float.parseFloat(bundle.getString("prosales"));
 		count=Integer.parseInt(bundle.getString("count"));
 		reamin_amount=Float.parseFloat(bundle.getString("reamin_amount"));
+		
 		        
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
-				+productID+" proImage="
-				+proImage+" prosales="+prosales+" count="
+				+productID+" proType="
+				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" reamin_amount="+reamin_amount);
 		this.data=new String[count][2];
 		draw=String.valueOf(R.drawable.shuaxin);
@@ -235,13 +251,26 @@ public class BusHuo extends Activity
 		int rst=0;
 		data[huox][1]=proID+"["+prosales+"]"+"->正在出货,请稍候...";
 		updateListview();
- 	    // 获取所有收入信息，并存储到Map集合中
-		List<String> alllist = columnDAO.getproductColumn(productID);
-		cabinetvar=Integer.parseInt(alllist.get(0));
-		huodaoNo=Integer.parseInt(alllist.get(1));
-		cabinetTypevar=Integer.parseInt(alllist.get(2));
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
-        //出货操作
+		//按商品id出货
+		if(proType.equals("1")==true)
+		{
+	 	    // 获取所有收入信息，并存储到Map集合中
+			List<String> alllist = columnDAO.getproductColumn(productID);
+			cabinetvar=Integer.parseInt(alllist.get(0));
+			huodaoNo=Integer.parseInt(alllist.get(1));
+			cabinetTypevar=Integer.parseInt(alllist.get(2));
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
+		}
+		else if(proType.equals("2")==true)
+		{
+	 	    // 获取所有收入信息，并存储到Map集合中
+			String alllist = columnDAO.getcolumnType(cabID);
+			cabinetvar=Integer.parseInt(cabID);
+			huodaoNo=Integer.parseInt(huoID);
+			cabinetTypevar=Integer.parseInt(alllist);
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
+		}
+		//出货操作
 		int typevar=0;
 		if(prosales>0)
 			typevar=0;

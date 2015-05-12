@@ -80,7 +80,7 @@ public class HuodaoTest extends TabActivity
 	private TabHost mytabhost = null;
 	private ProgressBar barhuomanager=null;
 	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest};//内嵌布局文件的id
-	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetexit=null;
+	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetbu=null,btnhuosetexit=null;
 	private Spinner spinhuosetCab=null,spinhuotestCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
@@ -255,6 +255,14 @@ public class HuodaoTest extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	cabinetDel();
+		    }
+		});
+    	//本柜补货
+    	btnhuosetbu = (Button) findViewById(R.id.btnhuosetbu);
+    	btnhuosetbu.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	cabinetbuhuo();
 		    }
 		});
     	btnhuosetexit = (Button) findViewById(R.id.btnhuosetexit);
@@ -508,6 +516,43 @@ public class HuodaoTest extends TabActivity
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();				            
 				            finish();
+	    				}
+    		      }
+    			)		    		        
+		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+		        	{			
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
+						{
+							// TODO Auto-generated method stub				
+						}
+		        	}
+		        )
+		        .create();//创建一个对话框
+		        alert.show();//显示对话框
+	}
+	
+	//布满本柜货道
+	private void cabinetbuhuo()
+	{
+		//创建警告对话框
+    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+    		.setTitle("对话框")//标题
+    		.setMessage("您确定要补满本柜货道吗？")//表示对话框中得内容
+    		.setIcon(R.drawable.ic_launcher)//设置logo
+    		.setPositiveButton("补货", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+    			{				
+	    				@Override
+	    				public void onClick(DialogInterface dialog, int which) 
+	    				{
+	    					// TODO Auto-generated method stub	
+	    					barhuomanager.setVisibility(View.VISIBLE);
+	    					// 创建InaccountDAO对象
+	    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoTest.this);
+				            columnDAO.buhuoCab(String.valueOf(cabinetsetvar));// 删除该柜货道信息	
+				            showhuodao();
+	    					// 弹出信息提示
+				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	
 	    				}
     		      }
     			)		    		        

@@ -105,7 +105,17 @@ public class vmc_columnDAO
           		new Object[] { cabID});    
           
           db.close(); 
-  	}		
+  	}	
+    //布满该柜全部货道存货数量
+  	public void buhuoCab(String cabID) 
+  	{       
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+          // 执行删除该柜商品表
+          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1 where cabID=? and columnStatus<>2 ", 
+          		new Object[] { cabID});    
+          
+          db.close(); 
+  	}	
 	/**
      * 查找一条商品信息
      * 
@@ -229,6 +239,73 @@ public class vmc_columnDAO
  		{  
  			cursor.close();  
  		}         
+ 		db.close();
+        return alllist;// 如果没有数据，则返回0
+    }
+    
+    /**
+     * 获取指定出货货道的商品信息
+     * 
+     * @return
+     */
+    public Tb_vmc_product getColumnproduct(String cabID,String columnID) {
+    	String productID=null;
+    	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select productID from vmc_column where pathRemain>0 and cabID=? and columnID=?", 
+        		new String[] { cabID,columnID});// 根据编号查找支出信息，并存储到Cursor类中    	
+		
+        //遍历所有的收入信息
+        if (cursor.moveToNext()) 
+        {	
+        	productID=cursor.getString(cursor.getColumnIndex("productID"));//商品ID
+        	Cursor cursor2 = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
+	        if (cursor2.moveToNext()) 
+	        {// 遍历查找到的支出信息
+	
+	            // 将遍历到的支出信息存储到Tb_outaccount类中
+	        	return new Tb_vmc_product(
+	    				cursor2.getString(cursor2.getColumnIndex("productID")), cursor2.getString(cursor2.getColumnIndex("productName")),
+	    				cursor2.getString(cursor2.getColumnIndex("productDesc")),cursor2.getFloat(cursor2.getColumnIndex("marketPrice")),
+	    				cursor2.getFloat(cursor2.getColumnIndex("salesPrice")),cursor2.getInt(cursor2.getColumnIndex("shelfLife")),
+	    				cursor2.getString(cursor2.getColumnIndex("downloadTime")),cursor2.getString(cursor2.getColumnIndex("onloadTime")),
+	    				cursor2.getString(cursor2.getColumnIndex("attBatch1")), cursor2.getString(cursor2.getColumnIndex("attBatch2")),
+	    				cursor2.getString(cursor2.getColumnIndex("attBatch3")),cursor2.getInt(cursor2.getColumnIndex("paixu")),
+	    				cursor2.getInt(cursor2.getColumnIndex("isdelete"))
+	    		);
+	        }
+	        if (!cursor2.isClosed()) 
+     		{  
+     			cursor2.close();  
+     		} 
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}         
+ 		db.close();
+ 		return null;// 如果没有数据，则返回0
+    }
+    
+    /**
+     * 获取指定出货货道的货道类型
+     * 
+     * @return
+     */
+    public String getcolumnType(String cabID) {
+    	String alllist=null;    	
+    	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+    	Cursor cursor2 = db.rawQuery("select cabType from vmc_cabinet where cabID=?", 
+        		new String[] { String.valueOf(cabID)});// 根据编号查找支出信息，并存储到Cursor类中
+    	if (cursor2.moveToNext()) 
+    	{
+    		alllist=String.valueOf(cursor2.getInt(cursor2.getColumnIndex("cabType")));//柜类型        		
+    	}
+    	if (!cursor2.isClosed()) 
+ 		{  
+ 			cursor2.close();  
+ 		}                 
  		db.close();
         return alllist;// 如果没有数据，则返回0
     }

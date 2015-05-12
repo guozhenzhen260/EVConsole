@@ -13,18 +13,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class BusgoodsClass extends Activity
 {
+	public static BusgoodsClass BusgoodsClassAct=null;
 	GridView gvbusgoodsclass=null;
+	ImageButton imgbtnbusgoodsclassback=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.busgoodsclass);
+		BusgoodsClassAct = this;
 		gvbusgoodsclass=(GridView) findViewById(R.id.gvbusgoodsclass); 
 		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
 	    String[] strInfos = vmc_classAdapter.showSpinInfo(BusgoodsClass.this);
@@ -47,6 +52,13 @@ public class BusgoodsClass extends Activity
                 }
             }
         });
+	    imgbtnbusgoodsclassback=(ImageButton)findViewById(R.id.imgbtnbusgoodsclassback);
+	    imgbtnbusgoodsclassback.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	finish();
+		    }
+		});
 	}
 	
 }
