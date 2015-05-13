@@ -25,6 +25,7 @@ public class BusZhiAmount  extends Activity
     private String prosales = null;
     private String count = null;
     private String reamin_amount = null;
+    private String zhifutype = "1";//0代表使用非现金,1代表使用现金
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -43,7 +44,6 @@ public class BusZhiAmount  extends Activity
 		count=bundle.getString("count");
 		reamin_amount=bundle.getString("reamin_amount");
 		float amount=Float.parseFloat(prosales)*Integer.parseInt(count);
-		reamin_amount=bundle.getString("reamin_amount");
 		txtbuszhiamountcount= (TextView) findViewById(R.id.txtbuszhiamountcount);
 		txtbuszhiamountcount.setText(count);
 		txtbuszhiamountAmount= (TextView) findViewById(R.id.txtbuszhiamountAmount);
@@ -84,6 +84,7 @@ public class BusZhiAmount  extends Activity
             	intent.putExtra("prosales", prosales);
             	intent.putExtra("count", count);
             	intent.putExtra("reamin_amount", reamin_amount);
+            	intent.putExtra("zhifutype", zhifutype);
             	startActivity(intent);// 打开Accountflag
             }
 

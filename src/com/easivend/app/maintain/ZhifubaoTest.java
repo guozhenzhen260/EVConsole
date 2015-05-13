@@ -57,6 +57,9 @@ public class ZhifubaoTest extends Activity
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
 						txtzhifubaotest.setText("交易结果:撤销成功");
+						break;
+					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
+						txtzhifubaotest.setText("交易结果:交易成功");
 						break;	
 					case Zhifubaohttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Zhifubaohttp.SETFAILBUSCHILD://子线程接收主线程消息	
@@ -192,7 +195,7 @@ public class ZhifubaoTest extends Activity
 		btnzhifubaotestcancel = (Button)findViewById(R.id.btnzhifubaotestcancel);		
 		btnzhifubaotestcancel.setOnClickListener(new OnClickListener() {
 		    @Override
-		    public void onClick(View arg0) {
+		    public void onClick(View arg0) {		    	
 		    	finish();
 		    }
 		});

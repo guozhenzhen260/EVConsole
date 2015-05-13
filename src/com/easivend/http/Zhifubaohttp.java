@@ -35,19 +35,20 @@ public class Zhifubaohttp implements Runnable
 	public final static int SETFAILBUSCHILD=6;//what标记,发送给主线程交易信息失败
 	//查询
 	public final static int SETQUERYCHILD=7;//what标记,发送给子线程支付宝查询
-	public final static int SETQUERYMAIN=8;//what标记,发送给主线程查询结果
-	public final static int SETFAILQUERYPROCHILD=9;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILQUERYBUSCHILD=10;//what标记,发送给主线程交易信息失败
+	public final static int SETQUERYMAIN=8;//what标记,发送给主线程查询结果正在付款
+	public final static int SETQUERYMAINSUCC=9;//what标记,发送给主线程查询结果付款成功
+	public final static int SETFAILQUERYPROCHILD=10;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILQUERYBUSCHILD=11;//what标记,发送给主线程交易信息失败
 	//退款
-	public final static int SETPAYOUTCHILD=11;//what标记,发送给子线程支付宝退款
-	public final static int SETPAYOUTMAIN=12;//what标记,发送给主线程退款结果
-	public final static int SETFAILPAYOUTPROCHILD=13;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILPAYOUTBUSCHILD=14;//what标记,发送给主线程交易信息失败
+	public final static int SETPAYOUTCHILD=12;//what标记,发送给子线程支付宝退款
+	public final static int SETPAYOUTMAIN=13;//what标记,发送给主线程退款结果
+	public final static int SETFAILPAYOUTPROCHILD=14;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILPAYOUTBUSCHILD=15;//what标记,发送给主线程交易信息失败
 	//撤销交易
-	public final static int SETDELETECHILD=15;//what标记,发送给子线程支付宝撤销交易
-	public final static int SETDELETEMAIN=16;//what标记,发送给主线程退款结果
-	public final static int SETFAILDELETEPROCHILD=17;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILDELETEBUSCHILD=18;//what标记,发送给主线程交易信息失败
+	public final static int SETDELETECHILD=16;//what标记,发送给子线程支付宝撤销交易
+	public final static int SETDELETEMAIN=17;//what标记,发送给主线程退款结果
+	public final static int SETFAILDELETEPROCHILD=18;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILDELETEBUSCHILD=19;//what标记,发送给主线程交易信息失败
 	
 	private final int SETWEIMAIN=3;//what标记,主线程接收到子线程微信金额二维码
 	private final int SETWEICHILD=4;//what标记,发送给子线程微信交易
@@ -224,11 +225,21 @@ public class Zhifubaohttp implements Runnable
 				        	   tomain.what=SETFAILQUERYBUSCHILD;
 							   tomain.obj=map4.get("detail_error_code")+map4.get("detail_error_des");
 				           }
-			        	   //通过支付宝提供的订单直接生成二维码
+			        	   //交易成功状态
 			        	   else if(map4.get("result_code").equals("SUCCESS"))
 				           {
-				        	   tomain.what=SETQUERYMAIN;
-							   tomain.obj=map4.get("trade_status");
+			        		   //正在等待支付
+			        		   if(map4.get("trade_status").equals("WAIT_BUYER_PAY"))
+			        		   {
+					        	   tomain.what=SETQUERYMAIN;
+								   tomain.obj=map4.get("trade_status");
+			        		   }
+			        		   //通过支付宝提供的订单直接生成二维码
+			        		   else if(map4.get("trade_status").equals("TRADE_SUCCESS"))
+			        		   {
+					        	   tomain.what=SETQUERYMAINSUCC;
+								   tomain.obj=map4.get("trade_status");
+			        		   }
 				           }
 			           }
 			           Log.i("EV_JNI","rec3="+tomain.obj);				           

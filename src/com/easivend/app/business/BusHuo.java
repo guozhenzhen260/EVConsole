@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.easivend.app.maintain.GoodsManager;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
@@ -35,6 +36,7 @@ public class BusHuo extends Activity
     private float prosales = 0;
     private int count = 0;
     private float reamin_amount = 0;
+    private int zhifutype = 0;//0代表使用非现金,1代表使用现金
     private String data[][]=null;
     private ListView lvbushuo = null;
     //定义显示的内容包装，因为他有两列，因此就两个
@@ -72,8 +74,7 @@ public class BusHuo extends Activity
     		BusZhiSelect.BusZhiSelectAct.finish(); 
 		if(BusZhiAmount.BusZhiAmountAct!=null)
 			BusZhiAmount.BusZhiAmountAct.finish(); 
-		if(BusZhier.BusZhierAct!=null)
-			BusZhier.BusZhierAct.finish(); 
+		
 		//注册出货监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
 			
@@ -142,7 +143,23 @@ public class BusHuo extends Activity
 		                        @Override
 		                        public void run() 
 		                        {
-		                               finish();
+		                        	//出货完成,把非现金模块去掉
+		                        	if(status==0)
+		                        	{
+		                        		if(BusZhier.BusZhierAct!=null)
+		                        			BusZhier.BusZhierAct.finish(); 
+		                        	}
+		                        	//出货失败，退到非现金模块进行退币操作
+		                        	else
+		                        	{
+		                        		if(BusZhier.BusZhierAct!=null)
+		                        		{
+		                        			//退出时，返回intent
+		                    	            Intent intent=new Intent();
+		                    	            setResult(BusZhier.RESULT_CANCELED,intent);
+		                        		}
+									}
+		                            finish();
 		                        }
 
 							}, SPLASH_DISPLAY_LENGHT);
@@ -163,12 +180,12 @@ public class BusHuo extends Activity
 		prosales=Float.parseFloat(bundle.getString("prosales"));
 		count=Integer.parseInt(bundle.getString("count"));
 		reamin_amount=Float.parseFloat(bundle.getString("reamin_amount"));
-		
+		zhifutype=Integer.parseInt(bundle.getString("zhifutype"));
 		        
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-				+count+" reamin_amount="+reamin_amount);
+				+count+" reamin_amount="+reamin_amount+" zhifutype="+zhifutype);
 		this.data=new String[count][2];
 		draw=String.valueOf(R.drawable.shuaxin);
 		info=proID+"["+prosales+"]"+"->等待出货";
@@ -218,7 +235,10 @@ public class BusHuo extends Activity
                 @Override
                 public void run() 
                 {
-                       finish();
+                	//出货完成,把非现金模块去掉
+                	if(BusZhier.BusZhierAct!=null)
+            			BusZhier.BusZhierAct.finish(); 	
+                    finish();
                 }
 
 			}, SPLASH_DISPLAY_LENGHT);
@@ -251,6 +271,7 @@ public class BusHuo extends Activity
 		int rst=0;
 		data[huox][1]=proID+"["+prosales+"]"+"->正在出货,请稍候...";
 		updateListview();
+		//1.计算出出货货道
 		//按商品id出货
 		if(proType.equals("1")==true)
 		{
@@ -261,6 +282,7 @@ public class BusHuo extends Activity
 			cabinetTypevar=Integer.parseInt(alllist.get(2));
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
 		}
+		//按货道id出货
 		else if(proType.equals("2")==true)
 		{
 	 	    // 获取所有收入信息，并存储到Map集合中
@@ -270,9 +292,21 @@ public class BusHuo extends Activity
 			cabinetTypevar=Integer.parseInt(alllist);
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
 		}
-		//出货操作
+		//2.计算出出货是否要用金额
 		int typevar=0;
-		if(prosales>0)
+		float sales=0;
+		//非现金
+		if(zhifutype==0)
+		{
+			sales=0;
+		}
+		//现金
+		else if(zhifutype==1)
+		{
+			sales=prosales;
+		}
+		//计算出类型
+		if(sales>0)
 			typevar=0;
 		else 
 			typevar=2;
@@ -295,7 +329,7 @@ public class BusHuo extends Activity
 		else 
 		{
 			rst=EVprotocolAPI.trade(cabinetvar,huodaoNo,typevar,
-		    			ToolClass.MoneySend(prosales));
+		    			ToolClass.MoneySend(sales));
 			if(rst==0)//出货发送失败
 			{
 				huorst=0;

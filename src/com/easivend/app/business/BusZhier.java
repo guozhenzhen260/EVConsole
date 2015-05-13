@@ -1,20 +1,44 @@
 package com.easivend.app.business;
 
+import java.text.SimpleDateFormat;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.easivend.app.maintain.GoodsManager;
+import com.easivend.app.maintain.ParamManager;
+import com.easivend.common.ProPictureAdapter;
+import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.http.Zhifubaohttp;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BusZhier extends Activity
 {
 	public static BusZhier BusZhierAct=null;
-	TextView txtbuszhiercount=null,txtbuszhiamerount=null,txtbuszhierrst=null;
+	private final static int REQUEST_CODE=1;//声明请求标识
+	TextView txtbuszhiercount=null,txtbuszhiamerount=null,txtbuszhierrst=null,txtbuszhiertime=null;
 	ImageButton imgbtnbuszhierqxzf=null,imgbtnbuszhierqtzf=null;
+	ImageView ivbuszhier=null;
+	private int recLen = 180; 
+	private int queryLen = 0; 
+    private TextView txtView; 
+    Timer timer = new Timer(); 
 	private String proID = null;
 	private String productID = null;
 	private String proType = null;
@@ -23,6 +47,15 @@ public class BusZhier extends Activity
     private String prosales = null;
     private String count = null;
     private String reamin_amount = null;
+    private String zhifutype = "0";//0代表使用非现金,1代表使用现金
+    private float amount=0;
+    //线程进行支付宝二维码操作
+    private Thread thread=null;
+    private Handler mainhand=null,childhand=null;
+    private String id="";
+    private String out_trade_no=null;
+    Zhifubaohttp zhifubaohttp=null;
+    private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -40,13 +73,15 @@ public class BusZhier extends Activity
 		prosales=bundle.getString("prosales");
 		count=bundle.getString("count");
 		reamin_amount=bundle.getString("reamin_amount");
-		float amount=Float.parseFloat(prosales)*Integer.parseInt(count);
-		reamin_amount=bundle.getString("reamin_amount");
+		amount=Float.parseFloat(prosales)*Integer.parseInt(count);
 		txtbuszhiercount= (TextView) findViewById(R.id.txtbuszhiercount);
 		txtbuszhiercount.setText(count);
 		txtbuszhiamerount= (TextView) findViewById(R.id.txtbuszhiamerount);
 		txtbuszhiamerount.setText(String.valueOf(amount));
 		txtbuszhierrst= (TextView) findViewById(R.id.txtbuszhierrst);
+		txtbuszhiertime= (TextView) findViewById(R.id.txtbuszhiertime);
+		ivbuszhier= (ImageView) findViewById(R.id.ivbuszhier);
+		timer.schedule(task, 1000, 1000);       // timeTask 
 		imgbtnbuszhierqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhierqxzf);
 		imgbtnbuszhierqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -55,16 +90,237 @@ public class BusZhier extends Activity
 		    		BusZhiSelect.BusZhiSelectAct.finish(); 
 		    	if(BusgoodsSelect.BusgoodsSelectAct!=null)
 					BusgoodsSelect.BusgoodsSelectAct.finish(); 
-		    	finish();
+		    	finishActivity();
 		    }
 		});
 		imgbtnbuszhierqtzf = (ImageButton) findViewById(R.id.imgbtnbuszhierqtzf);
 		imgbtnbuszhierqtzf.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	finish();
+		    	finishActivity();
 		    }
 		});
+		//***********************
+		//线程进行支付宝二维码操作
+		//***********************
+		mainhand=new Handler()
+		{
+
+			@Override
+			public void handleMessage(Message msg) {
+				//barzhifubaotest.setVisibility(View.GONE);
+				// TODO Auto-generated method stub				
+				switch (msg.what)
+				{
+					case Zhifubaohttp.SETMAIN://子线程接收主线程消息
+						ivbuszhier.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
+						txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
+						iszhier=1;
+						break;
+					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
+						txtbuszhierrst.setText("交易结果:退款成功");
+						finish();
+						break;
+					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
+						txtbuszhierrst.setText("交易结果:撤销成功");
+						timer.cancel(); 
+						finish();
+						break;	
+					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
+						txtbuszhierrst.setText("交易结果:交易成功");
+						reamin_amount=String.valueOf(amount);
+						timer.cancel(); 
+						tochuhuo();
+						break;
+					case Zhifubaohttp.SETQUERYMAIN://子线程接收主线程消息
+					case Zhifubaohttp.SETFAILPROCHILD://子线程接收主线程消息
+					case Zhifubaohttp.SETFAILBUSCHILD://子线程接收主线程消息	
+					case Zhifubaohttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
+					case Zhifubaohttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息	
+					case Zhifubaohttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
+					case Zhifubaohttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
+					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
+						txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
+						break;	
+				}				
+			}
+			
+		};	
+		//启动用户自己定义的类
+		zhifubaohttp=new Zhifubaohttp(mainhand);
+		thread=new Thread(zhifubaohttp,"Zhifubaohttp Thread");
+		thread.start();
+		//发送订单
+		sendzhier();
 	}
+	
+	//发送订单
+	private void sendzhier()
+	{		
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusZhier.this);// 创建InaccountDAO对象
+	    // 得到设备ID号
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		id=tb_inaccount.getDevhCode().toString();
+    	}
+    	Log.i("EV_JNI","Send0.0="+id);
+    	// 将信息发送到子线程中
+    	childhand=zhifubaohttp.obtainHandler();
+		Message childmsg=childhand.obtainMessage();
+		childmsg.what=Zhifubaohttp.SETCHILD;
+		JSONObject ev=null;
+		try {
+			ev=new JSONObject();
+			SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+	        String datetime = tempDate.format(new java.util.Date()).toString(); 					
+	        out_trade_no=id+datetime;
+	        ev.put("out_trade_no", out_trade_no);
+			ev.put("total_fee", String.valueOf(amount));
+			Log.i("EV_JNI","Send0.1="+ev.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		childmsg.obj=ev;
+		childhand.sendMessage(childmsg);
+	}
+	//查询交易
+	private void queryzhier()
+	{
+		// 将信息发送到子线程中
+    	childhand=zhifubaohttp.obtainHandler();
+		Message childmsg=childhand.obtainMessage();
+		childmsg.what=Zhifubaohttp.SETQUERYCHILD;
+		JSONObject ev=null;
+		try {
+			ev=new JSONObject();
+			ev.put("out_trade_no", out_trade_no);		
+			//ev.put("out_trade_no", "000120150301113215800");	
+			Log.i("EV_JNI","Send0.1="+ev.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		childmsg.obj=ev;
+		childhand.sendMessage(childmsg);
+	}
+	//撤销交易
+	private void deletezhier()
+	{
+		// 将信息发送到子线程中
+    	childhand=zhifubaohttp.obtainHandler();
+		Message childmsg=childhand.obtainMessage();
+		childmsg.what=Zhifubaohttp.SETDELETECHILD;
+		JSONObject ev=null;
+		try {
+			ev=new JSONObject();
+			ev.put("out_trade_no", out_trade_no);		
+			//ev.put("out_trade_no", "000120150301092857698");	
+			Log.i("EV_JNI","Send0.1="+ev.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		childmsg.obj=ev;
+		childhand.sendMessage(childmsg);
+	}
+	//退款
+	private void payoutzhier()
+	{
+		// 将信息发送到子线程中
+    	childhand=zhifubaohttp.obtainHandler();
+		Message childmsg=childhand.obtainMessage();
+		childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
+		JSONObject ev=null;
+		try {
+			ev=new JSONObject();
+			ev.put("out_trade_no", out_trade_no);		
+			ev.put("refund_amount", String.valueOf(amount));
+			SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+	        String datetime = tempDate.format(new java.util.Date()).toString(); 					
+	        ev.put("out_request_no", id+datetime);
+			Log.i("EV_JNI","Send0.1="+ev.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		childmsg.obj=ev;
+		childhand.sendMessage(childmsg);
+	}
+	//调用倒计时定时器
+	TimerTask task = new TimerTask() { 
+        @Override 
+        public void run() { 
+  
+            runOnUiThread(new Runnable() {      // UI thread 
+                @Override 
+                public void run() { 
+                    recLen--; 
+                    txtbuszhiertime.setText("倒计时:"+recLen); 
+                    if(recLen <= 0)
+                    { 
+                        timer.cancel(); 
+                        finishActivity();
+                    } 
+                    //发送查询交易指令
+                    if(iszhier==1)
+                    {
+	                    queryLen++;
+	                    if(queryLen>=10)
+	                    {
+	                    	queryLen=0;
+	                    	queryzhier();
+	                    }
+                    }
+                } 
+            }); 
+        } 
+    };
+	//结束界面
+	private void finishActivity()
+	{
+		if(iszhier==1)
+			deletezhier();
+		else 
+		{
+			timer.cancel(); 
+			finish();
+		}
+	}
+	
+	//跳到出货页面
+	private void tochuhuo()
+	{
+		Intent intent = null;// 创建Intent对象                
+    	intent = new Intent(BusZhier.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+    	intent.putExtra("proID", proID);
+    	intent.putExtra("productID", productID);
+    	intent.putExtra("proType", proType);
+    	intent.putExtra("cabID", cabID);
+    	intent.putExtra("huoID", huoID);
+    	intent.putExtra("prosales", prosales);
+    	intent.putExtra("count", count);
+    	intent.putExtra("reamin_amount", reamin_amount);
+    	intent.putExtra("zhifutype", zhifutype);
+    	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
+	}
+
+	//接收BusHuo返回信息
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		if(requestCode==REQUEST_CODE)
+		{
+			if(resultCode==BusZhier.RESULT_CANCELED)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
+				payoutzhier();//退款
+			}			
+		}
+	}
+	
+	
 	
 }
