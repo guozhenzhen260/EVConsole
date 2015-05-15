@@ -66,14 +66,14 @@ public class BusgoodsSelect extends Activity
 		imgbtnbusgoodselsub.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	addsub(0);
+		    	
 		    }
 		});
 		imgbtnbusgoodseladd = (ImageButton) findViewById(R.id.imgbtnbusgoodseladd);
 		imgbtnbusgoodseladd.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	addsub(1);
+		    	
 		    }
 		});
 		imgbtnbusgoodselbuy = (ImageButton) findViewById(R.id.imgbtnbusgoodselbuy);		
@@ -103,37 +103,6 @@ public class BusgoodsSelect extends Activity
 		    	finish();
 		    }
 		});
-	}
-	
-	private void addsub(int type)
-	{
-		int count,Num;
-		float amount;
-		count=Integer.parseInt(txtbusgoodselNo.getText().toString());
-		amount=Float.parseFloat(txtbusgoodselPrice.getText().toString());
-		Num=Integer.parseInt(txtbusgoodselNum.getText().toString());
-		//按下递减按钮
-		if(type==0)
-		{
-			if(count>1)
-			{
-				count--;
-				amount*=count;
-				txtbusgoodselNo.setText(String.valueOf(count));
-				txtbusgoodselAmount.setText(String.valueOf(amount));
-			}
-		}
-		//递增按钮
-		else if(type==1)
-		{
-			if(count<Num)
-			{
-				count++;
-				amount*=count;
-				txtbusgoodselNo.setText(String.valueOf(count));
-				txtbusgoodselAmount.setText(String.valueOf(amount));				
-			}
-		}
 	}
 	
 }

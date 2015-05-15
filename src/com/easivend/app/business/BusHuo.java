@@ -101,14 +101,14 @@ public class BusHuo extends Activity
 							data[tempx][0]=String.valueOf(R.drawable.yes);
 							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
 							//扣除存货余量
-							columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
+							chuhuoupdate(cabinetvar,huodaoNo);
 						}
 						else
 						{
 							data[tempx][0]=String.valueOf(R.drawable.no);
 							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
 							//扣除存货余量
-							columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
+							chuhuoupdate(cabinetvar,huodaoNo);
 						}
 						updateListview();
 						tempx++;
@@ -123,7 +123,7 @@ public class BusHuo extends Activity
 								updateListview();
 								tempx++;
 								//扣除存货余量
-								columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
+								chuhuoupdate(cabinetvar,huodaoNo);
 							}
 							else if(huorst==0)
 							{
@@ -132,7 +132,7 @@ public class BusHuo extends Activity
 								updateListview();
 								tempx++;
 								//扣除存货余量
-								columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
+								chuhuoupdate(cabinetvar,huodaoNo);
 							}
 				 	    }
 						if(tempx>=count)
@@ -148,6 +148,8 @@ public class BusHuo extends Activity
 		                        	{
 		                        		if(BusZhier.BusZhierAct!=null)
 		                        			BusZhier.BusZhierAct.finish(); 
+		                        		if(BusZhiwei.BusZhiweiAct!=null)
+		                        			BusZhiwei.BusZhiweiAct.finish(); 
 		                        	}
 		                        	//出货失败，退到非现金模块进行退币操作
 		                        	else
@@ -157,6 +159,12 @@ public class BusHuo extends Activity
 		                        			//退出时，返回intent
 		                    	            Intent intent=new Intent();
 		                    	            setResult(BusZhier.RESULT_CANCELED,intent);
+		                        		}
+		                        		if(BusZhiwei.BusZhiweiAct!=null)
+		                        		{
+		                        			//退出时，返回intent
+		                    	            Intent intent=new Intent();
+		                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
 		                        		}
 									}
 		                            finish();
@@ -214,7 +222,7 @@ public class BusHuo extends Activity
 				updateListview();
 				tempx++;	
 				//扣除存货余量
-				columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
+				chuhuoupdate(cabinetvar,huodaoNo);
 			}
 			else if(huorst==0)
 			{
@@ -223,7 +231,7 @@ public class BusHuo extends Activity
 				updateListview();
 				tempx++;
 				//扣除存货余量
-				columnDAO.update(String.valueOf(cabinetvar),String.valueOf(huodaoNo));
+				chuhuoupdate(cabinetvar,huodaoNo);
 			}
  	    }
  	    if(tempx>=count)
@@ -238,6 +246,8 @@ public class BusHuo extends Activity
                 	//出货完成,把非现金模块去掉
                 	if(BusZhier.BusZhierAct!=null)
             			BusZhier.BusZhierAct.finish(); 	
+                	if(BusZhiwei.BusZhiweiAct!=null)
+            			BusZhiwei.BusZhiweiAct.finish(); 
                     finish();
                 }
 
@@ -340,5 +350,22 @@ public class BusHuo extends Activity
 			}
 		}
 		return huorst;
+	}
+	//修改存货数量
+	private void chuhuoupdate(int cabinetvar,int huodaoNo)
+	{
+		String cab=null,huo=null;
+		cab=String.valueOf(cabinetvar);
+		//货道id=1到9，改为01到09
+        if(huodaoNo<10)
+        {
+        	huo="0"+String.valueOf(huodaoNo);
+        }
+        else
+        {
+        	huo=String.valueOf(huodaoNo);
+        }	
+        //扣除存货余量
+		columnDAO.update(cab,huo);
 	}
 }

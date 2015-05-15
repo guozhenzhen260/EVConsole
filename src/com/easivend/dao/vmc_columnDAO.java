@@ -317,7 +317,7 @@ public class vmc_columnDAO
      */
   	public void update(String cabID,String columnID) 
   	{       
-          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
           // 执行删除商品表
           db.execSQL("update vmc_column set pathRemain=(pathRemain-1) where cabID=? and columnID=?", 
           		new Object[] { cabID,columnID});        

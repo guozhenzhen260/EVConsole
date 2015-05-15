@@ -105,6 +105,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.easivend.app.business.BusZhiwei"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.easivend.app.business.BusHuo"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >

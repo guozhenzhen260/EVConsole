@@ -32,18 +32,19 @@ public class Weixinghttp implements Runnable
 	//查询
 	public final static int SETQUERYCHILD=7;//what标记,发送给子线程支付宝查询
 	public final static int SETQUERYMAIN=8;//what标记,发送给主线程查询结果
-	public final static int SETFAILQUERYPROCHILD=9;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILQUERYBUSCHILD=10;//what标记,发送给主线程交易信息失败
+	public final static int SETQUERYMAINSUCC=9;//what标记,发送给主线程查询结果付款成功
+	public final static int SETFAILQUERYPROCHILD=10;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILQUERYBUSCHILD=11;//what标记,发送给主线程交易信息失败
 	//退款
-	public final static int SETPAYOUTCHILD=11;//what标记,发送给子线程支付宝退款
-	public final static int SETPAYOUTMAIN=12;//what标记,发送给主线程退款结果
-	public final static int SETFAILPAYOUTPROCHILD=13;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILPAYOUTBUSCHILD=14;//what标记,发送给主线程交易信息失败
+	public final static int SETPAYOUTCHILD=12;//what标记,发送给子线程支付宝退款
+	public final static int SETPAYOUTMAIN=13;//what标记,发送给主线程退款结果
+	public final static int SETFAILPAYOUTPROCHILD=14;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILPAYOUTBUSCHILD=15;//what标记,发送给主线程交易信息失败
 	//撤销交易
-	public final static int SETDELETECHILD=15;//what标记,发送给子线程支付宝撤销交易
-	public final static int SETDELETEMAIN=16;//what标记,发送给主线程退款结果
-	public final static int SETFAILDELETEPROCHILD=17;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILDELETEBUSCHILD=18;//what标记,发送给主线程交易信息失败
+	public final static int SETDELETECHILD=16;//what标记,发送给子线程支付宝撤销交易
+	public final static int SETDELETEMAIN=17;//what标记,发送给主线程退款结果
+	public final static int SETFAILDELETEPROCHILD=18;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILDELETEBUSCHILD=19;//what标记,发送给主线程交易信息失败
 	private Handler mainhand=null,childhand=null;
 	
 	public Weixinghttp(Handler mainhand) {
@@ -164,11 +165,22 @@ public class Weixinghttp implements Runnable
 					        	   tomain.what=SETFAILQUERYBUSCHILD;
 								   tomain.obj=map4.get("err_code")+map4.get("err_code_des");
 					           }
-				        	   //通过支付宝提供的订单直接生成二维码
+				        	   //交易成功状态
 				        	   else if(map4.get("result_code").equals("SUCCESS"))
 					           {
-					        	   tomain.what=SETQUERYMAIN;
-								   tomain.obj=map4.get("trade_state");
+				        		  //正在等待支付
+				        		   if(map4.get("trade_state").equals("NOTPAY"))
+				        		   {
+				        			   tomain.what=SETQUERYMAIN;
+									   tomain.obj=map4.get("trade_state");
+				        		   }
+				        		   //通过支付宝提供的订单直接生成二维码
+				        		   else if(map4.get("trade_state").equals("SUCCESS"))
+				        		   {
+						        	   tomain.what=SETQUERYMAINSUCC;
+									   tomain.obj=map4.get("trade_state");
+				        		   }
+					        	   
 					           }
 				           }
 				           Log.i("EV_JNI","rec3="+tomain.obj);	

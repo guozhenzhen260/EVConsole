@@ -76,6 +76,22 @@ public class BusZhiSelect extends Activity
 		    }
 		});
 		ivbuszhiselweixing = (ImageView) findViewById(R.id.ivbuszhiselweixing);	
+		ivbuszhiselweixing.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = null;// 创建Intent对象                
+            	intent = new Intent(BusZhiSelect.this, BusZhiwei.class);// 使用Accountflag窗口初始化Intent
+            	intent.putExtra("proID", proID);
+            	intent.putExtra("productID", productID);
+            	intent.putExtra("proType", proType);
+            	intent.putExtra("cabID", cabID);
+            	intent.putExtra("huoID", huoID);
+            	intent.putExtra("prosales", prosales);
+            	intent.putExtra("count", count);
+            	intent.putExtra("reamin_amount", reamin_amount);
+            	startActivity(intent);// 打开Accountflag
+		    }
+		});
 		imgbtnbuszhiselfanhui = (ImageButton) findViewById(R.id.imgbtnbuszhiselfanhui);	
 		imgbtnbuszhiselfanhui.setOnClickListener(new OnClickListener() {
 		    @Override

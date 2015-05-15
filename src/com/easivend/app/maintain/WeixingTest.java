@@ -53,21 +53,24 @@ public class WeixingTest extends Activity
 						imgweixingtest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
 						txtweixingtest.setText("交易结果:"+msg.obj.toString());
 						break;
-					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
+					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
 						txtweixingtest.setText("交易结果:退款成功");
 						break;
-					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
+					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
 						txtweixingtest.setText("交易结果:撤销成功");
 						break;	
-					case Zhifubaohttp.SETFAILPROCHILD://子线程接收主线程消息
-					case Zhifubaohttp.SETFAILBUSCHILD://子线程接收主线程消息	
-					case Zhifubaohttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
-					case Zhifubaohttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息		
-					case Zhifubaohttp.SETQUERYMAIN://子线程接收主线程消息						
-					case Zhifubaohttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
-					case Zhifubaohttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
-					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
-					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
+					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息	
+						txtweixingtest.setText("交易结果:交易成功");
+						break;		
+					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
+					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
+					case Weixinghttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
+					case Weixinghttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息		
+					case Weixinghttp.SETQUERYMAIN://子线程接收主线程消息	
+					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
+					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
+					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
 						txtweixingtest.setText("交易结果:"+msg.obj.toString());
 						break;		
 				}				
