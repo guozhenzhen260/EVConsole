@@ -10,6 +10,7 @@ import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
+import com.easivend.view.GoodsSelect;
 import com.example.evconsole.R;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,6 +48,7 @@ public class HuodaoSet extends Activity
 	private PopupWindow popWin=null;
 	private GridView gvselectProduct=null;
 	private Button btnselectexit=null;
+	private final static int REQUEST_CODE=1;//声明请求标识
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -125,7 +127,15 @@ public class HuodaoSet extends Activity
 		updatehuodaostatus();
 		//选择绑定的商品
 		btnhuoProID = (Button) findViewById(R.id.btnhuoProID);
-		btnhuoProID.setOnClickListener(new OnClickListenerpop());
+		btnhuoProID.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0)
+		    {
+		    	Intent intent = new Intent();
+		    	intent.setClass(HuodaoSet.this, GoodsSelect.class);// 使用AddInaccount窗口初始化Intent
+	            startActivityForResult(intent, REQUEST_CODE);
+		    }
+		});
 		//退出
 		btnhuoexit = (Button) findViewById(R.id.btnhuoexit);
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -241,50 +251,66 @@ public class HuodaoSet extends Activity
 		public void onClick(View arg0) 
 		{
 			// TODO Auto-generated method stub
-			LayoutInflater inflater=LayoutInflater.from(HuodaoSet.this);
-			//找到了了布局文件中的view
-			HuodaoSet.this.popview = inflater.inflate(R.layout.goodsselect, null);
-			//新建弹出菜单实例，使用布局文件中的view,长600,宽800，有焦距
-			HuodaoSet.this.popWin = new PopupWindow(HuodaoSet.this.popview,300,800,true);
-			//开始处理popWin中的控件
-			HuodaoSet.this.gvselectProduct = (GridView)HuodaoSet.this.popview.findViewById(R.id.gvselectProduct);
-			HuodaoSet.this.btnselectexit = (Button)HuodaoSet.this.popview.findViewById(R.id.btnselectexit);
-			// 商品表中的所有商品信息补充到商品数据结构数组中
-			final Vmc_ProductAdapter productAdapter=new Vmc_ProductAdapter();
-	    	productAdapter.showProInfo(HuodaoSet.this,"","shoudong",""); 
-	    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), HuodaoSet.this);// 创建pictureAdapter对象
-	    	gvselectProduct.setAdapter(adapter);// 为GridView设置数据源
+//			LayoutInflater inflater=LayoutInflater.from(HuodaoSet.this);
+//			//找到了了布局文件中的view
+//			HuodaoSet.this.popview = inflater.inflate(R.layout.goodsselect, null);
+//			//新建弹出菜单实例，使用布局文件中的view,长600,宽800，有焦距
+//			HuodaoSet.this.popWin = new PopupWindow(HuodaoSet.this.popview,300,800,true);
+//			//开始处理popWin中的控件
+//			HuodaoSet.this.gvselectProduct = (GridView)HuodaoSet.this.popview.findViewById(R.id.gvselectProduct);
+//			HuodaoSet.this.btnselectexit = (Button)HuodaoSet.this.popview.findViewById(R.id.btnselectexit);
+//			// 商品表中的所有商品信息补充到商品数据结构数组中
+//			final Vmc_ProductAdapter productAdapter=new Vmc_ProductAdapter();
+//	    	productAdapter.showProInfo(HuodaoSet.this,"","shoudong",""); 
+//	    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), HuodaoSet.this);// 创建pictureAdapter对象
+//	    	gvselectProduct.setAdapter(adapter);// 为GridView设置数据源
+//			
+//			//按下popwindow的图片按钮
+//			HuodaoSet.this.gvselectProduct.setOnItemClickListener(new OnItemClickListener() {
+//
+//				@Override
+//				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+//						long arg3) {
+//					// TODO Auto-generated method stub
+//					String strInfo[]=productAdapter.getProductID();
+//					productID = strInfo[arg2];// 记录收入信息               
+//					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID);
+//					HuodaoSet.this.popWin.dismiss();
+//					updateProduct(productID);
+//				}// 为GridView设置项单击事件
+//	    		
+//	    	});
+//			//按下返回按钮
+//			HuodaoSet.this.btnselectexit.setOnClickListener(new View.OnClickListener(){
+//
+//				@Override
+//				public void onClick(View v) {
+//					// TODO Auto-generated method stub
+//					HuodaoSet.this.popWin.dismiss();
+//				}
+//				
+//			});
+//			//弹出窗体
+//			HuodaoSet.this.popWin.showAtLocation(HuodaoSet.this.btnhuoProID, Gravity.CENTER, 0, 0);
 			
-			//按下popwindow的图片按钮
-			HuodaoSet.this.gvselectProduct.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-						long arg3) {
-					// TODO Auto-generated method stub
-					String strInfo[]=productAdapter.getProductID();
-					productID = strInfo[arg2];// 记录收入信息               
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID);
-					HuodaoSet.this.popWin.dismiss();
-					updateProduct(productID);
-				}// 为GridView设置项单击事件
-	    		
-	    	});
-			//按下返回按钮
-			HuodaoSet.this.btnselectexit.setOnClickListener(new View.OnClickListener(){
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					HuodaoSet.this.popWin.dismiss();
-				}
-				
-			});
-			//弹出窗体
-			HuodaoSet.this.popWin.showAtLocation(HuodaoSet.this.btnhuoProID, Gravity.CENTER, 0, 0);
 		}
     	
     }
+	//接收GoodsProSet返回信息
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		if(requestCode==REQUEST_CODE)
+		{
+			if(resultCode==HuodaoSet.RESULT_OK)
+			{
+				Bundle bundle=data.getExtras();
+				productID = bundle.getString("productID");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID);
+				updateProduct(productID);
+			}			
+		}
+	}
 	//导入该货道信息
 	private void updateHuodao(String cabID,String huoID)
 	{
