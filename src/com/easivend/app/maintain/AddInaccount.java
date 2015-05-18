@@ -25,29 +25,53 @@ import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.TabHost.TabSpec;
 
-public class AddInaccount extends Activity
+public class AddInaccount extends TabActivity
 {
+	private TabHost mytabhost = null;
+	private int[] layres=new int[]{R.id.tab_billmanager,R.id.tab_coinmanager,R.id.tab_payoutmanager};//内嵌布局文件的id
 	private EditText edtpayout=null;
 	private TextView txtpayin=null,txtreamin=null,txtpaymoney=null;
-	private Button btnpayout=null,btnbillexit=null,btnpaymoney=null;// 创建Button对象“退出”
+	private Button btnpayout=null,btnbillexit=null;// 创建Button对象“退出”
 	private Handler myhHandler=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.addinaccount);// 设置布局文件
+		//setContentView(R.layout.addinaccount);// 设置布局文件
+		this.mytabhost = super.getTabHost();//取得TabHost对象
+        LayoutInflater.from(this).inflate(R.layout.addinaccount, this.mytabhost.getTabContentView(),true);
+        //增加Tab的组件
+        TabSpec myTabbill=this.mytabhost.newTabSpec("tab0");
+        myTabbill.setIndicator("纸币器设置");
+        myTabbill.setContent(this.layres[0]);
+    	this.mytabhost.addTab(myTabbill); 
+    	
+    	TabSpec myTabcoin=this.mytabhost.newTabSpec("tab1");
+    	myTabcoin.setIndicator("硬币器设置");
+    	myTabcoin.setContent(this.layres[1]);
+    	this.mytabhost.addTab(myTabcoin); 
+    	
+    	TabSpec myTabpay=this.mytabhost.newTabSpec("tab2");
+    	myTabpay.setIndicator("找零器设置");
+    	myTabpay.setContent(this.layres[2]);
+    	this.mytabhost.addTab(myTabpay); 
+    	
 		//注册投币找零监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() 
 		{
@@ -79,7 +103,9 @@ public class AddInaccount extends Activity
 			}
 			
 		});
-		
+  	    //===============
+    	//纸币器设置页面
+    	//===============
   	    txtpayin = (TextView) findViewById(R.id.txtpayin);
   	    txtreamin = (TextView) findViewById(R.id.txtreamin);
 		edtpayout = (EditText) findViewById(R.id.edtpayout);
@@ -95,18 +121,7 @@ public class AddInaccount extends Activity
 		    	txtpayin.setText("0");
 		    	txtreamin.setText("0");
 		    }
-		});
-		//找零
-		btnpaymoney= (Button) findViewById(R.id.btnpaymoney);
-		btnpaymoney.setOnClickListener(new OnClickListener() {// 为退币按钮设置监听事件
-		    @Override
-		    public void onClick(View arg0) {
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPsend>>]"+edtpayout.getText().toString());
-		    	EVprotocolAPI.payout(ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())));
-		    	txtpayin.setText("0");
-		    	txtreamin.setText("0");
-		    }
-		});
+		});		
 		btnbillexit = (Button) findViewById(R.id.btnbillexit);
 		btnbillexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override

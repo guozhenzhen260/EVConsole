@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="payout_label">  
+        <item>0-无找零器</item>  
+        <item>1-hopper找零器</item>          
+        <item>2-MDB找零器</item>
+    </string-array>
+</resources>

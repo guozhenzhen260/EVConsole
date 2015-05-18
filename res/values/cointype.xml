@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="coin_label">  
+        <item>0-无硬币器</item>  
+        <item>1-脉冲硬币器</item>          
+        <item>2-MDB硬币器</item>
+    </string-array>
+</resources>
