@@ -52,17 +52,18 @@ public class vmc_system_parameterDAO
  				"(" +
  				"devID,devhCode,isNet,isfenClass,isbuyCar," +
  				"liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer," +
- 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType" +
+ 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType,marketAmount,billAmount" +
  				") " +
  				"values" +
  				"(" +
- 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
+ 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
  				")",
  		        new Object[] { tb_vmc_system_parameter.getDevID(), tb_vmc_system_parameter.getDevhCode(),tb_vmc_system_parameter.getIsNet(), tb_vmc_system_parameter.getIsfenClass(),
  						tb_vmc_system_parameter.getIsbuyCar(), tb_vmc_system_parameter.getLiebiaoKuan(),tb_vmc_system_parameter.getMainPwd(), tb_vmc_system_parameter.getAmount(),
  						tb_vmc_system_parameter.getCard(), tb_vmc_system_parameter.getZhifubaofaca(), tb_vmc_system_parameter.getZhifubaoer(), tb_vmc_system_parameter.getWeixing(),
  						tb_vmc_system_parameter.getPrinter(), tb_vmc_system_parameter.getLanguage(), tb_vmc_system_parameter.getRstTime(), tb_vmc_system_parameter.getRstDay(),
- 						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType()});
+ 						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType(),
+ 						tb_vmc_system_parameter.getMarketAmount(),tb_vmc_system_parameter.getBillAmount()});
  		
         }
         else
@@ -73,13 +74,14 @@ public class vmc_system_parameterDAO
      				"set " +
      				"devID=?,devhCode=?,isNet=?,isfenClass=?,isbuyCar=?," +
      				"liebiaoKuan=?,mainPwd=?,amount=?,card=?,zhifubaofaca=?,zhifubaoer=?,weixing=?,printer=?," +
-     				"language=?,rstTime=?,rstDay=?,baozhiProduct=?,emptyProduct=?,proSortType=?" 
+     				"language=?,rstTime=?,rstDay=?,baozhiProduct=?,emptyProduct=?,proSortType=?,marketAmount=?,billAmount=?" 
      				,
      		        new Object[] { tb_vmc_system_parameter.getDevID(), tb_vmc_system_parameter.getDevhCode(),tb_vmc_system_parameter.getIsNet(), tb_vmc_system_parameter.getIsfenClass(),
      						tb_vmc_system_parameter.getIsbuyCar(), tb_vmc_system_parameter.getLiebiaoKuan(),tb_vmc_system_parameter.getMainPwd(), tb_vmc_system_parameter.getAmount(),
      						tb_vmc_system_parameter.getCard(), tb_vmc_system_parameter.getZhifubaofaca(), tb_vmc_system_parameter.getZhifubaoer(), tb_vmc_system_parameter.getWeixing(),
      						tb_vmc_system_parameter.getPrinter(), tb_vmc_system_parameter.getLanguage(), tb_vmc_system_parameter.getRstTime(), tb_vmc_system_parameter.getRstDay(),
-     						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType()});
+     						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType(),
+     						tb_vmc_system_parameter.getMarketAmount(),tb_vmc_system_parameter.getBillAmount()});
      		
             }	
  		if (!cursor.isClosed()) 
@@ -100,7 +102,7 @@ public class vmc_system_parameterDAO
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select devID,devhCode,isNet,isfenClass,isbuyCar," +
  				"liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer," +
- 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType from vmc_system_parameter", null );// 根据编号查找支出信息，并存储到Cursor类中
+ 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType,marketAmount,billAmount from vmc_system_parameter", null );// 根据编号查找支出信息，并存储到Cursor类中
         if (cursor.moveToNext()) 
         {// 遍历查找到的支出信息
 
@@ -110,7 +112,7 @@ public class vmc_system_parameterDAO
     				cursor.getString(cursor.getColumnIndex("mainPwd")),cursor.getInt(cursor.getColumnIndex("amount")), cursor.getInt(cursor.getColumnIndex("card")), cursor.getInt(cursor.getColumnIndex("zhifubaofaca")),
     				cursor.getInt(cursor.getColumnIndex("zhifubaoer")), cursor.getInt(cursor.getColumnIndex("weixing")), cursor.getInt(cursor.getColumnIndex("printer")), cursor.getInt(cursor.getColumnIndex("language")),
     				cursor.getString(cursor.getColumnIndex("rstTime")), cursor.getInt(cursor.getColumnIndex("rstDay")),  cursor.getInt(cursor.getColumnIndex("baozhiProduct")),  cursor.getInt(cursor.getColumnIndex("emptyProduct")),
-    				 cursor.getInt(cursor.getColumnIndex("proSortType"))
+    				cursor.getInt(cursor.getColumnIndex("proSortType")),cursor.getFloat(cursor.getColumnIndex("marketAmount")),cursor.getFloat(cursor.getColumnIndex("billAmount"))
     				
     		);
         }

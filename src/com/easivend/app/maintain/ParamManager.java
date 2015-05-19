@@ -69,15 +69,12 @@ public class ParamManager extends TabActivity
 	private TabHost mytabhost = null;
 	private int[] layres=new int[]{R.id.tab_machine,R.id.tab_device,R.id.tab_run};//内嵌布局文件的id
 	private static final int TIME_DIALOG_ID = 0;// 创建时间对话框常量
-	private EditText edtdevID=null,edtdevhCode=null,edtmainPwd=null,edtrstTime=null,edtrstDay=null;
-	private Switch switchisNet = null,switchisbuyCar = null,switchlanguage = null,switchbaozhiProduct = null,switchemptyProduct = null,switchamount = null,switchcard = null,
+	private EditText edtdevID=null,edtdevhCode=null,edtmainPwd=null,edtrstTime=null,edtrstDay=null,edtmarketAmount=null,edtbillAmount=null;
+	private Switch switchisNet = null,switchisbuhuo=null,switchisbuyCar = null,switchisqiangbuy=null,switchlanguage = null,switchbaozhiProduct = null,switchemptyProduct = null,switchamount = null,switchcard = null,
 			switchzhifubaofaca = null,switchzhifubaoer = null,switchweixing = null,switchprinter = null;    
-	private RadioGroup grpisfenClass=null, grpliebiaoKuan=null;
-	private RadioButton hunradiobtn=null,typeradiobtn=null,guiradiobtn=null,smallradiobtn=null,normalradiobtn=null,bigradiobtn=null;
 	private Spinner spinparamsort=null;
 	private Button btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnzhifubaofaca=null,
-			btnzhifubaoer=null,btnweixing=null,btnprinter=null;
-	private int isfenClass=0,liebiaoKuan=0;
+			btnzhifubaoer=null,btnweixing=null,btnprinter=null;	
 	private int proSortType=6;
 	//排序有关的定义
 	private ShowSortAdapter showSortAdapter=null;
@@ -123,53 +120,9 @@ public class ParamManager extends TabActivity
     	edtdevID = (EditText) findViewById(R.id.edtdevID);
     	edtdevhCode = (EditText) findViewById(R.id.edtdevhCode);
     	switchisNet = (Switch)findViewById(R.id.switchisNet); //获取到控件  
-    	this.grpisfenClass = (RadioGroup) super.findViewById(R.id.grpisfenClass);
-	    this.hunradiobtn = (RadioButton) super.findViewById(R.id.hunradiobtn);
-	    this.typeradiobtn = (RadioButton) super.findViewById(R.id.typeradiobtn);	
-	    this.guiradiobtn = (RadioButton) super.findViewById(R.id.guiradiobtn);		    
-	    this.grpisfenClass.setOnCheckedChangeListener(new android.widget.RadioGroup.OnCheckedChangeListener() {			
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// 
-				if(hunradiobtn.getId()==checkedId)
-				{
-					isfenClass=0;
-				}
-				//
-				else if(typeradiobtn.getId()==checkedId)
-				{
-					isfenClass=1;
-				}
-				else if(guiradiobtn.getId()==checkedId)
-				{
-					isfenClass=2;
-				}
-			}
-		});
+    	switchisbuhuo = (Switch)findViewById(R.id.switchisbuhuo);     	
 	    switchisbuyCar = (Switch)findViewById(R.id.switchisbuyCar);    	
-	    this.grpliebiaoKuan = (RadioGroup) super.findViewById(R.id.grpliebiaoKuan);
-	    this.smallradiobtn = (RadioButton) super.findViewById(R.id.smallradiobtn);
-	    this.normalradiobtn = (RadioButton) super.findViewById(R.id.normalradiobtn);	
-	    this.bigradiobtn = (RadioButton) super.findViewById(R.id.bigradiobtn);	
-	    this.grpliebiaoKuan.setOnCheckedChangeListener(new android.widget.RadioGroup.OnCheckedChangeListener() {			
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// 
-				if(smallradiobtn.getId()==checkedId)
-				{
-					liebiaoKuan=0;
-				}
-				//
-				else if(normalradiobtn.getId()==checkedId)
-				{
-					liebiaoKuan=1;
-				}
-				else if(bigradiobtn.getId()==checkedId)
-				{
-					liebiaoKuan=2;
-				}
-			}
-		});
+	    switchisqiangbuy = (Switch)findViewById(R.id.switchisqiangbuy);    	
 	    edtmainPwd = (EditText) findViewById(R.id.edtmainPwd);
 	    switchlanguage = (Switch)findViewById(R.id.switchlanguage);
     	edtrstTime = (EditText) findViewById(R.id.edtrstTime);// 获取时间文本框
@@ -203,6 +156,8 @@ public class ParamManager extends TabActivity
 				
 			}
 		}); 
+    	edtmarketAmount = (EditText) findViewById(R.id.edtmarketAmount);
+    	edtbillAmount = (EditText) findViewById(R.id.edtbillAmount);
     	loadmachineparam();
     	btnmachineSave = (Button) findViewById(R.id.btnmachineSave);
     	btnmachineSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -451,8 +406,12 @@ public class ParamManager extends TabActivity
     	String devID = edtdevID.getText().toString();
     	String devhCode = edtdevhCode.getText().toString();
     	int isNet = (switchisNet.isChecked()==true)?1:0;
+    	int isBuhuo = (switchisbuhuo.isChecked()==true)?1:0;
     	int isbuyCar = (switchisbuyCar.isChecked()==true)?1:0;
+    	int isQiangbuy = (switchisqiangbuy.isChecked()==true)?1:0;
     	String mainPwd= edtmainPwd.getText().toString();
+    	float marketAmount = Float.parseFloat(edtmarketAmount.getText().toString()); 
+    	float billAmount = Float.parseFloat(edtbillAmount.getText().toString()); 
     	int amount = (switchamount.isChecked()==true)?1:0;
     	int card = (switchcard.isChecked()==true)?1:0;
     	int zhifubaofaca = (switchzhifubaofaca.isChecked()==true)?1:0;
@@ -472,17 +431,17 @@ public class ParamManager extends TabActivity
     		try 
     		{
     			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<参数devID="+devID+" devhCode="+devhCode+" isNet="
-    					+isNet+" isfenClass="+isfenClass+" isbuyCar="+isbuyCar+" liebiaoKuan="+liebiaoKuan+" mainPwd="
+    					+isNet+" isBuhuo="+isBuhuo+" isbuyCar="+isbuyCar+" isQiangbuy="+isQiangbuy+" mainPwd="
     					+mainPwd+" amount="+amount+" card="+card+" zhifubaofaca="+zhifubaofaca+" zhifubaoer="+zhifubaoer
     					+" weixing="+weixing+" printer="+printer+" language="+language
     					+" rstTime="+rstTime+" rstDay="+rstDay+" baozhiProduct="+baozhiProduct
-    					+" emptyProduct="+emptyProduct+" proSortType="+proSortType);
+    					+" emptyProduct="+emptyProduct+" proSortType="+proSortType+" marketAmount="+marketAmount+" billAmount="+billAmount);
     			// 创建InaccountDAO对象
     			vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ParamManager.this);
 	            //创建Tb_inaccount对象 
-    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(devID, devhCode, isNet,isfenClass, 
-    					isbuyCar,liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer,language,rstTime,rstDay,
-    					baozhiProduct,emptyProduct, proSortType);
+    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(devID, devhCode, isNet,isBuhuo, 
+    					isbuyCar,isQiangbuy,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer,language,rstTime,rstDay,
+    					baozhiProduct,emptyProduct, proSortType,marketAmount,billAmount);
     			parameterDAO.add(tb_vmc_system_parameter);    			
 	        	// 弹出信息提示
 	            Toast.makeText(ParamManager.this, "数据添加成功！", Toast.LENGTH_SHORT).show();	            
@@ -512,36 +471,14 @@ public class ParamManager extends TabActivity
 					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
 					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
 					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
-					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()); 
+					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()+" marketAmount="+tb_inaccount.getMarketAmount()+" billAmount="+tb_inaccount.getBillAmount()); 
 		    edtdevID.setText(tb_inaccount.getDevID().toString());
 		    edtdevhCode.setText(tb_inaccount.getDevhCode().toString());	  
 		    //switchisNet.setChecked(true);
 		    switchisNet.setChecked((tb_inaccount.getIsNet()==1)?true:false);
-		    switch(tb_inaccount.getIsfenClass())
-		    {
-		    	case 0:
-		    		hunradiobtn.setChecked(true);				
-		    		break;
-		    	case 1:
-		    		typeradiobtn.setChecked(true);				
-		    		break;
-		    	case 2:
-		    		guiradiobtn.setChecked(true);
-		    		break;
-		    }
+		    switchisbuhuo.setChecked((tb_inaccount.getIsfenClass()==1)?true:false);
 		    switchisbuyCar.setChecked((tb_inaccount.getIsbuyCar()==1)?true:false);
-		    switch(tb_inaccount.getLiebiaoKuan())
-		    {
-		    	case 0:
-		    		smallradiobtn.setChecked(true);						
-		    		break;
-		    	case 1:
-		    		normalradiobtn.setChecked(true);										
-		    		break;
-		    	case 2:
-		    		bigradiobtn.setChecked(true);		
-		    		break;
-		    }
+		    switchisqiangbuy.setChecked((tb_inaccount.getLiebiaoKuan()==1)?true:false);
 		    edtmainPwd.setText(tb_inaccount.getMainPwd().toString());
 		    switchlanguage.setChecked((tb_inaccount.getLanguage()==1)?true:false);
 		    edtrstTime.setText(tb_inaccount.getRstTime().toString());
@@ -550,6 +487,8 @@ public class ParamManager extends TabActivity
 		    switchemptyProduct.setChecked((tb_inaccount.getEmptyProduct()==1)?true:false);
 		    //设置下拉框默认值
 		    spinparamsort.setSelection(tb_inaccount.getProSortType());
+		    edtmarketAmount.setText(String.valueOf(tb_inaccount.getMarketAmount()));
+		    edtbillAmount.setText(String.valueOf(tb_inaccount.getBillAmount()));
     	}
 	}
     

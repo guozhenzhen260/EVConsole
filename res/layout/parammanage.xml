@@ -115,26 +115,16 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="购物方式"/>
+									android:text="补货方式"/>
 						        
-						         <RadioGroup 
-							        android:id="@+id/grpisfenClass"
-							        android:layout_width="wrap_content"
-							        android:layout_height="wrap_content"
-							        android:orientation="horizontal">
-							   	    <RadioButton 
-							   	        android:id = "@+id/hunradiobtn"
-							   	        android:text="混合购物"
-							   	    />
-							   	    <RadioButton 
-							   	        android:id = "@+id/typeradiobtn"
-							   	        android:text="分类购物"
-							   	    />
-							   	    <RadioButton 
-							   	        android:id = "@+id/guiradiobtn"
-							   	        android:text="分柜购物"
-							   	    />
-							    </RadioGroup>     
+						        <Switch   
+							       android:layout_marginTop="20dip"  
+							       android:id="@+id/switchisbuhuo"  
+							       android:layout_width="wrap_content"  
+							       android:layout_height="wrap_content"  
+							       android:textOn="自动补货"  
+							       android:textOff="手动补货"  							           
+							       android:layout_gravity="center_horizontal"/>   						            
 				            </LinearLayout>	        
 					    </TableRow>  
 					    <View                              
@@ -151,7 +141,7 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="购物车"/>
+									android:text="出货确认"/>
 						        
 						         <Switch   
 							       android:layout_marginTop="20dip"  
@@ -177,26 +167,15 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="商品列表框"/>
-						        
-						         <RadioGroup 
-							        android:id="@+id/grpliebiaoKuan"
-							        android:layout_width="wrap_content"
-							        android:layout_height="wrap_content"
-							        android:orientation="horizontal">
-							   	    <RadioButton 
-							   	        android:id = "@+id/smallradiobtn"
-							   	        android:text="显示少"
-							   	    />
-							   	    <RadioButton 
-							   	        android:id = "@+id/normalradiobtn"
-							   	        android:text="显示一般"
-							   	    />
-							   	    <RadioButton 
-							   	        android:id = "@+id/bigradiobtn"
-							   	        android:text="显示多"
-							   	    />
-							    </RadioGroup>     
+									android:text="强制购买"/>
+						         <Switch   
+							       android:layout_marginTop="20dip"  
+							       android:id="@+id/switchisqiangbuy"  
+							       android:layout_width="wrap_content"  
+							       android:layout_height="wrap_content"  
+							       android:textOn="使用"  
+							       android:textOff="不使用"  							           
+							       android:layout_gravity="center_horizontal"/> 						              
 				            </LinearLayout>	        
 					    </TableRow>  
 					    <View                              
@@ -379,6 +358,56 @@
 						            android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
 							        android:text="" />    
+				            </LinearLayout>	        
+					    </TableRow>
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    />
+					    <TableRow 
+					        android:layout_width="wrap_content"
+				            android:layout_height="wrap_content">  
+				            <LinearLayout 
+				                android:layout_width="wrap_content"
+				            	android:layout_height="wrap_content"> 
+				            	<TextView 	
+				            	    android:minWidth="160px"	    
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:text="纸币投币金额上限"/>
+						        
+						         <EditText
+						            android:id="@+id/edtmarketAmount"
+							        android:minWidth="150px"
+									android:layout_width="wrap_content" 
+							        android:layout_height="wrap_content"
+							        android:numeric="decimal"
+							        android:text="0" />   
+				            </LinearLayout>	        
+					    </TableRow>	
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    />
+					    <TableRow 
+					        android:layout_width="wrap_content"
+				            android:layout_height="wrap_content">  
+				            <LinearLayout 
+				                android:layout_width="wrap_content"
+				            	android:layout_height="wrap_content"> 
+				            	<TextView 	
+				            	    android:minWidth="160px"	    
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:text="最低纸币器开启金额"/>
+						        
+						         <EditText
+						            android:id="@+id/edtbillAmount"
+							        android:minWidth="150px"
+									android:layout_width="wrap_content" 
+							        android:layout_height="wrap_content"
+							        android:numeric="decimal"
+							        android:text="0" />   
 				            </LinearLayout>	        
 					    </TableRow>	
 					    <View                              

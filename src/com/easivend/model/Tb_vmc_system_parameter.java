@@ -24,9 +24,9 @@ public class Tb_vmc_system_parameter
 	private String devID;// 设备号[PK]
     private String devhCode;// 设备签到码
     private int isNet;// 是否联网版,1联网版,0单机版
-    private int isfenClass;// 购物方式，0混合购物，1分类购物，2分柜购物(默认0)
-    private int isbuyCar;// 是否用购物车，0不用，1用(默认0)
-    private int liebiaoKuan;// 三种模式商品列表框, (默认0)
+    private int isfenClass;// 补货方式，0手动补货，1自动补货 (默认0)
+    private int isbuyCar;// 是否出货确认，0不用，1用(默认0)
+    private int liebiaoKuan;//  强制购买0不用，1使用, (默认0)
     private String mainPwd;// 维护密码
     private int amount;// 现金开关0关，1开，默认0
     private int card;// 银联开关0关，1开，默认0
@@ -40,12 +40,14 @@ public class Tb_vmc_system_parameter
     private int baozhiProduct;// 显示过保质期商品0不显示，1显示
     private int emptyProduct;// 显示无货的商品0不显示，1显示    
     private int proSortType;// 显示排序方式    
+    private float marketAmount;// 纸币投币金额上限,如”20.00”
+    private float billAmount;// 最低纸币器开启金额,如”20.00”
     // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_system_parameter(String devID, String devhCode, int isNet,
 			int isfenClass, int isbuyCar, int liebiaoKuan, String mainPwd,
 			int amount, int card, int zhifubaofaca, int zhifubaoer,
 			int weixing, int printer, int language, String rstTime, int rstDay,
-			int baozhiProduct, int emptyProduct,int proSortType) {
+			int baozhiProduct, int emptyProduct,int proSortType,float marketAmount,float billAmount) {
 		super();
 		this.devID = devID;
 		this.devhCode = devhCode;
@@ -66,6 +68,8 @@ public class Tb_vmc_system_parameter
 		this.baozhiProduct = baozhiProduct;
 		this.emptyProduct = emptyProduct;
 		this.proSortType = proSortType;
+		this.marketAmount=marketAmount;
+		this.billAmount=billAmount;
 	}
 
 	public String getDevID() {
@@ -218,6 +222,22 @@ public class Tb_vmc_system_parameter
 
 	public void setProSortType(int proSortType) {
 		this.proSortType = proSortType;
+	}
+
+	public float getMarketAmount() {
+		return marketAmount;
+	}
+
+	public void setMarketAmount(float marketAmount) {
+		this.marketAmount = marketAmount;
+	}
+
+	public float getBillAmount() {
+		return billAmount;
+	}
+
+	public void setBillAmount(float billAmount) {
+		this.billAmount = billAmount;
 	}
     
     

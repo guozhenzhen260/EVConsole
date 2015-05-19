@@ -22,7 +22,7 @@ public class Tb_vmc_class
 	private String classID;// 商品类别ID
 	private String className;// 商品类别名称	
 	private String classTime;//最后更新时间
-	private String attBatch1;// 商品图片路径1
+	private String attBatch1;// 商品图片路径
 	// 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_class(String classID, String className,String classTime,String attBatch1) 
 	{
