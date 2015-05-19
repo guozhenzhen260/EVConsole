@@ -39,12 +39,18 @@ public class Vmc_ClassAdapter
 	    // 获取所有收入信息，并存储到List泛型集合中
 	    List<Tb_vmc_class> listinfos = classdao.getScrollData(0, (int) classdao.getCount());
 	    strInfos = new String[listinfos.size()];// 设置字符串数组的长度
+	    proclassID = new String[listinfos.size()];// 设置字符串数组的长度
+	    proclassName = new String[listinfos.size()];// 设置字符串数组的长度
+	    proImage = new String[listinfos.size()];// 设置字符串数组的长度
 	    int m = 0;// 定义一个开始标识
 	    // 遍历List泛型集合
 	    for (Tb_vmc_class tb_inaccount : listinfos) 
 	    {
 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
 	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
+	        proclassID[m] = tb_inaccount.getClassID();
+	        proclassName[m] = tb_inaccount.getClassName();
+	        proImage[m]=tb_inaccount.getAttBatch1();
 	        m++;// 标识加1
 	    }
 	    return strInfos;
@@ -65,7 +71,7 @@ public class Vmc_ClassAdapter
 	    //添加全部，即不分类这一项
 	    strInfos[m] = "0<---|--->全部";  
 	    proclassID[m] = "0";
-	    proclassName[m]="返回";
+	    proclassName[m]="全部";
 	    proImage[m]="0";
 	    m++;
 	    // 遍历List泛型集合
@@ -75,7 +81,7 @@ public class Vmc_ClassAdapter
 	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
 	        proclassID[m] = tb_inaccount.getClassID();
 	        proclassName[m] = tb_inaccount.getClassName();
-	        proImage[m]="0";
+	        proImage[m]=tb_inaccount.getAttBatch1();
 	        m++;// 标识加1
 	    }
 	    return strInfos;

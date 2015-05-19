@@ -24,17 +24,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rasterizer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts.Data;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,12 +64,16 @@ public class GoodsManager extends TabActivity
 	private TabHost mytabhost = null;
 	Intent intent = null;// 创建Intent对象
 	String strInfo="";
-	private final static int REQUEST_CODE=1;//声明请求标识
+	private final static int REQUEST_CODE=1,REQCLASS_CODE=2;//声明请求标识
 	private int[] layres=new int[]{R.id.tab_class,R.id.tab_product};//内嵌布局文件的id
 	private ListView lvinfo;// 创建ListView对象
+	private Uri uri=null;
+	private String imgDir=null;
+	private String[] imgDirs=null;
 	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
-	private Button btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
-	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;
+	private ImageView imgclassname=null;
+	private Button btnclassname=null,btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
+	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;	
 	// 定义商品列表
 	Vmc_ProductAdapter productAdapter=null;
     private GridView gvProduct=null;
@@ -101,6 +108,23 @@ public class GoodsManager extends TabActivity
     	//===============
     	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
     	final String date=df.format(new Date());
+    	imgclassname = (ImageView) findViewById(R.id.imgclassname);
+    	//选择图片
+    	btnclassname=(Button) findViewById(R.id.btnclassname);
+    	btnclassname.setOnClickListener(new View.OnClickListener() {
+					
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent();  
+               /* 开启Pictures画面Type设定为image */  
+               intent.setType("image/*");  
+               /* 使用Intent.ACTION_GET_CONTENT这个Action */  
+               intent.setAction(Intent.ACTION_GET_CONTENT);   
+               /* 取得相片后返回本画面 */  
+               startActivityForResult(intent, REQCLASS_CODE);
+			}
+		}); 
     	// 为ListView添加项单击事件
     	lvinfo = (ListView) findViewById(R.id.lvclass);// 获取布局文件中的ListView组件
     	lvinfo.setOnItemClickListener(new OnItemClickListener() 
@@ -113,6 +137,17 @@ public class GoodsManager extends TabActivity
                 String strname = strInfoclass.substring(strInfoclass.indexOf('>')+1);// 从收入信息中截取收入编号
                 edtclassid.setText(strid);
                 edtclassname.setText(strname);
+                imgDir=imgDirs[position];
+                if(imgDir!=null)
+                {	                
+	                /*为什么图片一定要转化为 Bitmap格式的！！ */
+	    	        Bitmap bitmap = ToolClass.getLoacalBitmap(imgDir); //从本地取图片(在cdcard中获取)  //
+	    	        imgclassname.setImageBitmap(bitmap);// 设置图像的二进制值
+                }
+                else
+                {
+                	imgclassname.setImageResource(R.drawable.wutupian);	
+				}
             }
         });
     	showInfo();// 调用自定义方法显示商品分类信息
@@ -133,7 +168,7 @@ public class GoodsManager extends TabActivity
 		    			// 创建InaccountDAO对象
 			        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
 			            // 创建Tb_inaccount对象
-			        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date);
+			        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
 			        	classDAO.add(tb_vmc_class);// 添加收入信息
 			        	// 弹出信息提示
 			            Toast.makeText(GoodsManager.this, "〖新增类别〗数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -164,7 +199,7 @@ public class GoodsManager extends TabActivity
 		        	// 创建InaccountDAO对象
 		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
 		            // 创建Tb_inaccount对象
-		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date);
+		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
 		        	classDAO.update(tb_vmc_class);// 修改
 		            // 弹出信息提示
 		            Toast.makeText(GoodsManager.this, "〖修改类别〗成功！", Toast.LENGTH_SHORT).show();
@@ -189,7 +224,7 @@ public class GoodsManager extends TabActivity
 		        	// 创建InaccountDAO对象
 		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
 		            // 创建Tb_inaccount对象
-		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date);
+		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
 		        	classDAO.detele(tb_vmc_class);// 修改
 		            // 弹出信息提示
 		            Toast.makeText(GoodsManager.this, "〖删除类别〗成功！", Toast.LENGTH_SHORT).show();
@@ -439,6 +474,8 @@ public class GoodsManager extends TabActivity
 	    // 使用字符串数组初始化ArrayAdapter对象
 	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
 	    lvinfo.setAdapter(arrayAdapter);// 为ListView列表设置数据源
+	    imgDirs=vmc_classAdapter.getProImage();
+	    
 	}
 	
 	@Override
@@ -464,6 +501,23 @@ public class GoodsManager extends TabActivity
 				productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
 				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+			}			
+		}
+		else if(requestCode==REQCLASS_CODE)
+		{
+			if(resultCode==GoodsManager.RESULT_OK)
+			{
+				 uri = data.getData();  
+		         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString());  
+		         ContentResolver cr = this.getContentResolver();  
+		         try {  
+		             Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));  
+		             /* 将Bitmap设定到ImageView */  
+		             imgclassname.setImageBitmap(bitmap);  
+		             imgDir=ToolClass.getRealFilePath(GoodsManager.this,uri);
+		         } catch (FileNotFoundException e) {  
+		             Log.e("Exception", e.getMessage(),e);  
+		         }  
 			}			
 		}
 	}

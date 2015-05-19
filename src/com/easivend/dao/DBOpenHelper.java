@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 7;// 定义数据库版本号
+    private static final int VERSION = 8;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -209,57 +209,61 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 
     {
-    	// vmc_system_parameter系统参数表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_system_parameter"         		
-        );
-    	// vmc_machineset机器配置表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_machineset"         		
-        );
-    	// vmc_class商品类别表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_class"         		
-        );
-    	// vmc_classproduct 商品与类别关联表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_classproduct"         		
-        );
-    	// vmc_product商品表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_product"         		
-        );
-    	// vmc_cabinet柜类型表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_cabinet"         		
-        );
-    	// vmc_column货道表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_column"         		
-        );
-    	// vmc_order_pay订单支付表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_order_pay"         		
-        );
-    	// vmc_order_product订单详细信息表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_order_product"         		
-        );
-    	// vmc_log操作日志信息表
-    	db.execSQL
-        (
-        		"DROP TABLE IF EXISTS vmc_log"         		
-        );
+//    	// vmc_system_parameter系统参数表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_system_parameter"         		
+//        );
+//    	// vmc_machineset机器配置表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_machineset"         		
+//        );
+//    	// vmc_class商品类别表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_class"         		
+//        );
+//    	// vmc_classproduct 商品与类别关联表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_classproduct"         		
+//        );
+//    	// vmc_product商品表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_product"         		
+//        );
+//    	// vmc_cabinet柜类型表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_cabinet"         		
+//        );
+//    	// vmc_column货道表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_column"         		
+//        );
+//    	// vmc_order_pay订单支付表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_order_pay"         		
+//        );
+//    	// vmc_order_product订单详细信息表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_order_product"         		
+//        );
+//    	// vmc_log操作日志信息表
+//    	db.execSQL
+//        (
+//        		"DROP TABLE IF EXISTS vmc_log"         		
+//        );
     	
-    	onCreate(db);
+//        onCreate(db);
+      db.execSQL
+      (
+      		"alter table vmc_class add column attBatch1 nvarchar(50)"         		
+      );
     }
 }

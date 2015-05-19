@@ -88,12 +88,16 @@ public class ClassPictureAdapter extends BaseAdapter
         }
         
         viewHolder.busgoodsclassName.setText("类别:"+pictures.get(arg0).getProclassName());// 设置图像原价
-        if(pictures.get(arg0).getProImage().equals("0")!=true)
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img2="+pictures.get(arg0).getProImage());
+        if(pictures.get(arg0).getProImage()!=null)
         {
-        	/*为什么图片一定要转化为 Bitmap格式的！！ */
-	        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-	        if(bitmap!=null)
-	        	viewHolder.busgoodsclassImage.setImageBitmap(bitmap);// 设置图像的二进制值
+	        if(pictures.get(arg0).getProImage().equals("0")!=true)
+	        {        	
+	        	/*为什么图片一定要转化为 Bitmap格式的！！ */
+		        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+		        if(bitmap!=null)
+		        	viewHolder.busgoodsclassImage.setImageBitmap(bitmap);// 设置图像的二进制值
+	        }
         }
         return arg1;// 返回图像标识
     }

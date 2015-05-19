@@ -49,16 +49,16 @@ public class vmc_classDAO
 		
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
 		// 执行添加		
-		db.execSQL("insert into vmc_class (classID,className,classTime) values (?,?,(datetime('now', 'localtime')))",
-		        new Object[] { tb_vmc_class.getClassID(), tb_vmc_class.getClassName() });
+		db.execSQL("insert into vmc_class (classID,className,classTime,attBatch1) values (?,?,(datetime('now', 'localtime')),?)",
+		        new Object[] { tb_vmc_class.getClassID(), tb_vmc_class.getClassName(), tb_vmc_class.getAttBatch1() });
 		db.close(); 
 	}
     //修改
 	public void update(Tb_vmc_class tb_vmc_class) {
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         // 执行修改
-        db.execSQL("update vmc_class set className = ?,classTime=(datetime('now', 'localtime')) where classID = ?", 
-        		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getClassID()});
+        db.execSQL("update vmc_class set className = ?,classTime=(datetime('now', 'localtime')),attBatch1= ? where classID = ?", 
+        		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getAttBatch1(),tb_vmc_class.getClassID()});
         db.close(); 
 	}
 	//删除单条
@@ -108,13 +108,13 @@ public class vmc_classDAO
         List<Tb_vmc_class> tb_inaccount = new ArrayList<Tb_vmc_class>();// 创建集合对象
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         // 获取所有收入信息
-        Cursor cursor = db.rawQuery("select classID,className,classTime from vmc_class limit ?,?", new String[] { String.valueOf(start), String.valueOf(count) });
+        Cursor cursor = db.rawQuery("select classID,className,classTime,attBatch1 from vmc_class limit ?,?", new String[] { String.valueOf(start), String.valueOf(count) });
         //遍历所有的收入信息
         while (cursor.moveToNext()) 
         {	
             // 将遍历到的收入信息添加到集合中
             tb_inaccount.add(new Tb_vmc_class(cursor.getString(cursor.getColumnIndex("classID")), cursor.getString(cursor.getColumnIndex("className")),
-            		cursor.getString(cursor.getColumnIndex("classTime"))));
+            		cursor.getString(cursor.getColumnIndex("classTime")),cursor.getString(cursor.getColumnIndex("attBatch1"))));
         }
         if (!cursor.isClosed()) 
  		{  

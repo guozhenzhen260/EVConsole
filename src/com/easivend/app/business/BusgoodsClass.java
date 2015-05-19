@@ -42,7 +42,9 @@ public class BusgoodsClass extends Activity
                 Intent intent = null;// 创建Intent对象
                 switch (arg2) {
                 case 0:
-                	finish();
+                	intent = new Intent(BusgoodsClass.this, Busgoods.class);// 使用Accountflag窗口初始化Intent
+                	intent.putExtra("proclassID", "");
+                	startActivity(intent);// 打开Accountflag
                     break;
                 default:
                 	intent = new Intent(BusgoodsClass.this, Busgoods.class);// 使用Accountflag窗口初始化Intent

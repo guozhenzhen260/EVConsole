@@ -33,7 +33,7 @@ public class Vmc_ProductAdapter
      private String[] procount = null;
      
      // 商品表中的所有商品信息补充到商品数据结构数组中
-     //param搜索条件,sort排序条件,classID分类信息
+     //param过滤条件,sort排序条件,classID分类信息
     public void showProInfo(Context context,String param,String sort,String classID) 
  	{
  	    //ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象

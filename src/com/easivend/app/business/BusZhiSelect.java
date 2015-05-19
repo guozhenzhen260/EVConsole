@@ -1,5 +1,8 @@
 package com.easivend.app.business;
 
+import com.easivend.app.maintain.ParamManager;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
@@ -99,6 +102,39 @@ public class BusZhiSelect extends Activity
 		    	finish();
 		    }
 		});
+		//*********************
+		//搜索可以得到的支付方式
+		//*********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusZhiSelect.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		if(tb_inaccount.getAmount()!=1)
+    		{
+    			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+    		}	
+    		if(tb_inaccount.getZhifubaoer()!=1)
+    		{
+    			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+    		}
+    		if(tb_inaccount.getWeixing()!=1)
+    		{
+    			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+    		}
+    	}
 	}
 	
 }

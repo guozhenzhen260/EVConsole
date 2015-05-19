@@ -9,6 +9,7 @@ import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
@@ -180,8 +181,20 @@ public class Business extends Activity
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	intent = new Intent(Business.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
-                startActivity(intent);// 打开Accountflag
+		    	vmc_classDAO classdao = new vmc_classDAO(Business.this);// 创建InaccountDAO对象
+		    	long count=classdao.getCount();
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count);
+		    	if(count>0)
+		    	{
+			    	intent = new Intent(Business.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
+	                startActivity(intent);// 打开Accountflag
+		    	}
+		    	else
+		    	{
+		    		intent = new Intent(Business.this, Busgoods.class);// 使用Accountflag窗口初始化Intent
+                	intent.putExtra("proclassID", "");
+                	startActivity(intent);// 打开Accountflag
+		    	}
 		    }
 		});
 		btnadscuxiao = (ImageButton) findViewById(R.id.btnadscuxiao);
