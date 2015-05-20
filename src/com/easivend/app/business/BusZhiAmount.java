@@ -1,11 +1,17 @@
 package com.easivend.app.business;
 
+import java.text.SimpleDateFormat;
+
+import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -25,7 +31,9 @@ public class BusZhiAmount  extends Activity
     private String prosales = null;
     private String count = null;
     private String reamin_amount = null;
-    private String zhifutype = "1";//0代表使用非现金,1代表使用现金
+    private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+    private String id="";
+    private String out_trade_no=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -73,9 +81,11 @@ public class BusZhiAmount  extends Activity
 		{
             @Override
             public void run() 
-            {
+            {            						
+    	        out_trade_no=ToolClass.out_trade_no(BusZhiAmount.this);
             	Intent intent = null;// 创建Intent对象                
             	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+            	intent.putExtra("out_trade_no", out_trade_no);
             	intent.putExtra("proID", proID);
             	intent.putExtra("productID", productID);
             	intent.putExtra("proType", proType);

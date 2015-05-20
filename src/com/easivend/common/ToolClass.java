@@ -30,6 +30,9 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
+import com.easivend.app.business.BusZhiAmount;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -318,5 +321,23 @@ public class ToolClass
      	}
 		return null;
      }    
-    
+     
+    //out_trade_no方法，生成订单号
+ 	public static String out_trade_no(Context context)
+ 	{
+ 		String id="";
+ 	    String out_trade_no=null;
+ 		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 得到设备ID号
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		id=tb_inaccount.getDevhCode().toString();
+    	}
+    	Log.i("EV_JNI","Send0.0="+id);
+    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+        String datetime = tempDate.format(new java.util.Date()).toString(); 					
+        out_trade_no=id+datetime;
+        return out_trade_no;
+ 	}
 }

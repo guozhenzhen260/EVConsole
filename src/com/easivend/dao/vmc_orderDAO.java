@@ -1,0 +1,172 @@
+/****************************************Copyright (c)*************************************************
+**                      Fujian Junpeng Communicaiton Technology Co.,Ltd.
+**                               http://www.easivend.com.cn
+**--------------File Info------------------------------------------------------------------------------
+** File name:           EVprotocol.java
+** Last modified Date:  2015-01-10
+** Last Version:         
+** Descriptions:        vmc_orderDAO 订单表操作文件  
+**------------------------------------------------------------------------------------------------------
+** Created by:          yanbo 
+** Created date:        2015-01-10
+** Version:             V1.0 
+** Descriptions:        The original version       
+********************************************************************************************************/
+
+package com.easivend.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.easivend.model.Tb_vmc_order_pay;
+import com.easivend.model.Tb_vmc_order_product;
+import com.easivend.model.Tb_vmc_product;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+
+public class vmc_orderDAO 
+{
+	private DBOpenHelper helper;// 创建DBOpenHelper对象
+    private SQLiteDatabase db;// 创建SQLiteDatabase对象
+    //SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
+    // 定义构造函数
+	public vmc_orderDAO(Context context) 
+	{
+		helper=new DBOpenHelper(context);// 初始化DBOpenHelper对象
+	}
+	
+	//添加
+	public void add(Tb_vmc_order_pay tb_vmc_order_pay,Tb_vmc_order_product tb_vmc_order_product)throws SQLException
+	{
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+		
+        // 执行添加订单支付表	
+ 		db.execSQL(
+ 				"insert into vmc_order_pay" +
+ 				"(" +
+ 				"ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
+ 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime" +
+ 				") " +
+ 				"values" +
+ 				"(" +
+ 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime'))" +
+ 				")",
+ 		        new Object[] { tb_vmc_order_pay.getOrdereID(), tb_vmc_order_pay.getPayType(),tb_vmc_order_pay.getPayStatus(), tb_vmc_order_pay.getRealStatus(),
+ 						tb_vmc_order_pay.getSmallNote(), tb_vmc_order_pay.getSmallConi(),tb_vmc_order_pay.getSmallAmount(), tb_vmc_order_pay.getSmallCard(),
+ 						tb_vmc_order_pay.getShouldPay(), tb_vmc_order_pay.getShouldNo(), tb_vmc_order_pay.getRealNote(), tb_vmc_order_pay.getRealCoin(), 
+ 						tb_vmc_order_pay.getRealAmount(), tb_vmc_order_pay.getDebtAmount(), tb_vmc_order_pay.getRealCard()});
+ 		
+		// 执行添加订单详细信息表	
+ 		db.execSQL(
+ 				"insert into vmc_order_product" +
+ 				"(" +
+ 				"orderID,productID,yujiHuo,realHuo,cabID,columnID,huoStatus" +
+ 				") " +
+ 				"values" +
+ 				"(" +
+ 				"?,?,?,?,?,?,?" +
+ 				")",
+ 		        new Object[] { tb_vmc_order_product.getOrderID(), tb_vmc_order_product.getProductID(),tb_vmc_order_product.getYujiHuo(), tb_vmc_order_product.getRealHuo(),
+ 						tb_vmc_order_product.getCabID(), tb_vmc_order_product.getColumnID(),tb_vmc_order_product.getHuoStatus()});
+ 	 	db.close(); 
+	}
+	//删除时间范围内的数据
+	public void detele(String starttime, String endtime) 
+	{   
+		List<String> alllist=new ArrayList<String>(); 
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        //取得时间范围内订单支付单号
+		Cursor cursor = db.rawQuery("select ordereID FROM [vmc_order_pay] where payTime between ? and ?", 
+				new String[] { starttime,endtime });// 获取收入信息表中的最大编号
+		while (cursor.moveToNext()) 
+        {
+			alllist.add(cursor.getString(cursor.getColumnIndex("ordereID")));
+        }
+		
+		for(int i=0;i<alllist.size();i++) 
+		{	
+			// 执行删除订单详细信息表	
+	 		db.execSQL(
+	 				"delete from vmc_order_product where orderID=?",
+	 		        new Object[] { alllist.get(i)});
+	 		// 执行添加订单支付表	
+	 		db.execSQL(
+	 				"delete from vmc_order_pay where ordereID=?",
+	 		        new Object[] { alllist.get(i)});
+		}
+		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+        db.close();
+    }
+	//查找时间范围内的订单支付数据
+	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 
+	{   
+		List<Tb_vmc_order_pay> tb_inaccount = new ArrayList<Tb_vmc_order_pay>();// 创建集合对象
+             
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        //取得时间范围内订单支付单号
+		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
+				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime " +
+				" FROM [vmc_order_pay] where payTime between ? and ?", 
+				new String[] { starttime,endtime });// 获取收入信息表中的最大编号
+		while (cursor.moveToNext()) 
+        {
+			// 将遍历到的收入信息添加到集合中
+            tb_inaccount.add(new Tb_vmc_order_pay
+        		(
+        				cursor.getString(cursor.getColumnIndex("ordereID")), cursor.getInt(cursor.getColumnIndex("payType")),
+        				cursor.getInt(cursor.getColumnIndex("payStatus")),cursor.getInt(cursor.getColumnIndex("RealStatus")),
+        				cursor.getFloat(cursor.getColumnIndex("smallNote")),cursor.getFloat(cursor.getColumnIndex("smallConi")),
+        				cursor.getFloat(cursor.getColumnIndex("smallAmount")),cursor.getFloat(cursor.getColumnIndex("smallCard")),
+        				cursor.getFloat(cursor.getColumnIndex("shouldPay")), cursor.getInt(cursor.getColumnIndex("shouldNo")),
+        				cursor.getFloat(cursor.getColumnIndex("realNote")),cursor.getFloat(cursor.getColumnIndex("realCoin")),
+        				cursor.getFloat(cursor.getColumnIndex("realAmount")),cursor.getFloat(cursor.getColumnIndex("debtAmount")),
+        				cursor.getFloat(cursor.getColumnIndex("realCard")),cursor.getString(cursor.getColumnIndex("payTime"))
+        		)
+           );
+        }
+				
+		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+        db.close();
+        return tb_inaccount;// 返回集合
+    }
+	//查找时间范围内的订单详细信息数据
+	public List<Tb_vmc_order_product> getScrollProduct(String starttime, String endtime) 
+	{   
+		List<Tb_vmc_order_product> tb_inaccount = new ArrayList<Tb_vmc_order_product>();// 创建集合对象
+             
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        //取得时间范围内订单支付单号
+		Cursor cursor = db.rawQuery("select orderID,productID,yujiHuo,realHuo,cabID,columnID,huoStatus " +
+				" FROM [vmc_order_product] where payTime between ? and ?", 
+				new String[] { starttime,endtime });// 获取收入信息表中的最大编号
+		while (cursor.moveToNext()) 
+        {
+			// 将遍历到的收入信息添加到集合中
+            tb_inaccount.add(new Tb_vmc_order_product
+        		(
+        				cursor.getString(cursor.getColumnIndex("orderID")), cursor.getString(cursor.getColumnIndex("productID")),
+        				cursor.getInt(cursor.getColumnIndex("yujiHuo")),cursor.getInt(cursor.getColumnIndex("realHuo")),
+        				cursor.getString(cursor.getColumnIndex("cabID")),cursor.getString(cursor.getColumnIndex("columnID")),
+        				cursor.getInt(cursor.getColumnIndex("huoStatus"))
+        		)
+           );
+        }
+				
+		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+        db.close();
+        return tb_inaccount;// 返回集合
+    }
+}

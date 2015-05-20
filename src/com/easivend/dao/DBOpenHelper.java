@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 9;// 定义数据库版本号
+    private static final int VERSION = 10;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -263,11 +263,23 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 //        onCreate(db);
       db.execSQL
       (
-      		"alter table vmc_system_parameter add marketAmount Decimal(8,2)"         		
+      		"alter table vmc_order_product add yujiHuo int"         		
       );
       db.execSQL
       (
-      		"alter table vmc_system_parameter add billAmount Decimal(8,2)"         		
+      		"alter table vmc_order_product add realHuo int"         		
+      );
+      db.execSQL
+      (
+      		"alter table vmc_order_product add cabID nvarchar(100)"         		
+      );
+      db.execSQL
+      (
+      		"alter table vmc_order_product add columnID nvarchar(100)"         		
+      );
+      db.execSQL
+      (
+      		"alter table vmc_order_product add huoStatus int"         		
       );
     }
 }

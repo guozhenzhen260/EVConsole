@@ -45,12 +45,11 @@ public class BusZhiwei extends Activity
     private String prosales = null;
     private String count = null;
     private String reamin_amount = null;
-    private String zhifutype = "0";//0代表使用非现金,1代表使用现金
+    private String zhifutype = "4";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行微信二维码操作
     private Thread thread=null;
-    private Handler mainhand=null,childhand=null;
-    private String id="";
+    private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
@@ -151,15 +150,7 @@ public class BusZhiwei extends Activity
 	}
 	//发送订单
 	private void sendzhiwei()
-	{		
-		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusZhiwei.this);// 创建InaccountDAO对象
-	    // 得到设备ID号
-    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-    	if(tb_inaccount!=null)
-    	{
-    		id=tb_inaccount.getDevhCode().toString();
-    	}
-    	Log.i("EV_JNI","Send0.0="+id);
+	{				
     	// 将信息发送到子线程中
     	childhand=weixinghttp.obtainHandler();
 		Message childmsg=childhand.obtainMessage();
@@ -167,9 +158,7 @@ public class BusZhiwei extends Activity
 		JSONObject ev=null;
 		try {
 			ev=new JSONObject();
-			SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
-	        String datetime = tempDate.format(new java.util.Date()).toString(); 					
-	        out_trade_no=id+datetime;
+			out_trade_no=ToolClass.out_trade_no(BusZhiwei.this);
 	        ev.put("out_trade_no", out_trade_no);
 			ev.put("total_fee", String.valueOf(amount));
 			Log.i("EV_JNI","Send0.1="+ev.toString());
@@ -241,7 +230,8 @@ public class BusZhiwei extends Activity
 	private void tochuhuo()
 	{
 		Intent intent = null;// 创建Intent对象                
-    	intent = new Intent(BusZhiwei.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+    	intent = new Intent(BusZhiwei.this, BusHuo.class);// 使用Accountflag窗口初始化Intent    	
+    	intent.putExtra("out_trade_no", out_trade_no);
     	intent.putExtra("proID", proID);
     	intent.putExtra("productID", productID);
     	intent.putExtra("proType", proType);

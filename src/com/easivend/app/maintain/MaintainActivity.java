@@ -58,10 +58,10 @@ public class MaintainActivity extends Activity
 	private GridView gvInfo;// 创建GridView对象
 	private ProgressBar barmaintain=null;
 	// 定义字符串数组，存储系统功能
-    private String[] titles = new String[] { "商品管理", "货道管理", "参数配置", "预留接口", "预留接口", "预留接口", "交易页面", "退出" };
+    private String[] titles = new String[] { "商品管理", "货道管理", "参数配置", "订单信息", "操作日志", "本机配置", "交易页面", "退出" };
     // 定义int数组，存储功能对应的图标
-    private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.inaccountinfo,
-            R.drawable.showinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
+    private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
+            R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
     int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开
     String com=null,bentcom=null;

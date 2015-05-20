@@ -11,8 +11,12 @@ import java.util.Map.Entry;
 import com.easivend.app.maintain.GoodsManager;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_orderDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.model.Tb_vmc_order_pay;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
@@ -28,6 +32,7 @@ import android.widget.SimpleAdapter;
 public class BusHuo extends Activity 
 {
 	private final int SPLASH_DISPLAY_LENGHT = 10000; // 延迟10秒
+	private String out_trade_no=null;
 	private String proID = null;
 	private String productID = null;
 	private String proType = null;
@@ -36,7 +41,7 @@ public class BusHuo extends Activity
     private float prosales = 0;
     private int count = 0;
     private float reamin_amount = 0;
-    private int zhifutype = 0;//0代表使用非现金,1代表使用现金
+    private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private String data[][]=null;
     private ListView lvbushuo = null;
     //定义显示的内容包装，因为他有两列，因此就两个
@@ -180,6 +185,7 @@ public class BusHuo extends Activity
 		//从商品页面中取得锁选中的商品
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
+		out_trade_no=bundle.getString("out_trade_no");
 		proID=bundle.getString("proID");
 		productID=bundle.getString("productID");
 		proType=bundle.getString("proType");
@@ -220,7 +226,7 @@ public class BusHuo extends Activity
 				data[tempx][0]=String.valueOf(R.drawable.yes);
 				data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
 				updateListview();
-				tempx++;	
+				tempx++;					
 				//扣除存货余量
 				chuhuoupdate(cabinetvar,huodaoNo);
 			}
@@ -305,13 +311,13 @@ public class BusHuo extends Activity
 		//2.计算出出货是否要用金额
 		int typevar=0;
 		float sales=0;
-		//非现金
+		//现金
 		if(zhifutype==0)
 		{
 			sales=0;
 		}
-		//现金
-		else if(zhifutype==1)
+		//非现金
+		else
 		{
 			sales=prosales;
 		}
@@ -367,5 +373,17 @@ public class BusHuo extends Activity
         }	
         //扣除存货余量
 		columnDAO.update(cab,huo);
+	}
+	//记录日志
+    //payStatus;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+	//RealStatus;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+	private void addLog(int payStatus,int RealStatus)
+	{
+		vmc_orderDAO orderDAO = new vmc_orderDAO(BusHuo.this);// 创建InaccountDAO对象
+		//出货成功
+		if(payStatus==0)
+		{
+			//Tb_vmc_order_pay tb_vmc_order_pay = new Tb_vmc_order_pay(out_trade_no,zhifutype,payStatus,RealStatus,);
+		}
 	}
 }
