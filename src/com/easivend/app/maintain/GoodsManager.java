@@ -170,6 +170,7 @@ public class GoodsManager extends TabActivity
 			            // 创建Tb_inaccount对象
 			        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
 			        	classDAO.add(tb_vmc_class);// 添加收入信息
+			        	ToolClass.addOptLog(GoodsManager.this,0,"添加类别:"+strclassid+strclassname);
 			        	// 弹出信息提示
 			            Toast.makeText(GoodsManager.this, "〖新增类别〗数据添加成功！", Toast.LENGTH_SHORT).show();
 			            
@@ -201,6 +202,7 @@ public class GoodsManager extends TabActivity
 		            // 创建Tb_inaccount对象
 		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
 		        	classDAO.update(tb_vmc_class);// 修改
+		        	ToolClass.addOptLog(GoodsManager.this,1,"修改类别:"+strclassid+strclassname);
 		            // 弹出信息提示
 		            Toast.makeText(GoodsManager.this, "〖修改类别〗成功！", Toast.LENGTH_SHORT).show();
 		            showInfo();
@@ -226,6 +228,7 @@ public class GoodsManager extends TabActivity
 		            // 创建Tb_inaccount对象
 		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
 		        	classDAO.detele(tb_vmc_class);// 修改
+		        	ToolClass.addOptLog(GoodsManager.this,2,"删除类别:"+strclassid+strclassname);
 		            // 弹出信息提示
 		            Toast.makeText(GoodsManager.this, "〖删除类别〗成功！", Toast.LENGTH_SHORT).show();
 		            showInfo();
@@ -320,6 +323,7 @@ public class GoodsManager extends TabActivity
 					    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
 									ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
 					    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
+					    			ToolClass.addOptLog(GoodsManager.this,2,"删除商品:"+strInfo);
 			    				}
 		    		      }
 		    			)		    		        

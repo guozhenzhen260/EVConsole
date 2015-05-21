@@ -456,6 +456,7 @@ public class HuodaoTest extends TabActivity
         	Tb_vmc_cabinet tb_vmc_cabinet = new Tb_vmc_cabinet(no,type);
         	cabinetDAO.add(tb_vmc_cabinet);// 添加收入信息
         	showabinet();//显示柜信息
+        	ToolClass.addOptLog(HuodaoTest.this,0,"添加柜:"+no);
         	// 弹出信息提示
             Toast.makeText(HuodaoTest.this, "〖货柜〗数据添加成功！", Toast.LENGTH_SHORT).show();
             
@@ -513,8 +514,9 @@ public class HuodaoTest extends TabActivity
 				            
 				            vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
 				            cabinetDAO.detele(String.valueOf(cabinetsetvar));// 删除该柜信息
+				            ToolClass.addOptLog(HuodaoTest.this,2,"删除柜:"+cabinetsetvar);
 	    					// 弹出信息提示
-				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();				            
+				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();						            
 				            finish();
 	    				}
     		      }

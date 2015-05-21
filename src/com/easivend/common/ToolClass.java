@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,7 +32,12 @@ import java.util.Scanner;
 import org.json.JSONObject;
 
 import com.easivend.app.business.BusZhiAmount;
+import com.easivend.dao.vmc_logDAO;
+import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_log;
+import com.easivend.model.Tb_vmc_order_pay;
+import com.easivend.model.Tb_vmc_order_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -205,7 +211,17 @@ public class ToolClass
         return list;
     }
     
-    
+    //保存操作日志
+    public static void addOptLog(Context context, int logType, String logDesc)
+	{
+    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+    	String date=df.format(new Date());
+    	String logID="log"+date;
+    	vmc_logDAO logDAO = new vmc_logDAO(context);// 创建InaccountDAO对象		
+    	Tb_vmc_log tb_vmc_log=new Tb_vmc_log(logID, logType, logDesc,
+    			date);
+		logDAO.add(tb_vmc_log);		
+	}
 	
 	//发送金额函数，浮点的元,转为以分为单位发送到底下
 	public static long MoneySend(float sendMoney)

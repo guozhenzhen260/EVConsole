@@ -157,10 +157,12 @@ public class GoodsProSet extends Activity
 		    			if(proID.isEmpty()==true)
 		    			{
 		    				productDAO.add(tb_vmc_product,classID);// 添加商品信息
+		    				ToolClass.addOptLog(GoodsProSet.this,0,"添加商品:"+productID+productName);
 		    			}
 		    			else 
 		    			{	
 		    				productDAO.update(tb_vmc_product,classID);// 修改商品信息
+		    				ToolClass.addOptLog(GoodsProSet.this,1,"修改商品"+productID+productName);
 						}
 			        	// 弹出信息提示
 			            Toast.makeText(GoodsProSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();

@@ -22,9 +22,9 @@ public class Tb_vmc_log
 	private String logID;// 操作ID[pk]
     private int logType;// 操作类型0添加,1修改,2删除
     private String logDesc;// 操作描述
-    private Date logTime;//操作时间
+    private String logTime;//操作时间
  // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
-	public Tb_vmc_log(String logID, int logType, String logDesc, Date logTime) {
+	public Tb_vmc_log(String logID, int logType, String logDesc, String logTime) {
 		super();
 		this.logID = logID;
 		this.logType = logType;
@@ -49,10 +49,10 @@ public class Tb_vmc_log
 	public void setLogDesc(String logDesc) {
 		this.logDesc = logDesc;
 	}
-	public Date getLogTime() {
+	public String getLogTime() {
 		return logTime;
 	}
-	public void setLogTime(Date logTime) {
+	public void setLogTime(String logTime) {
 		this.logTime = logTime;
 	}
     

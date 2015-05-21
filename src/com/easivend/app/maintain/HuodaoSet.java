@@ -174,6 +174,7 @@ public class HuodaoSet extends Activity
 		    					pathRemain,Integer.parseInt(huostatus),date);
 		    			
 		    			columnDAO.addorupdate(tb_vmc_column);// 添加商品信息
+		    			ToolClass.addOptLog(HuodaoSet.this,0,"上架货道:"+cabID+huoID);
 		    			
 			        	// 弹出信息提示
 			            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -219,6 +220,7 @@ public class HuodaoSet extends Activity
 			    					Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID, huoID,productID,0,
 					    					0,Integer.parseInt(huostatus),date);				    			
 			    					columnDAO.detele(tb_vmc_column);// 删除货道信息	
+			    					ToolClass.addOptLog(HuodaoSet.this,2,"下架货道:"+cabID+huoID);
 			    					// 弹出信息提示
 						            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
 						            //退出时，返回intent

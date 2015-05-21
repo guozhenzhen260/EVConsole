@@ -53,7 +53,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"rstDay int," +
         		"baozhiProduct INT NOT NULL DEFAULT 0," +
         		"emptyProduct INT NOT NULL DEFAULT 0," +
-        		"proSortType INT NOT NULL DEFAULT 6" +
+        		"proSortType INT NOT NULL DEFAULT 6," +
+        		"marketAmount Decimal(8,2)," +
+        		"billAmount Decimal(8,2)" +
         		")"
         		
         );
@@ -188,7 +190,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"CREATE TABLE vmc_order_product" +
         		"("+
         		"orderID nvarchar(100)," +
-        		"productID nvarchar(100)" +
+        		"productID nvarchar(100)," +
+        		"yujiHuo int," +
+        		"realHuo int," +
+        		"cabID nvarchar(100)," +
+        		"columnID nvarchar(100)," +
+        		"huoStatus int" +
         		")"
         		
         );
