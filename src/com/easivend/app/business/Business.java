@@ -8,6 +8,7 @@ import java.util.Random;
 import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.MediaFileAdapter;
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
@@ -401,14 +402,22 @@ public class Business extends Activity
 			    txtadsTip.setText("");
 				Intent intent = null;// 创建Intent对象                
 	        	intent = new Intent(Business.this, BusZhiSelect.class);// 使用Accountflag窗口初始化Intent
-	        	intent.putExtra("proID", proID);
-	        	intent.putExtra("productID", productID);
-	        	intent.putExtra("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
-	        	intent.putExtra("cabID", cabID);//出货柜号,proType=1时无效
-	        	intent.putExtra("huoID", huoID);//出货货道号,proType=1时无效
-	        	intent.putExtra("prosales", prosales);
-	        	intent.putExtra("count", "1");
-	        	intent.putExtra("reamin_amount", reamin_amount);
+//	        	intent.putExtra("proID", proID);
+//	        	intent.putExtra("productID", productID);
+//	        	intent.putExtra("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
+//	        	intent.putExtra("cabID", cabID);//出货柜号,proType=1时无效
+//	        	intent.putExtra("huoID", huoID);//出货货道号,proType=1时无效
+//	        	intent.putExtra("prosales", prosales);
+//	        	intent.putExtra("count", "1");
+//	        	intent.putExtra("reamin_amount", reamin_amount);
+	        	OrderDetail.setProID(proID);
+            	OrderDetail.setProductID(productID);
+            	OrderDetail.setProType("2");
+            	OrderDetail.setCabID(cabID);
+            	OrderDetail.setColumnID(huoID);
+            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
+            	OrderDetail.setShouldNo(1);
+            	OrderDetail.setSmallAmount(Float.parseFloat(reamin_amount));
 	        	startActivity(intent);// 打开Accountflag
 		    }
 		    else

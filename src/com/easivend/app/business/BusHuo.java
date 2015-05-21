@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import com.easivend.app.maintain.GoodsManager;
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
@@ -107,6 +108,7 @@ public class BusHuo extends Activity
 							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
 							//扣除存货余量
 							chuhuoupdate(cabinetvar,huodaoNo);
+							chuhuoLog(0);//记录日志
 						}
 						else
 						{
@@ -114,6 +116,7 @@ public class BusHuo extends Activity
 							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
 							//扣除存货余量
 							chuhuoupdate(cabinetvar,huodaoNo);
+							chuhuoLog(1);//记录日志
 						}
 						updateListview();
 						tempx++;
@@ -129,6 +132,7 @@ public class BusHuo extends Activity
 								tempx++;
 								//扣除存货余量
 								chuhuoupdate(cabinetvar,huodaoNo);
+								chuhuoLog(0);//记录日志
 							}
 							else if(huorst==0)
 							{
@@ -138,6 +142,7 @@ public class BusHuo extends Activity
 								tempx++;
 								//扣除存货余量
 								chuhuoupdate(cabinetvar,huodaoNo);
+								chuhuoLog(1);//记录日志
 							}
 				 	    }
 						if(tempx>=count)
@@ -155,6 +160,7 @@ public class BusHuo extends Activity
 		                        			BusZhier.BusZhierAct.finish(); 
 		                        		if(BusZhiwei.BusZhiweiAct!=null)
 		                        			BusZhiwei.BusZhiweiAct.finish(); 
+		                        		OrderDetail.addLog(BusHuo.this);
 		                        	}
 		                        	//出货失败，退到非现金模块进行退币操作
 		                        	else
@@ -171,7 +177,7 @@ public class BusHuo extends Activity
 		                    	            Intent intent=new Intent();
 		                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
 		                        		}
-									}
+									}		                        	
 		                            finish();
 		                        }
 
@@ -183,23 +189,23 @@ public class BusHuo extends Activity
 		}); 
   	    
 		//从商品页面中取得锁选中的商品
-		Intent intent=getIntent();
-		Bundle bundle=intent.getExtras();
-		out_trade_no=bundle.getString("out_trade_no");
-		proID=bundle.getString("proID");
-		productID=bundle.getString("productID");
-		proType=bundle.getString("proType");
-		cabID=bundle.getString("cabID");
-		huoID=bundle.getString("huoID");
-		prosales=Float.parseFloat(bundle.getString("prosales"));
-		count=Integer.parseInt(bundle.getString("count"));
-		reamin_amount=Float.parseFloat(bundle.getString("reamin_amount"));
-		zhifutype=Integer.parseInt(bundle.getString("zhifutype"));
-		        
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+//		Intent intent=getIntent();
+//		Bundle bundle=intent.getExtras();
+		out_trade_no=OrderDetail.getOrdereID();
+		proID=OrderDetail.getProID();
+		productID=OrderDetail.getProductID();
+		proType=OrderDetail.getProType();
+		cabID=OrderDetail.getCabID();
+		huoID=OrderDetail.getColumnID();
+		prosales=OrderDetail.getShouldPay();
+		count=OrderDetail.getShouldNo();
+		reamin_amount=OrderDetail.getSmallAmount();
+		zhifutype=OrderDetail.getPayType();
+		
+  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-				+count+" reamin_amount="+reamin_amount+" zhifutype="+zhifutype);
+				+count+" reamin_amount="+reamin_amount+" zhifutype="+zhifutype);		
 		this.data=new String[count][2];
 		draw=String.valueOf(R.drawable.shuaxin);
 		info=proID+"["+prosales+"]"+"->等待出货";
@@ -229,6 +235,7 @@ public class BusHuo extends Activity
 				tempx++;					
 				//扣除存货余量
 				chuhuoupdate(cabinetvar,huodaoNo);
+				chuhuoLog(0);//记录日志
 			}
 			else if(huorst==0)
 			{
@@ -238,6 +245,7 @@ public class BusHuo extends Activity
 				tempx++;
 				//扣除存货余量
 				chuhuoupdate(cabinetvar,huodaoNo);
+				chuhuoLog(1);//记录日志
 			}
  	    }
  	    if(tempx>=count)
@@ -254,6 +262,7 @@ public class BusHuo extends Activity
             			BusZhier.BusZhierAct.finish(); 	
                 	if(BusZhiwei.BusZhiweiAct!=null)
             			BusZhiwei.BusZhiweiAct.finish(); 
+                	OrderDetail.addLog(BusHuo.this);
                     finish();
                 }
 
@@ -313,13 +322,13 @@ public class BusHuo extends Activity
 		float sales=0;
 		//现金
 		if(zhifutype==0)
-		{
-			sales=0;
+		{			
+			sales=prosales;
 		}
 		//非现金
 		else
 		{
-			sales=prosales;
+			sales=0;
 		}
 		//计算出类型
 		if(sales>0)
@@ -374,16 +383,22 @@ public class BusHuo extends Activity
         //扣除存货余量
 		columnDAO.update(cab,huo);
 	}
-	//记录日志
-    //payStatus;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
-	//RealStatus;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
-	private void addLog(int payStatus,int RealStatus)
+	
+	//记录日志出货结果type=0出货成功，1出货失败
+	private void chuhuoLog(int type)
 	{
-		vmc_orderDAO orderDAO = new vmc_orderDAO(BusHuo.this);// 创建InaccountDAO对象
-		//出货成功
-		if(payStatus==0)
+		OrderDetail.setYujiHuo(1);
+		if(type==0)//出货成功
 		{
-			//Tb_vmc_order_pay tb_vmc_order_pay = new Tb_vmc_order_pay(out_trade_no,zhifutype,payStatus,RealStatus,);
+			OrderDetail.setPayStatus(0);
+			OrderDetail.setRealHuo(1);
+			OrderDetail.setHuoStatus(0);
 		}
-	}
+		else//出货失败
+		{
+			OrderDetail.setPayStatus(1);
+			OrderDetail.setRealHuo(0);
+			OrderDetail.setHuoStatus(1);
+		}
+	}	
 }

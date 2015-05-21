@@ -37,7 +37,7 @@ public class Tb_vmc_order_pay
 	private String payTime;//支付时间
 	// 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_order_pay(String ordereID, int payType, int payStatus,
-			int realStatus, float smallNote, float smallConi,
+			int RealStatus, float smallNote, float smallConi,
 			float smallAmount, float smallCard, float shouldPay, int shouldNo,
 			float realNote, float realCoin, float realAmount, float debtAmount,
 			float realCard, String payTime) {
@@ -45,7 +45,7 @@ public class Tb_vmc_order_pay
 		this.ordereID = ordereID;
 		this.payType = payType;
 		this.payStatus = payStatus;
-		RealStatus = realStatus;
+		this.RealStatus = RealStatus;
 		this.smallNote = smallNote;
 		this.smallConi = smallConi;
 		this.smallAmount = smallAmount;

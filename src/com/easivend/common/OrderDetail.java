@@ -15,6 +15,16 @@
 
 package com.easivend.common;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.content.Context;
+
+import com.easivend.app.business.BusHuo;
+import com.easivend.dao.vmc_orderDAO;
+import com.easivend.model.Tb_vmc_order_pay;
+import com.easivend.model.Tb_vmc_order_product;
+
 public class OrderDetail 
 { 
 	//订单总信息
@@ -37,12 +47,60 @@ public class OrderDetail
 	private static float debtAmount = 0;// 欠款金额
 	private static float realCard = 0;// 非现金退币金额
 	//订单详细信息表      
-	private static String productID;// 商品ID
-    private static int yujiHuo;//预计出货:数量1个
-    private static int realHuo;//实际出货: 1或者0
-    private static String cabID;//货柜号
-    private static String columnID;//货道号
-    private static int huoStatus;//出货状态: 0出货成功，1出货失败
+	private static String productID = "";// 商品ID
+    private static int yujiHuo = 0;//预计出货:数量1个
+    private static int realHuo = 0;//实际出货: 1或者0
+    private static String cabID = "";//货柜号
+    private static String columnID = "";//货道号
+    private static int huoStatus = 0;//出货状态: 0出货成功，1出货失败
+    
+    //保存日志
+    public static void addLog(Context context)
+	{
+    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+    	String date=df.format(new Date());
+		vmc_orderDAO orderDAO = new vmc_orderDAO(context);// 创建InaccountDAO对象
+		Tb_vmc_order_pay tb_vmc_order_pay = new Tb_vmc_order_pay(ordereID, payType, payStatus,
+					RealStatus, smallNote, smallConi,
+					smallAmount, smallCard, shouldPay, shouldNo,
+					realNote, realCoin, realAmount, debtAmount,
+					realCard, date);
+		Tb_vmc_order_product tb_vmc_order_product=new Tb_vmc_order_product(ordereID, productID, yujiHuo,
+	    		realHuo, cabID, columnID, huoStatus);
+		orderDAO.add(tb_vmc_order_pay, tb_vmc_order_product);
+		cleardata();
+	}
+    //清除数据
+    public static void cleardata()
+    {
+    	//订单总信息
+    	 proID = "";//出货id+商品名
+    	 proType = "";//1代表通过商品ID出货,2代表通过货道出货	
+    	//订单支付表 
+    	 ordereID = "";// 订单ID[pk]
+    	 payType = 0;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+    	 payStatus = 0;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+    	 RealStatus = 0;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+    	 smallNote = 0;// 纸币金额
+    	 smallConi = 0;// 硬币金额
+    	 smallAmount = 0;// 现金投入金额
+    	 smallCard = 0;// 非现金支付金额
+    	 shouldPay = 0;// 商品总金额，就是商品单价
+    	 shouldNo = 0;// 商品总数量,就是1个
+    	 realNote = 0;// 纸币退币金额
+    	 realCoin = 0;// 硬币退币金额
+    	 realAmount = 0;// 现金退币金额
+    	 debtAmount = 0;// 欠款金额
+    	 realCard = 0;// 非现金退币金额
+    	//订单详细信息表      
+    	 productID = "";// 商品ID
+         yujiHuo = 0;//预计出货:数量1个
+         realHuo = 0;//实际出货: 1或者0
+         cabID = "";//货柜号
+         columnID = "";//货道号
+         huoStatus = 0;//出货状态: 0出货成功，1出货失败
+    }
+    
 	public static String getProID() {
 		return proID;
 	}

@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.http.Weixinghttp;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 public class BusZhiwei extends Activity 
 {
+	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
 	public static BusZhiwei BusZhiweiAct=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
 	TextView txtbuszhiweicount=null,txtbuszhiweirount=null,txtbuszhiweirst=null,txtbuszhiweitime=null;
@@ -37,14 +39,14 @@ public class BusZhiwei extends Activity
 	private int queryLen = 0; 
     private TextView txtView; 
     Timer timer = new Timer(); 
-	private String proID = null;
-	private String productID = null;
-	private String proType = null;
-	private String cabID = null;
-	private String huoID = null;
-    private String prosales = null;
-    private String count = null;
-    private String reamin_amount = null;
+//	private String proID = null;
+//	private String productID = null;
+//	private String proType = null;
+//	private String cabID = null;
+//	private String huoID = null;
+//    private String prosales = null;
+//    private String count = null;
+//    private String reamin_amount = null;
     private String zhifutype = "4";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行微信二维码操作
@@ -60,19 +62,19 @@ public class BusZhiwei extends Activity
 		setContentView(R.layout.buszhiwei);
 		BusZhiweiAct = this;
 		//从商品页面中取得锁选中的商品
-		Intent intent=getIntent();
-		Bundle bundle=intent.getExtras();
-		proID=bundle.getString("proID");
-		productID=bundle.getString("productID");
-		proType=bundle.getString("proType");
-		cabID=bundle.getString("cabID");
-		huoID=bundle.getString("huoID");
-		prosales=bundle.getString("prosales");
-		count=bundle.getString("count");
-		reamin_amount=bundle.getString("reamin_amount");
-		amount=Float.parseFloat(prosales)*Integer.parseInt(count);
+//		Intent intent=getIntent();
+//		Bundle bundle=intent.getExtras();
+//		proID=bundle.getString("proID");
+//		productID=bundle.getString("productID");
+//		proType=bundle.getString("proType");
+//		cabID=bundle.getString("cabID");
+//		huoID=bundle.getString("huoID");
+//		prosales=bundle.getString("prosales");
+//		count=bundle.getString("count");
+//		reamin_amount=bundle.getString("reamin_amount");
+		amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
 		txtbuszhiweicount= (TextView) findViewById(R.id.txtbuszhiweicount);
-		txtbuszhiweicount.setText(count);
+		txtbuszhiweicount.setText(String.valueOf(OrderDetail.getShouldNo()));
 		txtbuszhiweirount= (TextView) findViewById(R.id.txtbuszhiweirount);
 		txtbuszhiweirount.setText(String.valueOf(amount));
 		txtbuszhiweirst= (TextView) findViewById(R.id.txtbuszhiweirst);
@@ -122,7 +124,7 @@ public class BusZhiwei extends Activity
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						txtbuszhiweirst.setText("交易结果:交易成功");
-						reamin_amount=String.valueOf(amount);
+						//reamin_amount=String.valueOf(amount);
 						timer.cancel(); 
 						tochuhuo();
 						break;
@@ -145,8 +147,17 @@ public class BusZhiwei extends Activity
 		weixinghttp=new Weixinghttp(mainhand);
 		thread=new Thread(weixinghttp,"Weixinghttp Thread");
 		thread.start();
-		//发送订单
-		sendzhiwei();
+		//延时3s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {            	
+            	//发送订单
+        		sendzhiwei();
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);			
 	}
 	//发送订单
 	private void sendzhiwei()
@@ -231,16 +242,19 @@ public class BusZhiwei extends Activity
 	{
 		Intent intent = null;// 创建Intent对象                
     	intent = new Intent(BusZhiwei.this, BusHuo.class);// 使用Accountflag窗口初始化Intent    	
-    	intent.putExtra("out_trade_no", out_trade_no);
-    	intent.putExtra("proID", proID);
-    	intent.putExtra("productID", productID);
-    	intent.putExtra("proType", proType);
-    	intent.putExtra("cabID", cabID);
-    	intent.putExtra("huoID", huoID);
-    	intent.putExtra("prosales", prosales);
-    	intent.putExtra("count", count);
-    	intent.putExtra("reamin_amount", reamin_amount);
-    	intent.putExtra("zhifutype", zhifutype);
+//    	intent.putExtra("out_trade_no", out_trade_no);
+//    	intent.putExtra("proID", proID);
+//    	intent.putExtra("productID", productID);
+//    	intent.putExtra("proType", proType);
+//    	intent.putExtra("cabID", cabID);
+//    	intent.putExtra("huoID", huoID);
+//    	intent.putExtra("prosales", prosales);
+//    	intent.putExtra("count", count);
+//    	intent.putExtra("reamin_amount", reamin_amount);
+//    	intent.putExtra("zhifutype", zhifutype);
+    	OrderDetail.setOrdereID(out_trade_no);
+    	OrderDetail.setPayType(Integer.parseInt(zhifutype));
+    	OrderDetail.setSmallCard(amount);
     	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
 	}
 	
@@ -253,6 +267,9 @@ public class BusZhiwei extends Activity
 			{
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
 				////退款
+				OrderDetail.setRealStatus(3);//记录退币失败
+				OrderDetail.setRealCard(0);//记录退币金额
+				OrderDetail.addLog(BusZhiwei.this);;
 			}			
 		}
 	}

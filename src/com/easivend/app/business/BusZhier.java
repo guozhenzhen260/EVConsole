@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.easivend.app.maintain.GoodsManager;
 import com.easivend.app.maintain.ParamManager;
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 public class BusZhier extends Activity
 {
+	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
 	public static BusZhier BusZhierAct=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
 	TextView txtbuszhiercount=null,txtbuszhiamerount=null,txtbuszhierrst=null,txtbuszhiertime=null;
@@ -39,14 +41,14 @@ public class BusZhier extends Activity
 	private int queryLen = 0; 
     private TextView txtView; 
     Timer timer = new Timer(); 
-	private String proID = null;
-	private String productID = null;
-	private String proType = null;
-	private String cabID = null;
-	private String huoID = null;
-    private String prosales = null;
-    private String count = null;
-    private String reamin_amount = null;
+//	private String proID = null;
+//	private String productID = null;
+//	private String proType = null;
+//	private String cabID = null;
+//	private String huoID = null;
+//    private String prosales = null;
+//    private String count = null;
+//    private String reamin_amount = null;
     private String zhifutype = "3";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行支付宝二维码操作
@@ -62,19 +64,19 @@ public class BusZhier extends Activity
 		setContentView(R.layout.buszhier);
 		BusZhierAct = this;
 		//从商品页面中取得锁选中的商品
-		Intent intent=getIntent();
-		Bundle bundle=intent.getExtras();
-		proID=bundle.getString("proID");
-		productID=bundle.getString("productID");
-		proType=bundle.getString("proType");
-		cabID=bundle.getString("cabID");
-		huoID=bundle.getString("huoID");
-		prosales=bundle.getString("prosales");
-		count=bundle.getString("count");
-		reamin_amount=bundle.getString("reamin_amount");
-		amount=Float.parseFloat(prosales)*Integer.parseInt(count);
+//		Intent intent=getIntent();
+//		Bundle bundle=intent.getExtras();
+//		proID=bundle.getString("proID");
+//		productID=bundle.getString("productID");
+//		proType=bundle.getString("proType");
+//		cabID=bundle.getString("cabID");
+//		huoID=bundle.getString("huoID");
+//		prosales=bundle.getString("prosales");
+//		count=bundle.getString("count");
+//		reamin_amount=bundle.getString("reamin_amount");
+		amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
 		txtbuszhiercount= (TextView) findViewById(R.id.txtbuszhiercount);
-		txtbuszhiercount.setText(count);
+		txtbuszhiercount.setText(String.valueOf(OrderDetail.getShouldNo()));
 		txtbuszhiamerount= (TextView) findViewById(R.id.txtbuszhiamerount);
 		txtbuszhiamerount.setText(String.valueOf(amount));
 		txtbuszhierrst= (TextView) findViewById(R.id.txtbuszhierrst);
@@ -127,7 +129,7 @@ public class BusZhier extends Activity
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						txtbuszhierrst.setText("交易结果:交易成功");
-						reamin_amount=String.valueOf(amount);
+						//reamin_amount=String.valueOf(amount);
 						timer.cancel(); 
 						tochuhuo();
 						break;
@@ -150,8 +152,17 @@ public class BusZhier extends Activity
 		zhifubaohttp=new Zhifubaohttp(mainhand);
 		thread=new Thread(zhifubaohttp,"Zhifubaohttp Thread");
 		thread.start();
-		//发送订单
-		sendzhier();
+		//延时3s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {            	
+        		//发送订单
+        		sendzhier();
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);		
 	}
 	
 	//发送订单
@@ -282,16 +293,19 @@ public class BusZhier extends Activity
 	{
 		Intent intent = null;// 创建Intent对象                
     	intent = new Intent(BusZhier.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
-    	intent.putExtra("out_trade_no", out_trade_no);
-    	intent.putExtra("proID", proID);
-    	intent.putExtra("productID", productID);
-    	intent.putExtra("proType", proType);
-    	intent.putExtra("cabID", cabID);
-    	intent.putExtra("huoID", huoID);
-    	intent.putExtra("prosales", prosales);
-    	intent.putExtra("count", count);
-    	intent.putExtra("reamin_amount", reamin_amount);
-    	intent.putExtra("zhifutype", zhifutype);
+//    	intent.putExtra("out_trade_no", out_trade_no);
+//    	intent.putExtra("proID", proID);
+//    	intent.putExtra("productID", productID);
+//    	intent.putExtra("proType", proType);
+//    	intent.putExtra("cabID", cabID);
+//    	intent.putExtra("huoID", huoID);
+//    	intent.putExtra("prosales", prosales);
+//    	intent.putExtra("count", count);
+//    	intent.putExtra("reamin_amount", reamin_amount);
+//    	intent.putExtra("zhifutype", zhifutype);
+    	OrderDetail.setOrdereID(out_trade_no);
+    	OrderDetail.setPayType(Integer.parseInt(zhifutype));
+    	OrderDetail.setSmallCard(amount);
     	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
 	}
 
@@ -304,7 +318,10 @@ public class BusZhier extends Activity
 			if(resultCode==BusZhier.RESULT_CANCELED)
 			{
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
-				payoutzhier();//退款
+				payoutzhier();//退款操作
+				OrderDetail.setRealStatus(1);//记录退币成功
+				OrderDetail.setRealCard(amount);//记录退币金额
+				OrderDetail.addLog(BusZhier.this);
 			}			
 		}
 	}
