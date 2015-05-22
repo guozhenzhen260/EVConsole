@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -170,6 +172,7 @@ public class ToolClass
     {
     	final String SDCARD_DIR=File.separator+"sdcard";
     	final String NOSDCARD_DIR=File.separator;
+    	File fileName=null;
     	String  sDir =null,str=null;
     	Map<String, String> list=null;
     	    	
@@ -186,29 +189,130 @@ public class ToolClass
         	  }
         	 
         	 
+        	  fileName=new File(sDir+File.separator+"easivendconfig.txt");
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir+File.separator+"easivendconfig.txt");
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str);
+	  	         //将json格式解包
+	  	         list=new HashMap<String,String>();      			
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 写入配置文件
+     */
+    public static void WriteConfigFile(String com,String bentcom) 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard";
+    	final String NOSDCARD_DIR=File.separator;
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	
+    	    	
+        try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	 
+        	 
+        	  fileName=new File(sDir+File.separator+"easivendconfig.txt");
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      } 
         	  
-    	  	 //打开文件
+          	  //1.将数据从文件中读入
+    	  	  //打开文件
     		  FileInputStream input = new FileInputStream(sDir+File.separator+"easivendconfig.txt");
-    		 //输出信息
+    		  //输出信息
   	          Scanner scan=new Scanner(input);
   	          while(scan.hasNext())
   	          {
   	           	str=scan.next()+"\n";
   	          }
   	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str);
-  	         //将json格式解包
-  	         list=new HashMap<String,String>();      			
-			JSONObject object=new JSONObject(str);      				
-			Gson gson=new Gson();
-			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-			//Log.i("EV_JNI",perobj.toString());
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
-    	  
+  	         if(str!=null)
+  	         {
+	  	        Map<String, String> list=new HashMap<String,String>();      			
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+				Map<String,String> list2=new HashMap<String,String>();
+				//输出内容
+		        Set<Map.Entry<String,String>> allset=list.entrySet();  //实例化
+		        Iterator<Map.Entry<String,String>> iter=allset.iterator();
+		        while(iter.hasNext())
+		        {
+		            Map.Entry<String,String> me=iter.next();
+		            if((me.getKey().equals("com")!=true)&&(me.getKey().equals("bentcom")!=true))
+		            	list2.put(me.getKey(), me.getValue());
+		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
+		        } 	
+		        list2.put("com", com);
+		        list2.put("bentcom", bentcom);
+		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString());
+		        JSONObject jsonObject = new JSONObject(list2);
+		        String mapstrString=jsonObject.toString();
+		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config4="+mapstrString);
+		        //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+	            FileWriter writer = new FileWriter(fileName);
+	            writer.write(mapstrString);
+	            writer.close();
+  	         }
+  	         else
+  	         {
+  	        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<com="+com+","+bentcom);
+  	        	JSONObject jsonObject = new JSONObject();
+  	        	jsonObject.put("com", com);
+  	        	jsonObject.put("bentcom", bentcom);
+  	        	String mapstrString=jsonObject.toString();
+  	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString);
+  	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	            FileWriter writer = new FileWriter(fileName, true);
+  	            writer.write(mapstrString);
+  	            writer.close();
+			 }
+//  	         //将json格式解包
+//  	         list=new HashMap<String,String>();      			
+//			JSONObject object=new JSONObject(str);      				
+//			Gson gson=new Gson();
+//			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+//			//Log.i("EV_JNI",perobj.toString());
+//			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+        	//2.写回到文件中  
         	             
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return list;
+        }        
     }
     
     //保存操作日志

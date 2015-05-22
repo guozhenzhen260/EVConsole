@@ -23,6 +23,8 @@ import java.util.Timer;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.weixing.WeiConfigAPI;
+import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.Business;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.ProPictureAdapter;
@@ -92,36 +94,42 @@ public class MaintainActivity extends Activity
 				}
 			}
 		}); 
-		
-		
-		Intent intent=getIntent();
-		com=intent.getStringExtra("com");
-		bentcom=intent.getStringExtra("bentcom");
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtcom.setText("主柜正在准备连接"+com);	
-		EVprotocolAPI.vmcEVStart();//开启监听
-		//打开串口		
-		comopen = EVprotocolAPI.vmcStart(com);
-		if(comopen == 1)
-		{
-			txtcom.setText(com+"[主柜]串口打开成功");			
-		}
-		else
-		{
-			txtcom.setText(com+"[主柜]串口打开失败");
-		}
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
-		txtbentcom.setText("[格子柜]正在准备连接"+bentcom);	
-//		//打开格子柜
-		bentopen = EVprotocolAPI.bentoRegister(bentcom);
-		if(bentopen == 1)
+		
+		//从配置文件获取数据
+		Map<String, String> list=ToolClass.ReadConfigFile();
+		if(list!=null)
 		{
-			txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
+	        com = list.get("com");
+	        bentcom = list.get("bentcom");
+	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
+	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
+			txtcom.setText("主柜正在准备连接"+com);	
+			EVprotocolAPI.vmcEVStart();//开启监听
+			//打开串口		
+			comopen = EVprotocolAPI.vmcStart(com);
+			if(comopen == 1)
+			{
+				txtcom.setText(com+"[主柜]串口打开成功");			
+			}
+			else
+			{
+				txtcom.setText(com+"[主柜]串口打开失败");
+			}			
+			txtbentcom.setText("[格子柜]正在准备连接"+bentcom);	
+			//打开格子柜
+			bentopen = EVprotocolAPI.bentoRegister(bentcom);
+			if(bentopen == 1)
+			{
+				txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
+			}
+			else
+			{
+				txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
+			}
 		}
-		else
-		{
-			txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
-		}
+				
 		
 				
 		barmaintain= (ProgressBar) findViewById(R.id.barmaintain);
@@ -158,9 +166,8 @@ public class MaintainActivity extends Activity
                 	barmaintain.setVisibility(View.GONE);
                     break;
                 case 5:
-                	//barmaintain.setVisibility(View.VISIBLE);
-                	//intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
-                    //startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager
+                	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent
+                    startActivity(intent);// 打开Accountflag
                     break;
                 case 6:
                     intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent

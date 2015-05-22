@@ -17,12 +17,12 @@
 	        android:id="@+id/txtcom"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/hello_world" />
+	        android:text="主串口未配置," />
    		 <TextView
 	        android:id="@+id/txtbentcom"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/hello_world" />
+	        android:text="格子柜串口未配置" />
    		 <ProgressBar
 	        android:id="@+id/barmaintain"
 	        style="?android:attr/progressBarStyleLarge"

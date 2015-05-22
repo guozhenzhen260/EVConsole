@@ -36,9 +36,10 @@ import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin;// 创建EditText对象
+	private EditText txtlogin,txtbent;// 创建EditText对象
     private Button btnlogin, btnclose;// 创建两个Button对象
-    
+    String com =null;
+    String bentcom =null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -46,13 +47,16 @@ public class Login extends Activity
 		setContentView(R.layout.login);// 设置布局文件
 
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
+        txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框
         Map<String, String> list=ToolClass.ReadConfigFile();
-        final String com = list.get("com");
-        final String bentcom = list.get("bentcom");
+        if(list!=null)
+        {
+	        com = list.get("com");
+	        bentcom = list.get("bentcom");
+        }
         txtlogin.setText(com);
-        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
-        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
-        btnlogin = (Button) findViewById(R.id.btnLogin);// 获取登录按钮
+        txtbent.setText(bentcom);
+        btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
         btnclose.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
             @Override
@@ -64,10 +68,10 @@ public class Login extends Activity
             @Override
             public void onClick(View arg0)
             {
-                Intent intent = new Intent(Login.this, MaintainActivity.class);// 创建Intent对象
-                intent.putExtra("com", com);
-                intent.putExtra("bentcom", bentcom);
-                startActivity(intent);// 启动主Activity               
+            	com = txtlogin.getText().toString();
+    	        bentcom = txtbent.getText().toString();    	        
+            	ToolClass.WriteConfigFile(com, bentcom);
+            	finish();// 退出当前程序           
             }
         });        
 	}

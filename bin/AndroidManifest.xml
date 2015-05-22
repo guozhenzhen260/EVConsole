@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.easivend.app.maintain.Login"
+            android:name="com.easivend.app.maintain.MaintainActivity"
             android:label="@string/app_name" 
             android:screenOrientation="portrait">
             <intent-filter>
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.easivend.app.maintain.MaintainActivity"
+            android:name="com.easivend.app.maintain.Login"
             android:label="@string/app_name" 
             android:screenOrientation="portrait">
         </activity>
