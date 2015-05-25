@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_order_product;
 import com.easivend.model.Tb_vmc_product;
@@ -108,7 +109,7 @@ public class vmc_orderDAO
 	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 
 	{   
 		List<Tb_vmc_order_pay> tb_inaccount = new ArrayList<Tb_vmc_order_pay>();// 创建集合对象
-             
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime);         
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
@@ -140,26 +141,25 @@ public class vmc_orderDAO
         return tb_inaccount;// 返回集合
     }
 	//查找时间范围内的订单详细信息数据
-	public List<Tb_vmc_order_product> getScrollProduct(String starttime, String endtime) 
+	public Tb_vmc_order_product getScrollProduct(String orderID) 
 	{   
-		List<Tb_vmc_order_product> tb_inaccount = new ArrayList<Tb_vmc_order_product>();// 创建集合对象
+		Tb_vmc_order_product tb_inaccount = null;// 创建集合对象
              
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select orderID,productID,yujiHuo,realHuo,cabID,columnID,huoStatus " +
-				" FROM [vmc_order_product] where payTime between ? and ?", 
-				new String[] { starttime,endtime });// 获取收入信息表中的最大编号
+				" FROM [vmc_order_product] where orderID = ?", 
+				new String[] { orderID });// 获取收入信息表中的最大编号
 		while (cursor.moveToNext()) 
         {
 			// 将遍历到的收入信息添加到集合中
-            tb_inaccount.add(new Tb_vmc_order_product
+			tb_inaccount =new Tb_vmc_order_product
         		(
         				cursor.getString(cursor.getColumnIndex("orderID")), cursor.getString(cursor.getColumnIndex("productID")),
         				cursor.getInt(cursor.getColumnIndex("yujiHuo")),cursor.getInt(cursor.getColumnIndex("realHuo")),
         				cursor.getString(cursor.getColumnIndex("cabID")),cursor.getString(cursor.getColumnIndex("columnID")),
         				cursor.getInt(cursor.getColumnIndex("huoStatus"))
-        		)
-           );
+        		);
         }
 				
 		if (!cursor.isClosed()) 

@@ -157,8 +157,8 @@ public class MaintainActivity extends Activity
                     startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
                     break;    
                 case 3:
-//                    intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
-//                    startActivity(intent);// 打开GoodsManager
+                	intent = new Intent(MaintainActivity.this, Order.class);// 使用Accountflag窗口初始化Intent
+                    startActivity(intent);// 打开Accountflag
                     break;                
                 case 4:
                     //intent = new Intent(MainActivity.this, Showinfo.class);// 使用Showinfo窗口初始化Intent

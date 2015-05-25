@@ -71,6 +71,9 @@ public class Login extends Activity
             	com = txtlogin.getText().toString();
     	        bentcom = txtbent.getText().toString();    	        
             	ToolClass.WriteConfigFile(com, bentcom);
+            	ToolClass.addOptLog(Login.this,1,"修改串口:");
+	            // 弹出信息提示
+	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
             	finish();// 退出当前程序           
             }
         });        

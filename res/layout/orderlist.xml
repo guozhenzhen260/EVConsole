@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+   
+    <TextView 
+        android:id="@+id/txtordereID" 
+        android:layout_width="150dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#CD3700" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+   
+    <TextView 
+        android:id="@+id/txtpayType" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="17sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+   
+    <TextView 
+        android:id="@+id/txtpayStatus" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="17sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+   
+    <TextView 
+        android:id="@+id/txtRealStatus" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+	<TextView 
+        android:id="@+id/txtproductName" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" />
+    <TextView 
+        android:id="@+id/txtsalesPrice" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+    <TextView 
+        android:id="@+id/txtcabID" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+    <TextView 
+        android:id="@+id/txtcolumnID" 
+        android:layout_width="60dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" /> 
+    <TextView 
+        android:id="@+id/txtpayTime" 
+        android:layout_width="150dip" 
+        android:layout_height="wrap_content" 
+        android:textColor="#000000" 
+        android:textSize="20sp" /> 
+   
+    <View 
+        android:layout_width="0.5px" 
+        android:layout_height="fill_parent" 
+        android:background="#B8B8B8" 
+        android:visibility="visible" />              
+</LinearLayout>

@@ -45,7 +45,7 @@ public class BusHuo extends Activity
     private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private String data[][]=null;
     private ListView lvbushuo = null;
-    //定义显示的内容包装，因为他有两列，因此就两个
+    //定义显示的内容包装
     private List<Map<String,String>> listMap = new ArrayList<Map<String,String>>();
     private SimpleAdapter simpleada = null;//进行数据的转换操作
     private ImageView ivbushuoquhuo=null;
