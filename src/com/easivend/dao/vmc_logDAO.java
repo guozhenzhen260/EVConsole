@@ -18,6 +18,7 @@ package com.easivend.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_log;
 
 import android.content.Context;
@@ -71,10 +72,14 @@ public class vmc_logDAO {
 		List<Tb_vmc_log> tb_inaccount = new ArrayList<Tb_vmc_log>();// 创建集合对象
              
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime);     
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select logID,logType,logDesc,logTime " +
 				" from vmc_log where logTime between ? and ?", 
 				new String[] { starttime,endtime });// 获取收入信息表中的最大编号
+//		Cursor cursor = db.rawQuery("select logID,logType,logDesc,logTime " +
+//				" from vmc_log ", 
+//				null);// 获取收入信息表中的最大编号
 		while (cursor.moveToNext()) 
         {
 			// 将遍历到的收入信息添加到集合中

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal" > 
+   
+        <TextView 
+            android:layout_width="160dip" 
+            android:layout_height="30dp" 
+            android:text="序号" 
+            android:textSize="20sp" /> 
+   
+        <TextView 
+            android:id="@+id/job" 
+            android:layout_width="100dip" 
+            android:layout_height="30dp" 
+            android:text="操作类型" 
+            android:textSize="20sp" /> 
+   
+        <TextView 
+            android:id="@+id/addr" 
+            android:layout_width="260dip" 
+            android:layout_height="30dp" 
+            android:text="操作描述" 
+            android:textSize="20sp" /> 
+   
+        <TextView 
+            android:id="@+id/student" 
+            android:layout_width="160dip" 
+            android:layout_height="30dp" 
+            android:text="操作时间" 
+            android:textSize="20sp" />   
+    </LinearLayout>
+	<ListView 
+        android:id="@+id/lvlog" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content" > 
+    </ListView>
+    <RelativeLayout 
+         android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"						       
+	     > 
+	     <TextView 		 
+           	    android:id="@+id/txtloggridstart" 
+           	    android:layout_width="wrap_content"						
+				android:layout_height="30dp" 
+				android:text="开始日期"/>
+	     <EditText
+	            android:id="@+id/edtloggridstart"
+	            android:minWidth="150px"
+	            android:layout_toRightOf="@+id/txtloggridstart"	
+	            android:layout_width="wrap_content" 
+		        android:layout_height="wrap_content"
+		        android:textSize="40sp"
+	            android:textStyle="bold"
+	            android:numeric="integer"		        
+		        android:text="" />  
+	     <TextView 		 
+           	    android:id="@+id/txtloggridend" 
+           	    android:layout_toRightOf="@+id/edtloggridstart"	
+           	    android:layout_width="wrap_content"						
+				android:layout_height="30dp" 
+				android:text="结束日期"/>
+	     <EditText
+	            android:id="@+id/edtloggridend"
+	            android:minWidth="150px"
+	            android:layout_toRightOf="@+id/txtloggridend"	
+	            android:layout_width="wrap_content" 
+		        android:layout_height="wrap_content"
+		        android:textSize="40sp"
+	            android:textStyle="bold"
+	            android:numeric="integer"		        
+		        android:text="" /> 
+	     <Button
+	             android:id="@+id/btnloggridquery"	
+	             android:layout_below="@+id/edtloggridstart"			             
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"             
+	             android:text="查询记录" />
+	     <Button
+	             android:id="@+id/btnloggriddel"	
+	             android:layout_below="@+id/edtloggridstart"	
+	             android:layout_toRightOf="@+id/btnloggridquery"		             
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"             
+	             android:text="删除记录" />		         
+         <Button
+	             android:id="@+id/btnloggridexit"
+	             android:layout_below="@+id/edtloggridstart"	
+	             android:layout_toRightOf="@+id/btnloggriddel"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:text="退出" />
+	</RelativeLayout>     
+</LinearLayout>

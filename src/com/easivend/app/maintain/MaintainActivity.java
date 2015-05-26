@@ -161,9 +161,8 @@ public class MaintainActivity extends Activity
                     startActivity(intent);// 打开Accountflag
                     break;                
                 case 4:
-                    //intent = new Intent(MainActivity.this, Showinfo.class);// 使用Showinfo窗口初始化Intent
-                    //startActivity(intent);// 打开Showinfo
-                	barmaintain.setVisibility(View.GONE);
+                	intent = new Intent(MaintainActivity.this, LogOpt.class);// 使用Accountflag窗口初始化Intent
+                    startActivity(intent);// 打开Accountflag
                     break;
                 case 5:
                 	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent

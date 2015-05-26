@@ -91,9 +91,9 @@ public class Vmc_OrderAdapter
 	    {
 	    	//总支付订单
 	    	ordereID[m]= tb_inaccount.getOrdereID();
-	    	payType[m] = typestr(0,tb_inaccount.getPayType());
-			payStatus[m] = typestr(1,tb_inaccount.getPayStatus());
-			RealStatus[m] = typestr(2,tb_inaccount.getRealStatus());
+	    	payType[m] = ToolClass.typestr(0,tb_inaccount.getPayType());
+			payStatus[m] = ToolClass.typestr(1,tb_inaccount.getPayStatus());
+			RealStatus[m] = ToolClass.typestr(2,tb_inaccount.getRealStatus());
 			smallNote[m] = String.valueOf(tb_inaccount.getSmallAmount());// 纸币金额
 			smallConi[m] = String.valueOf(tb_inaccount.getSmallConi());// 硬币金额
 			smallAmount[m] = String.valueOf(tb_inaccount.getSmallAmount());// 现金投入金额
@@ -120,68 +120,6 @@ public class Vmc_OrderAdapter
 				
 	}
 	    
-	/*********************************************************************************************************
-	** Function name:     	typestr
-	** Descriptions:	       将各个数字状态转成字符串显示
-	** input parameters:    type=0支付方式,1订单状态,2退款状态
-	** payType;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
-	** payStatus;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
-	** RealStatus;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
-	** output parameters:   无
-	** Returned value:      无
-	*********************************************************************************************************/
-	private String typestr(int type,int value)
-	{
-		switch(type)
-		{
-			case 0:// 支付方式
-				// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
-				switch(value)
-				{
-					case 0:
-						return "现金";						
-					case 1:
-						return "银联";	
-					case 2:
-						return "支付宝声波";
-					case 3:
-						return "支付宝二维码";
-					case 4:
-						return "微支付";		
-				}
-				break;
-			case 1:// 订单状态
-				// 订单状态0出货成功，1出货失败，2支付失败，3未支付
-				switch(value)
-				{
-					case 0:
-						return "出货成功";						
-					case 1:
-						return "出货失败";	
-					case 2:
-						return "支付失败";
-					case 3:
-						return "未支付";					
-				}
-				break;
-			case 2:// 退款状态
-				// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
-				switch(value)
-				{
-					case 0:
-						return "";						
-					case 1:
-						return "退款完成";	
-					case 2:
-						return "部分退款";
-					case 3:
-						return "退款失败";					
-				}
-				break;
-		}
-		return "";
-	}
-
 	public int getCount() {
 		return count;
 	}

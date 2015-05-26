@@ -318,9 +318,21 @@ public class ToolClass
     //保存操作日志
     public static void addOptLog(Context context, int logType, String logDesc)
 	{
-    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+    	String id="";
+ 	    vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 得到设备ID号
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		id=tb_inaccount.getDevhCode().toString();
+    	}
+    	Log.i("EV_JNI","Send0.0="+id);
+    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+        String datetime = tempDate.format(new java.util.Date()).toString(); 					
+        String logID="log"+id+datetime;
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
     	String date=df.format(new Date());
-    	String logID="log"+date;
+    	       
     	vmc_logDAO logDAO = new vmc_logDAO(context);// 创建InaccountDAO对象		
     	Tb_vmc_log tb_vmc_log=new Tb_vmc_log(logID, logType, logDesc,
     			date);
@@ -460,4 +472,79 @@ public class ToolClass
         out_trade_no=id+datetime;
         return out_trade_no;
  	}
+ 	
+ 	/*********************************************************************************************************
+	** Function name:     	typestr
+	** Descriptions:	       将各个数字状态转成字符串显示
+	** input parameters:    type=0支付方式,1订单状态,2退款状态
+	** payType;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+	** payStatus;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+	** RealStatus;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+	** logType    操作类型0添加,1修改,2删除
+	** output parameters:   无
+	** Returned value:      无
+	*********************************************************************************************************/
+	public static String typestr(int type,int value)
+	{
+		switch(type)
+		{
+			case 0:// 支付方式
+				// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+				switch(value)
+				{
+					case 0:
+						return "现金";						
+					case 1:
+						return "银联";	
+					case 2:
+						return "支付宝声波";
+					case 3:
+						return "支付宝二维码";
+					case 4:
+						return "微支付";		
+				}
+				break;
+			case 1:// 订单状态
+				// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+				switch(value)
+				{
+					case 0:
+						return "出货成功";						
+					case 1:
+						return "出货失败";	
+					case 2:
+						return "支付失败";
+					case 3:
+						return "未支付";					
+				}
+				break;
+			case 2:// 退款状态
+				// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+				switch(value)
+				{
+					case 0:
+						return "";						
+					case 1:
+						return "退款完成";	
+					case 2:
+						return "部分退款";
+					case 3:
+						return "退款失败";					
+				}
+				break;
+			case 3:// 操作类型
+				// 操作类型0添加,1修改,2删除
+				switch(value)
+				{
+					case 0:
+						return "添加";						
+					case 1:
+						return "修改";	
+					case 2:
+						return "删除";									
+				}
+				break;	
+		}
+		return "";
+	}
 }
