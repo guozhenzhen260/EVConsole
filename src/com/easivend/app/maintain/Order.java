@@ -2,6 +2,7 @@ package com.easivend.app.maintain;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -422,6 +423,12 @@ public class Order extends TabActivity
 	private void chartcount()
 	{	
 		int j=0;
+		//情空数据
+		Arrays.fill(Amountvalue, 0); 
+		Arrays.fill(Countvalue, 0); 
+		Amountmax=0;
+		Countmax=0;
+		
 		for(int i=0,mon=0;i<24;i++)	
 		{
 			//上半月
