@@ -79,10 +79,21 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.easivend.chart.Stack"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.easivend.chart.Line"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name="com.easivend.app.maintain.LogOpt"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+        
        
         <activity
             android:name="com.easivend.app.business.Business"

@@ -4,14 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.easivend.app.business.Busgoods;
+import com.easivend.app.business.BusgoodsSelect;
+import com.easivend.chart.Line;
+import com.easivend.chart.Stack;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_OrderAdapter;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_orderDAO;
+import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.example.evconsole.R;
@@ -21,8 +27,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,10 +41,12 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
 
 public class Order extends TabActivity
@@ -48,7 +58,8 @@ public class Order extends TabActivity
 			txtdebtAmountValue=null,txtrealCardValue=null,txtpayTimeValue=null,txtproductNameValue=null,txtsalesPriceValue=null,
 			txtcabIDValue=null,txtcolumnIDValue=null;
 	private EditText edtordergridstart=null,edtordergridend=null;
-	private Button btnordergridquery=null,btnordergriddel=null,btnordergridexit=null;	
+	private Button btnordergridquery=null,btnordergriddel=null,btnordergridexit=null,btnordergridStack=null,btnordergridLine=null;	
+	private Spinner spinordergridtongji=null;
 	private ListView lvorder=null;
 	private SimpleDateFormat df;
 	private String date=null;
@@ -82,10 +93,36 @@ public class Order extends TabActivity
 	private String[] productName;// 商品全名
 	private String[] salesPrice;// 优惠价,如”20.00”
 	
+	//数字类型订单信息
+    //总支付订单
+	private double[] smallNotevalue;// 纸币金额
+	private double[] smallConivalue;// 硬币金额
+	private double[] smallAmountvalue;// 现金投入金额
+	private double[] smallCardvalue;// 非现金支付金额
+	private double[] shouldPayvalue;// 商品总金额
+	private double[] shouldNovalue;// 商品总数量
+	private double[] realNotevalue;// 纸币退币金额
+	private double[] realCoinvalue;// 硬币退币金额
+	private double[] realAmountvalue;// 现金退币金额
+	private double[] debtAmountvalue;// 欠款金额
+	private double[] realCardvalue;// 非现金退币金额
+  	//商品信息
+	private double[] salesPricevalue;// 优惠价,如”20.00”
+	private int ourdercount=0;//记录的数量
+	
 	private SimpleAdapter simpleada = null;//进行数据的转换操作
 	//定义显示的内容包装
     private List<Map<String,String>> listMap = new ArrayList<Map<String,String>>();
     
+    //生成图表
+    private String title="";//标题
+    //金额统计
+	private double[] Amountvalue=new double[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	//数量统计
+	private double[] Countvalue=new double[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	private double Amountmax=0,Countmax=0;//最大值
+	private int tongjitype=0;//0统计金额,1统计数量
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -196,6 +233,67 @@ public class Order extends TabActivity
 		    	finish();
 		    }
 		});
+    	spinordergridtongji= (Spinner) findViewById(R.id.spinordergridtongji); 
+    	this.spinordergridtongji.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			//当选项改变时触发
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				tongjitype=arg2;				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+    	//生成柱状图
+    	btnordergridStack = (Button) findViewById(R.id.btnordergridStack);
+    	btnordergridStack.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = null;// 创建Intent对象                
+            	intent = new Intent(Order.this, Stack.class);// 使用Accountflag窗口初始化Intent
+            	intent.putExtra("title", edtordergridstart.getText().toString()+"到"+edtordergridend.getText().toString());
+            	//0统计金额,1统计数量
+            	if(tongjitype==0)
+            	{
+	            	intent.putExtra("maxvalue", Amountmax);
+	            	intent.putExtra("value", Amountvalue);
+            	}
+            	else if(tongjitype==1)
+            	{
+	            	intent.putExtra("maxvalue", Countmax);
+	            	intent.putExtra("value", Countvalue);
+            	}
+            	startActivity(intent);// 打开Accountflag
+		    }
+		});
+    	//生成折线图
+    	btnordergridLine = (Button) findViewById(R.id.btnordergridLine);
+    	btnordergridLine.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = null;// 创建Intent对象                
+            	intent = new Intent(Order.this, Line.class);// 使用Accountflag窗口初始化Intent
+            	intent.putExtra("title", edtordergridstart.getText().toString()+"到"+edtordergridend.getText().toString());
+            	//0统计金额,1统计数量
+            	if(tongjitype==0)
+            	{
+	            	intent.putExtra("maxvalue", Amountmax);
+	            	intent.putExtra("value", Amountvalue);
+            	}
+            	else if(tongjitype==1)
+            	{
+	            	intent.putExtra("maxvalue", Countmax);
+	            	intent.putExtra("value", Countvalue);
+            	}
+            	startActivity(intent);// 打开Accountflag
+		    }
+		});
 	}
 	//===============
 	//报表查询页面
@@ -271,7 +369,23 @@ public class Order extends TabActivity
 		    //商品信息
 		    productName = vmc_OrderAdapter.getProductName();// 商品全名
 		    salesPrice = vmc_OrderAdapter.getSalesPrice();// 优惠价,如”20.00”
-			
+		    
+		    //数字类型订单信息
+		    smallNotevalue= vmc_OrderAdapter.getSmallNotevalue();// 纸币金额
+		    smallConivalue= vmc_OrderAdapter.getSmallConivalue();// 硬币金额
+		    smallAmountvalue= vmc_OrderAdapter.getSmallAmountvalue();// 现金投入金额
+		    smallCardvalue= vmc_OrderAdapter.getSmallCardvalue();// 非现金支付金额
+		    shouldPayvalue= vmc_OrderAdapter.getShouldPayvalue();// 商品总金额
+		    shouldNovalue= vmc_OrderAdapter.getShouldNovalue();// 商品总数量
+		    realNotevalue= vmc_OrderAdapter.getRealNotevalue();// 纸币退币金额
+		    realCoinvalue= vmc_OrderAdapter.getRealCoinvalue();// 硬币退币金额
+		    realAmountvalue= vmc_OrderAdapter.getRealAmountvalue();// 现金退币金额
+		    debtAmountvalue= vmc_OrderAdapter.getDebtAmountvalue();// 欠款金额
+		    realCardvalue= vmc_OrderAdapter.getRealCardvalue();// 非现金退币金额
+		    //商品信息
+		    salesPricevalue= vmc_OrderAdapter.getSalesPricevalue();// 优惠价,如”20.00”
+		    ourdercount=vmc_OrderAdapter.getCount();
+		    
 			int x=0;
 			this.listMap.clear();
 			for(x=0;x<vmc_OrderAdapter.getCount();x++)
@@ -294,11 +408,138 @@ public class Order extends TabActivity
 			    		new int[]{R.id.txtordereID,R.id.txtpayType,R.id.txtpayStatus,R.id.txtRealStatus,R.id.txtproductName,R.id.txtsalesPrice,R.id.txtcabID,R.id.txtcolumnID,R.id.txtpayTime});
 			this.lvorder.setAdapter(this.simpleada);
 			
+			//作图表统计信息
+			chartcount();
+			
 		}
 		else
 		{
 			Toast.makeText(Order.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
 		}
 	}
-
+	
+	//作图表统计信息
+	private void chartcount()
+	{	
+		int j=0;
+		for(int i=0,mon=0;i<24;i++)	
+		{
+			//上半月
+			if(i%2==0)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月上：="+getLastDayOfMonth(eYear,(mon+1),0)+"到"+getLastDayOfMonth(eYear,(mon+1),1));
+				for(j=0;j<ourdercount;j++)
+				{
+					if(isdatein(getLastDayOfMonth(eYear,(mon+1),0),getLastDayOfMonth(eYear,(mon+1),1),payTime[j])==true)
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在");
+						Amountvalue[i]+=salesPricevalue[j];
+						Countvalue[i]+=1;
+					}
+					else
+					{
+						//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"不是在");
+					}	
+				}
+			}
+			//下半月
+			else
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月下：="+getLastDayOfMonth(eYear,(mon+1),1)+"到"+getLastDayOfMonth(eYear,(mon+1),2));
+				for(j=0;j<ourdercount;j++)
+				{
+					if(isdatein(getLastDayOfMonth(eYear,(mon+1),1),getLastDayOfMonth(eYear,(mon+1),2),payTime[j])==true)
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在");
+						Amountvalue[i]+=salesPricevalue[j];
+						Countvalue[i]+=1;
+						
+					}
+					else
+					{
+						//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"不是在");
+					}	
+				}
+				mon++;
+			}
+		}
+		//取得最高的值
+		for(int i=0;i<24;i++)	
+		{
+			Amountmax=(Amountvalue[i]>Amountmax)?Amountvalue[i]:Amountmax;
+			Countmax=(Countvalue[i]>Countmax)?Countvalue[i]:Countmax;			
+		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<amount="+Amountmax+",count="+Countmax);
+	}
+	
+	/**
+	 * 获取某月的最后一天或者中旬
+	 * @Title:getLastDayOfMonth
+	 * @Description:
+	 * @param:@param year
+	 * @param:@param month
+	 * @param:@param type=0月初,1月中旬,2月下旬
+	 * @param:@return
+	 * @return:String
+	 * @throws
+	 */
+	private String getLastDayOfMonth(int year,int month,int type)
+	{
+		Calendar cal = Calendar.getInstance();
+		//设置年份
+		cal.set(Calendar.YEAR,year);
+		//设置月份
+		cal.set(Calendar.MONTH, month-1);
+		if(type==0)
+		{
+			//设置日历中月份的中旬
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+		}
+		else if(type==1)
+		{
+			//设置日历中月份的中旬
+			cal.set(Calendar.DAY_OF_MONTH, 15);
+		}
+		else if(type==2)
+		{
+			//获取某月最大天数
+			int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			//设置日历中月份的最大天数
+			cal.set(Calendar.DAY_OF_MONTH, lastDay);
+		}
+		//格式化日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String lastDayOfMonth = sdf.format(cal.getTime());
+		
+		return lastDayOfMonth;
+	}
+	//是否在时间区间中,s是需要比较的时间,begin,end是时间区间
+	//是返回true
+	private boolean isdatein(String begin,String end,String s)
+	{
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s+"在"+begin+"="+dateCompare(s,begin));
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s+"在"+end+"="+dateCompare(end,s));
+		if((dateCompare(s,begin)>=0)&&(dateCompare(end,s)>=0))
+		{
+			return true;
+		}
+		return false;
+	}
+	//时间比较,返回值result==0s1相等s2,result<0s1小于s2,result:>0s1大于s2,
+	private int dateCompare(String s1,String s2)
+	{
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s1);
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s2);
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		java.util.Calendar c1=java.util.Calendar.getInstance();
+		java.util.Calendar c2=java.util.Calendar.getInstance();
+		try
+		{
+			c1.setTime(df.parse(s1));
+			c2.setTime(df.parse(s2));
+		}catch(java.text.ParseException e){
+			System.err.println("格式不正确");
+		}
+		return c1.compareTo(c2);
+	}
 }

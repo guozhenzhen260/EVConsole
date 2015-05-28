@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tongji_label">  
+        <item>销售金额</item>            
+        <item>销售数量</item>
+    </string-array>
+</resources>

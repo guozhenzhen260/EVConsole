@@ -40,6 +40,22 @@ public class Vmc_OrderAdapter
     String[] productName;// 商品全名
     String[] salesPrice;// 优惠价,如”20.00”
     
+    //数字类型订单信息
+    //总支付订单
+  	double[] smallNotevalue;// 纸币金额
+  	double[] smallConivalue;// 硬币金额
+  	double[] smallAmountvalue;// 现金投入金额
+  	double[] smallCardvalue;// 非现金支付金额
+  	double[] shouldPayvalue;// 商品总金额
+  	double[] shouldNovalue;// 商品总数量
+  	double[] realNotevalue;// 纸币退币金额
+  	double[] realCoinvalue;// 硬币退币金额
+  	double[] realAmountvalue;// 现金退币金额
+  	double[] debtAmountvalue;// 欠款金额
+  	double[] realCardvalue;// 非现金退币金额
+  	//商品信息
+  	double[] salesPricevalue;// 优惠价,如”20.00”
+    
 	//给报表提供信息
 	public void grid(Context context,int mYear,int mMon,int mDay,int eYear,int eMon,int eDay)
 	{
@@ -84,6 +100,22 @@ public class Vmc_OrderAdapter
 	    productName = new String[listinfos.size()];// 商品全名
 	    salesPrice = new String[listinfos.size()];// 优惠价,如”20.00”
 	    
+	    //数字类型订单信息
+	    smallNotevalue= new double[listinfos.size()];// 纸币金额
+	    smallConivalue= new double[listinfos.size()];// 硬币金额
+	    smallAmountvalue= new double[listinfos.size()];// 现金投入金额
+	    smallCardvalue= new double[listinfos.size()];// 非现金支付金额
+	    shouldPayvalue= new double[listinfos.size()];// 商品总金额
+	    shouldNovalue= new double[listinfos.size()];// 商品总数量
+	    realNotevalue= new double[listinfos.size()];// 纸币退币金额
+	    realCoinvalue= new double[listinfos.size()];// 硬币退币金额
+	    realAmountvalue= new double[listinfos.size()];// 现金退币金额
+	    debtAmountvalue= new double[listinfos.size()];// 欠款金额
+	    realCardvalue= new double[listinfos.size()];// 非现金退币金额
+	    //商品信息
+	    salesPricevalue= new double[listinfos.size()];// 优惠价,如”20.00”
+	    		
+	    		
 		count=listinfos.size();
 		int m=0;
 		// 遍历List泛型集合
@@ -94,7 +126,7 @@ public class Vmc_OrderAdapter
 	    	payType[m] = ToolClass.typestr(0,tb_inaccount.getPayType());
 			payStatus[m] = ToolClass.typestr(1,tb_inaccount.getPayStatus());
 			RealStatus[m] = ToolClass.typestr(2,tb_inaccount.getRealStatus());
-			smallNote[m] = String.valueOf(tb_inaccount.getSmallAmount());// 纸币金额
+			smallNote[m] = String.valueOf(tb_inaccount.getSmallNote());// 纸币金额
 			smallConi[m] = String.valueOf(tb_inaccount.getSmallConi());// 硬币金额
 			smallAmount[m] = String.valueOf(tb_inaccount.getSmallAmount());// 现金投入金额
 			smallCard[m] = String.valueOf(tb_inaccount.getSmallCard());// 非现金支付金额
@@ -115,6 +147,22 @@ public class Vmc_OrderAdapter
 			Tb_vmc_product tb_product = productDAO.find(productID[m]);
 			productName[m]=tb_product.getProductName();
 			salesPrice[m]=String.valueOf(tb_product.getSalesPrice());
+			
+			//数字类型订单信息
+		    smallNotevalue[m]= tb_inaccount.getSmallNote();// 纸币金额
+		    smallConivalue[m]= tb_inaccount.getSmallConi();// 硬币金额
+		    smallAmountvalue[m]= tb_inaccount.getSmallAmount();// 现金投入金额
+		    smallCardvalue[m]= tb_inaccount.getSmallCard();// 非现金支付金额
+		    shouldPayvalue[m]= tb_inaccount.getShouldPay();// 商品总金额
+		    shouldNovalue[m]= tb_inaccount.getShouldNo();// 商品总数量
+		    realNotevalue[m]= tb_inaccount.getRealNote();// 纸币退币金额
+		    realCoinvalue[m]= tb_inaccount.getRealCoin();// 硬币退币金额
+		    realAmountvalue[m]= tb_inaccount.getRealAmount();// 现金退币金额
+		    debtAmountvalue[m]= tb_inaccount.getDebtAmount();// 欠款金额
+		    realCardvalue[m]= tb_inaccount.getRealCard();// 非现金退币金额
+		    //商品信息
+		    salesPricevalue[m]= tb_product.getSalesPrice();// 优惠价,如”20.00”
+		    
 	    	m++;// 标识加1
 	    }
 				
@@ -270,6 +318,102 @@ public class Vmc_OrderAdapter
 	}
 	public void setSalesPrice(String[] salesPrice) {
 		this.salesPrice = salesPrice;
+	}
+
+	public double[] getSmallNotevalue() {
+		return smallNotevalue;
+	}
+
+	public void setSmallNotevalue(double[] smallNotevalue) {
+		this.smallNotevalue = smallNotevalue;
+	}
+
+	public double[] getSmallConivalue() {
+		return smallConivalue;
+	}
+
+	public void setSmallConivalue(double[] smallConivalue) {
+		this.smallConivalue = smallConivalue;
+	}
+
+	public double[] getSmallAmountvalue() {
+		return smallAmountvalue;
+	}
+
+	public void setSmallAmountvalue(double[] smallAmountvalue) {
+		this.smallAmountvalue = smallAmountvalue;
+	}
+
+	public double[] getSmallCardvalue() {
+		return smallCardvalue;
+	}
+
+	public void setSmallCardvalue(double[] smallCardvalue) {
+		this.smallCardvalue = smallCardvalue;
+	}
+
+	public double[] getShouldPayvalue() {
+		return shouldPayvalue;
+	}
+
+	public void setShouldPayvalue(double[] shouldPayvalue) {
+		this.shouldPayvalue = shouldPayvalue;
+	}
+
+	public double[] getShouldNovalue() {
+		return shouldNovalue;
+	}
+
+	public void setShouldNovalue(double[] shouldNovalue) {
+		this.shouldNovalue = shouldNovalue;
+	}
+
+	public double[] getRealNotevalue() {
+		return realNotevalue;
+	}
+
+	public void setRealNotevalue(double[] realNotevalue) {
+		this.realNotevalue = realNotevalue;
+	}
+
+	public double[] getRealCoinvalue() {
+		return realCoinvalue;
+	}
+
+	public void setRealCoinvalue(double[] realCoinvalue) {
+		this.realCoinvalue = realCoinvalue;
+	}
+
+	public double[] getRealAmountvalue() {
+		return realAmountvalue;
+	}
+
+	public void setRealAmountvalue(double[] realAmountvalue) {
+		this.realAmountvalue = realAmountvalue;
+	}
+
+	public double[] getDebtAmountvalue() {
+		return debtAmountvalue;
+	}
+
+	public void setDebtAmountvalue(double[] debtAmountvalue) {
+		this.debtAmountvalue = debtAmountvalue;
+	}
+
+	public double[] getRealCardvalue() {
+		return realCardvalue;
+	}
+
+	public void setRealCardvalue(double[] realCardvalue) {
+		this.realCardvalue = realCardvalue;
+	}
+
+	public double[] getSalesPricevalue() {
+		return salesPricevalue;
+	}
+
+	public void setSalesPricevalue(double[] salesPricevalue) {
+		this.salesPricevalue = salesPricevalue;
 	}
 	
 }

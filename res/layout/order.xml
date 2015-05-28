@@ -360,11 +360,39 @@
 			             android:text="删除记录" />		         
 		         <Button
 			             android:id="@+id/btnordergridexit"
-			             android:layout_below="@+id/edtordergridstart"	
-			             android:layout_toRightOf="@+id/btnordergriddel"
+			             android:layout_below="@+id/edtordergridstart"
+			             android:layout_toRightOf="@+id/btnordergriddel"	
 			             android:layout_width="wrap_content"
 			             android:layout_height="wrap_content"
 			             android:text="退出" />
+		         <TextView 		    
+		            	android:id="@+id/txtordergridtongji"
+		            	android:layout_below="@+id/btnordergridquery"	
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="统计类型:"/>
+			     <Spinner
+				        android:id="@+id/spinordergridtongji"
+				        android:layout_below="@+id/btnordergridquery"
+				        android:layout_toRightOf="@+id/txtordergridtongji"	
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:entries="@array/tongji_label"
+				 />
+		         <Button
+			             android:id="@+id/btnordergridStack"
+			             android:layout_below="@+id/btnordergridquery"	
+			             android:layout_toRightOf="@+id/spinordergridtongji"	
+			             android:layout_width="wrap_content"
+			             android:layout_height="wrap_content"
+			             android:text="生成柱状图" />
+		         <Button
+			             android:id="@+id/btnordergridLine"
+			             android:layout_below="@+id/btnordergridquery"	
+			             android:layout_toRightOf="@+id/btnordergridStack"
+			             android:layout_width="wrap_content"
+			             android:layout_height="wrap_content"
+			             android:text="生成折线图" />
 			</RelativeLayout>    
 		</LinearLayout>    
 	</RelativeLayout>
