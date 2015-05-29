@@ -69,7 +69,25 @@ public class ToolClass
 	public final static int INFO=2;
 	public final static int WARN=3;
 	public final static int ERROR=4;
+	private static int bentcom_id=-1,com_id=-1;
 	
+	
+	public static int getBentcom_id() {
+		return bentcom_id;
+	}
+
+	public static void setBentcom_id(int bentcom_id) {
+		ToolClass.bentcom_id = bentcom_id;
+	}
+
+	public static int getCom_id() {
+		return com_id;
+	}
+
+	public static void setCom_id(int com_id) {
+		ToolClass.com_id = com_id;
+	}
+
 	//解析Map对象<String,Object>的数据集合
 	public static Map<String, Object> getMapListgson(String jsonStr)
 	{

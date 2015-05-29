@@ -85,104 +85,104 @@ public class BusHuo extends Activity
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
 			
 			@Override
-			public void jniCallback(Map<String, Integer> allSet) {
+			public void jniCallback(Map<String, Object> allSet) {
 				// TODO Auto-generated method stub
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<bushuo货道相关");
-				Map<String, Integer> Set= allSet;
-				int jnirst=Set.get("EV_TYPE");
+				Map<String, Object> Set= allSet;
+				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-						device=allSet.get("device");//出货柜号
-						status=allSet.get("status");//出货结果
-						hdid=allSet.get("hdid");//货道id
-						hdtype=allSet.get("type");//出货类型
-						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
-						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
-						huodao=allSet.get("huodao");//剩余存货数量
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
-						if(status==0)
-						{
-							data[tempx][0]=String.valueOf(R.drawable.yes);
-							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-							//扣除存货余量
-							chuhuoupdate(cabinetvar,huodaoNo);
-							chuhuoLog(0);//记录日志
-						}
-						else
-						{
-							data[tempx][0]=String.valueOf(R.drawable.no);
-							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-							//扣除存货余量
-							chuhuoupdate(cabinetvar,huodaoNo);
-							chuhuoLog(1);//记录日志
-						}
-						updateListview();
-						tempx++;
-						huorst=0;
-						while((huorst!=1)&&(tempx<count))
-				 	    {
-				 	    	huorst=chuhuoopt(tempx);
-				 	    	if(huorst==2)
-							{
-								data[tempx][0]=String.valueOf(R.drawable.yes);
-								data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-								updateListview();
-								tempx++;
-								//扣除存货余量
-								chuhuoupdate(cabinetvar,huodaoNo);
-								chuhuoLog(0);//记录日志
-							}
-							else if(huorst==0)
-							{
-								data[tempx][0]=String.valueOf(R.drawable.no);
-								data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-								updateListview();
-								tempx++;
-								//扣除存货余量
-								chuhuoupdate(cabinetvar,huodaoNo);
-								chuhuoLog(1);//记录日志
-							}
-				 	    }
-						if(tempx>=count)
-				 	    {
-							ivbushuoquhuo.setVisibility(View.VISIBLE);
-				 	    	new Handler().postDelayed(new Runnable() 
-							{
-		                        @Override
-		                        public void run() 
-		                        {
-		                        	//出货完成,把非现金模块去掉
-		                        	if(status==0)
-		                        	{
-		                        		if(BusZhier.BusZhierAct!=null)
-		                        			BusZhier.BusZhierAct.finish(); 
-		                        		if(BusZhiwei.BusZhiweiAct!=null)
-		                        			BusZhiwei.BusZhiweiAct.finish(); 
-		                        		OrderDetail.addLog(BusHuo.this);
-		                        	}
-		                        	//出货失败，退到非现金模块进行退币操作
-		                        	else
-		                        	{
-		                        		if(BusZhier.BusZhierAct!=null)
-		                        		{
-		                        			//退出时，返回intent
-		                    	            Intent intent=new Intent();
-		                    	            setResult(BusZhier.RESULT_CANCELED,intent);
-		                        		}
-		                        		if(BusZhiwei.BusZhiweiAct!=null)
-		                        		{
-		                        			//退出时，返回intent
-		                    	            Intent intent=new Intent();
-		                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
-		                        		}
-									}		                        	
-		                            finish();
-		                        }
-
-							}, SPLASH_DISPLAY_LENGHT);
-				 	    }
+//						device=allSet.get("device");//出货柜号
+//						status=allSet.get("status");//出货结果
+//						hdid=allSet.get("hdid");//货道id
+//						hdtype=allSet.get("type");//出货类型
+//						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
+//						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
+//						huodao=allSet.get("huodao");//剩余存货数量
+//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
+//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
+//						if(status==0)
+//						{
+//							data[tempx][0]=String.valueOf(R.drawable.yes);
+//							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
+//							//扣除存货余量
+//							chuhuoupdate(cabinetvar,huodaoNo);
+//							chuhuoLog(0);//记录日志
+//						}
+//						else
+//						{
+//							data[tempx][0]=String.valueOf(R.drawable.no);
+//							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
+//							//扣除存货余量
+//							chuhuoupdate(cabinetvar,huodaoNo);
+//							chuhuoLog(1);//记录日志
+//						}
+//						updateListview();
+//						tempx++;
+//						huorst=0;
+//						while((huorst!=1)&&(tempx<count))
+//				 	    {
+//				 	    	huorst=chuhuoopt(tempx);
+//				 	    	if(huorst==2)
+//							{
+//								data[tempx][0]=String.valueOf(R.drawable.yes);
+//								data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
+//								updateListview();
+//								tempx++;
+//								//扣除存货余量
+//								chuhuoupdate(cabinetvar,huodaoNo);
+//								chuhuoLog(0);//记录日志
+//							}
+//							else if(huorst==0)
+//							{
+//								data[tempx][0]=String.valueOf(R.drawable.no);
+//								data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
+//								updateListview();
+//								tempx++;
+//								//扣除存货余量
+//								chuhuoupdate(cabinetvar,huodaoNo);
+//								chuhuoLog(1);//记录日志
+//							}
+//				 	    }
+//						if(tempx>=count)
+//				 	    {
+//							ivbushuoquhuo.setVisibility(View.VISIBLE);
+//				 	    	new Handler().postDelayed(new Runnable() 
+//							{
+//		                        @Override
+//		                        public void run() 
+//		                        {
+//		                        	//出货完成,把非现金模块去掉
+//		                        	if(status==0)
+//		                        	{
+//		                        		if(BusZhier.BusZhierAct!=null)
+//		                        			BusZhier.BusZhierAct.finish(); 
+//		                        		if(BusZhiwei.BusZhiweiAct!=null)
+//		                        			BusZhiwei.BusZhiweiAct.finish(); 
+//		                        		OrderDetail.addLog(BusHuo.this);
+//		                        	}
+//		                        	//出货失败，退到非现金模块进行退币操作
+//		                        	else
+//		                        	{
+//		                        		if(BusZhier.BusZhierAct!=null)
+//		                        		{
+//		                        			//退出时，返回intent
+//		                    	            Intent intent=new Intent();
+//		                    	            setResult(BusZhier.RESULT_CANCELED,intent);
+//		                        		}
+//		                        		if(BusZhiwei.BusZhiweiAct!=null)
+//		                        		{
+//		                        			//退出时，返回intent
+//		                    	            Intent intent=new Intent();
+//		                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
+//		                        		}
+//									}		                        	
+//		                            finish();
+//		                        }
+//
+//							}, SPLASH_DISPLAY_LENGHT);
+//				 	    }
 						break;					
 				}
 			}
@@ -339,7 +339,7 @@ public class BusHuo extends Activity
 		//格子柜
 		if(cabinetTypevar==5)
 		{
-			rst=EVprotocolAPI.bentoOpen(cabinetvar,huodaoNo);
+			//rst=EVprotocolAPI.bentoOpen(cabinetvar,huodaoNo);
 			if(rst==0)//出货发送失败
 			{
 				huorst=0;

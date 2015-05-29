@@ -77,12 +77,12 @@ public class AddInaccount extends TabActivity
 		{
 			
 			@Override
-			public void jniCallback(Map<String, Integer> allSet) {
+			public void jniCallback(Map<String, Object> allSet) {
 				float payin_amount=0,reamin_amount=0,payout_amount=0;
 				// TODO Auto-generated method stub	
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<payinout结果");
-				Map<String, Integer> Set= allSet;
-				int jnirst=Set.get("EV_TYPE");
+				Map<String, Object> Set= allSet;
+				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_PAYIN_RPT://接收子线程投币金额消息						

@@ -17,6 +17,7 @@ package com.easivend.app.maintain;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -58,6 +59,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -66,6 +68,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SlidingDrawer;
+import android.widget.Switch;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Spinner;
@@ -85,7 +88,7 @@ public class HuodaoTest extends TabActivity
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0,cabinetTypesetvar=0;
-	Map<String, Integer> huoSet= new TreeMap<String,Integer>();
+	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
 	GridView gvhuodao=null;
@@ -94,15 +97,16 @@ public class HuodaoTest extends TabActivity
 	private int device=0;//出货柜号		
 	private int status=0;//出货结果
 	private int hdid=0;//货道id
-	private int hdtype=0;//出货类型
-	private float cost=0;//扣钱
-	private float totalvalue=0;//剩余金额
-	private int huodao=0;//剩余存货数量
+	private int cool=0;//是否支持制冷 	 	1:支持 0:不支持
+	private int hot=0;//是否支持加热  		1:支持 0:不支持
+	private int light=0;//是否支持照明  	1:支持 0:不支持
 	private TextView txthuorst=null,txthuotestrst=null;
 	private Button btnhuochu=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
-	private EditText edtcolumn=null,edtprice=null;
+	private EditText edtcolumn=null;
+	private TextView txtlight=null,txtcold=null,txthot=null;
+	private Switch switchlight = null,switcold = null,switchhot = null;
 	private int cabinetvar=0,cabinetTypevar=0;
 	private Handler myhHandler=null;
 	//EVprotocolAPI ev=null;
@@ -128,42 +132,120 @@ public class HuodaoTest extends TabActivity
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
 			
 			@Override
-			public void jniCallback(Map<String, Integer> allSet) {
+			public void jniCallback(Map<String, Object> allSet) {
 				// TODO Auto-generated method stub
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao货道相关");
-				Map<String, Integer> Set= allSet;
-				int jnirst=Set.get("EV_TYPE");
+				Map<String, Object> Set= allSet;
+				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-						device=allSet.get("device");//出货柜号
-						status=allSet.get("status");//出货结果
-						hdid=allSet.get("hdid");//货道id
-						hdtype=allSet.get("type");//出货类型
-						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
-						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
-						huodao=allSet.get("huodao");//剩余存货数量
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
-						
-						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
-						sethuorst(status);
+//						device=allSet.get("device");//出货柜号
+//						status=allSet.get("status");//出货结果
+//						hdid=allSet.get("hdid");//货道id
+//						hdtype=allSet.get("type");//出货类型
+//						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
+//						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
+//						huodao=allSet.get("huodao");//剩余存货数量
+//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
+//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
+//						
+//						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
+//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
+//						sethuorst(status);
 						break;
 					case EVprotocolAPI.EV_COLUMN_RPT://接收子线程消息
+//						huoSet.clear();
+//						//输出内容
+//				        Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
+//				        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+//				        while(iter.hasNext())
+//				        {
+//				            Entry<String, Integer> me=iter.next();
+//				            if(me.getKey().equals("EV_TYPE")!=true)
+//				            	huoSet.put(me.getKey(), me.getValue());
+//				        } 
+//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
+//						showhuodao();						
+						break;
+					case EVprotocolAPI.EV_BENTO_CHECK://接收子线程消息
+						String tempno=null;
+						
+						cool=(Integer)Set.get("cool");
+						hot=(Integer)Set.get("hot");
+						light=(Integer)Set.get("light");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light);
+						if(light>0)
+						{
+							txtlight.setText("支持");
+							switchlight.setEnabled(true);
+							
+						}
+						else
+						{
+							txtlight.setText("不支持");
+							switchlight.setEnabled(false);
+						}
+						if(cool>0)
+						{
+							txtcold.setText("支持");
+							switcold.setEnabled(true);
+						}
+						else
+						{
+							txtcold.setText("不支持");
+							switcold.setEnabled(false);
+						}
+						if(hot>0)
+						{
+							txthot.setText("支持");
+							switchhot.setEnabled(true);
+						}
+						else
+						{
+							txthot.setText("不支持");
+							switchhot.setEnabled(false);
+						}
+						
 						huoSet.clear();
 						//输出内容
-				        Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
-				        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+				        Set<Entry<String, Object>> allmap=Set.entrySet();  //实例化
+				        Iterator<Entry<String, Object>> iter=allmap.iterator();
 				        while(iter.hasNext())
 				        {
-				            Entry<String, Integer> me=iter.next();
-				            if(me.getKey().equals("EV_TYPE")!=true)
-				            	huoSet.put(me.getKey(), me.getValue());
+				            Entry<String, Object> me=iter.next();
+				            if(
+				               (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
+				               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
+				            )   
+				            {
+				            	if(Integer.parseInt(me.getKey())<10)
+				    				tempno="0"+me.getKey();
+				    			else 
+				    				tempno=me.getKey();
+				            	
+				            	huoSet.put(tempno, (Integer)me.getValue());
+				            }
 				        } 
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
 						showhuodao();						
-						break;
+						break;	
+					case EVprotocolAPI.EV_BENTO_OPEN://接收子线程消息
+						device=(Integer)allSet.get("addr");//出货柜号						
+						hdid=(Integer)allSet.get("box");//货道id
+						status=(Integer)allSet.get("result");//出货结果
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]");	
+						
+						txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
+						sethuorst(status);
+						break;	
+					case EVprotocolAPI.EV_BENTO_LIGHT://接收子线程消息
+						device=(Integer)allSet.get("addr");//柜号						
+						int opt=(Integer)allSet.get("opt");//货道id
+						status=(Integer)allSet.get("result");//结果
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货柜操作结果"+"device=["+device+"],opt=["+opt+"],status=["+status+"]");	
+						txthuorst.setText("device=["+device+"],opt=["+opt+"],status=["+status+"]");						
+						break;	
 				}
 			}
 		}); 
@@ -193,19 +275,8 @@ public class HuodaoTest extends TabActivity
 					if(cabinetTypesetvar==5)
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
-						try {
-							huoSet.clear();
-							huoSet=EVprotocolAPI.bentoCheck(cabinetsetvar);
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
-							showhuodao();	
-						} catch (NumberFormatException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						barhuomanager.setVisibility(View.GONE);  
+						EVprotocolAPI.bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);	
+						barhuomanager.setVisibility(View.VISIBLE);  
 					}
 					//普通柜
 					else 
@@ -300,7 +371,74 @@ public class HuodaoTest extends TabActivity
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
 		btnhuoexit = (Button) findViewById(R.id.btnhuoexit);
 		edtcolumn = (EditText) findViewById(R.id.edtcolumn);
-		edtprice = (EditText) findViewById(R.id.edtprice);
+		txtlight = (TextView) findViewById(R.id.txtlight);		
+		txtcold = (TextView) findViewById(R.id.txtcold);
+		txthot = (TextView) findViewById(R.id.txthot);	
+		switchlight = (Switch)findViewById(R.id.switchlight);
+		switchlight.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				if(isChecked)
+				{
+					//格子柜
+					if(cabinetTypevar==5)
+					{
+						EVprotocolAPI.bentoLight(ToolClass.getBentcom_id(),cabinetvar,1);						
+					}
+					//普通柜
+					else 
+					{
+						//rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+				    	//		ToolClass.MoneySend(price));	
+					}
+				}
+				else 
+				{
+					//格子柜
+					if(cabinetTypevar==5)
+					{
+						EVprotocolAPI.bentoLight(ToolClass.getBentcom_id(),cabinetvar,0);						
+					}
+					//普通柜
+					else 
+					{
+						//rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+				    	//		ToolClass.MoneySend(price));	
+					}
+					
+				}
+			}  
+			
+			
+		}); 
+		
+		switcold = (Switch)findViewById(R.id.switcold);
+		switcold.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				
+			}  
+			
+			
+		});
+		switchhot = (Switch)findViewById(R.id.switchhot);
+		switchhot.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				
+			}  
+			
+			
+		});
 		this.spinhuotestCab.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -329,15 +467,11 @@ public class HuodaoTest extends TabActivity
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 		    	+" cabType="+String.valueOf(cabinetTypevar)
-		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))
-		    	+" price="+edtprice.getText().toString()
+		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))		    	
 		    	);
-		    	if (
-		    			(edtcolumn.getText().toString().isEmpty()!=true)
-		    		  &&(edtprice.getText().toString().isEmpty()!=true)	
-		    	)
+		    	if (edtcolumn.getText().toString().isEmpty()!=true)	
 		    	{
-		    		float price=Float.parseFloat(edtprice.getText().toString());
+		    		float price=0;
 		    		int typevar=0;
 		    		if(price>0)
 		    			typevar=0;
@@ -347,7 +481,7 @@ public class HuodaoTest extends TabActivity
 		    		//格子柜
 					if(cabinetTypevar==5)
 					{
-						EVprotocolAPI.bentoOpen(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
+						EVprotocolAPI.bentoOpen(ToolClass.getBentcom_id(),cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
 					}
 					//普通柜
 					else 
@@ -362,8 +496,7 @@ public class HuodaoTest extends TabActivity
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		    	edtcolumn.setText("");// 设置金额文本框为空
-		    	edtprice.setText("");// 设置时间文本框为空		        
+		    	edtcolumn.setText("");// 设置金额文本框为空		    	      
 		    }
 		});
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -477,7 +610,7 @@ public class HuodaoTest extends TabActivity
 	    spinhuosetCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
-	    cabinetType=vmc_cabAdapter.getCabinetType(); 
+	    cabinetType=vmc_cabAdapter.getCabinetType();
 	    //只有有柜号的时候，才请求加载柜内货道信息
 //		if(cabinetID!=null)
 //		{
@@ -577,45 +710,12 @@ public class HuodaoTest extends TabActivity
 	private void sethuorst(int status)
 	{
 		switch(status)
-		{
+		{			
 			case 0:
-				txthuotestrst.setText("出货成功");
-				break;
-			case 2:
 				txthuotestrst.setText("出货失败");
 				break;
-			case 16:
-				txthuotestrst.setText("单价为0");
-				break;
-			case 17:
-				txthuotestrst.setText("货道故障");
-				break;
-			case 18:
-				txthuotestrst.setText("缺货");
-				break;
-			case 19:
-				txthuotestrst.setText("无此货道");
-				break;
-			case 20:
-				txthuotestrst.setText("商品ID为0");
-				break;
-			case 21:
-				txthuotestrst.setText("PC设置暂不可用");
-				break;
-			case 22:
-				txthuotestrst.setText("type>0和cost>0的关系");
-				break;
-			case 23:
-				txthuotestrst.setText("type=0和cost=0的关系");
-				break;
-			case 24:
-				txthuotestrst.setText("系统进入故障状态时");
-				break;	
-			case 25:
-				txthuotestrst.setText("用户投币金额小于扣款金额时");
-				break;	
-			case 26:
-				txthuotestrst.setText("投币压抄不成功,不可以支付");
+			case 1:
+				txthuotestrst.setText("出货成功");
 				break;		
 		}
 	}

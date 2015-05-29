@@ -137,29 +137,7 @@
 			        android:layout_weight="1"
 			        android:numeric="integer"
 			        android:text="11" />
-		    </TableRow>  		    
-		    <View                              
-		        android:layout_height="2px"
-		        android:background="#FF909090"
-		    /> 
-		    <TableRow > 
-		        <TextView 
-		            android:minWidth="160px"
-				    android:id="@+id/txtprice"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="扣款金额:"/>
-		        
-		         <EditText
-		            android:id="@+id/edtprice"
-			        android:minWidth="150px"
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_weight="1.00"
-			        android:numeric="decimal"
-			        android:text="0" />
-		    </TableRow> 
+		    </TableRow>  	
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
@@ -194,6 +172,93 @@
 		            android:layout_height="wrap_content"
 		            android:text=""/>
 		    </TableRow>
+		    <View                              
+		        android:layout_height="2px"
+		        android:background="#FF909090"
+		    /> 
+		    <TableRow > 
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="照明:"/>
+			        <TextView 		    
+			            android:id="@+id/txtlight"
+			            android:textColor="#FF0000" 
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						/>
+			        <Switch   
+				       android:layout_marginTop="20dip"  
+				       android:id="@+id/switchlight"  
+				       android:layout_width="wrap_content"  
+				       android:layout_height="wrap_content"  
+				       android:textOn="开"  
+				       android:textOff="关"  							           
+				       android:layout_gravity="center_horizontal"/>
+			    </LinearLayout> 
+		    </TableRow> 
+		    <View                              
+		        android:layout_height="2px"
+		        android:background="#FF909090"
+		    /> 
+		    <TableRow > 
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="制冷:"/>
+			        <TextView 		    
+			            android:id="@+id/txtcold"
+			            android:textColor="#FF0000" 
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						/>
+			        <Switch   
+				       android:layout_marginTop="20dip"  
+				       android:id="@+id/switcold"  
+				       android:layout_width="wrap_content"  
+				       android:layout_height="wrap_content"  
+				       android:textOn="开"  
+				       android:textOff="关"  							           
+				       android:layout_gravity="center_horizontal"/>
+			    </LinearLayout> 
+		    </TableRow> 
+		    <View                              
+		        android:layout_height="2px"
+		        android:background="#FF909090"
+		    /> 
+		    <TableRow > 
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="加热:"/>
+			        <TextView 		    
+			            android:id="@+id/txthot"
+			            android:textColor="#FF0000" 
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						/>
+			        <Switch   
+				       android:layout_marginTop="20dip"  
+				       android:id="@+id/switchhot"  
+				       android:layout_width="wrap_content"  
+				       android:layout_height="wrap_content"  
+				       android:textOn="开"  
+				       android:textOff="关"  							           
+				       android:layout_gravity="center_horizontal"/>
+			    </LinearLayout> 
+		    </TableRow> 
 			<View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"

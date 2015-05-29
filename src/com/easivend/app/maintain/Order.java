@@ -423,7 +423,7 @@ public class Order extends TabActivity
 	private void chartcount()
 	{	
 		int j=0;
-		//情空数据
+		//清空数据
 		Arrays.fill(Amountvalue, 0); 
 		Arrays.fill(Countvalue, 0); 
 		Amountmax=0;

@@ -65,7 +65,7 @@ public class MaintainActivity extends Activity
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
-    int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开
+    int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开    
     String com=null,bentcom=null;
     final static int REQUEST_CODE=1;
     //private Handler myhHandler=null;
@@ -79,17 +79,29 @@ public class MaintainActivity extends Activity
 		EVprotocolAPI.setCallBack(new JNIInterface() {
 			
 			@Override
-			public void jniCallback(Map<String, Integer> allSet) {
+			public void jniCallback(Map<String, Object> allSet) {
 				// TODO Auto-generated method stub
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到");	
-				Map<String, Integer> Set= allSet;
-				int jnirst=Set.get("EV_TYPE");
+				Map<String, Object> Set= allSet;
+				int jnirst=(Integer) Set.get("EV_TYPE");
 				//txtcom.setText(String.valueOf(jnirst));
 				switch (jnirst)
 				{
-					case EVprotocolAPI.EV_ONLINE://接收子线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成");	
-						txtcom.setText(com+"[主柜]初始化完成");						
+					case EVprotocolAPI.EV_REGISTER://接收子线程消息
+						//主柜初始化完成
+						if(Set.get("port_com").equals(com))
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成");	
+							txtcom.setText(com+"[主柜]初始化完成");		
+							ToolClass.setCom_id((Integer)Set.get("port_id"));
+						}
+						else if(Set.get("port_com").equals(bentcom))
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜初始化完成");	
+							txtbentcom.setText(bentcom+"[格子柜]初始化完成");		
+							ToolClass.setBentcom_id((Integer)Set.get("port_id"));
+						}
+										
 						break;
 				}
 			}
@@ -105,24 +117,24 @@ public class MaintainActivity extends Activity
 	        bentcom = list.get("bentcom");
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
-			txtcom.setText("主柜正在准备连接"+com);	
+			txtcom.setText(com+"主柜正在准备连接");	
 			EVprotocolAPI.vmcEVStart();//开启监听
-			//打开串口		
-			comopen = EVprotocolAPI.vmcStart(com);
-			if(comopen == 1)
-			{
-				txtcom.setText(com+"[主柜]串口打开成功");			
-			}
-			else
-			{
-				txtcom.setText(com+"[主柜]串口打开失败");
-			}			
-			txtbentcom.setText("[格子柜]正在准备连接"+bentcom);	
+//			//打开串口		
+//			comopen = EVprotocolAPI.vmcStart(com);
+//			if(comopen == 1)
+//			{
+//				txtcom.setText(com+"[主柜]串口打开成功");			
+//			}
+//			else
+//			{
+//				txtcom.setText(Comb+"[主柜]串口打开失败");
+//			}			
+			txtbentcom.setText(bentcom+"[格子柜]正在准备连接");	
 			//打开格子柜
 			bentopen = EVprotocolAPI.bentoRegister(bentcom);
 			if(bentopen == 1)
 			{
-				txtbentcom.setText(bentcom+"[格子柜]串口打开成功");			
+				txtbentcom.setText(bentcom+"[格子柜]串口正在准备连接");			
 			}
 			else
 			{
@@ -197,10 +209,11 @@ public class MaintainActivity extends Activity
 	protected void onDestroy() {
 		EVprotocolAPI.vmcEVStop();//关闭监听
 		//关闭串口
-		if(comopen>0)	
-			EVprotocolAPI.vmcStop();
+		//if(comopen>0)	
+			//EVprotocolAPI.vmcStop();
 		if(bentopen>0)
-			EVprotocolAPI.bentoRelease();
+			EVprotocolAPI.bentoRelease(ToolClass.getBentcom_id());
+		EVprotocolAPI.vmcEVStop();//关闭监听
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}
