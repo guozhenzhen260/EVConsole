@@ -275,7 +275,7 @@ public class HuodaoTest extends TabActivity
 					if(cabinetTypesetvar==5)
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
-						EVprotocolAPI.bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);	
+						EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);	
 						barhuomanager.setVisibility(View.VISIBLE);  
 					}
 					//普通柜
@@ -386,7 +386,7 @@ public class HuodaoTest extends TabActivity
 					//格子柜
 					if(cabinetTypevar==5)
 					{
-						EVprotocolAPI.bentoLight(ToolClass.getBentcom_id(),cabinetvar,1);						
+						EVprotocolAPI.EV_bentoLight(ToolClass.getBentcom_id(),cabinetvar,1);						
 					}
 					//普通柜
 					else 
@@ -400,7 +400,7 @@ public class HuodaoTest extends TabActivity
 					//格子柜
 					if(cabinetTypevar==5)
 					{
-						EVprotocolAPI.bentoLight(ToolClass.getBentcom_id(),cabinetvar,0);						
+						EVprotocolAPI.EV_bentoLight(ToolClass.getBentcom_id(),cabinetvar,0);						
 					}
 					//普通柜
 					else 
@@ -481,7 +481,7 @@ public class HuodaoTest extends TabActivity
 		    		//格子柜
 					if(cabinetTypevar==5)
 					{
-						EVprotocolAPI.bentoOpen(ToolClass.getBentcom_id(),cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
+						EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
 					}
 					//普通柜
 					else 

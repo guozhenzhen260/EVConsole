@@ -358,9 +358,9 @@ public class ToolClass
 	}
 	
 	//发送金额函数，浮点的元,转为以分为单位发送到底下
-	public static long MoneySend(float sendMoney)
+	public static int MoneySend(float sendMoney)
 	{
-		long values=(long)(sendMoney*100);
+		int values=(int)(sendMoney*100);
 		return values;
 	}
 	

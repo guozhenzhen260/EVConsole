@@ -17,13 +17,16 @@ package com.easivend.app.maintain;
 
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -36,6 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
@@ -44,10 +48,13 @@ public class AddInaccount extends TabActivity
 {
 	private TabHost mytabhost = null;
 	private int[] layres=new int[]{R.id.tab_billmanager,R.id.tab_coinmanager,R.id.tab_payoutmanager};//内嵌布局文件的id
+	private Spinner spinbillmanagerbill=null;
 	private EditText edtpayout=null;
-	private TextView txtpayin=null,txtreamin=null,txtpaymoney=null;
-	private Button btnpayout=null,btnbillexit=null;// 创建Button对象“退出”
-	private Handler myhHandler=null;
+	private TextView txtbillmanagerpar=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillincount=null
+			,txtbillmanagerbillpay=null,txtbillmanagerbillpaycount=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
+			txtpaymoney=null,txtbillpayback=null,txtbillerr=null;
+	private Button btnbillon=null,btnbilloff=null,btnbillquery=null,btnbillset=null,btnbillexit=null,btnbillpayout=null;// 创建Button对象“退出”
+	private Handler myhHandler=null;	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -80,24 +87,71 @@ public class AddInaccount extends TabActivity
 			public void jniCallback(Map<String, Object> allSet) {
 				float payin_amount=0,reamin_amount=0,payout_amount=0;
 				// TODO Auto-generated method stub	
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<payinout结果");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果");
 				Map<String, Object> Set= allSet;
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
-					case EVprotocolAPI.EV_PAYIN_RPT://接收子线程投币金额消息						
-						payin_amount=ToolClass.MoneyRec((Integer) allSet.get("payin_amount"));
-						reamin_amount=ToolClass.MoneyRec((Integer) allSet.get("reamin_amount"));
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<投币:"+payin_amount
-								+"总共:"+reamin_amount);							
-						txtpayin.setText(String.valueOf(payin_amount));
-						txtreamin.setText(String.valueOf(reamin_amount));
+					case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
+						//纸币启动成功
+						if((Integer)Set.get("bill_result")>0)
+						{
+							EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
+							EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+						}
+						//硬币启动成功
+						if((Integer)Set.get("coin_result")>0)
+						{}
 						break;
-					case EVprotocolAPI.EV_PAYOUT_RPT://接收子线程找零金额消息
-						payout_amount=ToolClass.MoneyRec((Integer) allSet.get("payout_amount"));
-						reamin_amount=ToolClass.MoneyRec((Integer) allSet.get("reamin_amount"));
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<找零金额"+String.valueOf(payout_amount));							
-						txtpaymoney.setText(String.valueOf(payout_amount));
+					case EVprotocolAPI.EV_MDB_B_INFO:							 
+						String acceptor=((Integer)Set.get("acceptor")==2)?"MDB":"无";
+						String dispenser=((Integer)Set.get("dispenser")==2)?"MDB":"无";
+						String code=(String) Set.get("code");
+						String sn=(String) Set.get("sn");
+						String model=(String) Set.get("model");
+						String ver=(String) Set.get("ver");
+						int capacity=(Integer)Set.get("capacity");
+						String str="纸币接收器:"+acceptor+"纸币找零器:"+dispenser+"厂商:"+code
+								+"序列号"+sn+" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
+						txtbillmanagerpar.setText(str);
+						str="";
+						Map<String,Integer> allSet1=(Map<String, Integer>) Set.get("ch_r");
+						Set<Map.Entry<String,Integer>> allset=allSet1.entrySet();  //实例化
+					    Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
+					    while(iter.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter.next();
+					        str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					    }
+					    txtbillmanagerbillin.setText(str);
+					    str="";
+					    Map<String,Integer> allSet2=(Map<String, Integer>) Set.get("ch_d");
+						Set<Map.Entry<String,Integer>> allset2=allSet2.entrySet();  //实例化
+					    Iterator<Map.Entry<String,Integer>> iter2=allset2.iterator();
+					    while(iter2.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter2.next();
+					        str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					    }
+					    txtbillmanagerbillpay.setText(str);
+						break;
+					case EVprotocolAPI.EV_MDB_HEART://接收子线程投币金额消息		
+						String bill_enable=((Integer)Set.get("bill_enable")==1)?"使能":"禁能";
+						txtbillmanagerstate.setText(bill_enable);
+						String bill_payback=((Integer)Set.get("bill_payback")==1)?"触发":"没触发";
+					  	txtbillpayback.setText(bill_payback);
+					  	String bill_err=((Integer)Set.get("bill_err")==0)?"正常":"故障码:"+(Integer)Set.get("bill_err");
+					  	txtbillerr.setText(bill_err);
+					  	double money=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));					  	
+					  	txtbillpayin.setText(String.valueOf(money));					  	
+					  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
+					  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
+						break;
+					case EVprotocolAPI.EV_MDB_PAYOUT://接收子线程找零金额消息
+						money=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));					  	
+						txtpaymoney.setText(String.valueOf(money));	
+						money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
+						//txtpaymoney.setText(String.valueOf(money));	
 						break;	
 				}				
 			}
@@ -106,22 +160,53 @@ public class AddInaccount extends TabActivity
   	    //===============
     	//纸币器设置页面
     	//===============
-  	    txtpayin = (TextView) findViewById(R.id.txtpayin);
-  	    txtreamin = (TextView) findViewById(R.id.txtreamin);
+	  	txtbillmanagerpar = (TextView) findViewById(R.id.txtbillmanagerpar);
+	  	txtbillmanagerstate = (TextView) findViewById(R.id.txtbillmanagerstate);
+	  	txtbillpayback = (TextView) findViewById(R.id.txtbillpayback);
+	  	txtbillerr = (TextView) findViewById(R.id.txtbillerr);
+	  	txtbillmanagerbillin = (TextView) findViewById(R.id.txtbillmanagerbillin);
+	  	txtbillmanagerbillincount = (TextView) findViewById(R.id.txtbillmanagerbillincount);
+	  	txtbillmanagerbillpay = (TextView) findViewById(R.id.txtbillmanagerbillpay);
+	  	txtbillmanagerbillpaycount = (TextView) findViewById(R.id.txtbillmanagerbillpaycount);
+	  	txtbillmanagerbillpayamount = (TextView) findViewById(R.id.txtbillmanagerbillpayamount);
+	  	txtbillpayin = (TextView) findViewById(R.id.txtbillpayin);
+	  	txtpaymoney = (TextView) findViewById(R.id.txtpaymoney);
 		edtpayout = (EditText) findViewById(R.id.edtpayout);
-		txtpaymoney = (TextView) findViewById(R.id.txtpaymoney);
-		EVprotocolAPI.cashControl(1);//打开收币设备	
-		//全部退币
-		btnpayout = (Button) findViewById(R.id.btnpayout);
-		btnpayout.setOnClickListener(new OnClickListener() {// 为退币按钮设置监听事件
+		btnbillpayout = (Button) findViewById(R.id.btnbillpayout);
+		btnbillpayout.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPsend>>]back");
-		    	EVprotocolAPI.payback();
-		    	txtpayin.setText("0");
-		    	txtreamin.setText("0");
+		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),1,0,ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())),0);
 		    }
-		});		
+		});
+		btnbillon = (Button) findViewById(R.id.btnbillon);
+		btnbillon.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,0,1);
+		    }
+		});
+		btnbilloff = (Button) findViewById(R.id.btnbilloff);
+		btnbilloff.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,0,0);
+		    }
+		});
+		btnbillquery = (Button) findViewById(R.id.btnbillquery);
+		btnbillquery.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    }
+		});
+		btnbillset = (Button) findViewById(R.id.btnbillset);
+		btnbillset.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		        //finish();
+		    }
+		});	
 		btnbillexit = (Button) findViewById(R.id.btnbillexit);
 		btnbillexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override

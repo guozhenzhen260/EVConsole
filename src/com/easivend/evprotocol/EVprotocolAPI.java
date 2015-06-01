@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import com.easivend.common.ToolClass;
 import com.easivend.evprotocol.EVprotocol.EV_listener;
+import com.easivend.evprotocol.EVprotocol.RequestObject;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -103,7 +104,7 @@ public class EVprotocolAPI
 						//根据key取出内容
 						JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
 						int str_evType =  ev_head.getInt("EV_type");					
-					    ToolClass.Log(ToolClass.INFO,"EV_JNI",String.valueOf(str_evType));
+					    //ToolClass.Log(ToolClass.INFO,"EV_JNI",String.valueOf(str_evType));
 					    switch(str_evType)
 					    {
 						    case EV_REGISTER://串口注册
@@ -117,6 +118,8 @@ public class EVprotocolAPI
 									callBack.jniCallback(allSet);
 						    	}
 						    	break;
+						    	
+						    //快递柜设备	
 						    case EV_BENTO_OPEN://快递柜开门
 						    	if(ev_head.getInt("is_success")>0)
 						    	{
@@ -162,63 +165,86 @@ public class EVprotocolAPI
 									callBack.jniCallback(allSet);
 						    	}
 						    	break;
+						    	
+						    //现金设备	
+						    case EV_MDB_ENABLE:	//使能接口
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("bill_result", ev_head.getInt("bill_result"));
+									allSet.put("coin_result", ev_head.getInt("coin_result"));
+									callBack.jniCallback(allSet);
+						    	}
+						    	break;
+						    case EV_MDB_B_INFO://纸币器查询接口
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_B_INFO);
+									allSet.put("acceptor", ev_head.getInt("acceptor"));
+									allSet.put("dispenser", ev_head.getInt("dispenser"));
+									allSet.put("code", ev_head.getString("code"));
+									allSet.put("sn", ev_head.getString("sn"));
+									allSet.put("model", ev_head.getString("model"));
+									allSet.put("ver", ev_head.getString("ver"));
+									allSet.put("capacity", ev_head.getInt("capacity"));
+									JSONArray arr1=ev_head.getJSONArray("ch_r");//返回json数组
+									Map<String,Integer> allSet1 = new LinkedHashMap<String,Integer>() ;
+									for(int i=0;i<arr1.length();i++)
+									{
+										JSONObject object2=arr1.getJSONObject(i);
+										allSet1.put(String.valueOf(object2.getInt("ch")), object2.getInt("value"));								
+									}
+									allSet.put("ch_r", allSet1);
+									
+									JSONArray arr2=ev_head.getJSONArray("ch_d");//返回json数组
+									Map<String,Integer> allSet2 = new LinkedHashMap<String,Integer>() ;
+									for(int i=0;i<arr2.length();i++)
+									{
+										JSONObject object2=arr2.getJSONObject(i);
+										allSet2.put(String.valueOf(object2.getInt("ch")), object2.getInt("value"));								
+									}
+									allSet.put("ch_d", allSet2);
+									callBack.jniCallback(allSet);
+						    	}
+						    	break;
+						    case EV_MDB_PAYOUT://找币接口
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_PAYOUT);
+									allSet.put("result", ev_head.getInt("result"));
+									allSet.put("bill_changed", ev_head.getInt("bill_changed"));
+									allSet.put("coin_changed", ev_head.getInt("coin_changed"));
+									callBack.jniCallback(allSet);
+						    	}						    	
+						    	break;
+						    //交易页面使用	
+						    case EV_MDB_HEART://现金心跳查询接口
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_HEART);
+									allSet.put("bill_enable", ev_head.getInt("bill_enable"));
+									allSet.put("bill_payback", ev_head.getInt("bill_payback"));
+									allSet.put("bill_err", ev_head.getInt("bill_err"));
+									allSet.put("bill_recv", ev_head.getInt("bill_recv"));
+									allSet.put("bill_remain", ev_head.getInt("bill_remain"));
+									allSet.put("coin_enable", ev_head.getInt("coin_enable"));
+									allSet.put("coin_payback", ev_head.getInt("coin_payback"));
+									allSet.put("coin_err", ev_head.getInt("coin_err"));
+									allSet.put("coin_recv", ev_head.getInt("coin_recv"));
+									allSet.put("coin_remain", ev_head.getInt("coin_remain"));
+									callBack.jniCallback(allSet);
+						    	}
+						    	break;
 					    }
-//					    if(str_evType.equals("EV_INITING"))//正在初始化
-//						{
-//							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正在初始化");
-//					    	EV_TYPE=EV_INITING;
-//						}
-//						else if(str_evType.equals("EV_ONLINE"))//str_evType.equals("EV_PAYOUT_RPT")
-//						{
-//							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<成功连接");
-//							EV_TYPE=EV_ONLINE;
-//							//往Activity线程发送信息
-////							Message childmsg=mainHandler.obtainMessage();
-////							childmsg.what=EV_ONLINE;
-////							mainHandler.sendMessage(childmsg);
-//							//往接口回调信息
-//							allSet.clear();
-//							allSet.put("EV_TYPE", EV_ONLINE);
-//							callBack.jniCallback(allSet);
-//						}
-//						else if(str_evType.equals("EV_OFFLINE"))
-//						{
-//							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<断开连接");
-//							EV_TYPE=EV_OFFLINE;
-//						}
-//						else if(str_evType.equals("EV_RESTART"))
-//						{
-//							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<主控板重启心动");
-//							EV_TYPE=EV_RESTART;
-//						}
-//						else if(str_evType.equals("EV_STATE_RPT"))
-//						{
-//							int state = ev_head.getInt("vmcState");
-//							if(state == 0)
-//								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<断开连接");
-//							else if(state == 1)
-//								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正在初始化");
-//							else if(state == 2)		
-//							{
-//								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<正常");	
-//								//往接口回调信息
-//								allSet.clear();
-//								allSet.put("EV_TYPE", EV_ONLINE);
-//								callBack.jniCallback(allSet);
-//							}
-//							else if(state == 3)
-//								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<故障");
-//							else if(state == 4)
-//								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<维护");
-//						}
-//						else if(str_evType.equals("EV_ENTER_MANTAIN"))
-//						{
-//							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<维护");
-//						}
-//						else if(str_evType.equals("EV_EXIT_MANTAIN"))
-//						{
-//							ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<退出维护");
-//						}
+
 //					    //出货
 //						else if(str_evType.equals("EV_TRADE_RPT"))
 //						{
@@ -349,7 +375,7 @@ public class EVprotocolAPI
 	}
 	
 	/*********************************************************************************************************
-	** Function name:     	bentoRegister
+	** Function name	:		EV_portRegister
 	** Descriptions		:		串口注册接口 	[异步]
 	** input parameters	:       portName 串口号 例如"COM1"
 	** output parameters:		无
@@ -359,7 +385,7 @@ public class EVprotocolAPI
 	*                           "port"    表示返回的串口号,就是portName的值
 	*							"port_id":表示返回的串口编号，如果失败则返回 -1
 	*********************************************************************************************************/
-	public  static int bentoRegister(String portName)
+	public static int EV_portRegister(String portName)
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+portName);		
 		return EVprotocol.EV_portRegister(portName);		
@@ -368,7 +394,7 @@ public class EVprotocolAPI
 	
 	
 	/*********************************************************************************************************
-	** Function name:     	bentoRelease
+	** Function name	:		EV_portRelease
 	** Descriptions		:		串口释放接口  [异步]
 	** input parameters	:       port_id 串口编号
 	** output parameters:		无
@@ -377,7 +403,7 @@ public class EVprotocolAPI
 	*							"EV_type"= EV_RELEASE = 2; 表示串口释放包类型
 	*							"result":表示操作结果    1:表示成功释放   0:表示释放失败
 	*********************************************************************************************************/
-	public  static int bentoRelease(int port_id)
+	public  static int EV_portRelease(int port_id)
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenclose>>]"+port_id);		
 		return EVprotocol.EV_portRelease(port_id);		
@@ -424,44 +450,25 @@ public class EVprotocolAPI
 	
 	//快递柜
 	/*********************************************************************************************************
-	** Function name:     	bentoOpen
+	** Function name	:		EV_bentoOpen
 	** Descriptions		:		快递柜开门接口  [异步]
-	** input parameters	:       port_id:串口编号, addr:柜子地址 00-15,box:开门的格子号 1-88
+	** input parameters	:       port_id:串口编号, addr:柜子地址 01-16,box:开门的格子号 1-88
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
-	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":11,"port_id":0,"addr":0,"box":1,"is_success":1,"result":1}}
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":11,"port_id":0,"addr":1,"box":1,"is_success":1,"result":1}}
 	*							"EV_type"= EV_BENTO_OPEN = 11; 表开门结果回应包类型
 	*							"port_id":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result": 	表示处理结果	1:开门成功   0:开门失败
 	*********************************************************************************************************/
-	public static int bentoOpen(int port_id,int addr,int box)
+	public  static int EV_bentoOpen(int port_id,int addr,int box)
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[box]="+box);
 		return EVprotocol.EV_bentoOpen(port_id,addr,box);
 	}
 	
-	
 	/*********************************************************************************************************
-	** Function name:     	bentoLight
-	** Descriptions		:		快递柜照明控制接口  [异步]
-	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16,opt:开照明控制 1:开  0:关
-	** output parameters:		无
-	** Returned value	:		1：发送成功  0：发送失败
-	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":13,"port_id":0,"addr":0,"opt":1,"is_success":1,"result":1}}
-	*							"EV_type"= EV_BENTO_LIGHT = 13: 表照明控制结果回应包类型
-	*							"port_id":原样返回,"addr":原样返回柜子地址,"opt":原样返回操作.
-	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
-	*							"result": 表示处理结果	1:成功   0:失败
-	*********************************************************************************************************/
-	public  static int bentoLight(int port_id,int addr,int opt)
-	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[opt]="+opt);
-		return EVprotocol.EV_bentoLight(port_id,addr,opt);
-	}
-	
-	/*********************************************************************************************************
-	** Function name:     	bentoCheck
+	** Function name	:		EV_bentoCheck
 	** Descriptions		:		快递柜查询接口  [异步]
 	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16
 	** output parameters:		无
@@ -477,14 +484,131 @@ public class EVprotocolAPI
 	*							"light":是否支持照明  	1:支持 0:不支持
 	*							"sum":货道总数	例如货道总数88 则默认 货道编号 1-88
 	*********************************************************************************************************/
-	public  static int bentoCheck(int port_id,int addr)
+	public  static int EV_bentoCheck(int port_id,int addr)
 	{				
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr);
 		return EVprotocol.EV_bentoCheck(port_id,addr);
 	}
 	
+	/*********************************************************************************************************
+	** Function name	:		EV_bentoLight
+	** Descriptions		:		快递柜照明控制接口  [异步]
+	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16,opt:开照明控制 1:开  0:关
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":13,"port_id":0,"addr":1,"opt":1,"is_success":1,"result":1}}
+	*							"EV_type"= EV_BENTO_LIGHT = 13: 表照明控制结果回应包类型
+	*							"port_id":原样返回,"addr":原样返回柜子地址,"opt":原样返回操作.
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 表示处理结果	1:成功   0:失败
+	*********************************************************************************************************/
+	public  static int EV_bentoLight(int port_id,int addr,int opt)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[opt]="+opt);
+		return EVprotocol.EV_bentoLight(port_id,addr,opt);
+	}
 	
-	//现金支付设备			
+		
+	
+	//现金支付设备		
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbEnable
+	** Descriptions		:		收币设备使能禁能接口  [异步]
+	** input parameters	:       port_id:串口编号; bill:操作纸币器  1:操作 0:不操作;coin:操作硬币器  1:操作,0:不操作 ;opt:操作 1:使能 0:禁能
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":22,"port_id":0,"bill":1,"coin":1,"opt":1,"is_success":1,"bill_result":1,"coin_result":1}}
+	*							"EV_type"= EV_MDB_ENABLE = 22: 表MDB使能结果回应包类型
+	*							"port_id":原样返回,"bill":原样返回柜子地址,"coin":原样返回操作;"opt":原样返回
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"bill_result": 纸币器处理结果	1:成功   0:失败
+	*							"coin_result": 纸币器处理结果	1:成功   0:失败
+	*********************************************************************************************************/
+	public  static int EV_mdbEnable(int port_id,int bill,int coin,int opt)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbEnable>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin+"[opt]="+opt);
+		return EVprotocol.EV_mdbEnable(port_id,bill,coin,opt);
+	}
+	/*********************************************************************************************************
+	** Function name	:		EVmdbBillInfoCheck
+	** Descriptions		:		MDB纸币器查询接口  [异步]
+	** input parameters	:       port_id:串口编号;
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":24,"port_id":0,"is_success":1,
+	*							"acceptor":2,"dispenser":2,"code":"ITL","sn":"12312....","model":"NV9",
+	*							"ver":"1212","capacity":500,"ch_r":[],"ch_d":[]}}
+	*							"EV_type"= EV_MDB_B_INFO = 24: 表示MDB纸币器信息查询结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"acceptor": 纸币接收器协议类型	0:接收器关闭	2:MDB协议接收器
+	*							"dispenser": 纸币找零器协议类型	0:找零器关闭	2:MDB协议找零器
+	*							"code": 纸币器厂商代码			例如：ITL
+	*							"sn":纸币器序列号
+	*							"model":纸币器型号				例如:NV9
+	*							ver:纸币器软件版本号
+	*							capacity:纸币器储币量	
+	*							ch_r:纸币器接收器通道面值 		以分为单位
+	*							ch_d:纸币器找零器通道面值		以分为单位
+	*********************************************************************************************************/
+	public  static int EV_mdbBillInfoCheck(int port_id)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbInfo>>port_id=]"+port_id);
+		return EVprotocol.EV_mdbBillInfoCheck(port_id);
+	}
+	
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbPayout
+	** Descriptions		:		现金设备找币接口  [异步]
+	** input parameters	:       port_id:串口编号;bill:操作纸币器  1:操作,0:不操作,coin:操作硬币器  1:操作,0:不操作;
+	*							billPayout:纸币器下发找币金额 分为单位 ;coinPayout:硬币器下发找币金额 分为单位 
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":28,"port_id":0,"bill":0,"coin":1,
+	*							"billPayout":0,"coinPayout":100,"is_success":1,
+	*							"result":1,"bill_changed":0,"coin_changed":100}}
+	*							"EV_type"= EV_MDB_PAYOUT = 28: 表示MDB找币结果回应包类型
+	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,"billPayout":原样返回,"coinPayout":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:找币成功     0:找币失败
+	*							"bill_changed":纸币器当前找币金额	  以分为单位
+	*							"coin_changed":硬币器当前找币金额	  以分为单位
+	*********************************************************************************************************/
+	public  static int EV_mdbPayout(int port_id,int bill,int coin,int billPay,int coinPay)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbPayout>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin+"[billPay]="+billPay+"[coinPay]="+coinPay);
+		return EVprotocol.EV_mdbPayout(port_id,bill,coin,billPay,coinPay);
+	}
+	
+	//交易页面使用
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbHeart
+	** Descriptions		:		现金设备心跳查询接口  [异步]
+	** input parameters	:       port_id:串口编号;
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":23,"port_id":0,"is_success":1,
+	*							"bill_enable":1,"bill_payback":0,"bill_err":0,"bill_recv":0,"bill_remain":0,
+	*							"coin_enable":1,"coin_payback":0,"coin_err":0,"coin_recv":0,"coin_remain":0}}
+	*							"EV_type"= EV_MDB_HEART = 23: 表示MDB心跳查询结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"bill_enable": 纸币器使能状态		1:使能   0:禁能
+	*							"bill_payback": 纸币器退币按钮触发	1:触发   0:非触发
+	*							"bill_err":纸币器故障状态			0:正常   非0 为故障码
+	*							"bill_recv":纸币器当前收币金额	以分为单位
+	*							"bill_remain":纸币器当前储币金额	以分为单位
+	*	*						"coin_enable": 硬币器使能状态		1:使能   0:禁能
+	*							"coin_payback": 硬币器退币按钮触发	1:触发   0:非触发
+	*							"coin_err":硬币器故障状态			0:正常   非0 为故障码
+	*							"coin_recv":硬币器当前收币金额	以分为单位
+	*							"coin_remain":硬币器当前储币金额	以分为单位
+	*********************************************************************************************************/
+	public  static int EV_mdbHeart(int port_id)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbHeart>>port_id=]"+port_id);
+		return EVprotocol.EV_mdbHeart(port_id);
+	}
 	/*********************************************************************************************************
 	** Function name:     	payout
 	** Descriptions:	    VMC出币接口

@@ -119,19 +119,19 @@ public class MaintainActivity extends Activity
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
 			txtcom.setText(com+"主柜正在准备连接");	
 			EVprotocolAPI.vmcEVStart();//开启监听
-//			//打开串口		
-//			comopen = EVprotocolAPI.vmcStart(com);
-//			if(comopen == 1)
-//			{
-//				txtcom.setText(com+"[主柜]串口打开成功");			
-//			}
-//			else
-//			{
-//				txtcom.setText(Comb+"[主柜]串口打开失败");
-//			}			
+			//打开主柜串口		
+			comopen = EVprotocolAPI.EV_portRegister(com);
+			if(comopen == 1)
+			{
+				txtcom.setText(com+"[主柜]串口正在准备连接");			
+			}
+			else
+			{
+				txtcom.setText(com+"[主柜]串口打开失败");
+			}			
 			txtbentcom.setText(bentcom+"[格子柜]正在准备连接");	
 			//打开格子柜
-			bentopen = EVprotocolAPI.bentoRegister(bentcom);
+			bentopen = EVprotocolAPI.EV_portRegister(bentcom);
 			if(bentopen == 1)
 			{
 				txtbentcom.setText(bentcom+"[格子柜]串口正在准备连接");			
@@ -209,10 +209,10 @@ public class MaintainActivity extends Activity
 	protected void onDestroy() {
 		EVprotocolAPI.vmcEVStop();//关闭监听
 		//关闭串口
-		//if(comopen>0)	
-			//EVprotocolAPI.vmcStop();
+		if(comopen>0)	
+			EVprotocolAPI.EV_portRelease(ToolClass.getCom_id());
 		if(bentopen>0)
-			EVprotocolAPI.bentoRelease(ToolClass.getBentcom_id());
+			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
 		EVprotocolAPI.vmcEVStop();//关闭监听
 		// TODO Auto-generated method stub
 		super.onDestroy();		

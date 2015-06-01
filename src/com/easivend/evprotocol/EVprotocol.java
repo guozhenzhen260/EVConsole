@@ -433,10 +433,10 @@ public class EVprotocol {
 	*							billPayout:纸币器下发找币金额 分为单位 ;coinPayout:硬币器下发找币金额 分为单位 
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
-	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"bill":0,"coin":1,
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":28,"port_id":0,"bill":0,"coin":1,
 	*							"billPayout":0,"coinPayout":100,"is_success":1,
 	*							"result":1,"bill_changed":0,"coin_changed":100}}
-	*							"EV_type"= EV_MDB_COST = 26: 表示MDB找币结果回应包类型
+	*							"EV_type"= EV_MDB_PAYOUT = 28: 表示MDB找币结果回应包类型
 	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,"billPayout":原样返回,"coinPayout":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result":扣款结果	1:找币成功     0:找币失败
