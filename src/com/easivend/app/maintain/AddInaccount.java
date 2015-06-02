@@ -48,12 +48,29 @@ public class AddInaccount extends TabActivity
 {
 	private TabHost mytabhost = null;
 	private int[] layres=new int[]{R.id.tab_billmanager,R.id.tab_coinmanager,R.id.tab_payoutmanager};//内嵌布局文件的id
+	//纸币器
 	private Spinner spinbillmanagerbill=null;
 	private EditText edtpayout=null;
 	private TextView txtbillmanagerpar=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillincount=null
 			,txtbillmanagerbillpay=null,txtbillmanagerbillpaycount=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
 			txtpaymoney=null,txtbillpayback=null,txtbillerr=null;
 	private Button btnbillon=null,btnbilloff=null,btnbillquery=null,btnbillset=null,btnbillexit=null,btnbillpayout=null;// 创建Button对象“退出”
+	//硬币器
+	private Spinner spincoinmanagercoin=null;
+	private TextView txtcoinmanagerpar=null,txtcoinmanagerpar2=null,txtcoinmanagerstate=null,txtcoinpayback=null,txtcoinerr=null,
+			txtcoinmanagercoinincount=null,txtcoinmanagercoininamount=null,txtcoinpayin=null,txtcoinpaymoney=null;
+	private EditText txtcoinmanagercoinin1=null,txtcoinmanagercoinin2=null,txtcoinmanagercoinin3=null,txtcoinmanagercoinin4=null,
+			txtcoinmanagercoinin5=null,txtcoinmanagercoinin6=null,txtcoinmanagercoinin7=null,txtcoinmanagercoinin8=null,
+			txtcoinmanagercoinin9=null,txtcoinmanagercoinin10=null,txtcoinmanagercoinin11=null,txtcoinmanagercoinin12=null,
+			txtcoinmanagercoinin13=null,txtcoinmanagercoinin14=null,txtcoinmanagercoinin15=null,txtcoinmanagercoinin16=null,
+			edtcoinpayout=null;		
+	private Button btncoinon=null,btncoinoff=null,btncoinquery=null,btncoinset=null,btncoinpayout=null;
+	//hopper找零器
+	private Spinner spinhopper=null;
+	private TextView txthopperincount=null,txthopperpaymoney=null;
+	private EditText txthopperin1=null,txthopperin2=null,txthopperin3=null,txthopperin4=null,
+			txthopperin5=null,txthopperin6=null,txthopperin7=null,txthopperin8=null,edthopperpayout=null;		
+	private Button btnhopperquery=null,btnhopperpay=null;
 	private Handler myhHandler=null;	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +92,7 @@ public class AddInaccount extends TabActivity
     	this.mytabhost.addTab(myTabcoin); 
     	
     	TabSpec myTabpay=this.mytabhost.newTabSpec("tab2");
-    	myTabpay.setIndicator("找零器设置");
+    	myTabpay.setIndicator("Hopper找零器设置");
     	myTabpay.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabpay); 
     	
@@ -101,7 +118,10 @@ public class AddInaccount extends TabActivity
 						}
 						//硬币启动成功
 						if((Integer)Set.get("coin_result")>0)
-						{}
+						{
+							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+							EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+						}
 						break;
 					case EVprotocolAPI.EV_MDB_B_INFO:							 
 						String acceptor=((Integer)Set.get("acceptor")==2)?"MDB":"无";
@@ -114,6 +134,10 @@ public class AddInaccount extends TabActivity
 						String str="纸币接收器:"+acceptor+"纸币找零器:"+dispenser+"厂商:"+code
 								+"序列号"+sn+" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
 						txtbillmanagerpar.setText(str);
+						if((Integer)Set.get("acceptor")==2)
+							spinbillmanagerbill.setSelection((Integer)Set.get("acceptor")-1);
+						else if((Integer)Set.get("acceptor")==0)
+							spinbillmanagerbill.setSelection(0);	
 						str="";
 						Map<String,Integer> allSet1=(Map<String, Integer>) Set.get("ch_r");
 						Set<Map.Entry<String,Integer>> allset=allSet1.entrySet();  //实例化
@@ -135,7 +159,90 @@ public class AddInaccount extends TabActivity
 					    }
 					    txtbillmanagerbillpay.setText(str);
 						break;
-					case EVprotocolAPI.EV_MDB_HEART://接收子线程投币金额消息		
+					case EVprotocolAPI.EV_MDB_C_INFO:
+						String acceptor2="";
+						if((Integer)Set.get("acceptor")==3)
+							acceptor2="串行脉冲";
+						else if((Integer)Set.get("acceptor")==2)
+							acceptor2="MDB";
+						else if((Integer)Set.get("acceptor")==1)
+							acceptor2="并行脉冲";
+						else if((Integer)Set.get("acceptor")==0)
+							acceptor2="无";
+						String dispenser2="";
+						if((Integer)Set.get("dispenser")==2)
+							dispenser2="MDB";
+						else if((Integer)Set.get("dispenser")==1)
+							dispenser2="hopper";
+						else if((Integer)Set.get("dispenser")==0)
+							dispenser2="无";
+						String code2=(String) Set.get("code");
+						String sn2=(String) Set.get("sn");
+						String model2=(String) Set.get("model");
+						String ver2=(String) Set.get("ver");
+						int capacity2=(Integer)Set.get("capacity");
+						String str2="硬币接收器:"+acceptor2+"硬币找零器:"+dispenser2+"厂商:"+code2
+								+"序列号"+sn2;
+						txtcoinmanagerpar.setText(str2);
+						str2=" 型号:"+model2+"版本号:"+ver2+"储币量:"+capacity2;
+						txtcoinmanagerpar2.setText(str2);
+						spincoinmanagercoin.setSelection((Integer)Set.get("acceptor"));
+						
+						
+						str2="";
+						Map<String, Integer>  allSet3=(Map<String, Integer>) Set.get("ch_r");
+						//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet3.toString());
+						double all[]=new double[allSet3.size()];	
+						int i=0;
+						Set<Map.Entry<String,Integer>> allset3=allSet3.entrySet();  //实例化
+						Iterator<Map.Entry<String,Integer>> iter3=allset3.iterator();
+					    while(iter3.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter3.next();
+					        all[i++]=ToolClass.MoneyRec(me.getValue());
+					        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					    }
+					    txtcoinmanagercoinin1.setText(String.valueOf(all[0]));
+					    txtcoinmanagercoinin2.setText(String.valueOf(all[1]));
+					    txtcoinmanagercoinin3.setText(String.valueOf(all[2]));
+					    txtcoinmanagercoinin4.setText(String.valueOf(all[3]));
+					    txtcoinmanagercoinin5.setText(String.valueOf(all[4]));
+					    txtcoinmanagercoinin6.setText(String.valueOf(all[5]));
+					    txtcoinmanagercoinin7.setText(String.valueOf(all[6]));
+					    txtcoinmanagercoinin8.setText(String.valueOf(all[7]));
+					    txtcoinmanagercoinin9.setText(String.valueOf(all[8]));
+					    txtcoinmanagercoinin10.setText(String.valueOf(all[9]));
+					    txtcoinmanagercoinin11.setText(String.valueOf(all[10]));
+					    txtcoinmanagercoinin12.setText(String.valueOf(all[11]));
+					    txtcoinmanagercoinin13.setText(String.valueOf(all[12]));
+					    txtcoinmanagercoinin14.setText(String.valueOf(all[13]));
+					    txtcoinmanagercoinin15.setText(String.valueOf(all[14]));
+					    txtcoinmanagercoinin16.setText(String.valueOf(all[15]));
+					    //找零通道面值
+					    spinhopper.setSelection((Integer)Set.get("dispenser"));
+					    str2="";
+					    Map<String, Integer> allSet4=(Map<String, Integer>) Set.get("ch_d");
+					    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet4.toString());
+					    double all2[]=new double[allSet4.size()];	
+						i=0;
+						Set<Map.Entry<String,Integer>> allset4=allSet4.entrySet();  //实例化
+					    Iterator<Map.Entry<String,Integer>> iter4=allset4.iterator();
+					    while(iter4.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter4.next();
+					        all2[i++]=ToolClass.MoneyRec(me.getValue());
+					        //str2+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					    }
+					    txthopperin1.setText(String.valueOf(all2[0]));
+					    txthopperin2.setText(String.valueOf(all2[1]));
+					    txthopperin3.setText(String.valueOf(all2[2]));
+					    txthopperin4.setText(String.valueOf(all2[3]));
+					    txthopperin5.setText(String.valueOf(all2[4]));
+					    txthopperin6.setText(String.valueOf(all2[5]));
+					    txthopperin7.setText(String.valueOf(all2[6]));
+					    txthopperin8.setText(String.valueOf(all2[7]));
+						break;	
+					case EVprotocolAPI.EV_MDB_HEART://心跳查询
 						String bill_enable=((Integer)Set.get("bill_enable")==1)?"使能":"禁能";
 						txtbillmanagerstate.setText(bill_enable);
 						String bill_payback=((Integer)Set.get("bill_payback")==1)?"触发":"没触发";
@@ -146,12 +253,24 @@ public class AddInaccount extends TabActivity
 					  	txtbillpayin.setText(String.valueOf(money));					  	
 					  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
 					  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
+					  	
+					  	String coin_enable=((Integer)Set.get("coin_enable")==1)?"使能":"禁能";
+					  	txtcoinmanagerstate.setText(coin_enable);
+						String coin_payback=((Integer)Set.get("coin_payback")==1)?"触发":"没触发";
+						txtcoinpayback.setText(coin_payback);
+					  	String coin_err=((Integer)Set.get("coin_err")==0)?"正常":"故障码:"+(Integer)Set.get("coin_err");
+					  	txtcoinerr.setText(coin_err);
+					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));					  	
+					  	txtcoinpayin.setText(String.valueOf(money));					  	
+					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
+					  	txtcoinmanagercoininamount.setText(String.valueOf(money));
 						break;
-					case EVprotocolAPI.EV_MDB_PAYOUT://接收子线程找零金额消息
+					case EVprotocolAPI.EV_MDB_PAYOUT://找零
 						money=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));					  	
 						txtpaymoney.setText(String.valueOf(money));	
 						money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
-						//txtpaymoney.setText(String.valueOf(money));	
+						txtcoinpaymoney.setText(String.valueOf(money));	
+						txthopperpaymoney.setText(String.valueOf(money));	
 						break;	
 				}				
 			}
@@ -160,6 +279,7 @@ public class AddInaccount extends TabActivity
   	    //===============
     	//纸币器设置页面
     	//===============
+  	    spinbillmanagerbill = (Spinner) findViewById(R.id.spinbillmanagerbill);
 	  	txtbillmanagerpar = (TextView) findViewById(R.id.txtbillmanagerpar);
 	  	txtbillmanagerstate = (TextView) findViewById(R.id.txtbillmanagerstate);
 	  	txtbillpayback = (TextView) findViewById(R.id.txtbillpayback);
@@ -214,7 +334,100 @@ public class AddInaccount extends TabActivity
 		        finish();
 		    }
 		});
-		
+		//===============
+    	//硬币器设置页面
+    	//===============
+		spincoinmanagercoin = (Spinner) findViewById(R.id.spincoinmanagercoin);
+	  	txtcoinmanagerpar = (TextView) findViewById(R.id.txtcoinmanagerpar);
+	  	txtcoinmanagerpar2 = (TextView) findViewById(R.id.txtcoinmanagerpar2);
+	  	txtcoinmanagerstate = (TextView) findViewById(R.id.txtcoinmanagerstate);
+	  	txtcoinpayback = (TextView) findViewById(R.id.txtcoinpayback);
+	  	txtcoinerr = (TextView) findViewById(R.id.txtcoinerr);
+	  	txtcoinmanagercoinincount = (TextView) findViewById(R.id.txtcoinmanagercoinincount);
+	  	txtcoinmanagercoininamount = (TextView) findViewById(R.id.txtcoinmanagercoininamount);
+	  	txtcoinpayin = (TextView) findViewById(R.id.txtcoinpayin);
+	  	txtcoinpaymoney = (TextView) findViewById(R.id.txtcoinpaymoney);
+	  	txtcoinmanagercoinin1 = (EditText) findViewById(R.id.txtcoinmanagercoinin1);
+	  	txtcoinmanagercoinin2 = (EditText) findViewById(R.id.txtcoinmanagercoinin2);
+	  	txtcoinmanagercoinin3 = (EditText) findViewById(R.id.txtcoinmanagercoinin3);
+	  	txtcoinmanagercoinin4 = (EditText) findViewById(R.id.txtcoinmanagercoinin4);
+	  	txtcoinmanagercoinin5 = (EditText) findViewById(R.id.txtcoinmanagercoinin5);
+	  	txtcoinmanagercoinin6 = (EditText) findViewById(R.id.txtcoinmanagercoinin6);
+	  	txtcoinmanagercoinin7 = (EditText) findViewById(R.id.txtcoinmanagercoinin7);
+	  	txtcoinmanagercoinin8 = (EditText) findViewById(R.id.txtcoinmanagercoinin8);
+	  	txtcoinmanagercoinin9 = (EditText) findViewById(R.id.txtcoinmanagercoinin9);
+	  	txtcoinmanagercoinin10 = (EditText) findViewById(R.id.txtcoinmanagercoinin10);
+	  	txtcoinmanagercoinin11 = (EditText) findViewById(R.id.txtcoinmanagercoinin11);
+	  	txtcoinmanagercoinin12 = (EditText) findViewById(R.id.txtcoinmanagercoinin12);
+	  	txtcoinmanagercoinin13 = (EditText) findViewById(R.id.txtcoinmanagercoinin13);
+	  	txtcoinmanagercoinin14 = (EditText) findViewById(R.id.txtcoinmanagercoinin14);
+	  	txtcoinmanagercoinin15 = (EditText) findViewById(R.id.txtcoinmanagercoinin15);
+	  	txtcoinmanagercoinin16 = (EditText) findViewById(R.id.txtcoinmanagercoinin16);
+	  	edtcoinpayout = (EditText) findViewById(R.id.edtcoinpayout);
+	  	btncoinon = (Button) findViewById(R.id.btncoinon);
+	  	btncoinon.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),0,1,1);
+		    }
+		});
+	  	btncoinoff = (Button) findViewById(R.id.btncoinoff);
+	  	btncoinoff.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),0,1,0);
+		    }
+		});
+	  	btncoinquery = (Button) findViewById(R.id.btncoinquery);
+	  	btncoinquery.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    }
+		});
+	  	btncoinpayout = (Button) findViewById(R.id.btncoinpayout);
+	  	btncoinpayout.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edtcoinpayout.getText().toString())));
+		    }
+		});
+	  	btncoinset = (Button) findViewById(R.id.btncoinset);
+	  	btncoinset.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),1,0,ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())),0);
+		    }
+		});
+	    //===============
+    	//hopper设置页面
+    	//===============
+	  	spinhopper = (Spinner) findViewById(R.id.spinhopper);
+	  	txthopperincount = (TextView) findViewById(R.id.txthopperincount);
+	  	txthopperpaymoney = (TextView) findViewById(R.id.txthopperpaymoney);	  	
+	  	txthopperin1 = (EditText) findViewById(R.id.txthopperin1);
+	  	txthopperin2 = (EditText) findViewById(R.id.txthopperin2);
+	  	txthopperin3 = (EditText) findViewById(R.id.txthopperin3);
+	  	txthopperin4 = (EditText) findViewById(R.id.txthopperin4);
+	  	txthopperin5 = (EditText) findViewById(R.id.txthopperin5);
+	  	txthopperin6 = (EditText) findViewById(R.id.txthopperin6);
+	  	txthopperin7 = (EditText) findViewById(R.id.txthopperin7);
+	  	txthopperin8 = (EditText) findViewById(R.id.txthopperin8);
+	  	edthopperpayout = (EditText) findViewById(R.id.edthopperpayout);
+	  	btnhopperquery = (Button) findViewById(R.id.btnhopperquery);
+	  	btnhopperquery.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+		    }
+		});
+	  	btnhopperpay = (Button) findViewById(R.id.btnhopperpay);
+	  	btnhopperpay.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    }
+		});
 	}
 	@Override
 	protected void onDestroy() {		

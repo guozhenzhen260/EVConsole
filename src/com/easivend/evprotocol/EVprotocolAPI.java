@@ -211,6 +211,39 @@ public class EVprotocolAPI
 									callBack.jniCallback(allSet);
 						    	}
 						    	break;
+						    case EV_MDB_C_INFO://硬币器查询接口
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_C_INFO);
+									allSet.put("acceptor", ev_head.getInt("acceptor"));
+									allSet.put("dispenser", ev_head.getInt("dispenser"));
+									allSet.put("code", ev_head.getString("code"));
+									allSet.put("sn", ev_head.getString("sn"));
+									allSet.put("model", ev_head.getString("model"));
+									allSet.put("ver", ev_head.getString("ver"));
+									allSet.put("capacity", ev_head.getInt("capacity"));
+									JSONArray arr1=ev_head.getJSONArray("ch_r");//返回json数组
+									Map<String,Integer> allSet1 = new LinkedHashMap<String,Integer>() ;
+									for(int i=0;i<arr1.length();i++)
+									{
+										JSONObject object2=arr1.getJSONObject(i);
+										allSet1.put(String.valueOf(object2.getInt("ch")), object2.getInt("value"));								
+									}
+									allSet.put("ch_r", allSet1);
+									
+									JSONArray arr2=ev_head.getJSONArray("ch_d");//返回json数组
+									Map<String,Integer> allSet2 = new LinkedHashMap<String,Integer>() ;
+									for(int i=0;i<arr2.length();i++)
+									{
+										JSONObject object2=arr2.getJSONObject(i);
+										allSet2.put(String.valueOf(object2.getInt("ch")), object2.getInt("value"));								
+									}
+									allSet.put("ch_d", allSet2);
+									callBack.jniCallback(allSet);
+						    	}
+						    	break;
 						    case EV_MDB_PAYOUT://找币接口
 						    	if(ev_head.getInt("is_success")>0)
 						    	{
@@ -553,8 +586,36 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbBillInfoCheck(int port_id)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbInfo>>port_id=]"+port_id);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbbillInfo>>port_id=]"+port_id);
 		return EVprotocol.EV_mdbBillInfoCheck(port_id);
+	}
+	
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbCoinInfoCheck
+	** Descriptions		:		MDB硬币器信息查询接口  [异步]
+	** input parameters	:       port_id:串口编号;
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":25,"port_id":0,"is_success":1,
+	*							"acceptor":2,"dispenser":2,"code":"MEI","sn":"12312....","model":"***",
+	*							"ver":"1212","capacity":500,"ch_r":[],"ch_d":[]}}
+	*							"EV_type"= EV_MDB_C_INFO = 25: 表示MDB硬币器信息查询结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"acceptor": 硬币接收器协议类型	0:接收器关闭	1:并行硬币脉冲协议  2:MDB协议接收器 3:串行硬币脉冲协议
+	*							"dispenser": 硬币找零器协议类型	0:找零器关闭	1:hopper 串口232协议  2:MDB协议找零器
+	*							"code": 硬币器厂商代码			例如：MEI
+	*							"sn":硬币器序列号
+	*							"model":硬币器型号			
+	*							ver:硬币器软件版本号
+	*							capacity:硬币器储币量	
+	*							ch_r:硬币器接收器通道面值 		以分为单位
+	*							ch_d:硬币器找零器通道面值		以分为单位
+	*********************************************************************************************************/
+	public  static int EV_mdbCoinInfoCheck(int port_id)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbcoinInfo>>port_id=]"+port_id);
+		return EVprotocol.EV_mdbCoinInfoCheck(port_id);
 	}
 	
 	/*********************************************************************************************************

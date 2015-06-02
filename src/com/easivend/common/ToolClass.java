@@ -367,7 +367,11 @@ public class ToolClass
 	//接收金额转换函数，接收的分,转为浮点的元
 	public static float MoneyRec(long Money)
 	{
-		float amount = (float)(Money/100);
+		float amount1=0,amount2=0;
+		amount1=(float)(Money/100);
+		amount2=(float)(Money%100);
+		amount2=amount2/100;
+		float amount = amount1+amount2;
 		return amount;
 	}
 	
