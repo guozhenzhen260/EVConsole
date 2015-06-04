@@ -32,8 +32,7 @@ import android.widget.SimpleAdapter;
 
 public class BusHuo extends Activity 
 {
-	private final int SPLASH_DISPLAY_LENGHT = 10000; // 延迟10秒
-	private String out_trade_no=null;
+	private final int SPLASH_DISPLAY_LENGHT = 10000; // 延迟10秒	
 	private String proID = null;
 	private String productID = null;
 	private String proType = null;
@@ -41,7 +40,6 @@ public class BusHuo extends Activity
 	private String huoID = null;
     private float prosales = 0;
     private int count = 0;
-    private float reamin_amount = 0;
     private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private String data[][]=null;
     private ListView lvbushuo = null;
@@ -52,16 +50,9 @@ public class BusHuo extends Activity
     private int tempx=0;
     private String draw=null,info=null;
     private int cabinetvar=0,huodaoNo=0,cabinetTypevar=0;
-    private vmc_columnDAO columnDAO =null;
-    private int huorst=0;
+    private vmc_columnDAO columnDAO =null; 
     //出货结果
-    private int device=0;//出货柜号		
-	private int status=0;//出货结果
-	private int hdid=0;//货道id
-	private int hdtype=0;//出货类型
-	private float cost=0;//扣钱
-	private float totalvalue=0;//剩余金额
-	private int huodao=0;//剩余存货数量
+    private int status=0;//出货结果	
 	
     
 	@Override
@@ -78,8 +69,7 @@ public class BusHuo extends Activity
 			BusgoodsSelect.BusgoodsSelectAct.finish(); 
 		if(BusZhiSelect.BusZhiSelectAct!=null)
     		BusZhiSelect.BusZhiSelectAct.finish(); 
-		if(BusZhiAmount.BusZhiAmountAct!=null)
-			BusZhiAmount.BusZhiAmountAct.finish(); 
+		
 		
 		//注册出货监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
@@ -92,6 +82,80 @@ public class BusHuo extends Activity
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
+					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
+						status=(Integer)allSet.get("result");//出货结果
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]");	
+						//1.更新出货结果
+						//扣除存货余量
+						chuhuoupdate(cabinetvar,huodaoNo);
+						//出货成功
+						if(status==1)
+						{
+							data[tempx][0]=String.valueOf(R.drawable.yes);
+							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
+							chuhuoLog(1);//记录日志
+						}
+						else
+						{
+							data[tempx][0]=String.valueOf(R.drawable.no);
+							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
+							chuhuoLog(0);//记录日志
+						}
+						updateListview();
+						
+						//3.退回找零页面
+						ivbushuoquhuo.setVisibility(View.VISIBLE);
+			 	    	new Handler().postDelayed(new Runnable() 
+						{
+	                        @Override
+	                        public void run() 
+	                        {	   
+	                        	//退出时，返回intent
+                	            Intent intent=new Intent();
+                	            intent.putExtra("status", status);//出货结果
+	                        	if(zhifutype==0)//现金支付
+	                        	{                        			
+                    	            setResult(BusZhiAmount.RESULT_CANCELED,intent);                    	            
+                        		}
+	                        	else if(zhifutype==3)//支付宝二维码
+	                        	{
+                    	            setResult(BusZhier.RESULT_CANCELED,intent);                    	            
+                        		}
+	                        	else if(zhifutype==4)//微信扫描
+	                        	{                        			
+                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);                    	            
+                        		}
+	                        	finish();
+//	                        	//出货完成,把非现金模块去掉
+//	                        	if(status==0)
+//	                        	{
+//	                        		if(BusZhier.BusZhierAct!=null)
+//	                        			BusZhier.BusZhierAct.finish(); 
+//	                        		if(BusZhiwei.BusZhiweiAct!=null)
+//	                        			BusZhiwei.BusZhiweiAct.finish(); 
+//	                        		OrderDetail.addLog(BusHuo.this);
+//	                        	}
+//	                        	//出货失败，退到非现金模块进行退币操作
+//	                        	else
+//	                        	{
+//	                        		if(BusZhier.BusZhierAct!=null)
+//	                        		{
+//	                        			//退出时，返回intent
+//	                    	            Intent intent=new Intent();
+//	                    	            setResult(BusZhier.RESULT_CANCELED,intent);
+//	                        		}
+//	                        		if(BusZhiwei.BusZhiweiAct!=null)
+//	                        		{
+//	                        			//退出时，返回intent
+//	                    	            Intent intent=new Intent();
+//	                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
+//	                        		}
+//								}		                        	
+	                            
+	                        }
+
+						}, SPLASH_DISPLAY_LENGHT);
+						break;
 					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
 //						device=allSet.get("device");//出货柜号
 //						status=allSet.get("status");//出货结果
@@ -191,21 +255,20 @@ public class BusHuo extends Activity
 		//从商品页面中取得锁选中的商品
 //		Intent intent=getIntent();
 //		Bundle bundle=intent.getExtras();
-		out_trade_no=OrderDetail.getOrdereID();
 		proID=OrderDetail.getProID();
 		productID=OrderDetail.getProductID();
 		proType=OrderDetail.getProType();
 		cabID=OrderDetail.getCabID();
 		huoID=OrderDetail.getColumnID();
-		prosales=OrderDetail.getShouldPay();
-		count=OrderDetail.getShouldNo();
-		reamin_amount=OrderDetail.getSmallAmount();
+		prosales=OrderDetail.getShouldPay();//商品单价
+		count=OrderDetail.getShouldNo();//数量
 		zhifutype=OrderDetail.getPayType();
+		
 		
   	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-				+count+" reamin_amount="+reamin_amount+" zhifutype="+zhifutype);		
+				+count+" zhifutype="+zhifutype);		
 		this.data=new String[count][2];
 		draw=String.valueOf(R.drawable.shuaxin);
 		info=proID+"["+prosales+"]"+"->等待出货";
@@ -219,55 +282,10 @@ public class BusHuo extends Activity
 		this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);
 		ivbushuoquhuo.setVisibility(View.GONE);
 		
-		//*******************
-		//按顺序出货
-		//*******************
-		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
- 	    columnDAO = new vmc_columnDAO(this);
- 	    while((huorst!=1)&&(tempx<count))
- 	    {
- 	    	huorst=chuhuoopt(tempx);
- 	    	if(huorst==2)
-			{
-				data[tempx][0]=String.valueOf(R.drawable.yes);
-				data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-				updateListview();
-				tempx++;					
-				//扣除存货余量
-				chuhuoupdate(cabinetvar,huodaoNo);
-				chuhuoLog(0);//记录日志
-			}
-			else if(huorst==0)
-			{
-				data[tempx][0]=String.valueOf(R.drawable.no);
-				data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-				updateListview();
-				tempx++;
-				//扣除存货余量
-				chuhuoupdate(cabinetvar,huodaoNo);
-				chuhuoLog(1);//记录日志
-			}
- 	    }
- 	    if(tempx>=count)
- 	    {
- 	    	ivbushuoquhuo.setVisibility(View.VISIBLE);
- 	    	//延时10s
- 	    	new Handler().postDelayed(new Runnable() 
-			{
-                @Override
-                public void run() 
-                {
-                	//出货完成,把非现金模块去掉
-                	if(BusZhier.BusZhierAct!=null)
-            			BusZhier.BusZhierAct.finish(); 	
-                	if(BusZhiwei.BusZhiweiAct!=null)
-            			BusZhiwei.BusZhiweiAct.finish(); 
-                	OrderDetail.addLog(BusHuo.this);
-                    finish();
-                }
-
-			}, SPLASH_DISPLAY_LENGHT);
- 	    }
+		//****
+		//出货
+		//****
+		chuhuoopt(tempx);
 	}
 	
 	//加载出货信息到列表中
@@ -290,10 +308,12 @@ public class BusHuo extends Activity
 	}
 	
 	//出货,返回值0失败,1出货指令成功，等待返回结果,2出货完成
-	private int chuhuoopt(int huox)
+	private void chuhuoopt(int huox)
 	{
 		int huorst=0;
 		int rst=0;
+		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
+ 	    columnDAO = new vmc_columnDAO(this);
 		data[huox][1]=proID+"["+prosales+"]"+"->正在出货,请稍候...";
 		updateListview();
 		//1.计算出出货货道
@@ -317,54 +337,26 @@ public class BusHuo extends Activity
 			cabinetTypevar=Integer.parseInt(alllist);
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
 		}
-		//2.计算出出货是否要用金额
-		int typevar=0;
-		float sales=0;
-		//现金
-		if(zhifutype==0)
-		{			
-			sales=prosales;
-		}
-		//非现金
-		else
-		{
-			sales=0;
-		}
-		//计算出类型
-		if(sales>0)
-			typevar=0;
-		else 
-			typevar=2;
-		
+				
 		//格子柜
 		if(cabinetTypevar==5)
 		{
-			//rst=EVprotocolAPI.bentoOpen(cabinetvar,huodaoNo);
-			if(rst==0)//出货发送失败
-			{
-				huorst=0;
-			}
-			else if(rst==1)//出货发送成功
-			{
-				huorst=2;
-			}
-			
+			EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huodaoNo);							
 		}
 		//普通柜
 		else 
 		{
-			rst=EVprotocolAPI.trade(cabinetvar,huodaoNo,typevar,
-		    			ToolClass.MoneySend(sales));
-			if(rst==0)//出货发送失败
-			{
-				huorst=0;
-			}
-			else if(rst==1)//出货发送成功
-			{
-				huorst=1;
-			}
-		}
-		return huorst;
+//			rst=EVprotocolAPI.trade(cabinetvar,huodaoNo,typevar,
+//		    			ToolClass.MoneySend(sales));
+//			if(rst==0)//出货发送失败
+//			{
+//				huorst=0;
+//			}
+//			else if(rst==1)//出货发送成功
+//			{
+//				huorst=1;
+//			}
+		}		
 	}
 	//修改存货数量
 	private void chuhuoupdate(int cabinetvar,int huodaoNo)
@@ -384,11 +376,11 @@ public class BusHuo extends Activity
 		columnDAO.update(cab,huo);
 	}
 	
-	//记录日志出货结果type=0出货成功，1出货失败
+	//记录日志出货结果type=1出货成功，0出货失败
 	private void chuhuoLog(int type)
 	{
 		OrderDetail.setYujiHuo(1);
-		if(type==0)//出货成功
+		if(type==1)//出货成功
 		{
 			OrderDetail.setPayStatus(0);
 			OrderDetail.setRealHuo(1);

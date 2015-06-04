@@ -138,16 +138,6 @@ public class Vmc_OrderAdapter
 			debtAmount[m] = String.valueOf(tb_inaccount.getDebtAmount());// 欠款金额
 			realCard[m] = String.valueOf(tb_inaccount.getRealCard());// 非现金退币金额
 			payTime[m] = String.valueOf(tb_inaccount.getPayTime());//支付时间
-			//详细支付订单
-			Tb_vmc_order_product tb_vmc_order_product=orderDAO.getScrollProduct(ordereID[m]);
-			productID[m] = tb_vmc_order_product.getProductID();
-			cabID[m] = tb_vmc_order_product.getCabID();
-			columnID[m] = tb_vmc_order_product.getColumnID();
-			//商品信息
-			Tb_vmc_product tb_product = productDAO.find(productID[m]);
-			productName[m]=tb_product.getProductName();
-			salesPrice[m]=String.valueOf(tb_product.getSalesPrice());
-			
 			//数字类型订单信息
 		    smallNotevalue[m]= tb_inaccount.getSmallNote();// 纸币金额
 		    smallConivalue[m]= tb_inaccount.getSmallConi();// 硬币金额
@@ -160,8 +150,29 @@ public class Vmc_OrderAdapter
 		    realAmountvalue[m]= tb_inaccount.getRealAmount();// 现金退币金额
 		    debtAmountvalue[m]= tb_inaccount.getDebtAmount();// 欠款金额
 		    realCardvalue[m]= tb_inaccount.getRealCard();// 非现金退币金额
-		    //商品信息
-		    salesPricevalue[m]= tb_product.getSalesPrice();// 优惠价,如”20.00”
+			if(ordereID[m]!=null)
+			{
+				//详细支付订单
+				Tb_vmc_order_product tb_vmc_order_product=orderDAO.getScrollProduct(ordereID[m]);
+				productID[m] = tb_vmc_order_product.getProductID();
+				cabID[m] = tb_vmc_order_product.getCabID();
+				columnID[m] = tb_vmc_order_product.getColumnID();
+			}
+			if(productID[m]!=null)
+			{
+				//商品信息
+				Tb_vmc_product tb_product = productDAO.find(productID[m]);
+				if(tb_product!=null)
+				{
+					productName[m]=tb_product.getProductName();
+					salesPrice[m]=String.valueOf(tb_product.getSalesPrice());
+					
+					//数字类型订单信息
+				    salesPricevalue[m]= tb_product.getSalesPrice();// 优惠价,如”20.00”
+				}
+			}
+			
+		    
 		    
 	    	m++;// 标识加1
 	    }

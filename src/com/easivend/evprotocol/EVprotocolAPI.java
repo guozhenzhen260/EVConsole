@@ -121,7 +121,7 @@ public class EVprotocolAPI
 						    	
 						    //快递柜设备	
 						    case EV_BENTO_OPEN://快递柜开门
-						    	if(ev_head.getInt("is_success")>0)
+						    	//if(ev_head.getInt("is_success")>0)
 						    	{
 									//往接口回调信息
 									allSet.clear();
@@ -276,6 +276,30 @@ public class EVprotocolAPI
 									callBack.jniCallback(allSet);
 						    	}
 						    	break;
+						    case EV_MDB_COST:
+//						    	if(ev_head.getInt("is_success")>0)
+//						    	{
+//									//往接口回调信息
+//									allSet.clear();
+//									allSet.put("EV_TYPE", EV_MDB_COST);
+//									allSet.put("result", ev_head.getInt("result"));
+//									allSet.put("bill_recv", ev_head.getInt("bill_recv"));
+//									allSet.put("coin_recv", ev_head.getInt("coin_recv"));									
+//									callBack.jniCallback(allSet);
+//						    	}
+						    	break;
+						    case EV_MDB_PAYBACK://退币接口
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_PAYBACK);
+									allSet.put("result", ev_head.getInt("result"));
+									allSet.put("bill_changed", ev_head.getInt("bill_changed"));
+									allSet.put("coin_changed", ev_head.getInt("coin_changed"));									
+									callBack.jniCallback(allSet);
+						    	}
+						    	break;	
 					    }
 
 //					    //出货
@@ -671,47 +695,44 @@ public class EVprotocolAPI
 		return EVprotocol.EV_mdbHeart(port_id);
 	}
 	/*********************************************************************************************************
-	** Function name:     	payout
-	** Descriptions:	    VMC出币接口
-	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回出货的结果进行解析
-	** input parameters:    value:要出币的金额(单位:分)
-	** output parameters:   无
-	** Returned value:      1请求发送成功   0:请求发送失败
+	** Function name	:		EV_mdbCost
+	** Descriptions		:		MDB扣款接口  [异步]
+	** input parameters	:       port_id:串口编号;cost:扣款金额  以分为单位
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"cost":100,"is_success":1,
+	*							"result":1,"bill_recv":0,"coin_recv":0}}
+	*							"EV_type"= EV_MDB_COST = 26: 表示MDB扣款结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:扣款成功     0:扣款失败
+	*							"bill_recv":纸币器当前收币金额	  以分为单位
+	*							"coin_recv":硬币器当前收币金额	  以分为单位
 	*********************************************************************************************************/
-	public static int payout(long value)
+	public  static int EV_mdbCost(int port_id,int cost)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIpayout>>]"+value);
-		//return ev.payout((int)value);		
-		return 0;
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbmdbCost>>port_id=]"+port_id+"[cost]="+cost);
+		return EVprotocol.EV_mdbCost(port_id,cost);
 	}
-	
 	/*********************************************************************************************************
-	** Function name:     	payback
-	** Descriptions:	    VMC退币接口
-	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
-	** input parameters:    无
-	** output parameters:   无
-	** Returned value:      1请求发送成功   0:请求发送失败
+	** Function name	:		EV_mdbPayback
+	** Descriptions		:		MDB退币接口  [异步]
+	** input parameters	:       port_id:串口编号;bill:操作纸币器  1:操作,0:不操作,coin:操作硬币器  1:操作,0:不操作
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"bill":1,"coin":1,"is_success":1,
+	*							"result":1,"bill_changed":0,"coin_changed":100}}
+	*							"EV_type"= EV_MDB_PAYBACK = 27: 表示MDB退币结果回应包类型
+	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:退币成功     0:退币失败
+	*							"bill_changed":纸币器当前找币金额	  以分为单位
+	*							"coin_changed":硬币器当前找币金额	  以分为单位
 	*********************************************************************************************************/
-	public  static int payback()
+	public  static int EV_mdbPayback(int port_id,int bill,int coin)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIback>>]");
-		//return ev.payback();	
-		return 0;
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbPayback>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin);
+		return EVprotocol.EV_mdbPayback(port_id,bill,coin);
 	}
-	
-	/*********************************************************************************************************
-	** Function name:     	cashControl
-	** Descriptions:	             控制现金设备 直接返回 不进行回调
-	** input parameters:    flag 1:开启现金设备  0关闭现金设备
-	** output parameters:   无
-	** Returned value:      1成功  0失败
-	*********************************************************************************************************/
-	public  static int cashControl(int flag)
-	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcashControl>>]"+flag);
-		//return ev.cashControl(flag);		
-		return 0;
-	}
-			
+					
 }

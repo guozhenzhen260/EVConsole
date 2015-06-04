@@ -67,32 +67,18 @@
 	        android:layout_below="@+id/txtbusgoodselNumtxt"
 	        android:textSize="40sp"
             android:textStyle="bold"
-	        android:text="购买数量:"/>
-	<ImageButton
-		        android:id="@+id/imgbtnbusgoodselsub"
-		        android:layout_toRightOf="@+id/txtbusgoodselNotxt"
-	        	android:layout_below="@+id/txtbusgoodselNum"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:src="@drawable/sub" />
+	        android:text="购买数量:"/>	
 	<TextView
             android:id="@+id/txtbusgoodselNo"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/imgbtnbusgoodselsub"
+	        android:layout_toRightOf="@+id/txtbusgoodselNotxt"
 	        android:layout_below="@+id/txtbusgoodselNum"
 	        android:textSize="40sp"
             android:textStyle="bold"
 	        android:numeric="decimal"
 	        android:textColor="#FF0000" 
-	        android:text="1" />
-	<ImageButton
-		        android:id="@+id/imgbtnbusgoodseladd"
-		        android:layout_toRightOf="@+id/txtbusgoodselNo"
-	        	android:layout_below="@+id/txtbusgoodselNum"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:src="@drawable/add" />
+	        android:text="1" />	
 	<TextView
             android:id="@+id/txtbusgoodselAmounttxt"
 	        android:layout_width="wrap_content" 

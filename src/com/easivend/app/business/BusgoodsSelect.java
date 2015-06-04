@@ -20,13 +20,12 @@ public class BusgoodsSelect extends Activity
 	ImageView ivbusgoodselProduct=null;
 	TextView txtbusgoodselName=null,txtbusgoodselPrice=null,txtbusgoodselNum=null,txtbusgoodselNo=null,
 			txtbusgoodselAmount=null;
-	ImageButton imgbtnbusgoodselbuy=null,imgbtnbusgoodselcancel=null,imgbtnbusgoodselsub=null,imgbtnbusgoodseladd=null;
+	ImageButton imgbtnbusgoodselbuy=null,imgbtnbusgoodselcancel=null;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
     private String prosales = null;
     private String procount = null;
-    private String reamin_amount = null;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +41,10 @@ public class BusgoodsSelect extends Activity
 		proImage=bundle.getString("proImage");
 		prosales=bundle.getString("prosales");
 		procount=bundle.getString("procount");
-		reamin_amount=bundle.getString("reamin_amount");
 		
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="+productID+" proImage="
 					+proImage+" prosales="+prosales+" procount="
-					+procount+" reamin_amount="+reamin_amount);
+					+procount);
 		ivbusgoodselProduct = (ImageView) findViewById(R.id.ivbusgoodselProduct);
 		/*为什么图片一定要转化为 Bitmap格式的！！ */
         Bitmap bitmap = ToolClass.getLoacalBitmap(proImage); //从本地取图片(在cdcard中获取)  //
@@ -62,21 +60,7 @@ public class BusgoodsSelect extends Activity
 		if(Integer.parseInt(txtbusgoodselNum.getText().toString())>0)
 			txtbusgoodselAmount.setText(prosales);
 		else
-			txtbusgoodselAmount.setText("0");	
-		imgbtnbusgoodselsub = (ImageButton) findViewById(R.id.imgbtnbusgoodselsub);
-		imgbtnbusgoodselsub.setOnClickListener(new OnClickListener() {
-		    @Override
-		    public void onClick(View arg0) {
-		    	
-		    }
-		});
-		imgbtnbusgoodseladd = (ImageButton) findViewById(R.id.imgbtnbusgoodseladd);
-		imgbtnbusgoodseladd.setOnClickListener(new OnClickListener() {
-		    @Override
-		    public void onClick(View arg0) {
-		    	
-		    }
-		});
+			txtbusgoodselAmount.setText("0");
 		imgbtnbusgoodselbuy = (ImageButton) findViewById(R.id.imgbtnbusgoodselbuy);		
 		imgbtnbusgoodselbuy.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -98,7 +82,6 @@ public class BusgoodsSelect extends Activity
 	            	OrderDetail.setProType("1");
 	            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
 	            	OrderDetail.setShouldNo(1);
-	            	OrderDetail.setSmallAmount(Float.parseFloat(reamin_amount));
 	            	
 	            	startActivity(intent);// 打开Accountflag
 		    	}

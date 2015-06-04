@@ -82,17 +82,17 @@ public class AddInaccount extends TabActivity
         LayoutInflater.from(this).inflate(R.layout.addinaccount, this.mytabhost.getTabContentView(),true);
         //Ôö¼ÓTabµÄ×é¼ş
         TabSpec myTabbill=this.mytabhost.newTabSpec("tab0");
-        myTabbill.setIndicator("Ö½±ÒÆ÷ÉèÖÃ");
+        myTabbill.setIndicator("Ö½±ÒÆ÷²âÊÔ");
         myTabbill.setContent(this.layres[0]);
     	this.mytabhost.addTab(myTabbill); 
     	
     	TabSpec myTabcoin=this.mytabhost.newTabSpec("tab1");
-    	myTabcoin.setIndicator("Ó²±ÒÆ÷ÉèÖÃ");
+    	myTabcoin.setIndicator("Ó²±ÒÆ÷²âÊÔ");
     	myTabcoin.setContent(this.layres[1]);
     	this.mytabhost.addTab(myTabcoin); 
     	
     	TabSpec myTabpay=this.mytabhost.newTabSpec("tab2");
-    	myTabpay.setIndicator("HopperÕÒÁãÆ÷ÉèÖÃ");
+    	myTabpay.setIndicator("HopperÕÒÁãÆ÷²âÊÔ");
     	myTabpay.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabpay); 
     	
@@ -429,10 +429,6 @@ public class AddInaccount extends TabActivity
 		    }
 		});
 	}
-	@Override
-	protected void onDestroy() {		
-		EVprotocolAPI.cashControl(0);//¹Ø±ÕÊÕ±ÒÉè±¸	
-		super.onDestroy();
-	}
+	
 
 }

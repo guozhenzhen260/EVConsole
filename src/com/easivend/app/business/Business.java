@@ -66,8 +66,7 @@ public class Business extends Activity
 	private String productID = null;
 	private String cabID = null;
 	private String huoID = null;
-    private String prosales = null;
-    private String reamin_amount = "0";
+    private String prosales = null;    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{		
@@ -396,7 +395,7 @@ public class Business extends Activity
 			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 						+productID+" proType="
 						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1"+" reamin_amount="+reamin_amount);
+						+"1");
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");
@@ -417,7 +416,6 @@ public class Business extends Activity
             	OrderDetail.setColumnID(huoID);
             	OrderDetail.setShouldPay(Float.parseFloat(prosales));
             	OrderDetail.setShouldNo(1);
-            	OrderDetail.setSmallAmount(Float.parseFloat(reamin_amount));
 	        	startActivity(intent);// 打开Accountflag
 		    }
 		    else
@@ -425,7 +423,7 @@ public class Business extends Activity
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 						+productID+" proType="
 						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1"+" reamin_amount="+reamin_amount);
+						+"1");
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");

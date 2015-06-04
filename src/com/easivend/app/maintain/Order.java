@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +41,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
@@ -295,6 +297,21 @@ public class Order extends TabActivity
             	startActivity(intent);// 打开Accountflag
 		    }
 		});
+    	//动态设置控件高度
+    	//
+    	DisplayMetrics  dm = new DisplayMetrics();  
+        //取得窗口属性  
+        getWindowManager().getDefaultDisplay().getMetrics(dm);  
+        //窗口的宽度  
+        int screenWidth = dm.widthPixels;          
+        //窗口高度  
+        int screenHeight = dm.heightPixels;      
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
+				+"],["+screenHeight+"]");	
+		
+    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvorder.getLayoutParams(); // 取控件mGrid当前的布局参数
+    	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
+    	lvorder.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
 	}
 	//===============
 	//报表查询页面

@@ -265,11 +265,25 @@ public class BusZhiwei extends Activity
 		{
 			if(resultCode==BusZhiwei.RESULT_CANCELED)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
-				////退款
-				OrderDetail.setRealStatus(3);//记录退币失败
-				OrderDetail.setRealCard(0);//记录退币金额
-				OrderDetail.addLog(BusZhiwei.this);;
+				Bundle bundle=data.getExtras();
+  				int status=bundle.getInt("status");//出货结果1成功,0失败
+  				//1.
+  				//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款");
+					OrderDetail.addLog(BusZhiwei.this);
+					finish();
+				}
+				//出货失败,退钱
+				else
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
+					////退款
+					OrderDetail.setRealStatus(3);//记录退币失败
+					OrderDetail.addLog(BusZhiwei.this);
+					finish();
+				}
 			}			
 		}
 	}

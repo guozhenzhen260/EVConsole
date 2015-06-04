@@ -407,7 +407,7 @@ public class EVprotocol {
 	** Returned value	:		1：发送成功  0：发送失败
 	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"bill":1,"coin":1,"is_success":1,
 	*							"result":1,"bill_changed":0,"coin_changed":100}}
-	*							"EV_type"= EV_MDB_COST = 26: 表示MDB退币结果回应包类型
+	*							"EV_type"= EV_MDB_PAYBACK = 27: 表示MDB退币结果回应包类型
 	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result":扣款结果	1:退币成功     0:退币失败

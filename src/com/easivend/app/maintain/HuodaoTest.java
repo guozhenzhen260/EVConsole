@@ -168,7 +168,7 @@ public class HuodaoTest extends TabActivity
 //						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
 //						showhuodao();						
 						break;
-					case EVprotocolAPI.EV_BENTO_CHECK://接收子线程消息
+					case EVprotocolAPI.EV_BENTO_CHECK://格子柜查询
 						String tempno=null;
 						
 						cool=(Integer)Set.get("cool");
@@ -230,7 +230,7 @@ public class HuodaoTest extends TabActivity
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
 						showhuodao();						
 						break;	
-					case EVprotocolAPI.EV_BENTO_OPEN://接收子线程消息
+					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
 						device=(Integer)allSet.get("addr");//出货柜号						
 						hdid=(Integer)allSet.get("box");//货道id
 						status=(Integer)allSet.get("result");//出货结果
@@ -239,7 +239,7 @@ public class HuodaoTest extends TabActivity
 						txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
 						sethuorst(status);
 						break;	
-					case EVprotocolAPI.EV_BENTO_LIGHT://接收子线程消息
+					case EVprotocolAPI.EV_BENTO_LIGHT://格子柜开灯
 						device=(Integer)allSet.get("addr");//柜号						
 						int opt=(Integer)allSet.get("opt");//货道id
 						status=(Integer)allSet.get("result");//结果

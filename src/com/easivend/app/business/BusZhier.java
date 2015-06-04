@@ -13,6 +13,7 @@ import com.easivend.common.OrderDetail;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
@@ -317,11 +318,25 @@ public class BusZhier extends Activity
 		{
 			if(resultCode==BusZhier.RESULT_CANCELED)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
-				payoutzhier();//退款操作
-				OrderDetail.setRealStatus(1);//记录退币成功
-				OrderDetail.setRealCard(amount);//记录退币金额
-				OrderDetail.addLog(BusZhier.this);
+				Bundle bundle=data.getExtras();
+  				int status=bundle.getInt("status");//出货结果1成功,0失败
+  			    //1.
+  				//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款");
+					OrderDetail.addLog(BusZhier.this);
+					finish();
+				}
+				//出货失败,退钱
+				else
+				{	
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
+					payoutzhier();//退款操作
+					OrderDetail.setRealStatus(1);//记录退币成功
+					OrderDetail.setRealCard(amount);//记录退币金额
+					OrderDetail.addLog(BusZhier.this);
+				}				
 			}			
 		}
 	}
