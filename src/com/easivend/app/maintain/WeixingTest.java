@@ -53,6 +53,9 @@ public class WeixingTest extends Activity
 						imgweixingtest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
 						txtweixingtest.setText("交易结果:"+msg.obj.toString());
 						break;
+					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
+						txtweixingtest.setText("交易结果:"+msg.obj.toString());
+						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
 						txtweixingtest.setText("交易结果:退款成功");
 						break;

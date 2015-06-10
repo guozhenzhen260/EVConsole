@@ -47,7 +47,7 @@ public class GoodsSelect extends Activity
 		// 商品表中的所有商品信息补充到商品数据结构数组中
 		final Vmc_ProductAdapter productAdapter=new Vmc_ProductAdapter();
     	productAdapter.showProInfo(GoodsSelect.this,"","shoudong",""); 
-    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsSelect.this);// 创建pictureAdapter对象
+    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsSelect.this);// 创建pictureAdapter对象
     	gvselectProduct.setAdapter(adapter);// 为GridView设置数据源
     	//修改或添加货道对应商品
     	gvselectProduct.setOnItemClickListener(new OnItemClickListener() {

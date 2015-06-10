@@ -26,6 +26,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -60,6 +62,11 @@ public class BusZhiAmount  extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		// 无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhiamount);
 		BusZhiAmountAct = this;
 		//从商品页面中取得锁选中的商品
@@ -87,9 +94,7 @@ public class BusZhiAmount  extends Activity
 		imgbtnbuszhiamountqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhiamountqxzf);
 		imgbtnbuszhiamountqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
-		    public void onClick(View arg0) {
-		    	if(BusZhiSelect.BusZhiSelectAct!=null)
-		    		BusZhiSelect.BusZhiSelectAct.finish(); 
+		    public void onClick(View arg0) {		    	
 		    	if(BusgoodsSelect.BusgoodsSelectAct!=null)
 					BusgoodsSelect.BusgoodsSelectAct.finish(); 
 		    	finishActivity();

@@ -52,6 +52,9 @@ public class ZhifubaoTest extends Activity
 						imgzhifubaotest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
 						txtzhifubaotest.setText("交易结果:"+msg.obj.toString());
 						break;
+					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
+						txtzhifubaotest.setText("交易结果:"+msg.obj.toString());
+						break;	
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
 						txtzhifubaotest.setText("交易结果:退款成功");
 						break;

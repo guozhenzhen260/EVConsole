@@ -25,6 +25,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -62,6 +64,11 @@ public class BusZhier extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		// 无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhier);
 		BusZhierAct = this;
 		//从商品页面中取得锁选中的商品
@@ -87,9 +94,7 @@ public class BusZhier extends Activity
 		imgbtnbuszhierqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhierqxzf);
 		imgbtnbuszhierqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
-		    public void onClick(View arg0) {
-		    	if(BusZhiSelect.BusZhiSelectAct!=null)
-		    		BusZhiSelect.BusZhiSelectAct.finish(); 
+		    public void onClick(View arg0) {		    	 
 		    	if(BusgoodsSelect.BusgoodsSelectAct!=null)
 					BusgoodsSelect.BusgoodsSelectAct.finish(); 
 		    	finishActivity();
@@ -107,7 +112,7 @@ public class BusZhier extends Activity
 		//***********************
 		mainhand=new Handler()
 		{
-
+			int con=0;
 			@Override
 			public void handleMessage(Message msg) {
 				//barzhifubaotest.setVisibility(View.GONE);
@@ -119,6 +124,10 @@ public class BusZhier extends Activity
 						txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
 						iszhier=1;
 						break;
+					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
+						txtbuszhierrst.setText("交易结果:重试"+msg.obj.toString()+con);
+						con++;
+						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
 						txtbuszhierrst.setText("交易结果:退款成功");
 						finish();
@@ -258,19 +267,33 @@ public class BusZhier extends Activity
                 public void run() { 
                     recLen--; 
                     txtbuszhiertime.setText("倒计时:"+recLen); 
+                    //退出页面
                     if(recLen <= 0)
                     { 
                         timer.cancel(); 
                         finishActivity();
                     } 
+                    
+                    
                     //发送查询交易指令
                     if(iszhier==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=10)
+	                    if(queryLen>=5)
 	                    {
 	                    	queryLen=0;
 	                    	queryzhier();
+	                    }
+                    }
+                    //发送订单交易指令
+                    else if(iszhier==0)
+                    {
+	                    queryLen++;
+	                    if(queryLen>=5)
+	                    {
+	                    	queryLen=0;
+	                    	//发送订单
+	                		sendzhier();
 	                    }
                     }
                 } 

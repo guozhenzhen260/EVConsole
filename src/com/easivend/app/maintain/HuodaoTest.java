@@ -684,7 +684,7 @@ public class HuodaoTest extends TabActivity
 	    					barhuomanager.setVisibility(View.VISIBLE);
 	    					// 创建InaccountDAO对象
 	    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoTest.this);
-				            columnDAO.buhuoCab(String.valueOf(cabinetsetvar));// 删除该柜货道信息	
+				            columnDAO.buhuoCab(String.valueOf(cabinetsetvar));
 				            showhuodao();
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	

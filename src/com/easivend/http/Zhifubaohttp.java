@@ -33,6 +33,7 @@ public class Zhifubaohttp implements Runnable
 	public final static int SETMAIN=1;//what标记,发送给主线程支付宝金额二维码	
 	public final static int SETFAILPROCHILD=5;//what标记,发送给主线程交易协议失败
 	public final static int SETFAILBUSCHILD=6;//what标记,发送给主线程交易信息失败
+	public final static int SETFAILNETCHILD=4;//what标记,发送给主线程交易网络
 	//查询
 	public final static int SETQUERYCHILD=7;//what标记,发送给子线程支付宝查询
 	public final static int SETQUERYMAIN=8;//what标记,发送给主线程查询结果正在付款
@@ -50,8 +51,8 @@ public class Zhifubaohttp implements Runnable
 	public final static int SETFAILDELETEPROCHILD=18;//what标记,发送给主线程交易协议失败
 	public final static int SETFAILDELETEBUSCHILD=19;//what标记,发送给主线程交易信息失败
 	
-	private final int SETWEIMAIN=3;//what标记,主线程接收到子线程微信金额二维码
-	private final int SETWEICHILD=4;//what标记,发送给子线程微信交易
+	//private final int SETWEIMAIN=3;//what标记,主线程接收到子线程微信金额二维码
+	//private final int SETWEICHILD=4;//what标记,发送给子线程微信交易
 	private Handler mainhand=null,childhand=null;
 	
 	public Zhifubaohttp(Handler mainhand) {
@@ -176,7 +177,13 @@ public class Zhifubaohttp implements Runnable
 //								e.printStackTrace();
 //							}
 				       } catch (Exception e) {  
-				           e.printStackTrace();  
+				           //e.printStackTrace();  
+				    	   //向主线程返回信息
+				           Message tomain=mainhand.obtainMessage();	
+				    	   tomain.what=SETFAILNETCHILD;
+				    	   tomain.obj="netfail";
+				    	   Log.i("EV_JNI","rec="+tomain.obj);				           
+						   mainhand.sendMessage(tomain); // 发送消息
 				       }
 						
 						
@@ -366,119 +373,119 @@ public class Zhifubaohttp implements Runnable
 			       }
 				break;
 				
-				case SETWEICHILD://子线程接收主线程微信消息
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
-					Map<String, String> swPara = new HashMap<String, String>();
-					 
-					//可以使用的例子，这个例子是微信提供的demo
-//					 sPara.put("appid","wxd930ea5d5a258f4f");
-//					 sPara.put("auth_code","123456");//订单总金额
-//					 sPara.put("body","test");//编码		
-//					 sPara.put("device_info","123");//商户网站唯一订单号	
-//					 sPara.put("mch_id","1900000109");
-//					 sPara.put("nonce_str","960f228109051b9969f76c82bde183ac");	 
-//					 sPara.put("out_trade_no", "1400755861");//卖家支付宝帐户
-//					 sPara.put("spbill_create_ip", "127.0.0.1");//卖家支付宝帐户
-//					 sPara.put("sub_mch_id", "124");
-//					 sPara.put("total_fee", "1");//卖家支付宝帐户
-//					 String sign=buildRequestPara(sPara);
+//				case SETWEICHILD://子线程接收主线程微信消息
+//					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
+//					Map<String, String> swPara = new HashMap<String, String>();
+//					 
+//					//可以使用的例子，这个例子是微信提供的demo
+////					 sPara.put("appid","wxd930ea5d5a258f4f");
+////					 sPara.put("auth_code","123456");//订单总金额
+////					 sPara.put("body","test");//编码		
+////					 sPara.put("device_info","123");//商户网站唯一订单号	
+////					 sPara.put("mch_id","1900000109");
+////					 sPara.put("nonce_str","960f228109051b9969f76c82bde183ac");	 
+////					 sPara.put("out_trade_no", "1400755861");//卖家支付宝帐户
+////					 sPara.put("spbill_create_ip", "127.0.0.1");//卖家支付宝帐户
+////					 sPara.put("sub_mch_id", "124");
+////					 sPara.put("total_fee", "1");//卖家支付宝帐户
+////					 String sign=buildRequestPara(sPara);
+////					 StringBuilder xml = new StringBuilder();
+////				     xml.append("<xml>");
+////				     xml.append("<appid>wxd930ea5d5a258f4f</appid>");
+////				     xml.append("<auth_code>123456</auth_code>");
+////				     xml.append("<body><![CDATA[test]]></body>");
+////				     xml.append("<device_info>123</device_info>");
+////				     xml.append("<mch_id>1900000109</mch_id>");
+////				     xml.append("<nonce_str>960f228109051b9969f76c82bde183ac</nonce_str>");
+////				     xml.append("<out_trade_no>1400755861</out_trade_no>");
+////				     xml.append("<spbill_create_ip>127.0.0.1</spbill_create_ip>");
+////				     xml.append("<sub_mch_id>124</sub_mch_id>");
+////				     xml.append("<total_fee>1</total_fee>");
+////				     xml.append("<sign><![CDATA["+sign+"]]></sign>");
+////				     xml.append("</xml>");
+//					
+//					
+//					swPara.put("appid","wx37a5d49081f487c4");
+//					swPara.put("mch_id","10052966");
+//					swPara.put("nonce_str","960f228109051b9969f76c82bde183ac");	 		 
+//					swPara.put("body","test");//编码		
+//					swPara.put("out_trade_no", "1400755861");//卖家支付宝帐户
+//					swPara.put("total_fee", "1");//卖家支付宝帐户
+//					swPara.put("spbill_create_ip", "127.0.0.1");//卖家支付宝帐户
+//					swPara.put("notify_url", "127.0.0.1");//卖家支付宝帐户
+//					swPara.put("trade_type","NATIVE");//商户网站唯一订单号	
+//					String key="1bd78d29964553116c7c405dd87b2072";
+//					String sign=WeixingSubmit.buildRequestPara(swPara,key);
+//					 
 //					 StringBuilder xml = new StringBuilder();
 //				     xml.append("<xml>");
-//				     xml.append("<appid>wxd930ea5d5a258f4f</appid>");
-//				     xml.append("<auth_code>123456</auth_code>");
-//				     xml.append("<body><![CDATA[test]]></body>");
-//				     xml.append("<device_info>123</device_info>");
-//				     xml.append("<mch_id>1900000109</mch_id>");
+//				     xml.append("<appid>wx37a5d49081f487c4</appid>");
+//				     xml.append("<mch_id>10052966</mch_id>");
 //				     xml.append("<nonce_str>960f228109051b9969f76c82bde183ac</nonce_str>");
+//				     xml.append("<body><![CDATA[test]]></body>");
 //				     xml.append("<out_trade_no>1400755861</out_trade_no>");
-//				     xml.append("<spbill_create_ip>127.0.0.1</spbill_create_ip>");
-//				     xml.append("<sub_mch_id>124</sub_mch_id>");
 //				     xml.append("<total_fee>1</total_fee>");
+//				     xml.append("<spbill_create_ip>127.0.0.1</spbill_create_ip>");	     
+//				     xml.append("<notify_url>127.0.0.1</notify_url>");	     
+//				     xml.append("<trade_type>NATIVE</trade_type>");
 //				     xml.append("<sign><![CDATA["+sign+"]]></sign>");
-//				     xml.append("</xml>");
-					
-					
-					swPara.put("appid","wx37a5d49081f487c4");
-					swPara.put("mch_id","10052966");
-					swPara.put("nonce_str","960f228109051b9969f76c82bde183ac");	 		 
-					swPara.put("body","test");//编码		
-					swPara.put("out_trade_no", "1400755861");//卖家支付宝帐户
-					swPara.put("total_fee", "1");//卖家支付宝帐户
-					swPara.put("spbill_create_ip", "127.0.0.1");//卖家支付宝帐户
-					swPara.put("notify_url", "127.0.0.1");//卖家支付宝帐户
-					swPara.put("trade_type","NATIVE");//商户网站唯一订单号	
-					String key="1bd78d29964553116c7c405dd87b2072";
-					String sign=WeixingSubmit.buildRequestPara(swPara,key);
-					 
-					 StringBuilder xml = new StringBuilder();
-				     xml.append("<xml>");
-				     xml.append("<appid>wx37a5d49081f487c4</appid>");
-				     xml.append("<mch_id>10052966</mch_id>");
-				     xml.append("<nonce_str>960f228109051b9969f76c82bde183ac</nonce_str>");
-				     xml.append("<body><![CDATA[test]]></body>");
-				     xml.append("<out_trade_no>1400755861</out_trade_no>");
-				     xml.append("<total_fee>1</total_fee>");
-				     xml.append("<spbill_create_ip>127.0.0.1</spbill_create_ip>");	     
-				     xml.append("<notify_url>127.0.0.1</notify_url>");	     
-				     xml.append("<trade_type>NATIVE</trade_type>");
-				     xml.append("<sign><![CDATA["+sign+"]]></sign>");
-				     xml.append("</xml>");	
-					
-				     try {
-				            byte[] xmlbyte = xml.toString().getBytes("UTF-8");
-				            
-				            Log.i("EV_JNI","Send5="+xml);
-
-				            URL url = new URL("https://api.mch.weixin.qq.com/pay/unifiedorder");
-				            
-				            
-				            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				            conn.setConnectTimeout(5000);
-				            conn.setDoOutput(true);// 允许输出
-				            conn.setDoInput(true);
-				            conn.setUseCaches(false);// 不使用缓存
-				            conn.setRequestMethod("POST");
-				            conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
-				            conn.setRequestProperty("Charset", "UTF-8");
-				            conn.setRequestProperty("Content-Length",
-				                    String.valueOf(xmlbyte.length));
-				            conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
-				            conn.setRequestProperty("X-ClientType", "2");//发送自定义的头信息
-
-				            conn.getOutputStream().write(xmlbyte);
-				            conn.getOutputStream().flush();
-				            conn.getOutputStream().close();
-
-
-				            if (conn.getResponseCode() != 200)
-				                throw new RuntimeException("请求url失败");
-
-				            InputStream is = conn.getInputStream();// 获取返回数据
-				              
-
-				            // 使用输出流来输出字符(可选)
-				            ByteArrayOutputStream out = new ByteArrayOutputStream();
-				            byte[] buf = new byte[1024];
-				            int len;
-				            while ((len = is.read(buf)) != -1) {
-				                out.write(buf, 0, len);
-				            }
-				            String strpicStringwei = out.toString("UTF-8");
-				            out.close();
-				            
-				           String resultwei=strpicStringwei.substring(strpicStringwei.indexOf("<code_url><![CDATA[")+19, strpicStringwei.indexOf("]]></code_url>"));
-				 		   //txt.setText(strpicString); // 清空内容编辑框	
-				 		   Log.i("EV_JNI","rec1="+resultwei);
-				 		   Message tomain=mainhand.obtainMessage();
-						   tomain.what=SETWEIMAIN;
-						   tomain.obj=resultwei;
-						   mainhand.sendMessage(tomain); // 发送消息
-				           
-				     } catch (Exception e) {
-				            // TODO Auto-generated catch block
-				            System.out.println(e);
-				        }    
-					break;
+//				     xml.append("</xml>");	
+//					
+//				     try {
+//				            byte[] xmlbyte = xml.toString().getBytes("UTF-8");
+//				            
+//				            Log.i("EV_JNI","Send5="+xml);
+//
+//				            URL url = new URL("https://api.mch.weixin.qq.com/pay/unifiedorder");
+//				            
+//				            
+//				            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//				            conn.setConnectTimeout(5000);
+//				            conn.setDoOutput(true);// 允许输出
+//				            conn.setDoInput(true);
+//				            conn.setUseCaches(false);// 不使用缓存
+//				            conn.setRequestMethod("POST");
+//				            conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+//				            conn.setRequestProperty("Charset", "UTF-8");
+//				            conn.setRequestProperty("Content-Length",
+//				                    String.valueOf(xmlbyte.length));
+//				            conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
+//				            conn.setRequestProperty("X-ClientType", "2");//发送自定义的头信息
+//
+//				            conn.getOutputStream().write(xmlbyte);
+//				            conn.getOutputStream().flush();
+//				            conn.getOutputStream().close();
+//
+//
+//				            if (conn.getResponseCode() != 200)
+//				                throw new RuntimeException("请求url失败");
+//
+//				            InputStream is = conn.getInputStream();// 获取返回数据
+//				              
+//
+//				            // 使用输出流来输出字符(可选)
+//				            ByteArrayOutputStream out = new ByteArrayOutputStream();
+//				            byte[] buf = new byte[1024];
+//				            int len;
+//				            while ((len = is.read(buf)) != -1) {
+//				                out.write(buf, 0, len);
+//				            }
+//				            String strpicStringwei = out.toString("UTF-8");
+//				            out.close();
+//				            
+//				           String resultwei=strpicStringwei.substring(strpicStringwei.indexOf("<code_url><![CDATA[")+19, strpicStringwei.indexOf("]]></code_url>"));
+//				 		   //txt.setText(strpicString); // 清空内容编辑框	
+//				 		   Log.i("EV_JNI","rec1="+resultwei);
+//				 		   Message tomain=mainhand.obtainMessage();
+//						   tomain.what=SETWEIMAIN;
+//						   tomain.obj=resultwei;
+//						   mainhand.sendMessage(tomain); // 发送消息
+//				           
+//				     } catch (Exception e) {
+//				            // TODO Auto-generated catch block
+//				            System.out.println(e);
+//				        }    
+//					break;
 				default:
 					break;
 				}

@@ -13,6 +13,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -28,6 +30,11 @@ public class BusgoodsClass extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		// ÎÞtitle
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // È«ÆÁ
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busgoodsclass);
 		BusgoodsClassAct = this;
 		gvbusgoodsclass=(GridView) findViewById(R.id.gvbusgoodsclass); 

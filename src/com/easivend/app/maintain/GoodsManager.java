@@ -255,7 +255,7 @@ public class GoodsManager extends TabActivity
     	productAdapter=new Vmc_ProductAdapter();
     	productAdapter.showProInfo(this,"",datasort,"");     	
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
-    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), this);// 创建pictureAdapter对象
+    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), this);// 创建pictureAdapter对象
     	gvProduct.setAdapter(adapter);// 为GridView设置数据源
     	gvProduct.setOnItemClickListener(new OnItemClickListener() {
 
@@ -321,7 +321,7 @@ public class GoodsManager extends TabActivity
 					    					0,0,date,date,"","","",0,0);				    			
 					    			productDAO.detele(tb_vmc_product);// 添加商品信息
 					    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-									ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
+									ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
 					    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 					    			ToolClass.addOptLog(GoodsManager.this,2,"删除商品:"+strInfo);
 			    				}
@@ -356,7 +356,7 @@ public class GoodsManager extends TabActivity
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub				
 				productAdapter.showProInfo(GoodsManager.this,edtfindProduct.getText().toString(),datasort,""); 
-				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
+				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源				
 			}
 			
@@ -391,7 +391,7 @@ public class GoodsManager extends TabActivity
 				List<String> dataSortID=showSortAdapter.getDataSortID();
 				datasort=dataSortID.get(arg2);
 				productAdapter.showProInfo(GoodsManager.this,edtfindProduct.getText().toString(),datasort,""); 
-				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
+				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
 		    	if(datasort.equals("shoudong"))
 		    	{
@@ -425,7 +425,7 @@ public class GoodsManager extends TabActivity
 	    					0,0,date,date,"","","",0,0);				    			
 	    			productDAO.sortupdown(tb_vmc_product,1);// 添加商品信息
 	    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
+					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
 	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 		    	}
 		    }
@@ -444,7 +444,7 @@ public class GoodsManager extends TabActivity
 	    					0,0,date,date,"","","",0,0);				    			
 	    			productDAO.sortupdown(tb_vmc_product,2);// 添加商品信息
 	    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);
+					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
 	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
 		    	}
 		    }
@@ -503,7 +503,7 @@ public class GoodsManager extends TabActivity
 				String str=bundle.getString("back");
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品ret="+str);
 				productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(), GoodsManager.this);// 创建pictureAdapter对象
+				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
 			}			
 		}

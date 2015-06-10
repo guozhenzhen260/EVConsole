@@ -29,6 +29,7 @@ public class Weixinghttp implements Runnable
 	public final static int SETMAIN=1;//what标记,发送给主线程支付宝金额二维码	
 	public final static int SETFAILPROCHILD=5;//what标记,发送给主线程交易协议失败
 	public final static int SETFAILBUSCHILD=6;//what标记,发送给主线程交易信息失败
+	public final static int SETFAILNETCHILD=4;//what标记,发送给主线程交易网络
 	//查询
 	public final static int SETQUERYCHILD=7;//what标记,发送给子线程支付宝查询
 	public final static int SETQUERYMAIN=8;//what标记,发送给主线程查询结果
@@ -121,7 +122,12 @@ public class Weixinghttp implements Runnable
 				           
 				        } catch (Exception e) {
 				            // TODO Auto-generated catch block
-				            System.out.println(e);
+				        	//向主线程返回信息
+				           Message tomain=mainhand.obtainMessage();	
+				    	   tomain.what=SETFAILNETCHILD;
+				    	   tomain.obj="netfail";
+				    	   Log.i("EV_JNI","rec="+tomain.obj);				           
+						   mainhand.sendMessage(tomain); // 发送消息
 				        } 
 						
 					break;	

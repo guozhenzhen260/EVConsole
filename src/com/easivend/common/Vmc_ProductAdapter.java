@@ -27,6 +27,7 @@ public class Vmc_ProductAdapter
 {	 
 	 private String[] proID = null;
 	 private String[] productID = null;
+	 private String[] productName = null;
      private String[] proImage = null;
      private String[] promarket = null;
      private String[] prosales = null;
@@ -63,6 +64,7 @@ public class Vmc_ProductAdapter
  	    }
  	    proID = new String[listinfos.size()];// 设置字符串数组的长度
  	    productID = new String[listinfos.size()];// 设置字符串数组的长度
+ 	    productName = new String[listinfos.size()];// 设置字符串数组的长度
  	    proImage = new String[listinfos.size()];// 设置字符串数组的长度
  	    promarket = new String[listinfos.size()];// 设置字符串数组的长度
  	    prosales = new String[listinfos.size()];// 设置字符串数组的长度
@@ -74,6 +76,7 @@ public class Vmc_ProductAdapter
  	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
  	    	proID[m] = tb_inaccount.getProductID()+"-"+tb_inaccount.getProductName();
  	    	productID[m] = tb_inaccount.getProductID();
+ 	    	productName[m] = tb_inaccount.getProductName();
  	    	proImage[m] = tb_inaccount.getAttBatch1();
  	    	promarket[m] = String.valueOf(tb_inaccount.getMarketPrice());
  	    	prosales[m] = String.valueOf(tb_inaccount.getSalesPrice());
@@ -128,6 +131,12 @@ public class Vmc_ProductAdapter
 	}
 	public void setProcount(String[] procount) {
 		this.procount = procount;
+	}
+	public String[] getProductName() {
+		return productName;
+	}
+	public void setProductName(String[] productName) {
+		this.productName = productName;
 	}
     
 }

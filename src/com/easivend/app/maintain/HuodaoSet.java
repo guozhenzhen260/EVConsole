@@ -348,9 +348,9 @@ public class HuodaoSet extends Activity
 	//更新货道信息
 	private void updatehuodaostatus()
 	{
-		if(temphuostatus.equals("1")==true)//货道故障
+		if(temphuostatus.equals("0")==true)//货道故障
 			huostatus="2";
-		else if(temphuostatus.equals("0")==true)//货道正常
+		else if(temphuostatus.equals("1")==true)//货道正常
 		{
 			int tempCount= 0;
 	    	int tempRemain= 0;

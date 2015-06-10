@@ -6,22 +6,30 @@
     <GridView 
 		    android:id="@+id/gvbusgoodsProduct"
 		    android:layout_width="wrap_content"
-		    android:layout_height="390dp"
-		    android:columnWidth="90dp"
-		    android:gravity="center"
+		    android:layout_height="wrap_content"
+		    android:verticalSpacing="10dp"
 		    android:horizontalSpacing="10dp"
+		    android:columnWidth="205dp"
+		    android:gravity="center"		    
 		    android:numColumns="auto_fit"
 		    android:stretchMode="spacingWidthUniform"
-		    android:verticalSpacing="10dp" />
-	<RelativeLayout 
-	         android:layout_width="wrap_content"
-		     android:layout_height="wrap_content"						       
-		     >		         
-	         <ImageButton
+		     />
+    <RelativeLayout 
+	        android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"						       
+		    >		         
+	         <ImageView 
+		   	    android:layout_width="980dp"
+				android:layout_height="88dp"	
+				android:layout_alignParentLeft="true"
+				android:layout_alignParentBottom="true"
+				android:src="@drawable/ditu"/> 
+			<ImageButton
 		        android:id="@+id/imgbtnbusgoodsback"
+		        android:layout_alignParentBottom="true"
 		        android:layout_alignParentRight="true"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
+		        android:layout_width="140dp"
+		        android:layout_height="140dp"
 		        android:src="@drawable/busfinish" />  	        
-	</RelativeLayout>
+	</RelativeLayout> 
 </LinearLayout>

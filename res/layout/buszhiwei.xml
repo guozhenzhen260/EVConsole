@@ -74,29 +74,28 @@
    	/>
 	<ImageView 
    	    android:id = "@+id/ivbuszhiweib"
-   	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"	
-		android:layout_toRightOf="@+id/ivbuszhiweibill"
-		android:layout_below="@+id/txtbuszhiweitime"	
-		android:src="@drawable/buszhiweib"			
+   	    android:layout_width="329dp"
+		android:layout_height="329dp"	
+		android:layout_below="@+id/ivbuszhiweibill"	
+		android:src="@drawable/buszhierb"				
    	/>
 	<ImageView
 	    android:id="@+id/ivbuszhiwei"
 	    android:layout_width="329dp"
         android:layout_height="329dp"
-        android:layout_toRightOf="@+id/ivbuszhiweibill"
-        android:layout_below="@+id/ivbuszhiweib"	
+        android:layout_toRightOf="@+id/ivbuszhiweib"
+        android:layout_below="@+id/ivbuszhiweibill"	
         android:src="@drawable/wutupian"
         />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiweiqxzf"
-        android:layout_below="@+id/ivbuszhiweibill"
+        android:layout_below="@+id/ivbuszhiweib"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qxzffang" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiweiqtzf"
-        android:layout_below="@+id/ivbuszhiweibill"
+        android:layout_below="@+id/ivbuszhiweib"
         android:layout_toRightOf="@+id/imgbtnbuszhiweiqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

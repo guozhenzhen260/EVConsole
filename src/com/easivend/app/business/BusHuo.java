@@ -26,6 +26,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -59,6 +61,11 @@ public class BusHuo extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		// 无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.bushuo);	
 		//删除前面的activity
 		if(BusgoodsClass.BusgoodsClassAct!=null)
@@ -67,8 +74,7 @@ public class BusHuo extends Activity
 			Busgoods.BusgoodsAct.finish(); 
 		if(BusgoodsSelect.BusgoodsSelectAct!=null)
 			BusgoodsSelect.BusgoodsSelectAct.finish(); 
-		if(BusZhiSelect.BusZhiSelectAct!=null)
-    		BusZhiSelect.BusZhiSelectAct.finish(); 
+		
 		
 		
 		//注册出货监听器

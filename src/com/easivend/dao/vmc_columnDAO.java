@@ -110,7 +110,7 @@ public class vmc_columnDAO
   	public void buhuoCab(String cabID) 
   	{       
           db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-          // 执行删除该柜商品表
+          // 执行布满该柜货道表
           db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1 where cabID=? and columnStatus<>2 ", 
           		new Object[] { cabID});    
           

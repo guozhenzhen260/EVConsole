@@ -32,7 +32,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,9 +46,9 @@ import android.widget.VideoView;
 public class Business extends Activity
 {
 	TextView txtadsTip=null;
-	Button btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
-			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnads0=null,btnadsenter=null;
-	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null;	
+	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
+			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
+	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null,btnads0=null;	
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
@@ -64,6 +66,7 @@ public class Business extends Activity
     //发送出货指令
     private String proID = null;
 	private String productID = null;
+	private String proImage = null;
 	private String cabID = null;
 	private String huoID = null;
     private String prosales = null;    
@@ -72,111 +75,116 @@ public class Business extends Activity
 	{		
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		// 无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.business);
 		videoView=(VideoView)findViewById(R.id.video);
 		ivads=(ImageView)findViewById(R.id.ivads);
-		//动态设置控件高度
-    	//
-    	DisplayMetrics  dm = new DisplayMetrics();  
-        //取得窗口属性  
-        getWindowManager().getDefaultDisplay().getMetrics(dm);  
-        //窗口的宽度  
-        int screenWidth = dm.widthPixels;          
-        //窗口高度  
-        int screenHeight = dm.heightPixels;      
-        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
-				+"],["+screenHeight+"]");	
-		
-    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) videoView.getLayoutParams(); // 取控件videoView当前的布局参数
-    	//linearParams.height =  (int)screenHeight/3;// 当控件的高强制设成75象素
-    	linearParams.weight= screenHeight;
-    	videoView.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
-    	ivads.setLayoutParams(linearParams);
+//		//动态设置控件高度
+//    	//
+//    	DisplayMetrics  dm = new DisplayMetrics();  
+//        //取得窗口属性  
+//        getWindowManager().getDefaultDisplay().getMetrics(dm);  
+//        //窗口的宽度  
+//        int screenWidth = dm.widthPixels;          
+//        //窗口高度  
+//        int screenHeight = dm.heightPixels;      
+//        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
+//				+"],["+screenHeight+"]");	
+//		
+//    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) videoView.getLayoutParams(); // 取控件videoView当前的布局参数
+//    	//linearParams.height =  (int)screenHeight/3;// 当控件的高强制设成75象素
+//    	linearParams.weight= screenHeight;
+//    	videoView.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+//    	ivads.setLayoutParams(linearParams);
     	
 		listFiles(); 
 		startVideo();		
 		//=======
 		//操作模块
 		//=======
-		txtadsTip = (TextView) findViewById(R.id.txtadsTip);
-		btnads1 = (Button) findViewById(R.id.btnads1);
+		txtadsTip = (TextView) findViewById(R.id.txtadsTip);	
+		btnads1 = (ImageButton) findViewById(R.id.btnads1);		
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("1",1);
 		    }
 		});
-		btnads2 = (Button) findViewById(R.id.btnads2);
+		btnads2 = (ImageButton) findViewById(R.id.btnads2);
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("2",1);
 		    }
 		});
-		btnads3 = (Button) findViewById(R.id.btnads3);
+		btnads3 = (ImageButton) findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("3",1);
 		    }
 		});
-		btnads4 = (Button) findViewById(R.id.btnads4);
+		btnads4 = (ImageButton) findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("4",1);
 		    }
 		});
-		btnads5 = (Button) findViewById(R.id.btnads5);
+		btnads5 = (ImageButton) findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("5",1);
 		    }
 		});
-		btnads6 = (Button) findViewById(R.id.btnads6);
+		btnads6 = (ImageButton) findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("6",1);
 		    }
 		});
-		btnads7 = (Button) findViewById(R.id.btnads7);
+		btnads7 = (ImageButton) findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("7",1);
 		    }
 		});
-		btnads8 = (Button) findViewById(R.id.btnads8);
+		btnads8 = (ImageButton) findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("8",1);
 		    }
 		});
-		btnads9 = (Button) findViewById(R.id.btnads9);
+		btnads9 = (ImageButton) findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("9",1);
 		    }
 		});
-		btnads0 = (Button) findViewById(R.id.btnads0);
+		btnads0 = (ImageButton) findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("0",1);
 		    }
 		});
-		btnadscancel = (Button) findViewById(R.id.btnadscancel);
+		btnadscancel = (ImageButton) findViewById(R.id.btnadscancel);
 		btnadscancel.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("0",0);
 		    }
 		});
-		btnadsenter = (Button) findViewById(R.id.btnadsenter);
+		btnadsenter = (ImageButton) findViewById(R.id.btnadsenter);
 		btnadsclass = (ImageButton) findViewById(R.id.btnadsclass);
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -391,6 +399,7 @@ public class Business extends Activity
 		    {
 			    productID=tb_inaccount.getProductID().toString();
 			    prosales=String.valueOf(tb_inaccount.getSalesPrice());
+			    proImage=tb_inaccount.getAttBatch1();
 			    proID=productID+"-"+tb_inaccount.getProductName().toString();
 			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 						+productID+" proType="
@@ -400,22 +409,24 @@ public class Business extends Activity
 			    huo="";
 			    txtadsTip.setText("");
 				Intent intent = null;// 创建Intent对象                
-	        	intent = new Intent(Business.this, BusZhiSelect.class);// 使用Accountflag窗口初始化Intent
-//	        	intent.putExtra("proID", proID);
-//	        	intent.putExtra("productID", productID);
-//	        	intent.putExtra("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
-//	        	intent.putExtra("cabID", cabID);//出货柜号,proType=1时无效
-//	        	intent.putExtra("huoID", huoID);//出货货道号,proType=1时无效
-//	        	intent.putExtra("prosales", prosales);
-//	        	intent.putExtra("count", "1");
-//	        	intent.putExtra("reamin_amount", reamin_amount);
-	        	OrderDetail.setProID(proID);
-            	OrderDetail.setProductID(productID);
-            	OrderDetail.setProType("2");
-            	OrderDetail.setCabID(cabID);
-            	OrderDetail.setColumnID(huoID);
-            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
-            	OrderDetail.setShouldNo(1);
+	        	intent = new Intent(Business.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
+	        	intent.putExtra("proID", proID);
+	        	intent.putExtra("productID", productID);
+	        	intent.putExtra("proImage", proImage);
+	        	intent.putExtra("prosales", prosales);
+	        	intent.putExtra("procount", "1");
+	        	intent.putExtra("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
+	        	intent.putExtra("cabID", cabID);//出货柜号,proType=1时无效
+	        	intent.putExtra("huoID", huoID);//出货货道号,proType=1时无效
+
+
+//	        	OrderDetail.setProID(proID);
+//            	OrderDetail.setProductID(productID);
+//            	OrderDetail.setProType("2");
+//            	OrderDetail.setCabID(cabID);
+//            	OrderDetail.setColumnID(huoID);
+//            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
+//            	OrderDetail.setShouldNo(1);
 	        	startActivity(intent);// 打开Accountflag
 		    }
 		    else
