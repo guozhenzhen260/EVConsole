@@ -16,6 +16,8 @@ import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class Line extends Activity {
 	private String title="";
@@ -59,10 +61,28 @@ public class Line extends Activity {
         renderer.setZoomButtonsVisible(true);
         renderer.setPanLimits(new double[] { 0, 20, 0, maxvalue });
         renderer.setZoomLimits(new double[] { 0, 20, 0, maxvalue });
-
+        //这个是折线图布局文件
         View view = ChartFactory.getLineChartView(this, buildDataset(titles, x, values), renderer);
         view.setBackgroundColor(Color.BLACK);
-        setContentView(view);
+        //setContentView(view);
+        
+        //新建一个布局文件 ，往页面里面添加多个布局文件 
+        final LinearLayout layout2 = new LinearLayout(this);
+        layout2.setOrientation(LinearLayout.VERTICAL);
+        Button bt1 = new Button(this);        
+        bt1.setText("返回");          
+        layout2.addView(bt1); //添加按钮
+        layout2.addView(view);//添加折线图
+       
+        setContentView(layout2);
+        bt1.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 	}
 	private XYMultipleSeriesRenderer buildRenderer(int[] colors, PointStyle[] styles) {
         XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();

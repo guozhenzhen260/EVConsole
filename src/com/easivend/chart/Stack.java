@@ -18,6 +18,8 @@ import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class Stack extends Activity {
 	private String title="";
@@ -60,9 +62,28 @@ public class Stack extends Activity {
         renderer.setZoomEnabled(false);
         renderer.setZoomRate(1.1f);
         renderer.setBarSpacing(0.5f);
+        //这个是柱状图布局文件
         View view = ChartFactory.getBarChartView(this, buildBarDataset(titles, values), renderer, Type.DEFAULT); //Type.STACKED
         view.setBackgroundColor(Color.BLACK);
-        setContentView(view);
+        //setContentView(view);
+        
+        //新建一个布局文件 ，往页面里面添加多个布局文件 
+        final LinearLayout layout2 = new LinearLayout(this);
+        layout2.setOrientation(LinearLayout.VERTICAL);
+        Button bt1 = new Button(this);        
+        bt1.setText("返回");          
+        layout2.addView(bt1); //添加按钮
+        layout2.addView(view);//添加柱状图
+       
+        setContentView(layout2);
+        bt1.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 	}
 	 protected XYMultipleSeriesDataset buildBarDataset(String[] titles, List<double[]> values) {
 	        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();

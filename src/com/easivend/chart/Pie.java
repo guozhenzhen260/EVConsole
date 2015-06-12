@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class Pie extends Activity{
 
@@ -24,9 +26,28 @@ public class Pie extends Activity{
         renderer.setChartTitleTextSize(20);
         //        Intent intent = ChartFactory.getPieChartIntent(this, buildCategoryDataset("Project budget", values), renderer, "Budget");
         //        startActivity(intent);
+        //这个是饼状图布局文件
         View view = ChartFactory.getPieChartView(this, buildCategoryDataset("Project budget", values), renderer);
         view.setBackgroundColor(Color.BLACK);
-        setContentView(view);
+        //setContentView(view);
+        
+      //新建一个布局文件 ，往页面里面添加多个布局文件 
+        final LinearLayout layout2 = new LinearLayout(this);
+        layout2.setOrientation(LinearLayout.VERTICAL);
+        Button bt1 = new Button(this);        
+        bt1.setText("返回");          
+        layout2.addView(bt1); //添加按钮
+        layout2.addView(view);//添加饼状图
+       
+        setContentView(layout2);
+        bt1.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 	}
 	protected DefaultRenderer buildCategoryRenderer(int[] colors) {
         DefaultRenderer renderer = new DefaultRenderer();
