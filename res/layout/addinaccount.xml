@@ -14,175 +14,249 @@
 		    android:layout_height="match_parent"
 		    android:orientation="vertical" >
 		    <TableRow > 
-		        <TextView 		    
-		            
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="设备类型:"/>
-		        <Spinner
-			        android:id="@+id/spinbillmanagerbill"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:entries="@array/bill_label"
-				/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="设备类型:"/>
+			        <Spinner
+				        android:id="@+id/spinbillmanagerbill"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
+				        android:entries="@array/bill_label"
+					/>
+		        </LinearLayout>
 		    </TableRow>
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="设备参数:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerpar"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="设备参数:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerpar"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="使能状态:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerstate"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="使能状态:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerstate"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="退币按钮:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillpayback"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="退币按钮:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillpayback"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow>
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="设备状态:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillerr"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="设备状态:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillerr"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow>
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="接收通道金额:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerbillin"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="接收通道金额:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerbillin"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="接收通道数量:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerbillincount"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    		            
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="接收通道数量:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerbillincount"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="找零通道金额:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerbillpay"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="找零通道金额:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerbillpay"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="找零通道数量:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerbillpaycount"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="找零通道数量:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerbillpaycount"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="找零器存币金额:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txtbillmanagerbillpayamount"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="找零器存币金额:"/>
+			        
+			         <TextView 		    
+			             android:id="@+id/txtbillmanagerbillpayamount"
+			             android:textSize="40sp"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 
 			<View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    />
 		    <TableRow > 
-		        <TextView 		
-		                
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#FF0000" 
-					android:text="当前纸币投入:"/>
-		        
-		         <TextView
-		            
-		            android:id="@+id/txtbillpayin"
-			        android:layout_width="wrap_content" 
-			        android:layout_height="wrap_content"
-			        android:textSize="40sp"
-		            android:textStyle="bold"
-			        android:numeric="decimal"
-			        android:textColor="#FF0000" 
-			        android:text="0" />
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 				                
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:textColor="#FF0000" 
+						android:text="当前纸币投入:"/>
+			        
+			         <TextView
+			            
+			            android:id="@+id/txtbillpayin"
+				        android:layout_width="wrap_content" 
+				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
+			            android:textStyle="bold"
+				        android:numeric="decimal"
+				        android:textColor="#FF0000" 
+				        android:text="0" />
+		         </LinearLayout>
 		    </TableRow> 		    
 		    <View                              
 		        android:layout_height="2px"
@@ -196,18 +270,20 @@
 			        <TextView   
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="期望找零:"/>		        
 			         <EditText
 			            android:id="@+id/edtpayout"
 				        
 						android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
 				        android:numeric="decimal"
 				        android:text="0" />  
 				    <Button
 			             android:id="@+id/btnbillpayout"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp" 			                         
 			             android:text="找币" />    
 				</LinearLayout>		                   
 		    </TableRow>  
@@ -216,21 +292,27 @@
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 	
-		            	    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#FF0000" 
-					android:text="找零金额:"/>
-		        
-		         <TextView
-		            
-		            android:id="@+id/txtpaymoney"
-			        android:layout_width="wrap_content" 
-			        android:layout_height="wrap_content"
-			        android:numeric="decimal"
-			        android:textColor="#FF0000" 
-			        android:text="0" /> 			               
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 			            	    
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:textColor="#FF0000" 
+						android:text="找零金额:"/>
+			        
+			         <TextView
+			            
+			            android:id="@+id/txtpaymoney"
+				        android:layout_width="wrap_content" 
+				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
+				        android:numeric="decimal"
+				        android:textColor="#FF0000" 
+				        android:text="0" /> 	
+			        </LinearLayout>		               
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
@@ -243,18 +325,18 @@
 				    android:orientation="horizontal" > 
 			        <Button
 			             android:id="@+id/btnbillon"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
 			             android:text="打开" />
 			         <Button
 			             android:id="@+id/btnbilloff"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"             
 			             android:text="关闭" />
 			         <Button
 			             android:id="@+id/btnbillquery"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
 			             android:text="查询" />   
 				</LinearLayout> 
 		    </TableRow>	
@@ -263,22 +345,32 @@
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow >    
-		         <Button
-		             android:id="@+id/btnbillset"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"             
-		             android:text="配置" />
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			         <Button
+			             android:id="@+id/btnbillset"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
+			             android:text="配置" />
+		         </LinearLayout>
 		    </TableRow>		    
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow >           
-		         <Button
-		             android:id="@+id/btnbillexit"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"
-		             android:text="退出" />
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			         <Button
+			             android:id="@+id/btnbillexit"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"
+			             android:text="退出" />
+		         </LinearLayout>
 		
 		    </TableRow>
 		</TableLayout>
@@ -301,9 +393,11 @@
 			        <TextView 		    
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="设备类型:"/>
 			        <Spinner
 				        android:id="@+id/spincoinmanagercoin"
+				        android:textSize="40sp"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:entries="@array/coin_label"
@@ -322,6 +416,7 @@
 			        <TextView 		    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="设备参数:"/>
 			        
 			         <TextView 		    
@@ -346,10 +441,12 @@
 			        <TextView 		    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="使能状态:"/>
 			        
 			         <TextView 		    
 			             android:id="@+id/txtcoinmanagerstate"
+			             android:textSize="40sp"
 						 android:layout_width="wrap_content"
 						 android:layout_height="wrap_content"/>
 		         </LinearLayout>
@@ -366,10 +463,12 @@
 			        <TextView 		    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="退币按钮:"/>
 			        
 			         <TextView 		    
 			             android:id="@+id/txtcoinpayback"
+			             android:textSize="40sp"
 						 android:layout_width="wrap_content"
 						 android:layout_height="wrap_content"/>
 		         </LinearLayout>
@@ -386,10 +485,12 @@
 			        <TextView 		    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="设备状态:"/>
 			        
 			         <TextView 		    
 			             android:id="@+id/txtcoinerr"
+			             android:textSize="40sp"
 						 android:layout_width="wrap_content"
 						 android:layout_height="wrap_content"/>
 		         </LinearLayout>
@@ -398,11 +499,17 @@
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
-		    <TableRow > 		        
-		        <TextView 	
-		            android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="硬币通道金额:"/>
+		    <TableRow > 		      
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >  
+			        <TextView 	
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="硬币通道金额:"/>
+		        </LinearLayout>
 		    </TableRow> 		    
 		    <View                              
 		        android:layout_height="2px"
@@ -598,10 +705,12 @@
 			        <TextView 		    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="硬币通道数量:"/>
 			        
 			         <TextView 		    
 			             android:id="@+id/txtcoinmanagercoinincount"
+			             android:textSize="40sp"
 						 android:layout_width="wrap_content"
 						 android:layout_height="wrap_content"/>
 		         </LinearLayout>
@@ -618,10 +727,12 @@
 			        <TextView 		    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="硬币器存币金额:"/>
 			        
 			         <TextView 		    
 			             android:id="@+id/txtcoinmanagercoininamount"
+			             android:textSize="40sp"
 						 android:layout_width="wrap_content"
 						 android:layout_height="wrap_content"
 						 />	
@@ -639,6 +750,7 @@
 			        <TextView 
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:textColor="#FF0000" 
 						android:text="当前硬币投入:"/>
 			        
@@ -665,17 +777,19 @@
 			        <TextView   
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="期望找零:"/>		        
 			         <EditText
 			            android:id="@+id/edtcoinpayout"				        
 						android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
 				        android:numeric="decimal"
 				        android:text="0" />  
 				    <Button
 			             android:id="@+id/btncoinpayout"
 			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+						 android:layout_height="70dp"             
 			             android:text="MDB硬币器找币" />    
 				</LinearLayout>		                   
 		    </TableRow>  
@@ -692,6 +806,7 @@
 			            	    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:textColor="#FF0000" 
 						android:text="找零金额:"/>
 			        
@@ -700,6 +815,7 @@
 			            android:id="@+id/txtcoinpaymoney"
 				        android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
 				        android:numeric="decimal"
 				        android:textColor="#FF0000" 
 				        android:text="0" /> 
@@ -716,18 +832,18 @@
 				    android:orientation="horizontal" > 
 			        <Button
 			             android:id="@+id/btncoinon"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"             
 			             android:text="打开" />
 			         <Button
 			             android:id="@+id/btncoinoff"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"             
 			             android:text="关闭" />
 			         <Button
 			             android:id="@+id/btncoinquery"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
 			             android:text="查询" />   
 				</LinearLayout> 
 		    </TableRow>	
@@ -738,8 +854,8 @@
 		    <TableRow >    
 		         <Button
 		             android:id="@+id/btncoinset"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"             
+		             android:layout_width="100dp"
+					 android:layout_height="70dp"             
 		             android:text="配置" />
 		    </TableRow>		    
 		</TableLayout>
@@ -759,11 +875,13 @@
 				    android:layout_height="match_parent"	
 				    android:orientation="horizontal" >
 			        <TextView 		    
+			            android:textSize="40sp"
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="设备类型:"/>
 			        <Spinner
 				        android:id="@+id/spinhopper"
+				        android:textSize="40sp"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:entries="@array/payout_label"
@@ -774,11 +892,17 @@
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
-		    <TableRow > 		        
-		        <TextView 	
-		            android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="找零通道金额:"/>
+		    <TableRow > 		
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >        
+			        <TextView 	
+			            android:textSize="40sp"
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="找零通道金额:"/>
+		        </LinearLayout>
 		    </TableRow> 		    
 		    <View                              
 		        android:layout_height="2px"
@@ -876,15 +1000,22 @@
 		        android:background="#FF909090"
 		    /> 		    
 		    <TableRow > 
-		        <TextView 		    
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="找零通道状态:"/>
-		        
-		         <TextView 		    
-		             android:id="@+id/txthopperincount"
-					 android:layout_width="wrap_content"
-					 android:layout_height="wrap_content"/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 		    
+			            android:textSize="40sp"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="找零通道状态:"/>
+			        
+			         <TextView 		    
+			             android:textSize="40sp"
+			             android:id="@+id/txthopperincount"
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"/>
+		         </LinearLayout>
 		    </TableRow> 		    
 		    <View                              
 		        android:layout_height="2px"
@@ -895,12 +1026,14 @@
 			        android:layout_width="match_parent"
 				    android:layout_height="match_parent"	
 				    android:orientation="horizontal" >
-			        <TextView 			            	    
+			        <TextView 			       
+			            android:textSize="40sp"     	    
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:text="期望找零:"/>		        
 			         <EditText
-			            android:id="@+id/edthopperpayout"			        
+			            android:id="@+id/edthopperpayout"	
+			            android:textSize="40sp"		        
 						android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -917,6 +1050,7 @@
 				    android:layout_height="match_parent"	
 				    android:orientation="horizontal" > 
 			        <TextView   
+			            android:textSize="40sp"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:textColor="#FF0000" 
@@ -924,6 +1058,7 @@
 			        
 			         <TextView
 			            android:id="@+id/txthopperpaymoney"
+			            android:textSize="40sp"
 				        android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -942,13 +1077,13 @@
 				    android:orientation="horizontal" >   
 				    <Button
 			             android:id="@+id/btnhopperquery"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp" 
 			             android:text="查询" />     
 			        <Button
 			             android:id="@+id/btnhopperpay"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"
 			             android:text="找零" />
 		         </LinearLayout>
 		

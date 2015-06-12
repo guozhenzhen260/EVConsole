@@ -16,13 +16,14 @@
 	        <GridView 
 				    android:id="@+id/gvhuodao"
 				    android:layout_width="wrap_content"
-				    android:layout_height="390dp"
-				    android:columnWidth="90dp"
-				    android:gravity="center"
+				    android:layout_height="wrap_content"
 				    android:horizontalSpacing="10dp"
+				    android:verticalSpacing="10dp"
+				    android:columnWidth="205dp"
+				    android:gravity="center"				    
 				    android:numColumns="auto_fit"
 				    android:stretchMode="spacingWidthUniform"
-				    android:verticalSpacing="10dp" />		         
+				     />		         
 				    
 			<RelativeLayout 
 		         android:layout_width="wrap_content"
@@ -30,26 +31,26 @@
 			     >		         
 		         <Button
 			             android:id="@+id/btnhuosetadd"			             
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"             
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"             
 			             android:text="添加柜" />		         
 		         <Button
 			             android:id="@+id/btnhuosetdel"
 			             android:layout_toRightOf="@+id/btnhuosetadd"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"
 			             android:text="删除柜" />
 		         <Button
 			             android:id="@+id/btnhuosetbu"
 			             android:layout_toRightOf="@+id/btnhuosetdel"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"
 			             android:text="补满本柜" />
 		         <Button
 			             android:id="@+id/btnhuosetexit"
 			             android:layout_toRightOf="@+id/btnhuosetbu"
-			             android:layout_width="wrap_content"
-			             android:layout_height="wrap_content"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"
 			             android:text="退出" />
 		         <TextView 		 
             	    android:minWidth="160px"  
@@ -57,7 +58,8 @@
             	    android:layout_below="@+id/btnhuosetadd"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="货柜:"/>
+					android:textSize="40sp"
+					android:text="*选择货柜:"/>
 		        
 		         <Spinner
 		            android:id="@+id/spinhuosetCab"
@@ -65,6 +67,7 @@
 		            android:layout_toRightOf="@+id/txthuosetno"
 			        android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
+			        android:textSize="40sp"
 			        android:text="" />	
 			    <ProgressBar
 			        android:id="@+id/barhuomanager"
@@ -103,17 +106,23 @@
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 
-		            android:minWidth="160px"
-				    android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="货柜:"/>
-		        <Spinner
-		            android:id="@+id/spinhuotestCab"
-		            android:layout_width="wrap_content" 
-			        android:layout_height="wrap_content"
-			        android:text="" />
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+					    android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="货柜:"/>
+			        <Spinner
+			            android:id="@+id/spinhuotestCab"
+			            android:layout_width="wrap_content" 
+				        android:layout_height="wrap_content"
+				        android:text="" />
+		        </LinearLayout>
 		         
 		    </TableRow>  
 		    <View                              
@@ -121,56 +130,77 @@
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView 
-		            android:minWidth="160px"
-				    android:id="@+id/txtcolumn"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="货道号:"/>
-		        
-		         <EditText
-		            android:id="@+id/edtcolumn"
-			        android:minWidth="150px"
-					android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_weight="1"
-			        android:numeric="integer"
-			        android:text="11" />
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView 
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+					    android:id="@+id/txtcolumn"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="货道号:"/>
+			        
+			         <EditText
+			            android:id="@+id/edtcolumn"
+			            android:textSize="40sp"
+				        android:minWidth="150px"
+						android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:layout_weight="1"
+				        android:numeric="integer"
+				        android:text="11" />
+		         </LinearLayout>
 		    </TableRow>  	
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView
-		            android:minWidth="160px"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="出货结果:"/>
-		        <TextView
-		            android:minWidth="160px"
-		            android:id="@+id/txthuotestrst"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text=""/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="出货结果:"/>
+			        <TextView
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+			            android:id="@+id/txthuotestrst"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text=""/>
+		        </LinearLayout>
 		    </TableRow> 
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <TextView
-		            android:minWidth="160px"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="返回信息:"/>
-		        <TextView
-		            android:minWidth="160px"
-		            android:id="@+id/txthuorst"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text=""/>
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <TextView
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="返回信息:"/>
+			        <TextView
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+			            android:id="@+id/txthuorst"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text=""/>
+		        </LinearLayout>
 		    </TableRow>
 		    <View                              
 		        android:layout_height="2px"
@@ -184,9 +214,11 @@
 			        <TextView 		    
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="照明:"/>
 			        <TextView 		    
 			            android:id="@+id/txtlight"
+			            android:textSize="40sp"
 			            android:textColor="#FF0000" 
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -213,9 +245,11 @@
 			        <TextView 		    
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="制冷:"/>
 			        <TextView 		    
 			            android:id="@+id/txtcold"
+			            android:textSize="40sp"
 			            android:textColor="#FF0000" 
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
@@ -242,10 +276,12 @@
 			        <TextView 		    
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textSize="40sp"
 						android:text="加热:"/>
 			        <TextView 		    
 			            android:id="@+id/txthot"
 			            android:textColor="#FF0000" 
+			            android:textSize="40sp"
 			            android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						/>
@@ -254,6 +290,7 @@
 				       android:id="@+id/switchhot"  
 				       android:layout_width="wrap_content"  
 				       android:layout_height="wrap_content"  
+				       android:textSize="40sp"
 				       android:textOn="开"  
 				       android:textOff="关"  							           
 				       android:layout_gravity="center_horizontal"/>
@@ -264,21 +301,26 @@
 		        android:background="#FF909090"
 		    /> 
 		    <TableRow > 
-		        <Button
-		             android:id="@+id/btnhuochu"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"             
-		             android:text="出货" />
-		        <Button
-		             android:id="@+id/btnhuocancel"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"            
-		             android:text="重置" />
-		         <Button
-		             android:id="@+id/btnhuoexit"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"
-		             android:text="退出" />
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >
+			        <Button
+			             android:id="@+id/btnhuochu"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"             
+			             android:text="出货" />
+			        <Button
+			             android:id="@+id/btnhuocancel"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"            
+			             android:text="重置" />
+			         <Button
+			             android:id="@+id/btnhuoexit"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"
+			             android:text="退出" />
+		         </LinearLayout>
 		    </TableRow>
 		</TableLayout>
 	</RelativeLayout>	

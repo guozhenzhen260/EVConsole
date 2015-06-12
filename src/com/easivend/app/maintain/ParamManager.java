@@ -85,8 +85,7 @@ public class ParamManager extends TabActivity
 	public static String runValue[][]=new String[][]{{"","","",""},{"","",""},
 		{"",""},{"",""},{"",""}};
 	private ExpandableListView emachinelistview = null;	
-	private ImageView ivmachineLogo=null;
-	private Button btnmachineImg=null,btnmachinerunSave=null,btnmachinerunCancel=null;
+	private Button btnmachinerunSave=null,btnmachinerunCancel=null;
 	private Uri uri=null;
 	private String imgDir=null;
 	private Tb_vmc_machineset tb_vmc_machineset=null;
@@ -312,7 +311,6 @@ public class ParamManager extends TabActivity
     	//===========================
     	//运行参数配置
     	//===========================
-    	this.ivmachineLogo = (ImageView) findViewById(R.id.ivmachineLogo);
     	this.emachinelistview = (ExpandableListView) super.findViewById(R.id.emachinelistview);
     	loadrunparam();
     	MachineExpanseListAdapter adapter = new MachineExpanseListAdapter(this,ParamManager.runValue);
@@ -335,24 +333,8 @@ public class ParamManager extends TabActivity
 				}
 				return false;
 			}
-		});
-        //选择图片
-        btnmachineImg = (Button)findViewById(R.id.btnmachineImg);  
-        btnmachineImg.setOnClickListener(new View.OnClickListener() {
-  			
-  			@Override
-  			public void onClick(View v) {
-  				// TODO Auto-generated method stub
-  				Intent intent = new Intent();  
-                 /* 开启Pictures画面Type设定为image */  
-                 intent.setType("image/*");  
-                 /* 使用Intent.ACTION_GET_CONTENT这个Action */  
-                 intent.setAction(Intent.ACTION_GET_CONTENT);   
-                 /* 取得相片后返回本画面 */  
-                 startActivityForResult(intent, 1);
-  			}
-  		}); 
-        btnmachinerunSave = (Button)findViewById(R.id.btnmachinerunSave);  
+		});        
+        btnmachinerunSave = (Button)findViewById(R.id.btnmachinerunSave);          
   		btnmachinerunSave.setOnClickListener(new OnClickListener() {// 为保存按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) 
@@ -521,26 +503,7 @@ public class ParamManager extends TabActivity
     
     //===========================
   	//运行参数配置页面
-  	//===========================
-    @Override  
-	//选取图片返回值
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-    	if (resultCode == RESULT_OK) {  
-	         uri = data.getData();  
-	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString());  
-	         ContentResolver cr = this.getContentResolver();  
-	         try {  
-	             Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));  
-	             /* 将Bitmap设定到ImageView */  
-	             ivmachineLogo.setImageBitmap(bitmap);  
-	             imgDir=ToolClass.getRealFilePath(ParamManager.this,uri);
-	         } catch (FileNotFoundException e) {  
-	             Log.e("Exception", e.getMessage(),e);  
-	         }  
-	     }  
-    	super.onActivityResult(requestCode, resultCode, data);  
-    }
+  	//===========================    
     //导入运行参数数据
     private void loadrunparam()
     {
@@ -556,13 +519,7 @@ public class ParamManager extends TabActivity
 //					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
 //					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
 //					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()); 
-    		imgDir=tb_vmc_machineset.getLogoStr();
-    		if(imgDir!=null)
-    		{
-	    		/*为什么图片一定要转化为 Bitmap格式的！！ */
-		        Bitmap bitmap = ToolClass.getLoacalBitmap(imgDir); //从本地取图片(在cdcard中获取)  //
-		        ivmachineLogo.setImageBitmap(bitmap);// 设置图像的二进制值
-    		}
+    		
     		ParamManager.runValue[0][0]=String.valueOf(tb_vmc_machineset.getAudioWork());
     		ParamManager.runValue[0][1]="起始时间:"+tb_vmc_machineset.getAudioWorkstart()+"  结束时间:"+tb_vmc_machineset.getAudioWorkend();
     		ParamManager.runValue[0][2]=String.valueOf(tb_vmc_machineset.getAudioSun());

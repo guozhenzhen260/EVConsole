@@ -347,108 +347,7 @@ public class GoodsManager extends TabActivity
 		    public void onClick(View arg0) {
 		        finish();
 		    }
-		});
-    	//检索
-    	edtfindProduct = (EditText) findViewById(R.id.edtfindProduct);
-    	edtfindProduct.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				// TODO Auto-generated method stub				
-				productAdapter.showProInfo(GoodsManager.this,edtfindProduct.getText().toString(),datasort,""); 
-				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
-		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				
-			}
-		}); 
-    	btnsortup = (Button) findViewById(R.id.btnsortup);
-    	btnsortdown = (Button) findViewById(R.id.btnsortdown);
-    	//排序
-    	this.spinprodsort = (Spinner) super.findViewById(R.id.spinprodsort);
-    	// 使用字符串数组初始化ArrayAdapter对象
-    	showSortAdapter=new ShowSortAdapter();    	
-	    arrayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, showSortAdapter.getDataSortName());
-	    spinprodsort.setAdapter(arrayadapter);// 为ListView列表设置数据源
-    	spinprodsort.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			//当选项改变时触发
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				// TODO Auto-generated method stub
-				List<String> dataSortID=showSortAdapter.getDataSortID();
-				datasort=dataSortID.get(arg2);
-				productAdapter.showProInfo(GoodsManager.this,edtfindProduct.getText().toString(),datasort,""); 
-				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
-		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
-		    	if(datasort.equals("shoudong"))
-		    	{
-		    		btnsortup.setEnabled(true);
-		    		btnsortdown.setEnabled(true);
-		    	}
-		    	else
-		    	{
-		    		btnsortup.setEnabled(false);
-		    		btnsortdown.setEnabled(false);
-		    	}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-    	//上移排序序号
-    	btnsortup.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
-		    @Override
-		    public void onClick(View arg0)
-		    {
-		    	if(strInfo.isEmpty()!=true)
-		    	{
-			    	// 创建InaccountDAO对象
-	    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
-		            //创建Tb_inaccount对象
-	    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
-	    					0,0,date,date,"","","",0,0);				    			
-	    			productDAO.sortupdown(tb_vmc_product,1);// 添加商品信息
-	    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
-	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
-		    	}
-		    }
-		});
-    	//下移排序序号
-    	btnsortdown.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
-		    @Override
-		    public void onClick(View arg0)
-		    {
-		    	if(strInfo.isEmpty()!=true)
-		    	{
-			    	// 创建InaccountDAO对象
-	    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
-		            //创建Tb_inaccount对象
-	    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
-	    					0,0,date,date,"","","",0,0);				    			
-	    			productDAO.sortupdown(tb_vmc_product,2);// 添加商品信息
-	    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-					ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
-	    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
-		    	}
-		    }
-		});
+		});    	     	
     	//动态设置控件高度
     	//
     	DisplayMetrics  dm = new DisplayMetrics();  
@@ -464,7 +363,9 @@ public class GoodsManager extends TabActivity
     	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
     	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
     	gvProduct.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
-  	   
+    	LinearLayout.LayoutParams linearParams2 = (LinearLayout.LayoutParams) lvinfo.getLayoutParams(); // 取控件mGrid当前的布局参数
+    	linearParams2.height =  screenHeight-700;// 当控件的高强制设成75象素
+    	lvinfo.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
 	}
 	//===============
 	//商品分类设置页面

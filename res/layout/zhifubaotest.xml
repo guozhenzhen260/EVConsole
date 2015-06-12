@@ -35,10 +35,11 @@
    		 android:layout_height="wrap_content"
    		 android:orientation="horizontal">
    		 <TextView 	
-          	    android:minWidth="160px"	  
+          	    android:minWidth="160px"
+          	    android:textSize="40sp"	  
           	    android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="支付金额:"/>
+				android:layout_height="wrap_content"
+				android:text="支付金额:"/>
         
          <EditText
             android:id="@+id/edtzhifubaotest"
@@ -56,28 +57,28 @@
    		 android:orientation="horizontal">
    		 <Button
 		    android:id="@+id/btnzhifubaotestok"
-		    android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
 	        android:text="生成二维码"/>	
 	     <Button
 		    android:id="@+id/btnzhifubaotestquery"
-		    android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
 	        android:text="查询"/>	
 	     <Button
 		    android:id="@+id/btnzhifubaotestdelete"
-		    android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
 	        android:text="撤销交易"/>	
 	     <Button
 		    android:id="@+id/btnzhifubaotestpayout"
-		    android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
 	        android:text="退款"/>
-   	</LinearLayout>
-   	<Button
+	     <Button
 		    android:id="@+id/btnzhifubaotestcancel"
-		    android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
 	        android:text="退出"/>
+   	</LinearLayout>   	
 </LinearLayout>

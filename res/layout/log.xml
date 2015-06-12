@@ -47,53 +47,55 @@
 	     <TextView 		 
            	    android:id="@+id/txtloggridstart" 
            	    android:layout_width="wrap_content"						
-				android:layout_height="30dp" 
+				android:layout_height="wrap_content" 
+				android:textSize="40sp"
 				android:text="开始日期"/>
 	     <EditText
 	            android:id="@+id/edtloggridstart"
+	            android:textSize="40sp"
 	            android:minWidth="150px"
 	            android:layout_toRightOf="@+id/txtloggridstart"	
 	            android:layout_width="wrap_content" 
 		        android:layout_height="wrap_content"
-		        android:textSize="40sp"
 	            android:textStyle="bold"
 	            android:numeric="integer"		        
 		        android:text="" />  
 	     <TextView 		 
            	    android:id="@+id/txtloggridend" 
+           	    android:textSize="40sp"
            	    android:layout_toRightOf="@+id/edtloggridstart"	
            	    android:layout_width="wrap_content"						
-				android:layout_height="30dp" 
+				android:layout_height="wrap_content" 
 				android:text="结束日期"/>
 	     <EditText
 	            android:id="@+id/edtloggridend"
+	            android:textSize="40sp"
 	            android:minWidth="150px"
 	            android:layout_toRightOf="@+id/txtloggridend"	
 	            android:layout_width="wrap_content" 
 		        android:layout_height="wrap_content"
-		        android:textSize="40sp"
 	            android:textStyle="bold"
 	            android:numeric="integer"		        
 		        android:text="" /> 
 	     <Button
 	             android:id="@+id/btnloggridquery"	
 	             android:layout_below="@+id/edtloggridstart"			             
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"             
+	             android:layout_width="100dp"
+				 android:layout_height="70dp"             
 	             android:text="查询记录" />
 	     <Button
 	             android:id="@+id/btnloggriddel"	
 	             android:layout_below="@+id/edtloggridstart"	
 	             android:layout_toRightOf="@+id/btnloggridquery"		             
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"             
+	             android:layout_width="100dp"
+				 android:layout_height="70dp"              
 	             android:text="删除记录" />		         
          <Button
 	             android:id="@+id/btnloggridexit"
 	             android:layout_below="@+id/edtloggridstart"	
 	             android:layout_toRightOf="@+id/btnloggriddel"
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"
+	             android:layout_width="100dp"
+				 android:layout_height="70dp" 
 	             android:text="退出" />
 	</RelativeLayout>     
 </LinearLayout>

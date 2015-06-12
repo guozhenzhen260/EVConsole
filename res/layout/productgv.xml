@@ -3,26 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
-    <View 
-	    android:id="@+id/viewleft"
-        android:layout_width="5px" 
-        android:layout_height="fill_parent" 
-        android:background="#FF909090" 
-        android:visibility="visible" /> 
-    <View       
-        android:id="@+id/viewTop"                   
-        android:layout_width="fill_parent"     
-        android:layout_height="5px"		        
-        android:background="#FF909090"
-        android:visibility="visible"
-    />   
-    <View 
-	    android:id="@+id/viewRight"
-        android:layout_width="5px" 
-        android:layout_height="fill_parent" 
-        android:layout_alignParentRight="true"
-        android:background="#FF909090" 
-        android:visibility="visible" />
     <View       
         android:id="@+id/viewBottom"                   
         android:layout_width="fill_parent"     

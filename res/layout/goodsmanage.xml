@@ -13,7 +13,24 @@
 	    	<LinearLayout 
 				    android:layout_width="match_parent"
 				    android:layout_height="match_parent"
-				    android:orientation="vertical" >	
+				    android:orientation="vertical" >
+				    <LinearLayout 
+				        android:layout_width="fill_parent" 
+				        android:layout_height="wrap_content" 
+				        android:orientation="horizontal" > 
+					    <TextView 
+				            android:layout_width="150dip" 
+				            android:layout_height="30dp" 
+				            android:text="类别编号" 
+				            android:textSize="20sp" /> 
+				   
+				        <TextView 
+				            android:id="@+id/job" 
+				            android:layout_width="60dip" 
+				            android:layout_height="30dp" 
+				            android:text="类别名称" 
+				            android:textSize="20sp" />	
+			        </LinearLayout>    
 				    <ListView
 			            android:id="@+id/lvclass"
 			            android:layout_width="wrap_content"
@@ -37,15 +54,15 @@
 				            	    android:minWidth="160px"	  
 				            	    android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="类别ID:"/>
+									android:textColor="#FF0000"  
+									android:text="*商品类别编号:"/>
 						        
 						         <EditText
 						            android:id="@+id/edtclassid"
 							        android:minWidth="150px"
 							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
-							        android:textSize="40sp"
-						            android:textStyle="bold"		        
+							        android:textSize="20sp"		        
 							        android:text="" />
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -61,27 +78,27 @@
 				            	    android:minWidth="160px"	    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="类别名称:"/>
+									android:textColor="#FF0000"  
+									android:text="*类别名称:"/>
 						        
 						         <EditText
 						            android:id="@+id/edtclassname"
 							        android:minWidth="150px"
 							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
-							        android:textSize="40sp"
-						            android:textStyle="bold"		       
+							        android:textSize="20sp"		       
 							        android:text="" />
 						        <ImageView
 								    android:id="@+id/imgclassname"
-								    android:layout_width="wrap_content"
-							        android:layout_height="wrap_content"
+								    android:layout_width="105dp"
+							        android:layout_height="105dp"
 							        android:src="@drawable/wutupian"
 							        /> 
 							    <Button
 						             android:id="@+id/btnclassname"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"             
-						             android:text="选择" />    
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"             
+						             android:text="选择图片" />    
 				            </LinearLayout>	        
 					    </TableRow>  
 					    <View                              
@@ -94,33 +111,26 @@
 				            	android:layout_height="wrap_content"> 
 				            	<Button
 						             android:id="@+id/btnclassadd"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"             
-						             android:text="添加" />
-						         <Button
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"             
+						             android:text="添加" />	
+						        <Button
 						             android:id="@+id/btnclassupdate"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"
-						             android:text="修改" />
-						         <Button
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"
+						             android:text="修改" />  
+						        <Button
 						             android:id="@+id/btnclassdel"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"
-						             android:text="删除" />
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"
+						             android:text="删除" /> 
+						        <Button
+						             android:id="@+id/btnclassexit"
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"
+						             android:text="退出" />            					         
 				            </LinearLayout>	  	         
-					    </TableRow>
-					    <View                              
-					        android:layout_height="2px"
-					        android:background="#FF909090"
-					    /> 
-					    <TableRow >           
-					         <Button
-					             android:id="@+id/btnclassexit"
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content"
-					             android:text="退出" />
-					
-					    </TableRow>
+					    </TableRow>					    
 					</TableLayout>
 			</LinearLayout>
 		
@@ -157,82 +167,30 @@
 				         android:layout_width="wrap_content"
 					     android:layout_height="wrap_content"						       
 					     >
-				         <TextView 		 
-				                android:minWidth="160px"   
-				             	android:id="@+id/tvProduct"
-				             	android:layout_width="wrap_content"
-								android:layout_height="wrap_content"
-								android:layout_alignParentLeft="true" 
-						        android:layout_marginLeft="20dp"                              
-						        android:layout_marginTop="20dp"                               
-								android:text="检索:"/>
-				         <EditText
-					            android:id="@+id/edtfindProduct"			            
-					            android:layout_toRightOf="@+id/tvProduct"
-						        android:minWidth="150px"
-							        android:layout_width="wrap_content" 
-						        android:layout_height="wrap_content"
-						        android:text="" />
+					    				         
 				         <Button
 					             android:id="@+id/btnproadd"
-					             android:layout_below="@+id/tvProduct"
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content"             
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"             
 					             android:text="添加" />
 				         <Button
 					             android:id="@+id/btnproupdate"
-					             android:layout_below="@+id/tvProduct"
 					             android:layout_toRightOf="@+id/btnproadd"
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content"
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"
 					             android:text="修改" />
 				         <Button
 					             android:id="@+id/btnprodel"
-					             android:layout_below="@+id/tvProduct"
 					             android:layout_toRightOf="@+id/btnproupdate"
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content"
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"
 					             android:text="删除" />
 				         <Button
 					             android:id="@+id/btnproexit"
-					             android:layout_below="@+id/tvProduct"
 					             android:layout_toRightOf="@+id/btnprodel"
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content"
-					             android:text="退出" />
-				         <TextView 		    
-				                android:minWidth="160px"
-				             	android:id="@+id/tvProsort"
-				             	android:layout_width="wrap_content"
-								android:layout_height="wrap_content"
-								android:layout_alignParentLeft="true" 
-								android:layout_below="@+id/btnproadd"
-						        android:layout_marginLeft="20dp"                              
-						        android:layout_marginTop="20dp"                               
-								android:text="排序方式:"/>
-				         <Spinner
-					            android:id="@+id/spinprodsort"
-					            android:layout_below="@+id/btnproadd"
-					            android:layout_toRightOf="@+id/tvProsort"
-						        android:layout_width="wrap_content" 
-						        android:layout_height="wrap_content"
-						        android:text="" />
-				         <Button
-					             android:id="@+id/btnsortup"
-					             android:layout_below="@+id/spinprodsort"
-					             android:layout_alignParentLeft="true" 
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content" 
-					             android:enabled="false"            
-					             android:text="上移" />
-				         <Button
-					             android:id="@+id/btnsortdown"
-					             android:layout_below="@+id/spinprodsort"
-					             android:layout_toRightOf="@+id/btnsortup"
-					             android:layout_width="wrap_content"
-					             android:layout_height="wrap_content"
-					             android:enabled="false" 
-					             android:text="下移" />
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"
+					             android:text="退出" />				         
 					</RelativeLayout>					
 				</LinearLayout>	
 				

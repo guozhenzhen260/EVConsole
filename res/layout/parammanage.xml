@@ -422,14 +422,14 @@
 				            	 <Button   
 							        android:id="@+id/btnmachineSave"  
 							        android:text="保存"
-							        android:layout_width="wrap_content"   
-							        android:layout_height="wrap_content"   
+							        android:layout_width="100dp"
+									android:layout_height="70dp"  
 							    /> 
 							    <Button   
 							        android:id="@+id/btnmachineexit"  
-							        android:text="返回"
-							        android:layout_width="wrap_content"   
-							        android:layout_height="wrap_content"   
+							        android:text="退出"
+							        android:layout_width="100dp"
+									android:layout_height="70dp"    
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -486,8 +486,8 @@
 							       android:layout_gravity="center_horizontal"/> 
 							    <Button
 						             android:id="@+id/btnamount"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"  
+						             android:layout_width="100dp"
+									 android:layout_height="70dp"  
 						             android:enabled="false"           
 						             android:text="测试" />      
 				            </LinearLayout>	        
@@ -518,8 +518,8 @@
 							       android:layout_gravity="center_horizontal"/> 
 							   <Button
 						             android:id="@+id/btncard"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"  
+						             android:layout_width="100dp"
+									 android:layout_height="70dp"  
 						             android:enabled="false"             
 						             android:text="测试" />         
 				            </LinearLayout>	        
@@ -550,8 +550,8 @@
 							       android:layout_gravity="center_horizontal"/> 
 							    <Button
 						             android:id="@+id/btnzhifubaofaca"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content" 
+						             android:layout_width="100dp"
+									 android:layout_height="70dp" 
 						             android:enabled="false"              
 						             android:text="测试" />        
 				            </LinearLayout>	        
@@ -582,8 +582,8 @@
 							       android:layout_gravity="center_horizontal"/> 
 							    <Button
 						             android:id="@+id/btnzhifubaoer"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content" 
+						             android:layout_width="100dp"
+									 android:layout_height="70dp" 
 						             android:enabled="false"              
 						             android:text="测试" />        
 				            </LinearLayout>	        
@@ -614,8 +614,8 @@
 							       android:layout_gravity="center_horizontal"/>   
 							    <Button
 						             android:id="@+id/btnweixing"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content"   
+						             android:layout_width="100dp"
+									 android:layout_height="70dp"  
 						             android:enabled="false"            
 						             android:text="测试" />      
 				            </LinearLayout>	        
@@ -646,8 +646,8 @@
 							       android:layout_gravity="center_horizontal"/>   
 							    <Button
 						             android:id="@+id/btnprinter"
-						             android:layout_width="wrap_content"
-						             android:layout_height="wrap_content" 
+						             android:layout_width="100dp"
+									 android:layout_height="70dp" 
 						             android:enabled="false"              
 						             android:text="测试" />      
 				            </LinearLayout>	        
@@ -664,14 +664,14 @@
 				            	 <Button   
 							        android:id="@+id/btndeviceSave"  
 							        android:text="保存"
-							        android:layout_width="wrap_content"   
-							        android:layout_height="wrap_content"   
+							        android:layout_width="100dp"
+									android:layout_height="70dp"   
 							    /> 
 							    <Button   
 							        android:id="@+id/btndeviceexit"  
-							        android:text="返回"
-							        android:layout_width="wrap_content"   
-							        android:layout_height="wrap_content"   
+							        android:text="退出"
+							        android:layout_width="100dp"
+									android:layout_height="70dp"   
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -693,42 +693,26 @@
 	    <RelativeLayout
 		        android:layout_width="match_parent"
 			    android:layout_height="match_parent"		
-			    android:orientation="vertical" >	
-			    <ImageView  
-			        android:id="@+id/ivmachineLogo"  
-			        android:layout_alignParentLeft="true" 
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
-			     /> 		        
-		         <Button   
-			        android:id="@+id/btnmachineImg"  
-			        android:layout_alignParentLeft="true" 
-			        android:layout_below="@+id/ivmachineLogo"
-			        android:text="选择Logo"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
-			    /> 	
-			    <Button   
+			    android:orientation="vertical" >			    	     	    
+				<ExpandableListView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:id="@+id/emachinelistview" />
+				<Button   
 			        android:id="@+id/btnmachinerunSave"  
-			        android:layout_toRightOf="@+id/btnmachineImg"
-			        android:layout_below="@+id/ivmachineLogo"
 			        android:text="保存"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
+			        android:layout_below="@+id/emachinelistview"
+			        android:layout_width="100dp"
+					android:layout_height="70dp"   
 			    /> 
 			    <Button   
 			        android:id="@+id/btnmachinerunCancel"  
 			        android:layout_toRightOf="@+id/btnmachinerunSave"
-			        android:layout_below="@+id/ivmachineLogo"
-			        android:text="返回"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
-			    /> 		     	    
-				<ExpandableListView
-			        android:layout_width="match_parent"
-			        android:layout_height="match_parent"
-			        android:layout_below="@+id/btnmachineImg"
-			        android:id="@+id/emachinelistview" />
+			        android:layout_below="@+id/emachinelistview"
+			        android:text="退出"
+			        android:layout_width="100dp"
+					android:layout_height="70dp"  
+			    /> 	
 		</RelativeLayout>	 			    
 	</LinearLayout>
 </LinearLayout>

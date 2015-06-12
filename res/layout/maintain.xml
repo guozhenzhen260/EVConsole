@@ -35,10 +35,11 @@
 	    android:id="@+id/gvInfo"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:columnWidth="90dp"
-	    android:gravity="center"
-	    android:horizontalSpacing="10dp"
+	    android:verticalSpacing="10dp"
+	    android:horizontalSpacing="10dp" 
+	    android:columnWidth="205dp"
+	    android:gravity="center"	    
 	    android:numColumns="auto_fit"
 	    android:stretchMode="spacingWidthUniform"
-	    android:verticalSpacing="10dp" />
+	    />
 </LinearLayout>
