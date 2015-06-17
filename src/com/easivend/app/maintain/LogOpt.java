@@ -19,8 +19,10 @@ import com.easivend.model.Tb_vmc_product;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -93,6 +95,14 @@ public class LogOpt extends Activity {
 		    	loggrid();
 		    }
 		});
+    	//删除查询
+    	btnloggriddel = (Button) findViewById(R.id.btnloggriddel);
+    	btnloggriddel.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	delloggrid();
+		    }
+		});
     	//退出
     	btnloggridexit = (Button) findViewById(R.id.btnloggridexit);
     	btnloggridexit.setOnClickListener(new OnClickListener() {
@@ -145,7 +155,12 @@ public class LogOpt extends Activity {
 	//查询报表
 	private void loggrid()
 	{
-		if((mYear>0)&&(eYear>0))
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)));
+		if(
+				(!edtloggridstart.getText().toString().isEmpty())
+			  &&(!edtloggridend.getText().toString().isEmpty())
+			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
+		  )
 		{
 			String mYearStr=null,mMonthStr=null,mDayStr=null;
 			String eYearStr=null,eMonthStr=null,eDayStr=null;
@@ -194,6 +209,65 @@ public class LogOpt extends Activity {
 			    		new String[]{"logID","logType","logDesc","logTime"},//Map中的key名称
 			    		new int[]{R.id.txtlogID,R.id.txtlogType,R.id.txtlogDesc,R.id.txtlogTime});
 			this.lvlog.setAdapter(this.simpleada);
+			
+		}
+		else
+		{
+			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	//删除查询报表
+	private void delloggrid()
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)));
+		if(
+				(!edtloggridstart.getText().toString().isEmpty())
+			  &&(!edtloggridend.getText().toString().isEmpty())
+			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
+		  )
+		{
+			//创建警告对话框
+	    	Dialog alert=new AlertDialog.Builder(LogOpt.this)
+	    		.setTitle("对话框")//标题
+	    		.setMessage("您确定要删除该记录吗？")//表示对话框中得内容
+	    		.setIcon(R.drawable.ic_launcher)//设置logo
+	    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+	    			{				
+		    				@Override
+		    				public void onClick(DialogInterface dialog, int which) 
+		    				{
+		    					// TODO Auto-generated method stub	
+		    					String mYearStr=null,mMonthStr=null,mDayStr=null;
+		    					String eYearStr=null,eMonthStr=null,eDayStr=null;
+		    					
+		    					mYearStr=((mYear<10)?("0"+String.valueOf(mYear)):String.valueOf(mYear));
+		    					mMonthStr=((mMon<10)?("0"+String.valueOf(mMon)):String.valueOf(mMon));
+		    					mDayStr=((mDay<10)?("0"+String.valueOf(mDay)):String.valueOf(mDay));
+		    					eYearStr=((eYear<10)?("0"+String.valueOf(eYear)):String.valueOf(eYear));
+		    					eMonthStr=((eMon<10)?("0"+String.valueOf(eMon)):String.valueOf(eMon));
+		    					eDayStr=((eDay<10)?("0"+String.valueOf(eDay)):String.valueOf(eDay));
+		    					// 创建InaccountDAO对象
+		    					vmc_logDAO logDAO = new vmc_logDAO(LogOpt.this);
+		    					String start=mYearStr+"-"+mMonthStr+"-"+mDayStr;
+		    					String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;	
+		    					logDAO.detele(start,end);
+		    					// 弹出信息提示
+					            Toast.makeText(LogOpt.this, "记录删除成功！", Toast.LENGTH_SHORT).show();
+		    				}
+	    		      }
+	    			)		    		        
+			        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+			        	{			
+							@Override
+							public void onClick(DialogInterface dialog, int which) 
+							{
+								// TODO Auto-generated method stub				
+							}
+			        	}
+			        )
+			        .create();//创建一个对话框
+			        alert.show();//显示对话框
 			
 		}
 		else

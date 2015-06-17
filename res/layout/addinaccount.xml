@@ -337,7 +337,12 @@
 			             android:id="@+id/btnbillquery"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"            
-			             android:text="查询" />   
+			             android:text="查询" /> 
+			         <Button
+			             android:id="@+id/btnbillexit2"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"
+			             android:text="退出" />      
 				</LinearLayout> 
 		    </TableRow>	
 			<View                              
@@ -355,24 +360,7 @@
 						 android:layout_height="70dp"            
 			             android:text="配置" />
 		         </LinearLayout>
-		    </TableRow>		    
-		    <View                              
-		        android:layout_height="2px"
-		        android:background="#FF909090"
-		    /> 
-		    <TableRow >           
-		        <LinearLayout 
-			        android:layout_width="match_parent"
-				    android:layout_height="match_parent"	
-				    android:orientation="horizontal" >
-			         <Button
-			             android:id="@+id/btnbillexit"
-			             android:layout_width="100dp"
-						 android:layout_height="70dp"
-			             android:text="退出" />
-		         </LinearLayout>
-		
-		    </TableRow>
+		    </TableRow>	
 		</TableLayout>
 	</LinearLayout>   
 	<LinearLayout 
@@ -844,7 +832,12 @@
 			             android:id="@+id/btncoinquery"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"            
-			             android:text="查询" />   
+			             android:text="查询" />
+			         <Button
+			             android:id="@+id/btncoinexit"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
+			             android:text="退出" />   
 				</LinearLayout> 
 		    </TableRow>	
 			<View                              
@@ -1085,6 +1078,11 @@
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"
 			             android:text="找零" />
+			        <Button
+			             android:id="@+id/btnhopperexit"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
+			             android:text="退出" />
 		         </LinearLayout>
 		
 		    </TableRow>				

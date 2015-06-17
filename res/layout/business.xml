@@ -73,7 +73,7 @@
 	   	    android:id = "@+id/ivadsxjp"
 	   	    android:layout_width="366dp"
 			android:layout_height="wrap_content"	
-			android:layout_alignParentRight="true"
+			android:layout_toRightOf="@+id/ivadsspgh" 
 			android:layout_below="@+id/btnadsquhuo"
 			android:src="@drawable/xjp"			
 	   	/> 
@@ -81,7 +81,7 @@
 	        android:id="@+id/btnads1"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads2"
+	        android:layout_toRightOf="@+id/ivadsspgh" 
 	        android:layout_below="@+id/ivadsxjp"	       
 	        android:textColor="#8C6931"
 	        android:src="@drawable/one" />   
@@ -89,7 +89,7 @@
 	        android:id="@+id/btnads2"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads3"
+	        android:layout_toRightOf="@+id/btnads1" 
 	        android:layout_below="@+id/ivadsxjp"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/two" />
@@ -97,7 +97,7 @@
 	        android:id="@+id/btnads3"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_alignParentRight="true"
+	        android:layout_toRightOf="@+id/btnads2" 
 	        android:layout_below="@+id/ivadsxjp"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/three" />  
@@ -105,7 +105,7 @@
 	        android:id="@+id/btnads4"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads5"
+	        android:layout_toRightOf="@+id/ivadsspgh" 
 	        android:layout_below="@+id/btnads1"	       
 	        android:textColor="#8C6931"
 	        android:src="@drawable/four" />   
@@ -113,7 +113,7 @@
 	        android:id="@+id/btnads5"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads6"
+	        android:layout_toRightOf="@+id/btnads4" 
 	        android:layout_below="@+id/btnads2"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/five" />
@@ -121,7 +121,7 @@
 	        android:id="@+id/btnads6"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_alignParentRight="true"
+	        android:layout_toRightOf="@+id/btnads5" 
 	        android:layout_below="@+id/btnads3"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/six" />
@@ -129,7 +129,7 @@
 	        android:id="@+id/btnads7"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads8"
+	        android:layout_toRightOf="@+id/ivadsspgh" 
 	        android:layout_below="@+id/btnads4"	       
 	        android:textColor="#8C6931"
 	        android:src="@drawable/seven" />   
@@ -137,7 +137,7 @@
 	        android:id="@+id/btnads8"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads9"
+	        android:layout_toRightOf="@+id/btnads7" 
 	        android:layout_below="@+id/btnads5"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/eight" />
@@ -145,7 +145,7 @@
 	        android:id="@+id/btnads9"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_alignParentRight="true"
+	        android:layout_toRightOf="@+id/btnads8" 
 	        android:layout_below="@+id/btnads6"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/nine" />  
@@ -153,7 +153,7 @@
 	        android:id="@+id/btnadscancel"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnads0"
+	        android:layout_toRightOf="@+id/ivadsspgh" 
 	        android:layout_below="@+id/btnads7"	       
 	        android:textColor="#8C6931"
 	        android:src="@drawable/tuige" />   
@@ -161,7 +161,7 @@
 	        android:id="@+id/btnads0"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_toLeftOf="@+id/btnadsenter"
+	        android:layout_toRightOf="@+id/btnadscancel" 
 	        android:layout_below="@+id/btnads8"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/zero" />
@@ -169,7 +169,7 @@
 	        android:id="@+id/btnadsenter"
 	        android:layout_width="122dp"
 	        android:layout_height="60dp"
-	        android:layout_alignParentRight="true"
+	        android:layout_toRightOf="@+id/btnads0" 
 	        android:layout_below="@+id/btnads9"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/enter" />    

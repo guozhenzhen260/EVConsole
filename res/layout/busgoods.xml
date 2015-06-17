@@ -19,9 +19,9 @@
 		    android:layout_height="wrap_content"						       
 		    >		         
 	         <ImageView 
-		   	    android:layout_width="980dp"
+		   	    android:layout_width="fill_parent"
 				android:layout_height="88dp"	
-				android:layout_alignParentLeft="true"
+				android:layout_toLeftOf="@+id/imgbtnbusgoodsback"
 				android:layout_alignParentBottom="true"
 				android:src="@drawable/ditu"/> 
 			<ImageButton

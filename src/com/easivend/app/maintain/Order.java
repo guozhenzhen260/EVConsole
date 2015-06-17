@@ -17,6 +17,7 @@ import com.easivend.chart.Stack;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_OrderAdapter;
 import com.easivend.dao.vmc_cabinetDAO;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.model.Tb_vmc_cabinet;
@@ -24,10 +25,12 @@ import com.easivend.model.Tb_vmc_order_pay;
 import com.example.evconsole.R;
 
 import android.R.integer;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -37,6 +40,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -63,6 +67,8 @@ public class Order extends TabActivity
 	private EditText edtordergridstart=null,edtordergridend=null;
 	private Button btnordergridquery=null,btnordergriddel=null,btnordergridexit=null,btnordergridStack=null,btnordergridLine=null;	
 	private Spinner spinordergridtongji=null;
+	private String [] mStringArray; 
+	private ArrayAdapter<String> mAdapter ;
 	private ListView lvorder=null;
 	private SimpleDateFormat df;
 	private String date=null;
@@ -228,6 +234,14 @@ public class Order extends TabActivity
 		    	grid();
 		    }
 		});
+    	//删除记录
+    	btnordergriddel = (Button) findViewById(R.id.btnordergriddel);
+    	btnordergriddel.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	delgrid();
+		    }
+		});
     	//退出
     	btnordergridexit = (Button) findViewById(R.id.btnordergridexit);
     	btnordergridexit.setOnClickListener(new OnClickListener() {
@@ -237,6 +251,10 @@ public class Order extends TabActivity
 		    }
 		});
     	spinordergridtongji= (Spinner) findViewById(R.id.spinordergridtongji); 
+    	mStringArray=getResources().getStringArray(R.array.tongji_label);
+    	//使用自定义的ArrayAdapter
+        mAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,mStringArray);
+        spinordergridtongji.setAdapter(mAdapter);// 为ListView列表设置数据源
     	this.spinordergridtongji.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -358,8 +376,13 @@ public class Order extends TabActivity
 	};
 	//查询报表
 	private void grid()
-	{
-		if((mYear>0)&&(eYear>0))
+	{		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)));
+		if(
+				(!edtordergridstart.getText().toString().isEmpty())
+			  &&(!edtordergridstart.getText().toString().isEmpty())
+			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
+		  )
 		{
 			Vmc_OrderAdapter vmc_OrderAdapter=new Vmc_OrderAdapter();
 			vmc_OrderAdapter.grid(Order.this, mYear, mMon, mDay, eYear, eMon, eDay);
@@ -435,6 +458,51 @@ public class Order extends TabActivity
 			Toast.makeText(Order.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
 		}
 	}
+	//删除查询报表
+	private void delgrid()
+	{		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)));
+		if(
+				(!edtordergridstart.getText().toString().isEmpty())
+			  &&(!edtordergridstart.getText().toString().isEmpty())
+			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
+		  )
+		{
+			//创建警告对话框
+	    	Dialog alert=new AlertDialog.Builder(Order.this)
+	    		.setTitle("对话框")//标题
+	    		.setMessage("您确定要删除该记录吗？")//表示对话框中得内容
+	    		.setIcon(R.drawable.ic_launcher)//设置logo
+	    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+	    			{				
+		    				@Override
+		    				public void onClick(DialogInterface dialog, int which) 
+		    				{
+		    					// TODO Auto-generated method stub	
+		    					Vmc_OrderAdapter vmc_OrderAdapter=new Vmc_OrderAdapter();
+		    					vmc_OrderAdapter.delgrid(Order.this, mYear, mMon, mDay, eYear, eMon, eDay);
+		    					// 弹出信息提示
+					            Toast.makeText(Order.this, "记录删除成功！", Toast.LENGTH_SHORT).show();
+		    				}
+	    		      }
+	    			)		    		        
+			        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+			        	{			
+							@Override
+							public void onClick(DialogInterface dialog, int which) 
+							{
+								// TODO Auto-generated method stub				
+							}
+			        	}
+			        )
+			        .create();//创建一个对话框
+			        alert.show();//显示对话框			
+		}
+		else
+		{
+			Toast.makeText(Order.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
+		}
+	}
 	
 	//作图表统计信息
 	private void chartcount()
@@ -451,10 +519,10 @@ public class Order extends TabActivity
 			//上半月
 			if(i%2==0)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月上：="+getLastDayOfMonth(eYear,(mon+1),0)+"到"+getLastDayOfMonth(eYear,(mon+1),1));
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月上：="+ToolClass.getLastDayOfMonth(eYear,(mon+1),0)+"到"+ToolClass.getLastDayOfMonth(eYear,(mon+1),1));
 				for(j=0;j<ourdercount;j++)
 				{
-					if(isdatein(getLastDayOfMonth(eYear,(mon+1),0),getLastDayOfMonth(eYear,(mon+1),1),payTime[j])==true)
+					if(ToolClass.isdatein(ToolClass.getLastDayOfMonth(eYear,(mon+1),0),ToolClass.getLastDayOfMonth(eYear,(mon+1),1),payTime[j])==true)
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在");
 						Amountvalue[i]+=salesPricevalue[j];
@@ -469,10 +537,10 @@ public class Order extends TabActivity
 			//下半月
 			else
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月下：="+getLastDayOfMonth(eYear,(mon+1),1)+"到"+getLastDayOfMonth(eYear,(mon+1),2));
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月下：="+ToolClass.getLastDayOfMonth(eYear,(mon+1),1)+"到"+ToolClass.getLastDayOfMonth(eYear,(mon+1),2));
 				for(j=0;j<ourdercount;j++)
 				{
-					if(isdatein(getLastDayOfMonth(eYear,(mon+1),1),getLastDayOfMonth(eYear,(mon+1),2),payTime[j])==true)
+					if(ToolClass.isdatein(ToolClass.getLastDayOfMonth(eYear,(mon+1),1),ToolClass.getLastDayOfMonth(eYear,(mon+1),2),payTime[j])==true)
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在");
 						Amountvalue[i]+=salesPricevalue[j];
@@ -494,76 +562,5 @@ public class Order extends TabActivity
 			Countmax=(Countvalue[i]>Countmax)?Countvalue[i]:Countmax;			
 		}
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<amount="+Amountmax+",count="+Countmax);
-	}
-	
-	/**
-	 * 获取某月的最后一天或者中旬
-	 * @Title:getLastDayOfMonth
-	 * @Description:
-	 * @param:@param year
-	 * @param:@param month
-	 * @param:@param type=0月初,1月中旬,2月下旬
-	 * @param:@return
-	 * @return:String
-	 * @throws
-	 */
-	private String getLastDayOfMonth(int year,int month,int type)
-	{
-		Calendar cal = Calendar.getInstance();
-		//设置年份
-		cal.set(Calendar.YEAR,year);
-		//设置月份
-		cal.set(Calendar.MONTH, month-1);
-		if(type==0)
-		{
-			//设置日历中月份的中旬
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-		}
-		else if(type==1)
-		{
-			//设置日历中月份的中旬
-			cal.set(Calendar.DAY_OF_MONTH, 15);
-		}
-		else if(type==2)
-		{
-			//获取某月最大天数
-			int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-			//设置日历中月份的最大天数
-			cal.set(Calendar.DAY_OF_MONTH, lastDay);
-		}
-		//格式化日期
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String lastDayOfMonth = sdf.format(cal.getTime());
-		
-		return lastDayOfMonth;
-	}
-	//是否在时间区间中,s是需要比较的时间,begin,end是时间区间
-	//是返回true
-	private boolean isdatein(String begin,String end,String s)
-	{
-		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s+"在"+begin+"="+dateCompare(s,begin));
-		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s+"在"+end+"="+dateCompare(end,s));
-		if((dateCompare(s,begin)>=0)&&(dateCompare(end,s)>=0))
-		{
-			return true;
-		}
-		return false;
-	}
-	//时间比较,返回值result==0s1相等s2,result<0s1小于s2,result:>0s1大于s2,
-	private int dateCompare(String s1,String s2)
-	{
-		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s1);
-		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s2);
-		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		java.util.Calendar c1=java.util.Calendar.getInstance();
-		java.util.Calendar c2=java.util.Calendar.getInstance();
-		try
-		{
-			c1.setTime(df.parse(s1));
-			c2.setTime(df.parse(s2));
-		}catch(java.text.ParseException e){
-			System.err.println("格式不正确");
-		}
-		return c1.compareTo(c2);
 	}
 }

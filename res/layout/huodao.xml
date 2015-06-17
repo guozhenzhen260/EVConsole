@@ -76,7 +76,16 @@
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:visibility="gone"
-			        android:indeterminate="true" />  	        
+			        android:indeterminate="true" /> 
+			    <TextView
+			        android:id="@+id/txthuosetrst"
+			        android:layout_width="wrap_content" 
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/txthuosetno"
+			        android:textSize="40sp"
+			        android:textStyle="bold"        
+			        android:textColor="#FF0000" 
+			        android:text="查询次数:" />     	        
 			</RelativeLayout>											
 		</LinearLayout>			
 	</RelativeLayout>    
@@ -227,7 +236,7 @@
 				       android:layout_marginTop="20dip"  
 				       android:id="@+id/switchlight"  
 				       android:layout_width="wrap_content"  
-				       android:layout_height="wrap_content"  
+				       android:layout_height="wrap_content" 
 				       android:textOn="开"  
 				       android:textOff="关"  							           
 				       android:layout_gravity="center_horizontal"/>
@@ -315,6 +324,11 @@
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"            
 			             android:text="重置" />
+			         <Button
+			             android:id="@+id/btnhuochuall"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"             
+			             android:text="全部出货" />
 			         <Button
 			             android:id="@+id/btnhuoexit"
 			             android:layout_width="100dp"

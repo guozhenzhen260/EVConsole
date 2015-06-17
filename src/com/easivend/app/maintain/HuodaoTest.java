@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
@@ -83,12 +85,18 @@ public class HuodaoTest extends TabActivity
 	private TabHost mytabhost = null;
 	private ProgressBar barhuomanager=null;
 	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest};//内嵌布局文件的id
+	private TextView txthuosetrst=null;
+	private int con=1;//查询连接次数
+	private int ishuoquery=0;//是否正在查询1,正在查询,0查询完成
+	Timer timer = new Timer(); 
 	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetbu=null,btnhuosetexit=null;
 	private Spinner spinhuosetCab=null,spinhuotestCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0,cabinetTypesetvar=0;
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
+	private int huonum=0;//本柜货道数量
+	private int huonno=0;//循环出货第几个格子了
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
 	GridView gvhuodao=null;
@@ -101,7 +109,7 @@ public class HuodaoTest extends TabActivity
 	private int hot=0;//是否支持加热  		1:支持 0:不支持
 	private int light=0;//是否支持照明  	1:支持 0:不支持
 	private TextView txthuorst=null,txthuotestrst=null;
-	private Button btnhuochu=null;// 创建Button对象“出货”
+	private Button btnhuochu=null,btnhuochuall=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
 	private EditText edtcolumn=null;
@@ -169,6 +177,7 @@ public class HuodaoTest extends TabActivity
 //						showhuodao();						
 						break;
 					case EVprotocolAPI.EV_BENTO_CHECK://格子柜查询
+						ishuoquery=0;
 						String tempno=null;
 						
 						cool=(Integer)Set.get("cool");
@@ -227,7 +236,8 @@ public class HuodaoTest extends TabActivity
 				            	huoSet.put(tempno, (Integer)me.getValue());
 				            }
 				        } 
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
+				        huonum=huoSet.size();
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString());	
 						showhuodao();						
 						break;	
 					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
@@ -238,6 +248,25 @@ public class HuodaoTest extends TabActivity
 						
 						txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
 						sethuorst(status);
+						//循环继续做出货操作
+						if((huonno>0)&&(huonno<huonum))
+						{							
+							huonno++;
+							//格子柜
+							if(cabinetTypevar==5)
+							{
+								ToolClass.Log(ToolClass.INFO,"EV_JNI",
+								    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+								    	+" cabType="+String.valueOf(cabinetTypevar)
+								    	+" column="+huonno		    	
+								    	);	 
+								EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
+							}
+						}
+						else if(huonno>=huonum)
+						{
+							huonno=0;
+						}
 						break;	
 					case EVprotocolAPI.EV_BENTO_LIGHT://格子柜开灯
 						device=(Integer)allSet.get("addr");//柜号						
@@ -252,6 +281,8 @@ public class HuodaoTest extends TabActivity
     	//===============
     	//货道设置页面
     	//===============
+  	    timer.schedule(task, 3*1000, 3*1000);       // timeTask 
+  	    txthuosetrst=(TextView)findViewById(R.id.txthuosetrst);
   	    barhuomanager= (ProgressBar) findViewById(R.id.barhuomanager);
   	    huoAdapter=new Vmc_HuoAdapter();
   	    this.gvhuodao=(GridView) findViewById(R.id.gvhuodao); 
@@ -271,19 +302,7 @@ public class HuodaoTest extends TabActivity
 					barhuomanager.setVisibility(View.VISIBLE); 
 					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
 					cabinetTypesetvar=cabinetType[arg2]; 
-					//格子柜
-					if(cabinetTypesetvar==5)
-					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
-						EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);	
-						barhuomanager.setVisibility(View.VISIBLE);  
-					}
-					//普通柜
-					else 
-					{
-						EVprotocolAPI.getColumn(cabinetsetvar);
-					}
-					
+					queryhuodao();					
 				}				
 			}
 
@@ -340,6 +359,7 @@ public class HuodaoTest extends TabActivity
     	btnhuosetexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
+		    	timer.cancel();
 		    	finish();
 		    }
 		});    	
@@ -368,6 +388,7 @@ public class HuodaoTest extends TabActivity
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
 		txthuotestrst=(TextView)findViewById(R.id.txthuotestrst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
+		btnhuochuall = (Button) findViewById(R.id.btnhuochuall);
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
 		btnhuoexit = (Button) findViewById(R.id.btnhuoexit);
 		edtcolumn = (EditText) findViewById(R.id.edtcolumn);
@@ -493,6 +514,30 @@ public class HuodaoTest extends TabActivity
 		    	}
 		    }
 		});
+		btnhuochuall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {		    	  
+		    	   		    		
+	    		int rst=0;
+	    		//格子柜
+				if(cabinetTypevar==5)
+				{
+					huonno=1;
+					ToolClass.Log(ToolClass.INFO,"EV_JNI",
+					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+					    	+" cabType="+String.valueOf(cabinetTypevar)
+					    	+" column="+huonno		    	
+					    	);	 
+					EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
+				}
+				//普通柜
+				else 
+				{
+//					rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
+//			    			ToolClass.MoneySend(price));	
+				}
+		    }
+		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
@@ -502,6 +547,7 @@ public class HuodaoTest extends TabActivity
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
+		    	timer.cancel();
 		    	finish();
 		    }
 		});
@@ -509,6 +555,43 @@ public class HuodaoTest extends TabActivity
 	//===============
 	//货道设置页面
 	//===============
+	//调用倒计时定时器
+	TimerTask task = new TimerTask() { 
+        @Override 
+        public void run() { 
+  
+            runOnUiThread(new Runnable() {      // UI thread 
+                @Override 
+                public void run() { 
+                    if(ishuoquery==1)
+                    {
+                    	queryhuodao();
+                    }
+//                    //查询已经完成
+//                    else if(ishuoquery==0)
+//                    {
+//                    	timer.cancel(); //取消掉定时器，就不会再继续查了
+//                    }
+                } 
+            }); 
+        } 
+    };
+	private void queryhuodao()
+	{
+		txthuosetrst.setText("查询次数:"+(con++));		
+		ishuoquery=1;
+		//格子柜
+		if(cabinetTypesetvar==5)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
+			EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);
+		}
+		//普通柜
+		else 
+		{
+			EVprotocolAPI.getColumn(cabinetsetvar);
+		}
+	}
 	//接收GoodsProSet返回信息
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -535,13 +618,19 @@ public class HuodaoTest extends TabActivity
 	private void cabinetAdd()
 	{
 		final String[] values=null;
-		View myview=null;    	
+		View myview=null;    
+		String [] mStringArray; 
+		ArrayAdapter<String> mAdapter ;
+		
 		// TODO Auto-generated method stub
 		LayoutInflater factory = LayoutInflater.from(HuodaoTest.this);
 		myview=factory.inflate(R.layout.selectcabinet, null);
 		final EditText dialogcab=(EditText) myview.findViewById(R.id.dialogcab);
 		final Spinner dialogspincabtype=(Spinner) myview.findViewById(R.id.dialogspincabtype);
-		
+		mStringArray=getResources().getStringArray(R.array.cabinet_Type);
+  	    //使用自定义的ArrayAdapter
+	  	mAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,mStringArray);
+	  	dialogspincabtype.setAdapter(mAdapter);// 为ListView列表设置数据源
 		
 		Dialog dialog = new AlertDialog.Builder(HuodaoTest.this)
 		.setTitle("设置")
@@ -606,7 +695,7 @@ public class HuodaoTest extends TabActivity
 		Vmc_CabinetAdapter vmc_cabAdapter=new Vmc_CabinetAdapter();
 	    String[] strInfos = vmc_cabAdapter.showSpinInfo(HuodaoTest.this);	    
 	    // 使用字符串数组初始化ArrayAdapter对象
-	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
+	    arrayAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner, strInfos);
 	    spinhuosetCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    cabinetID=vmc_cabAdapter.getCabinetID();    

@@ -147,14 +147,24 @@ public class vmc_productDAO
 	public void detele(Tb_vmc_product tb_vmc_product) 
 	{       
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        // 执行删除商品表
-        db.execSQL("delete from vmc_product where productID=?", 
-        		new Object[] { tb_vmc_product.getProductID()});
-        //删除商品分类关联表
-        db.execSQL(
-				"delete from vmc_classproduct " +
-				"where productID=?",
-		        new Object[] { tb_vmc_product.getProductID()});
+        //是否在货道表上有关联
+  		Cursor cursor = db.rawQuery("select productID from vmc_column where productID=?", new String[] { tb_vmc_product.getProductID()});// 获取收入信息表中的最大编号
+  	    // 没有关联货道，可以删除
+  		if (!cursor.moveToLast()) 
+        {
+  			// 执行删除商品表
+  	        db.execSQL("delete from vmc_product where productID=?", 
+  	        		new Object[] { tb_vmc_product.getProductID()});
+  	        //删除商品分类关联表
+  	        db.execSQL(
+  					"delete from vmc_classproduct " +
+  					"where productID=?",
+  			        new Object[] { tb_vmc_product.getProductID()});
+        }
+  		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		} 
         db.close();
     }
 	/**

@@ -27,10 +27,10 @@ public class MachineExpanseListAdapter extends BaseExpandableListAdapter
 {
 	private Context context=null;
 	//组名称
-	public static String group[]=new String[]{">>>音量设置",">>>温度设置",">>>照明",">>>制冷",">>>除臭"};
+	public static String group[]=new String[]{"+音量设置","+温度设置","+照明","+制冷","+除臭"};
 	//子名称
-	public static String child[][]=new String[][]{{"工作日开启音量:","工作日开启时间段","节假日开启音量:","节假日开启时间段"},{"温度值:","工作日开启时间段","节假日开启时间段"},
-			{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"},{"工作日开启时间段","节假日开启时间段"}};
+	public static String child[][]=new String[][]{{"工作日音量:","工作日开启:","节假日音量:","节假日开启:"},{"温度值:","工作日开启:","节假日开启:"},
+			{"工作日开启:","节假日开启:"},{"工作日开启:","节假日开启:"},{"工作日开启:","节假日开启:"}};
 	//子名称的值
 	public static String childValue[][]=new String[][]{{"","","",""},{"","",""},
 		{"",""},{"",""},{"",""}};
@@ -58,7 +58,7 @@ public class MachineExpanseListAdapter extends BaseExpandableListAdapter
 	
 	private TextView buildTextView()
 	{
-		AbsListView.LayoutParams params=new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,35); 
+		AbsListView.LayoutParams params=new AbsListView.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,50); 
 		TextView textView=new TextView(this.context);
 		textView.setLayoutParams(params);
 		//textView.setTextSize(25.0f);
@@ -74,6 +74,7 @@ public class MachineExpanseListAdapter extends BaseExpandableListAdapter
 		// TODO Auto-generated method stub
 		TextView textview=new TextView(this.context);
 		textview.setText(this.getChild(groupPosition, childPosition).toString());
+		textview.setTextSize(40);
 		return textview;
 	}
 
@@ -107,6 +108,8 @@ public class MachineExpanseListAdapter extends BaseExpandableListAdapter
 		// TODO Auto-generated method stub
 		TextView textview=this.buildTextView();
 		textview.setText(this.getGroup(groupPosition).toString());
+		textview.setTextSize(40);
+		textview.setTextColor(android.graphics.Color.BLUE);
 		return textview;
 	}
 

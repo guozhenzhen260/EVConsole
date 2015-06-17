@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -568,5 +569,103 @@ public class ToolClass
 				break;	
 		}
 		return "";
+	}
+	
+	/**
+	 * 格式化时间
+	 * @Title:getLastDayOfMonth
+	 * @Description:
+	 * @param:@param year
+	 * @param:@param month
+	 * @param:@param type=0月初,1月中旬,2月下旬
+	 * @param:@return
+	 * @return:String
+	 * @throws
+	 */
+	public static String getDayOfMonth(int year,int month,int day)
+	{
+		Calendar cal = Calendar.getInstance();
+		//设置年份
+		cal.set(Calendar.YEAR,year);
+		//设置月份
+		cal.set(Calendar.MONTH, month-1);
+		//设置日
+		cal.set(Calendar.DATE, day);
+		
+		//格式化日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String lastDayOfMonth = sdf.format(cal.getTime());
+		
+		return lastDayOfMonth;
+	}
+	/**
+	 * 获取某月的最后一天或者中旬
+	 * @Title:getLastDayOfMonth
+	 * @Description:
+	 * @param:@param year
+	 * @param:@param month
+	 * @param:@param type=0月初,1月中旬,2月下旬
+	 * @param:@return
+	 * @return:String
+	 * @throws
+	 */
+	public static String getLastDayOfMonth(int year,int month,int type)
+	{
+		Calendar cal = Calendar.getInstance();
+		//设置年份
+		cal.set(Calendar.YEAR,year);
+		//设置月份
+		cal.set(Calendar.MONTH, month-1);
+		if(type==0)
+		{
+			//设置日历中月份的中旬
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+		}
+		else if(type==1)
+		{
+			//设置日历中月份的中旬
+			cal.set(Calendar.DAY_OF_MONTH, 15);
+		}
+		else if(type==2)
+		{
+			//获取某月最大天数
+			int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			//设置日历中月份的最大天数
+			cal.set(Calendar.DAY_OF_MONTH, lastDay);
+		}
+		//格式化日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String lastDayOfMonth = sdf.format(cal.getTime());
+		
+		return lastDayOfMonth;
+	}
+	//是否在时间区间中,s是需要比较的时间,begin,end是时间区间
+	//是返回true
+	public static boolean isdatein(String begin,String end,String s)
+	{
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s+"在"+begin+"="+dateCompare(s,begin));
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s+"在"+end+"="+dateCompare(end,s));
+		if((dateCompare(s,begin)>=0)&&(dateCompare(end,s)>=0))
+		{
+			return true;
+		}
+		return false;
+	}
+	//时间比较,返回值result==0s1相等s2,result<0s1小于s2,result:>0s1大于s2,
+	public static int dateCompare(String s1,String s2)
+	{
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s1);
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+s2);
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		java.util.Calendar c1=java.util.Calendar.getInstance();
+		java.util.Calendar c2=java.util.Calendar.getInstance();
+		try
+		{
+			c1.setTime(df.parse(s1));
+			c2.setTime(df.parse(s2));
+		}catch(java.text.ParseException e){
+			System.err.println("格式不正确");
+		}
+		return c1.compareTo(c2);
 	}
 }

@@ -63,11 +63,21 @@ public class vmc_classDAO
 	}
 	//删除单条
 	public void detele(Tb_vmc_class tb_vmc_class) 
-	{       
+	{           
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        // 执行删除收入信息操作
-        db.execSQL("delete from vmc_class where classID = ?", 
-        		new Object[] { tb_vmc_class.getClassID()});
+        //是否在商品分类关联表上有关联
+  		Cursor cursor = db.rawQuery("select classID from vmc_classproduct where classID=?", new String[] { tb_vmc_class.getClassID()});// 获取收入信息表中的最大编号
+  	    // 没有关联商品，可以删除
+  		if (!cursor.moveToLast()) 
+        {
+	        // 执行删除收入信息操作
+	        db.execSQL("delete from vmc_class where classID = ?", 
+	        		new Object[] { tb_vmc_class.getClassID()});
+        }
+  		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		} 
         db.close(); 
     }
 	/**

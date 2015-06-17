@@ -207,7 +207,7 @@ public class GoodsProSet extends Activity
 		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
 	    String[] strInfos = vmc_classAdapter.showSpinInfo(GoodsProSet.this);	    
 	    // 使用字符串数组初始化ArrayAdapter对象
-	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
+	    arrayAdapter = new ArrayAdapter<String>(this, R.layout.viewspinner, strInfos);
 	    spinproductclassID.setAdapter(arrayAdapter);// 为ListView列表设置数据源
 	    proclassID=vmc_classAdapter.getProclassID();
 	}

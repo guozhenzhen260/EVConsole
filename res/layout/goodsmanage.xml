@@ -51,7 +51,8 @@
 				                android:layout_width="wrap_content"
 				            	android:layout_height="wrap_content"> 
 				            	<TextView 	
-				            	    android:minWidth="160px"	  
+				            	    android:minWidth="160px"	
+				            	    android:textSize="40sp"  
 				            	    android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
 									android:textColor="#FF0000"  
@@ -59,10 +60,10 @@
 						        
 						         <EditText
 						            android:id="@+id/edtclassid"
+						            android:textSize="40sp"
 							        android:minWidth="150px"
 							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
-							        android:textSize="20sp"		        
 							        android:text="" />
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -75,7 +76,8 @@
 				                android:layout_width="wrap_content"
 				            	android:layout_height="wrap_content"> 
 				            	<TextView 	
-				            	    android:minWidth="160px"	    
+				            	    android:minWidth="160px"	   
+				            	    android:textSize="40sp" 
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
 									android:textColor="#FF0000"  
@@ -83,10 +85,10 @@
 						        
 						         <EditText
 						            android:id="@+id/edtclassname"
+						            android:textSize="40sp"
 							        android:minWidth="150px"
 							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
-							        android:textSize="20sp"		       
 							        android:text="" />
 						        <ImageView
 								    android:id="@+id/imgclassname"
@@ -167,26 +169,57 @@
 				         android:layout_width="wrap_content"
 					     android:layout_height="wrap_content"						       
 					     >
-					    				         
+					     <TextView 		 
+			            	    android:id="@+id/txtproid" 
+			            	    android:textSize="40sp"
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content" 
+								android:text="商品编号:"/>
+					     <TextView 		 
+			            	    android:id="@+id/txtproidValue" 
+			            	    android:textSize="40sp"
+			            	    android:layout_toRightOf="@+id/txtproid"
+			            	    android:textColor="#FF0000" 	
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content"/>
+					     <TextView 		 
+			            	    android:id="@+id/txtproname" 
+			            	    android:textSize="40sp"
+			            	    android:layout_below="@+id/txtproid"	
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content" 
+								android:text="商品名称:"/>
+					     <TextView 		 
+			            	    android:id="@+id/txtpronameValue" 
+			            	    android:textSize="40sp"
+			            	    android:layout_below="@+id/txtproid"
+			            	    android:layout_toRightOf="@+id/txtproname"	
+			            	    android:textColor="#FF0000" 
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content"/>			         
 				         <Button
 					             android:id="@+id/btnproadd"
 					             android:layout_width="150dp"
-					             android:layout_height="70dp"             
+					             android:layout_height="70dp"  
+					             android:layout_below="@+id/txtproname"           
 					             android:text="添加" />
 				         <Button
 					             android:id="@+id/btnproupdate"
+					             android:layout_below="@+id/txtproname"  
 					             android:layout_toRightOf="@+id/btnproadd"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
 					             android:text="修改" />
 				         <Button
 					             android:id="@+id/btnprodel"
+					             android:layout_below="@+id/txtproname"  
 					             android:layout_toRightOf="@+id/btnproupdate"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
 					             android:text="删除" />
 				         <Button
 					             android:id="@+id/btnproexit"
+					             android:layout_below="@+id/txtproname"  
 					             android:layout_toRightOf="@+id/btnprodel"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"

@@ -178,6 +178,26 @@ public class Vmc_OrderAdapter
 	    }
 				
 	}
+	
+	//删除报表提供信息
+	public void delgrid(Context context,int mYear,int mMon,int mDay,int eYear,int eMon,int eDay)
+	{
+		String mYearStr=null,mMonthStr=null,mDayStr=null;
+		String eYearStr=null,eMonthStr=null,eDayStr=null;
+		
+		mYearStr=((mYear<10)?("0"+String.valueOf(mYear)):String.valueOf(mYear));
+		mMonthStr=((mMon<10)?("0"+String.valueOf(mMon)):String.valueOf(mMon));
+		mDayStr=((mDay<10)?("0"+String.valueOf(mDay)):String.valueOf(mDay));
+		eYearStr=((eYear<10)?("0"+String.valueOf(eYear)):String.valueOf(eYear));
+		eMonthStr=((eMon<10)?("0"+String.valueOf(eMon)):String.valueOf(eMon));
+		eDayStr=((eDay<10)?("0"+String.valueOf(eDay)):String.valueOf(eDay));
+		// 创建InaccountDAO对象
+		vmc_orderDAO orderDAO = new vmc_orderDAO(context);
+		vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
+		String start=mYearStr+"-"+mMonthStr+"-"+mDayStr;
+		String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;			
+		orderDAO.detele(start,end);						
+	}
 	    
 	public int getCount() {
 		return count;

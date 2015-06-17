@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
@@ -52,6 +54,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -67,8 +70,13 @@ public class GoodsManager extends TabActivity
 	private final static int REQUEST_CODE=1,REQCLASS_CODE=2;//声明请求标识
 	private int[] layres=new int[]{R.id.tab_class,R.id.tab_product};//内嵌布局文件的id
 	private ListView lvinfo;// 创建ListView对象
-	private Uri uri=null;
+	private Uri uri=null;	
 	private String imgDir=null;
+	//定义显示的内容包装
+    private List<Map<String,String>> listMap = new ArrayList<Map<String,String>>();
+    private SimpleAdapter simpleada = null;//进行数据的转换操作
+	private String[] proclassID = null;//用来分离出类型编号
+	private String[] proclassName = null;//用来分离出类型名称
 	private String[] imgDirs=null;
 	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
 	private ImageView imgclassname=null;
@@ -77,12 +85,9 @@ public class GoodsManager extends TabActivity
 	// 定义商品列表
 	Vmc_ProductAdapter productAdapter=null;
     private GridView gvProduct=null;
-    //排序有关的定义
-    private ShowSortAdapter showSortAdapter=null;
-    private ArrayAdapter<String> arrayadapter = null;
-    private Spinner spinprodsort=null;
+    private TextView txtproidValue=null,txtpronameValue=null;
     private String datasort="shoudong";
-    private Button btnsortup=null,btnsortdown=null;
+    
     		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -132,11 +137,8 @@ public class GoodsManager extends TabActivity
             // 覆写onItemClick方法
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String strInfoclass = String.valueOf(((TextView) view).getText());// 记录收入信息
-                String strid = strInfoclass.substring(0, strInfoclass.indexOf('<'));// 从收入信息中截取收入编号
-                String strname = strInfoclass.substring(strInfoclass.indexOf('>')+1);// 从收入信息中截取收入编号
-                edtclassid.setText(strid);
-                edtclassname.setText(strname);
+            	edtclassid.setText(proclassID[position]);
+                edtclassname.setText(proclassName[position]);
                 imgDir=imgDirs[position];
                 if(imgDir!=null)
                 {	                
@@ -219,20 +221,44 @@ public class GoodsManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0)
 		    {
-		    	String strclassid = edtclassid.getText().toString();
-		    	String strclassname = edtclassname.getText().toString();
+		    	final String strclassid = edtclassid.getText().toString();
+		    	final String strclassname = edtclassname.getText().toString();
 		    	if ((strclassid.isEmpty()!=true)&&(strclassname.isEmpty()!=true))
 		    	{
-		        	// 创建InaccountDAO对象
-		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
-		            // 创建Tb_inaccount对象
-		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
-		        	classDAO.detele(tb_vmc_class);// 修改
-		        	ToolClass.addOptLog(GoodsManager.this,2,"删除类别:"+strclassid+strclassname);
-		            // 弹出信息提示
-		            Toast.makeText(GoodsManager.this, "〖删除类别〗成功！", Toast.LENGTH_SHORT).show();
-		            showInfo();
-		        } 
+			    	//创建警告对话框
+			    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)
+			    		.setTitle("对话框")//标题
+			    		.setMessage("您确定要删除该商品类别吗？")//表示对话框中得内容
+			    		.setIcon(R.drawable.ic_launcher)//设置logo
+			    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+			    			{				
+				    				@Override
+				    				public void onClick(DialogInterface dialog, int which) 
+				    				{
+				    		        	// 创建InaccountDAO对象
+				    		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
+				    		            // 创建Tb_inaccount对象
+				    		        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(strclassid, strclassname,date,imgDir);
+				    		        	classDAO.detele(tb_vmc_class);// 修改
+				    		        	ToolClass.addOptLog(GoodsManager.this,2,"删除类别:"+strclassid+strclassname);
+				    		            // 弹出信息提示
+				    		            Toast.makeText(GoodsManager.this, "〖删除类别〗成功！", Toast.LENGTH_SHORT).show();
+				    		            showInfo();
+				    		        }
+			    		      }
+			    			)		    		        
+		    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+		    		        	{			
+		    						@Override
+		    						public void onClick(DialogInterface dialog, int which) 
+		    						{
+		    							// TODO Auto-generated method stub				
+		    						}
+		    		        	}
+		    		        )
+		    		        .create();//创建一个对话框
+		    		        alert.show();//显示对话框
+		    	}			    	 
 		        else
 		        {
 		            Toast.makeText(GoodsManager.this, "请输入类别编号和名称！", Toast.LENGTH_SHORT).show();
@@ -251,6 +277,8 @@ public class GoodsManager extends TabActivity
     	//===============
     	//商品设置页面
     	//===============
+    	txtproidValue = (TextView) findViewById(R.id.txtproidValue);
+    	txtpronameValue = (TextView) findViewById(R.id.txtpronameValue);
     	// 商品表中的所有商品信息补充到商品数据结构数组中
     	productAdapter=new Vmc_ProductAdapter();
     	productAdapter.showProInfo(this,"",datasort,"");     	
@@ -264,8 +292,11 @@ public class GoodsManager extends TabActivity
 					long arg3) {
 				// TODO Auto-generated method stub
 				String productID[]=productAdapter.getProductID();
+				String productName[]=productAdapter.getProductName();
 				strInfo = productID[arg2];// 记录收入信息               
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo);
+				txtproidValue.setText(strInfo);
+				txtpronameValue.setText(productName[arg2]);
 //				intent = new Intent();
 //		    	intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
 //                intent.putExtra("proID", strInfo);
@@ -303,41 +334,50 @@ public class GoodsManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0)
 		    {
-		    	//创建警告对话框
-		    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)
-		    		.setTitle("对话框")//标题
-		    		.setMessage("您确定要删除该商品吗？")//表示对话框中得内容
-		    		.setIcon(R.drawable.ic_launcher)//设置logo
-		    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
-		    			{				
-			    				@Override
-			    				public void onClick(DialogInterface dialog, int which) 
-			    				{
-			    					// TODO Auto-generated method stub	
-			    					// 创建InaccountDAO对象
-					    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
-						            //创建Tb_inaccount对象
-					    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
-					    					0,0,date,date,"","","",0,0);				    			
-					    			productDAO.detele(tb_vmc_product);// 添加商品信息
-					    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
-									ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
-					    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
-					    			ToolClass.addOptLog(GoodsManager.this,2,"删除商品:"+strInfo);
-			    				}
-		    		      }
-		    			)		    		        
-	    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-	    		        	{			
-	    						@Override
-	    						public void onClick(DialogInterface dialog, int which) 
-	    						{
-	    							// TODO Auto-generated method stub				
-	    						}
-	    		        	}
-	    		        )
-	    		        .create();//创建一个对话框
-	    		        alert.show();//显示对话框
+		    	if (txtproidValue.getText().toString().isEmpty()!=true)
+		    	{
+			    	//创建警告对话框
+			    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)
+			    		.setTitle("对话框")//标题
+			    		.setMessage("您确定要删除该商品吗？")//表示对话框中得内容
+			    		.setIcon(R.drawable.ic_launcher)//设置logo
+			    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+			    			{				
+				    				@Override
+				    				public void onClick(DialogInterface dialog, int which) 
+				    				{
+				    					// TODO Auto-generated method stub	
+				    					// 创建InaccountDAO对象
+						    			vmc_productDAO productDAO = new vmc_productDAO(GoodsManager.this);
+							            //创建Tb_inaccount对象
+						    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(strInfo, "","",0,
+						    					0,0,date,date,"","","",0,0);				    			
+						    			productDAO.detele(tb_vmc_product);// 添加商品信息
+						    			productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
+										ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);
+						    			gvProduct.setAdapter(adapter);// 为GridView设置数据源
+						    			ToolClass.addOptLog(GoodsManager.this,2,"删除商品:"+strInfo);
+						    			// 弹出信息提示
+				    		            Toast.makeText(GoodsManager.this, "〖删除商品〗成功！", Toast.LENGTH_SHORT).show();
+				    				}
+			    		      }
+			    			)		    		        
+		    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+		    		        	{			
+		    						@Override
+		    						public void onClick(DialogInterface dialog, int which) 
+		    						{
+		    							// TODO Auto-generated method stub				
+		    						}
+		    		        	}
+		    		        )
+		    		        .create();//创建一个对话框
+		    		        alert.show();//显示对话框
+		    	}
+		    	else
+		        {
+		            Toast.makeText(GoodsManager.this, "请选择需要删除的商品！", Toast.LENGTH_SHORT).show();
+		        }
 		    }
 		});
     	//退出
@@ -377,10 +417,25 @@ public class GoodsManager extends TabActivity
 	    Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
 	    String[] strInfos = vmc_classAdapter.showListInfo(GoodsManager.this);
 	    // 使用字符串数组初始化ArrayAdapter对象
-	    arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
-	    lvinfo.setAdapter(arrayAdapter);// 为ListView列表设置数据源
+	    //arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
+	    //lvinfo.setAdapter(arrayAdapter);// 为ListView列表设置数据源
 	    imgDirs=vmc_classAdapter.getProImage();
-	    
+	    proclassID=vmc_classAdapter.getProclassID();
+		proclassName=vmc_classAdapter.getProclassName();
+		int x=0;
+		this.listMap.clear();
+		for(x=0;x<proclassID.length;x++)
+		{
+		  	Map<String,String> map = new HashMap<String,String>();//定义Map集合，保存每一行数据
+		   	map.put("proclassID", proclassID[x]);
+	    	map.put("proclassName", proclassName[x]);	    	
+	    	this.listMap.add(map);//保存数据行
+		}
+		//将这个构架加载到data_list中
+		this.simpleada = new SimpleAdapter(this,this.listMap,R.layout.goodsclasslist,
+		    		new String[]{"proclassID","proclassName"},//Map中的key名称
+		    		new int[]{R.id.txtclassID,R.id.txtclassName});
+		this.lvinfo.setAdapter(this.simpleada);
 	}
 	
 	@Override

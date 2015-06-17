@@ -37,6 +37,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -44,6 +45,7 @@
 		        
 		         <EditText
 		            android:id="@+id/edtproductID"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -61,6 +63,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -68,6 +71,7 @@
 		        
 		         <EditText
 		            android:id="@+id/edtproductName"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -85,6 +89,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -92,6 +97,7 @@
 		        
 		         <EditText
 		            android:id="@+id/edtmarketPrice"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -110,6 +116,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		  
             	    android:minWidth="160px"  
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000" 
@@ -117,6 +124,7 @@
 		        
 		         <EditText
 		            android:id="@+id/edtsalesPrice"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -135,12 +143,14 @@
             	android:orientation="horizontal"> 
             	<TextView 		 
             	    android:minWidth="160px"   
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="保质期:"/>
 		        
 		         <EditText
 		            android:id="@+id/edtshelfLife"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -159,6 +169,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		 
             	    android:minWidth="160px"   
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="商品类别:"/>
@@ -181,12 +192,14 @@
             	android:orientation="horizontal"> 
             	<TextView 		
             	    android:minWidth="160px"    
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="商品描述:"/>
 		        
 		         <EditText
 		            android:id="@+id/edtproductDesc"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -203,13 +216,15 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
             	<TextView 	
-            	    android:minWidth="160px"	    
+            	    android:minWidth="160px"	  
+            	    android:textSize="40sp"  
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="修改时间:"/>
 		        
 		         <TextView
 		            android:minWidth="160px"
+		            android:textSize="40sp"
 		            android:id="@+id/onloadTime"
 			        android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"

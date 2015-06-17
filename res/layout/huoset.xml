@@ -21,8 +21,8 @@
 		         <Button   
 			        android:id="@+id/btnhuoProID"  
 			        android:text="选择商品"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
+			        android:layout_width="100dp"
+					android:layout_height="70dp"  
 			    /> 
             </LinearLayout>	        
 	    </TableRow>  
@@ -37,6 +37,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -44,6 +45,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuoCabID"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -61,6 +63,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -68,6 +71,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuoColID"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -85,6 +89,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -92,6 +97,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuoProID"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -109,6 +115,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -116,6 +123,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuoProName"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -133,6 +141,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -140,6 +149,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuomarketPrice"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -157,6 +167,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -164,6 +175,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuosalesPrice"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -181,6 +193,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -188,6 +201,7 @@
 		        
 		         <EditText
 		            android:id="@+id/edthuopathCount"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -206,6 +220,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -213,6 +228,7 @@
 		        
 		         <EditText
 		            android:id="@+id/edthuopathRemain"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -231,6 +247,7 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#FF0000"  
@@ -238,6 +255,7 @@
 		        
 		         <TextView
 		            android:id="@+id/txthuocolumnStatus"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -255,12 +273,14 @@
             	android:orientation="horizontal"> 
             	<TextView 		    
             	    android:minWidth="160px"
+            	    android:textSize="40sp"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="保质期:"/>
 		        
 		         <TextView
 		            android:id="@+id/txthuoshelfLife"
+		            android:textSize="40sp"
 			        android:minWidth="150px"
 					android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -277,13 +297,15 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
             	<TextView 	
-            	    android:minWidth="160px"	    
+            	    android:minWidth="160px"	   
+            	    android:textSize="40sp" 
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="上架时间:"/>
 		        
 		         <TextView
 		            android:minWidth="160px"
+		            android:textSize="40sp"
 		            android:id="@+id/txthuolasttime"
 			        android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -300,13 +322,15 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"> 
             	<TextView 	
-            	    android:minWidth="160px"	    
+            	    android:minWidth="160px"	  
+            	    android:textSize="40sp"  
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="是否过保:"/>
 		        
 		         <TextView
 		            android:minWidth="160px"
+		            android:textSize="40sp"
 		            android:id="@+id/txthuoIslast"
 			        android:layout_width="wrap_content" 
 			        android:layout_height="wrap_content"
@@ -325,20 +349,20 @@
             	 <Button   
 			        android:id="@+id/btnhuoaddSave"  
 			        android:text="保存"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
+			        android:layout_width="100dp"
+					android:layout_height="70dp"    
 			    /> 
 			    <Button   
 			        android:id="@+id/btnhuodelSave"  
 			        android:text="删除"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
+			        android:layout_width="100dp"
+					android:layout_height="70dp"   
 			    /> 
 			    <Button   
 			        android:id="@+id/btnhuoexit"  
 			        android:text="返回"
-			        android:layout_width="wrap_content"   
-			        android:layout_height="wrap_content"   
+			        android:layout_width="100dp"
+					android:layout_height="70dp"   
 			    /> 
             </LinearLayout>	        
 	    </TableRow>  	    

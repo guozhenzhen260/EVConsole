@@ -137,7 +137,7 @@ public class ParamManager extends TabActivity
     	//排序
     	this.spinparamsort = (Spinner) super.findViewById(R.id.spinparamsort); 
     	showSortAdapter=new ShowSortAdapter();    	
-	    arrayadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, showSortAdapter.getDataSortName());
+	    arrayadapter = new ArrayAdapter<String>(this, R.layout.viewspinner, showSortAdapter.getDataSortName());
 	    spinparamsort.setAdapter(arrayadapter);// 为ListView列表设置数据源
     	spinparamsort.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -521,22 +521,22 @@ public class ParamManager extends TabActivity
 //					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()); 
     		
     		ParamManager.runValue[0][0]=String.valueOf(tb_vmc_machineset.getAudioWork());
-    		ParamManager.runValue[0][1]="起始时间:"+tb_vmc_machineset.getAudioWorkstart()+"  结束时间:"+tb_vmc_machineset.getAudioWorkend();
+    		ParamManager.runValue[0][1]=tb_vmc_machineset.getAudioWorkstart()+" --"+tb_vmc_machineset.getAudioWorkend();
     		ParamManager.runValue[0][2]=String.valueOf(tb_vmc_machineset.getAudioSun());
-    		ParamManager.runValue[0][3]="起始时间:"+tb_vmc_machineset.getAudioSunstart()+"  结束时间:"+tb_vmc_machineset.getAudioSunend();
+    		ParamManager.runValue[0][3]=tb_vmc_machineset.getAudioSunstart()+" --"+tb_vmc_machineset.getAudioSunend();
     		
     		ParamManager.runValue[1][0]=String.valueOf(tb_vmc_machineset.getTempWork());
-    		ParamManager.runValue[1][1]="起始时间:"+tb_vmc_machineset.getTempWorkstart()+"  结束时间:"+tb_vmc_machineset.getTempWorkend();
-    		ParamManager.runValue[1][2]="起始时间:"+tb_vmc_machineset.getTempSunstart()+"  结束时间:"+tb_vmc_machineset.getTempSunend();
+    		ParamManager.runValue[1][1]=tb_vmc_machineset.getTempWorkstart()+"  --"+tb_vmc_machineset.getTempWorkend();
+    		ParamManager.runValue[1][2]=tb_vmc_machineset.getTempSunstart()+"  --"+tb_vmc_machineset.getTempSunend();
     		
-    		ParamManager.runValue[2][0]="起始时间:"+tb_vmc_machineset.getLigntWorkstart()+"  结束时间:"+tb_vmc_machineset.getLigntWorkend();
-    		ParamManager.runValue[2][1]="起始时间:"+tb_vmc_machineset.getLigntSunstart()+"  结束时间:"+tb_vmc_machineset.getLigntSunend();
+    		ParamManager.runValue[2][0]=tb_vmc_machineset.getLigntWorkstart()+"  --"+tb_vmc_machineset.getLigntWorkend();
+    		ParamManager.runValue[2][1]=tb_vmc_machineset.getLigntSunstart()+"  --"+tb_vmc_machineset.getLigntSunend();
     		
-    		ParamManager.runValue[3][0]="起始时间:"+tb_vmc_machineset.getColdWorkstart()+"  结束时间:"+tb_vmc_machineset.getColdWorkend();
-    		ParamManager.runValue[3][1]="起始时间:"+tb_vmc_machineset.getColdSunstart()+"  结束时间:"+tb_vmc_machineset.getColdSunend();
+    		ParamManager.runValue[3][0]=tb_vmc_machineset.getColdWorkstart()+"  --"+tb_vmc_machineset.getColdWorkend();
+    		ParamManager.runValue[3][1]=tb_vmc_machineset.getColdSunstart()+"  --"+tb_vmc_machineset.getColdSunend();
     		
-    		ParamManager.runValue[4][0]="起始时间:"+tb_vmc_machineset.getChouWorkstart()+"  结束时间:"+tb_vmc_machineset.getChouWorkend();
-    		ParamManager.runValue[4][1]="起始时间:"+tb_vmc_machineset.getChouSunstart()+"  结束时间:"+tb_vmc_machineset.getChouSunend();
+    		ParamManager.runValue[4][0]=tb_vmc_machineset.getChouWorkstart()+"  --"+tb_vmc_machineset.getChouWorkend();
+    		ParamManager.runValue[4][1]=tb_vmc_machineset.getChouSunstart()+"  --"+tb_vmc_machineset.getChouSunend();
     	}
 	}
     //dialogtype==1启动数值选择框,2启动时间选择框
@@ -625,7 +625,7 @@ public class ParamManager extends TabActivity
     		{
     			tb_vmc_machineset.setAudioWorkstart(StartTime);
     			tb_vmc_machineset.setAudioWorkend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     		else if(childPosition==2)
     		{
@@ -636,7 +636,7 @@ public class ParamManager extends TabActivity
     		{
     			tb_vmc_machineset.setAudioSunstart(StartTime);
     			tb_vmc_machineset.setAudioSunend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     	}
     	else if(groupPosition==1)
@@ -650,13 +650,13 @@ public class ParamManager extends TabActivity
     		{
     			tb_vmc_machineset.setTempWorkstart(StartTime);
     			tb_vmc_machineset.setTempWorkend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     		else if(childPosition==2)
     		{
     			tb_vmc_machineset.setTempSunstart(StartTime);
     			tb_vmc_machineset.setTempSunend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     	}
     	else if(groupPosition==2)
@@ -665,13 +665,13 @@ public class ParamManager extends TabActivity
     		{
     			tb_vmc_machineset.setLigntWorkstart(StartTime);
     			tb_vmc_machineset.setLigntWorkend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     		else if(childPosition==1)
     		{
     			tb_vmc_machineset.setLigntSunstart(StartTime);
     			tb_vmc_machineset.setLigntSunend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     	}
     	else if(groupPosition==3)
@@ -680,13 +680,13 @@ public class ParamManager extends TabActivity
     		{
     			tb_vmc_machineset.setColdWorkstart(StartTime);
     			tb_vmc_machineset.setColdWorkend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     		else if(childPosition==1)
     		{
     			tb_vmc_machineset.setColdSunstart(StartTime);
     			tb_vmc_machineset.setColdSunend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     	}
     	else if(groupPosition==4)
@@ -695,13 +695,13 @@ public class ParamManager extends TabActivity
     		{
     			tb_vmc_machineset.setChouWorkstart(StartTime);
     			tb_vmc_machineset.setChouWorkend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     		else if(childPosition==1)
     		{
     			tb_vmc_machineset.setChouSunstart(StartTime);
     			tb_vmc_machineset.setChouSunend(EndTime);
-    			ParamManager.runValue[groupPosition][childPosition]="起始时间:"+StartTime+"  结束时间:"+EndTime;
+    			ParamManager.runValue[groupPosition][childPosition]=StartTime+" --"+EndTime;
     		}
     	}  
     	MachineExpanseListAdapter adapter = new MachineExpanseListAdapter(this,ParamManager.runValue);

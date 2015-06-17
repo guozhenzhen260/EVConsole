@@ -37,6 +37,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -50,6 +51,8 @@ public class AddInaccount extends TabActivity
 	private int[] layres=new int[]{R.id.tab_billmanager,R.id.tab_coinmanager,R.id.tab_payoutmanager};//内嵌布局文件的id
 	//纸币器
 	private Spinner spinbillmanagerbill=null;
+	private String [] billStringArray; 
+	private ArrayAdapter<String> billAdapter ;
 	private EditText edtpayout=null;
 	private TextView txtbillmanagerpar=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillincount=null
 			,txtbillmanagerbillpay=null,txtbillmanagerbillpaycount=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
@@ -57,6 +60,8 @@ public class AddInaccount extends TabActivity
 	private Button btnbillon=null,btnbilloff=null,btnbillquery=null,btnbillset=null,btnbillexit=null,btnbillpayout=null;// 创建Button对象“退出”
 	//硬币器
 	private Spinner spincoinmanagercoin=null;
+	private String [] coinStringArray; 
+	private ArrayAdapter<String> coinAdapter ;
 	private TextView txtcoinmanagerpar=null,txtcoinmanagerpar2=null,txtcoinmanagerstate=null,txtcoinpayback=null,txtcoinerr=null,
 			txtcoinmanagercoinincount=null,txtcoinmanagercoininamount=null,txtcoinpayin=null,txtcoinpaymoney=null;
 	private EditText txtcoinmanagercoinin1=null,txtcoinmanagercoinin2=null,txtcoinmanagercoinin3=null,txtcoinmanagercoinin4=null,
@@ -64,13 +69,15 @@ public class AddInaccount extends TabActivity
 			txtcoinmanagercoinin9=null,txtcoinmanagercoinin10=null,txtcoinmanagercoinin11=null,txtcoinmanagercoinin12=null,
 			txtcoinmanagercoinin13=null,txtcoinmanagercoinin14=null,txtcoinmanagercoinin15=null,txtcoinmanagercoinin16=null,
 			edtcoinpayout=null;		
-	private Button btncoinon=null,btncoinoff=null,btncoinquery=null,btncoinset=null,btncoinpayout=null;
+	private Button btncoinon=null,btncoinoff=null,btncoinquery=null,btncoinset=null,btncoinpayout=null,btncoinexit=null;
 	//hopper找零器
 	private Spinner spinhopper=null;
+	private String [] hopperStringArray; 
+	private ArrayAdapter<String> hopperAdapter ;
 	private TextView txthopperincount=null,txthopperpaymoney=null;
 	private EditText txthopperin1=null,txthopperin2=null,txthopperin3=null,txthopperin4=null,
 			txthopperin5=null,txthopperin6=null,txthopperin7=null,txthopperin8=null,edthopperpayout=null;		
-	private Button btnhopperquery=null,btnhopperpay=null;
+	private Button btnhopperquery=null,btnhopperpay=null,btnhopperexit=null;
 	private Handler myhHandler=null;	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -280,6 +287,10 @@ public class AddInaccount extends TabActivity
     	//纸币器设置页面
     	//===============
   	    spinbillmanagerbill = (Spinner) findViewById(R.id.spinbillmanagerbill);
+  	    billStringArray=getResources().getStringArray(R.array.bill_label);
+  	    //使用自定义的ArrayAdapter
+        billAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,billStringArray);
+        spinbillmanagerbill.setAdapter(billAdapter);// 为ListView列表设置数据源
 	  	txtbillmanagerpar = (TextView) findViewById(R.id.txtbillmanagerpar);
 	  	txtbillmanagerstate = (TextView) findViewById(R.id.txtbillmanagerstate);
 	  	txtbillpayback = (TextView) findViewById(R.id.txtbillpayback);
@@ -327,7 +338,7 @@ public class AddInaccount extends TabActivity
 		        //finish();
 		    }
 		});	
-		btnbillexit = (Button) findViewById(R.id.btnbillexit);
+		btnbillexit = (Button) findViewById(R.id.btnbillexit2);
 		btnbillexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
@@ -338,6 +349,10 @@ public class AddInaccount extends TabActivity
     	//硬币器设置页面
     	//===============
 		spincoinmanagercoin = (Spinner) findViewById(R.id.spincoinmanagercoin);
+		coinStringArray=getResources().getStringArray(R.array.coin_label);
+  	    //使用自定义的ArrayAdapter
+		coinAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,coinStringArray);
+        spincoinmanagercoin.setAdapter(coinAdapter);// 为ListView列表设置数据源
 	  	txtcoinmanagerpar = (TextView) findViewById(R.id.txtcoinmanagerpar);
 	  	txtcoinmanagerpar2 = (TextView) findViewById(R.id.txtcoinmanagerpar2);
 	  	txtcoinmanagerstate = (TextView) findViewById(R.id.txtcoinmanagerstate);
@@ -399,10 +414,21 @@ public class AddInaccount extends TabActivity
 		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),1,0,ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())),0);
 		    }
 		});
+	  	btncoinexit = (Button) findViewById(R.id.btncoinexit);
+	  	btncoinexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		        finish();
+		    }
+		});
 	    //===============
     	//hopper设置页面
     	//===============
 	  	spinhopper = (Spinner) findViewById(R.id.spinhopper);
+	  	hopperStringArray=getResources().getStringArray(R.array.payout_label);
+  	    //使用自定义的ArrayAdapter
+	  	hopperAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,hopperStringArray);
+	  	spinhopper.setAdapter(hopperAdapter);// 为ListView列表设置数据源
 	  	txthopperincount = (TextView) findViewById(R.id.txthopperincount);
 	  	txthopperpaymoney = (TextView) findViewById(R.id.txthopperpaymoney);	  	
 	  	txthopperin1 = (EditText) findViewById(R.id.txthopperin1);
@@ -426,6 +452,13 @@ public class AddInaccount extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    }
+		});
+	  	btnhopperexit = (Button) findViewById(R.id.btnhopperexit);
+	  	btnhopperexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		        finish();
 		    }
 		});
 	}
