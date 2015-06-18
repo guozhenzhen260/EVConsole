@@ -339,28 +339,17 @@
 						 android:layout_height="70dp"            
 			             android:text="查询" /> 
 			         <Button
+			             android:id="@+id/btnbillset"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"            
+			             android:text="配置" />    
+			         <Button
 			             android:id="@+id/btnbillexit2"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"
 			             android:text="退出" />      
 				</LinearLayout> 
-		    </TableRow>	
-			<View                              
-		        android:layout_height="2px"
-		        android:background="#FF909090"
-		    /> 
-		    <TableRow >    
-		        <LinearLayout 
-			        android:layout_width="match_parent"
-				    android:layout_height="match_parent"	
-				    android:orientation="horizontal" >
-			         <Button
-			             android:id="@+id/btnbillset"
-			             android:layout_width="100dp"
-						 android:layout_height="70dp"            
-			             android:text="配置" />
-		         </LinearLayout>
-		    </TableRow>	
+		    </TableRow>					
 		</TableLayout>
 	</LinearLayout>   
 	<LinearLayout 
@@ -514,6 +503,8 @@
 						android:text="通道1:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin1"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -524,6 +515,8 @@
 						android:text="通道2:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin2"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -534,6 +527,8 @@
 						android:text="通道3:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin3"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -544,6 +539,8 @@
 						android:text="通道4:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin4"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -554,6 +551,8 @@
 						android:text="通道5:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin5"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -564,6 +563,8 @@
 						android:text="通道6:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin6"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -574,6 +575,8 @@
 						android:text="通道7:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin7"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -584,6 +587,8 @@
 						android:text="通道8:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin8"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -605,6 +610,8 @@
 						android:text="通道9:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin9"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -615,6 +622,8 @@
 						android:text="通道10:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin10"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -625,6 +634,8 @@
 						android:text="通道11:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin11"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -635,6 +646,8 @@
 						android:text="通道12:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin12"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -645,6 +658,8 @@
 						android:text="通道13:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin13"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -655,6 +670,8 @@
 						android:text="通道14:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin14"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -665,6 +682,8 @@
 						android:text="通道15:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin15"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -675,6 +694,8 @@
 						android:text="通道16:"/>		        
 			         <EditText
 			            android:id="@+id/txtcoinmanagercoinin16"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -778,7 +799,7 @@
 			             android:id="@+id/btncoinpayout"
 			             android:layout_width="wrap_content"
 						 android:layout_height="70dp"             
-			             android:text="MDB硬币器找币" />    
+			             android:text="按金额找零" />    
 				</LinearLayout>		                   
 		    </TableRow>  
 		    <View                              
@@ -808,7 +829,7 @@
 				        android:textColor="#FF0000" 
 				        android:text="0" /> 
 			        </LinearLayout>			               
-		    </TableRow>
+		    </TableRow>		    
 		    <View                              
 		        android:layout_height="2px"
 		        android:background="#FF909090"
@@ -834,23 +855,17 @@
 						 android:layout_height="70dp"            
 			             android:text="查询" />
 			         <Button
+			             android:id="@+id/btncoinset"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"             
+			             android:text="配置" />
+			         <Button
 			             android:id="@+id/btncoinexit"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"            
 			             android:text="退出" />   
 				</LinearLayout> 
-		    </TableRow>	
-			<View                              
-		        android:layout_height="2px"
-		        android:background="#FF909090"
-		    /> 
-		    <TableRow >    
-		         <Button
-		             android:id="@+id/btncoinset"
-		             android:layout_width="100dp"
-					 android:layout_height="70dp"             
-		             android:text="配置" />
-		    </TableRow>		    
+		    </TableRow>						    
 		</TableLayout>
 	</LinearLayout>
 	<LinearLayout 
@@ -912,6 +927,8 @@
 						android:text="通道1:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin1"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -922,6 +939,8 @@
 						android:text="通道2:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin2"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -932,6 +951,8 @@
 						android:text="通道3:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin3"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -942,6 +963,8 @@
 						android:text="通道4:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin4"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -952,6 +975,8 @@
 						android:text="通道5:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin5"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -962,6 +987,8 @@
 						android:text="通道6:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin6"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -972,6 +999,8 @@
 						android:text="通道7:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin7"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -982,6 +1011,8 @@
 						android:text="通道8:"/>		        
 			         <EditText
 			            android:id="@+id/txthopperin8"
+			            android:textSize="40sp"
+			        	android:minWidth="70px"
 				        android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
@@ -1031,6 +1062,11 @@
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
 				        android:text="0" /> 
+				     <Button
+			             android:id="@+id/btnhopperpaymoney"
+			             android:layout_width="wrap_content"
+						 android:layout_height="70dp"
+			             android:text="按金额找零" /> 
 				</LinearLayout>                
 		    </TableRow>  
 		    <View                              
@@ -1068,23 +1104,92 @@
 			        android:layout_width="match_parent"
 				    android:layout_height="match_parent"	
 				    android:orientation="horizontal" >   
+				    <TextView   
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="按枚数出币:通道"/>
+				    <EditText
+			            android:id="@+id/edthopperpayno"				        
+						android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
+			        	android:minWidth="70px"
+				        android:numeric="integer"
+				        android:text="0" />
+				     <TextView   
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:text="按枚数出币:枚数"/>
+				     <EditText
+			            android:id="@+id/edthopperpaynum"				        
+						android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:textSize="40sp"
+			        	android:minWidth="70px"
+				        android:numeric="integer"
+				        android:text="0" />
+				     <Button
+			             android:id="@+id/btnhopperpaynum"
+			             android:layout_width="wrap_content"
+						 android:layout_height="70dp"             
+			             android:text="按枚数出币" />
+		         </LinearLayout>
+		    </TableRow>
+		    <View                              
+		        android:layout_height="2px"
+		        android:background="#FF909090"
+		    /> 
+		    <TableRow >    
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >   
+				    <TextView   
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="40sp"
+						android:textColor="#FF0000" 
+						android:text="实际出币枚数:"/>				    
+				     <TextView   
+				         android:id="@+id/txthopperpaynum"	
+						 android:layout_width="wrap_content"
+						 android:layout_height="wrap_content"
+						 android:textSize="40sp"
+						 android:textColor="#FF0000" />				     
+		         </LinearLayout>
+		    </TableRow>
+		    <View                              
+		        android:layout_height="2px"
+		        android:background="#FF909090"
+		    /> 
+		    <TableRow >    
+		        <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"	
+				    android:orientation="horizontal" >   
 				    <Button
 			             android:id="@+id/btnhopperquery"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp" 
-			             android:text="查询" />     
-			        <Button
+			             android:text="查询" />
+				    <Button
 			             android:id="@+id/btnhopperpay"
-			             android:layout_width="100dp"
+			             android:layout_width="wrap_content"
 						 android:layout_height="70dp"
-			             android:text="找零" />
+			             android:text="按金额找零" />  
+			        <Button
+			             android:id="@+id/btnhopperset"
+			             android:layout_width="100dp"
+						 android:layout_height="70dp"             
+			             android:text="配置" />
 			        <Button
 			             android:id="@+id/btnhopperexit"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"            
 			             android:text="退出" />
-		         </LinearLayout>
-		
+		         </LinearLayout>		
 		    </TableRow>				
 		</TableLayout>
 	</LinearLayout>  	

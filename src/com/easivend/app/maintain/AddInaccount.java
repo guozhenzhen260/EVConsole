@@ -21,14 +21,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.model.Tb_vmc_column;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 
 import android.R.integer;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +48,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 
 public class AddInaccount extends TabActivity
@@ -74,10 +80,12 @@ public class AddInaccount extends TabActivity
 	private Spinner spinhopper=null;
 	private String [] hopperStringArray; 
 	private ArrayAdapter<String> hopperAdapter ;
-	private TextView txthopperincount=null,txthopperpaymoney=null;
+	private TextView txthopperincount=null,txthopperpaymoney=null,txthopperpaynum=null;
 	private EditText txthopperin1=null,txthopperin2=null,txthopperin3=null,txthopperin4=null,
-			txthopperin5=null,txthopperin6=null,txthopperin7=null,txthopperin8=null,edthopperpayout=null;		
-	private Button btnhopperquery=null,btnhopperpay=null,btnhopperexit=null;
+			txthopperin5=null,txthopperin6=null,txthopperin7=null,txthopperin8=null,edthopperpayout=null,
+			edthopperpayno=null,edthopperpaynum=null;		
+	private Button btnhopperquery=null,btnhopperpay=null,btnhopperpaymoney=null,btnhopperset=null,btnhopperexit=null,
+			btnhopperpaynum=null;
 	private Handler myhHandler=null;	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -278,7 +286,11 @@ public class AddInaccount extends TabActivity
 						money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
 						txtcoinpaymoney.setText(String.valueOf(money));	
 						txthopperpaymoney.setText(String.valueOf(money));	
-						break;	
+						break;
+					case EVprotocolAPI.EV_MDB_HP_PAYOUT://找零
+						txthopperpaynum.setText(String.valueOf((Integer)Set.get("changed")));
+						
+						break;		
 				}				
 			}
 			
@@ -335,7 +347,39 @@ public class AddInaccount extends TabActivity
 		btnbillset.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		        //finish();
+		    	//创建警告对话框
+		    	Dialog alert=new AlertDialog.Builder(AddInaccount.this)
+		    		.setTitle("对话框")//标题
+		    		.setMessage("您确定要配置纸币器吗？")//表示对话框中得内容
+		    		.setIcon(R.drawable.ic_launcher)//设置logo
+		    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+		    			{				
+			    				@Override
+			    				public void onClick(DialogInterface dialog, int which) 
+			    				{
+			    					// TODO Auto-generated method stub	
+			    					int billtype=0;
+			    			    	if(spinbillmanagerbill.getSelectedItemPosition()==1)
+			    			    		billtype=2;
+			    					else if(spinbillmanagerbill.getSelectedItemPosition()==0)
+			    						billtype=0;
+			    			    	EVprotocolAPI.EV_mdbBillConfig(ToolClass.getCom_id(),billtype);	
+			    					// 弹出信息提示
+						            Toast.makeText(AddInaccount.this, "配置纸币器成功！", Toast.LENGTH_SHORT).show();
+						     }
+		    		      }
+		    			)		    		        
+	    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+	    		        	{			
+	    						@Override
+	    						public void onClick(DialogInterface dialog, int which) 
+	    						{
+	    							// TODO Auto-generated method stub				
+	    						}
+	    		        	}
+	    		        )
+	    		        .create();//创建一个对话框
+	    		        alert.show();//显示对话框		    		       
 		    }
 		});	
 		btnbillexit = (Button) findViewById(R.id.btnbillexit2);
@@ -411,7 +455,7 @@ public class AddInaccount extends TabActivity
 	  	btncoinset.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),1,0,ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())),0);
+		    	CoinConfig();
 		    }
 		});
 	  	btncoinexit = (Button) findViewById(R.id.btncoinexit);
@@ -430,7 +474,8 @@ public class AddInaccount extends TabActivity
 	  	hopperAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,hopperStringArray);
 	  	spinhopper.setAdapter(hopperAdapter);// 为ListView列表设置数据源
 	  	txthopperincount = (TextView) findViewById(R.id.txthopperincount);
-	  	txthopperpaymoney = (TextView) findViewById(R.id.txthopperpaymoney);	  	
+	  	txthopperpaymoney = (TextView) findViewById(R.id.txthopperpaymoney);
+	    txthopperpaynum = (TextView) findViewById(R.id.txthopperpaynum);
 	  	txthopperin1 = (EditText) findViewById(R.id.txthopperin1);
 	  	txthopperin2 = (EditText) findViewById(R.id.txthopperin2);
 	  	txthopperin3 = (EditText) findViewById(R.id.txthopperin3);
@@ -438,8 +483,10 @@ public class AddInaccount extends TabActivity
 	  	txthopperin5 = (EditText) findViewById(R.id.txthopperin5);
 	  	txthopperin6 = (EditText) findViewById(R.id.txthopperin6);
 	  	txthopperin7 = (EditText) findViewById(R.id.txthopperin7);
-	  	txthopperin8 = (EditText) findViewById(R.id.txthopperin8);
+	  	txthopperin8 = (EditText) findViewById(R.id.txthopperin8);	  	
 	  	edthopperpayout = (EditText) findViewById(R.id.edthopperpayout);
+	  	edthopperpayno = (EditText) findViewById(R.id.edthopperpayno);
+	  	edthopperpaynum = (EditText) findViewById(R.id.edthopperpaynum);
 	  	btnhopperquery = (Button) findViewById(R.id.btnhopperquery);
 	  	btnhopperquery.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -454,6 +501,27 @@ public class AddInaccount extends TabActivity
 		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
 		    }
 		});
+	  	btnhopperpaymoney = (Button) findViewById(R.id.btnhopperpaymoney);
+	  	btnhopperpaymoney.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    }
+		});
+	  	btnhopperpaynum = (Button) findViewById(R.id.btnhopperpaynum);
+	  	btnhopperpaynum.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	EVprotocolAPI.EV_mdbHopperPayout(ToolClass.getCom_id(),Integer.parseInt(edthopperpayno.getText().toString()),Integer.parseInt(edthopperpaynum.getText().toString()));
+		    }
+		});
+	  	btnhopperset = (Button) findViewById(R.id.btnhopperset);
+	  	btnhopperset.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	CoinConfig();
+		    }
+		});
 	  	btnhopperexit = (Button) findViewById(R.id.btnhopperexit);
 	  	btnhopperexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -462,6 +530,71 @@ public class AddInaccount extends TabActivity
 		    }
 		});
 	}
-	
+	private void CoinConfig()
+	{
+		//创建警告对话框
+    	Dialog alert=new AlertDialog.Builder(AddInaccount.this)
+    		.setTitle("对话框")//标题
+    		.setMessage("您确定要配置硬币器和找零器吗？")//表示对话框中得内容
+    		.setIcon(R.drawable.ic_launcher)//设置logo
+    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+    			{				
+	    				@Override
+	    				public void onClick(DialogInterface dialog, int which) 
+	    				{
+	    					// TODO Auto-generated method stub	
+	    					Map<Integer, Integer>ch_r=new HashMap<Integer, Integer>();
+	    			    	Map<Integer, Integer>ch_d=new HashMap<Integer, Integer>();
+	    			    	ch_r.put(1, Integer.parseInt(txtcoinmanagercoinin1.getText().toString()));
+	    			    	ch_r.put(2, Integer.parseInt(txtcoinmanagercoinin2.getText().toString()));
+	    			    	ch_r.put(3, Integer.parseInt(txtcoinmanagercoinin3.getText().toString()));
+	    			    	ch_r.put(4, Integer.parseInt(txtcoinmanagercoinin4.getText().toString()));
+	    			    	ch_r.put(5, Integer.parseInt(txtcoinmanagercoinin5.getText().toString()));
+	    			    	ch_r.put(6, Integer.parseInt(txtcoinmanagercoinin6.getText().toString()));
+	    			    	ch_r.put(7, Integer.parseInt(txtcoinmanagercoinin7.getText().toString()));
+	    			    	ch_r.put(8, Integer.parseInt(txtcoinmanagercoinin8.getText().toString()));
+	    			    	ch_r.put(9, Integer.parseInt(txtcoinmanagercoinin9.getText().toString()));
+	    			    	ch_r.put(10, Integer.parseInt(txtcoinmanagercoinin10.getText().toString()));
+	    			    	ch_r.put(11, Integer.parseInt(txtcoinmanagercoinin11.getText().toString()));
+	    			    	ch_r.put(12, Integer.parseInt(txtcoinmanagercoinin12.getText().toString()));
+	    			    	ch_r.put(13, Integer.parseInt(txtcoinmanagercoinin13.getText().toString()));
+	    			    	ch_r.put(14, Integer.parseInt(txtcoinmanagercoinin14.getText().toString()));
+	    			    	ch_r.put(15, Integer.parseInt(txtcoinmanagercoinin15.getText().toString()));
+	    			    	ch_r.put(16, Integer.parseInt(txtcoinmanagercoinin16.getText().toString()));
+	    			    	
+	    			    	ch_d.put(1, Integer.parseInt(txthopperin1.getText().toString()));
+	    			    	ch_d.put(2, Integer.parseInt(txthopperin2.getText().toString()));
+	    			    	ch_d.put(3, Integer.parseInt(txthopperin3.getText().toString()));
+	    			    	ch_d.put(4, Integer.parseInt(txthopperin4.getText().toString()));
+	    			    	ch_d.put(5, Integer.parseInt(txthopperin5.getText().toString()));
+	    			    	ch_d.put(6, Integer.parseInt(txthopperin6.getText().toString()));
+	    			    	ch_d.put(7, Integer.parseInt(txthopperin7.getText().toString()));
+	    			    	ch_d.put(8, Integer.parseInt(txthopperin8.getText().toString()));
+	    			    	ch_d.put(9, 0);
+	    			    	ch_d.put(10, 0);
+	    			    	ch_d.put(11, 0);
+	    			    	ch_d.put(12, 0);
+	    			    	ch_d.put(13, 0);
+	    			    	ch_d.put(14, 0);
+	    			    	ch_d.put(15, 0);
+	    			    	ch_d.put(16, 0);
+	    			    	EVprotocolAPI.EV_mdbCoinConfig(ToolClass.getCom_id(),spincoinmanagercoin.getSelectedItemPosition(),spinhopper.getSelectedItemPosition(),ch_r,ch_d);
+	    					// 弹出信息提示
+				            Toast.makeText(AddInaccount.this, "配置硬币器找零器成功！", Toast.LENGTH_SHORT).show();
+				     }
+    		      }
+    			)		    		        
+		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+		        	{			
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
+						{
+							// TODO Auto-generated method stub				
+						}
+		        	}
+		        )
+		        .create();//创建一个对话框
+		        alert.show();//显示对话框
+	}
 
 }

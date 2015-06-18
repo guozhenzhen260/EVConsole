@@ -70,8 +70,9 @@ public class EVprotocol {
 	private static final int EV_MDB_COST 	= 26;	//MDB设备扣款
 	private static final int EV_MDB_PAYBACK = 27;	//MDB设备退币
 	private static final int EV_MDB_PAYOUT 	= 28;	//MDB设备找币
-
-
+	private static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
+	private static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
+	private static final int EV_MDB_HP_PAYOUT 	= 31;	//hopper硬币器找零
 
 	
 	/*********************************************************************************************************
@@ -91,6 +92,7 @@ public class EVprotocol {
 		public int billPay;
 		public int coinPay;
 		public int cost;
+		public String reqStr;
 		
 		
 	};
@@ -105,9 +107,8 @@ public class EVprotocol {
 	** input parameters	:       portName 串口号 例如"COM1"
 	** output parameters:		无
 	** Returned value	:		1：指令发送成功  0：指令发送失败
-	*  具体的结果通过回调返回json包 		 例如： EV_JSON={"EV_json":{"EV_type":1,"port":"/dev/ttymxc2","port_id":0}}
+	*  具体的结果通过回调返回json包 		 例如： EV_JSON={"EV_json":{"EV_type":1,"port_id":0}}
 	*  							"EV_type" = EV_REGISTER = 1;表示串口注册包类型
-	*                           "port"    表示返回的串口号,就是portName的值
 	*							"port_id":表示返回的串口编号，如果失败则返回 -1
 	*********************************************************************************************************/
 	public static int EV_portRegister(String portName)
@@ -143,10 +144,10 @@ public class EVprotocol {
 	/*********************************************************************************************************
 	** Function name	:		EV_bentoOpen
 	** Descriptions		:		快递柜开门接口  [异步]
-	** input parameters	:       port_id:串口编号, addr:柜子地址 01-16,box:开门的格子号 1-88
+	** input parameters	:       port_id:串口编号, addr:柜子地址 00-15,box:开门的格子号 1-88
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
-	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":11,"port_id":0,"addr":1,"box":1,"is_success":1,"result":1}}
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":11,"port_id":0,"addr":0,"box":1,"is_success":1,"result":1}}
 	*							"EV_type"= EV_BENTO_OPEN = 11; 表开门结果回应包类型
 	*							"port_id":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
@@ -167,7 +168,7 @@ public class EVprotocol {
 	/*********************************************************************************************************
 	** Function name	:		EV_bentoCheck
 	** Descriptions		:		快递柜查询接口  [异步]
-	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16
+	** input parameters	:       port_id:串口编号,addr:柜子地址 00-15
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
 	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":12,"port_id":0,"addr":0,"is_success":1,"ID":"xxxxxxxxx1",
@@ -179,7 +180,7 @@ public class EVprotocol {
 	*							"cool":是否支持制冷 	 	1:支持 0:不支持
 	*							"hot":是否支持加热  		1:支持 0:不支持
 	*							"light":是否支持照明  	1:支持 0:不支持
-	*							"sum":货道总数	例如货道总数88 则默认 货道编号 1-88,状态1正常,0故障
+	*							"sum":货道总数	例如货道总数88 则默认 货道编号 1-88
 	*********************************************************************************************************/
 	public  static int EV_bentoCheck(int port_id,int addr)
 	{
@@ -196,10 +197,10 @@ public class EVprotocol {
 	/*********************************************************************************************************
 	** Function name	:		EV_bentoLight
 	** Descriptions		:		快递柜照明控制接口  [异步]
-	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16,opt:开照明控制 1:开  0:关
+	** input parameters	:       port_id:串口编号,addr:柜子地址 00-15,opt:开照明控制 1:开  0:关
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
-	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":13,"port_id":0,"addr":1,"opt":1,"is_success":1,"result":1}}
+	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":13,"port_id":0,"addr":0,"opt":1,"is_success":1,"result":1}}
 	*							"EV_type"= EV_BENTO_LIGHT = 13: 表照明控制结果回应包类型
 	*							"port_id":原样返回,"addr":原样返回柜子地址,"opt":原样返回操作.
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
@@ -405,7 +406,7 @@ public class EVprotocol {
 	** input parameters	:       port_id:串口编号;bill:操作纸币器  1:操作,0:不操作,coin:操作硬币器  1:操作,0:不操作
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
-	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"bill":1,"coin":1,"is_success":1,
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":27,"port_id":0,"bill":1,"coin":1,"is_success":1,
 	*							"result":1,"bill_changed":0,"coin_changed":100}}
 	*							"EV_type"= EV_MDB_PAYBACK = 27: 表示MDB退币结果回应包类型
 	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,
@@ -455,6 +456,97 @@ public class EVprotocol {
 		return pushReq(req);
 	}
 	
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbBillConfig
+	** Descriptions		:		MDB纸币器配置  [异步]
+	** input parameters	:       port_id:串口编号;req:配置参数 json包
+ 								EV_JSON={"EV_json":{"EV_type":29,"port_id":0,"acceptor":2,"dispenser":2,
+ 								"ch_r":[{"ch":1,"value":100},{"ch":2,"value":500},{"ch":3,"value":1000},{"ch":4,"value":2000},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}],
+ 								"ch_d":[{"ch":1,"value":0},{"ch":2,"value":0},{"ch":3,"value":0},{"ch":4,"value":0},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}]}}
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":29,"port_id":0,"acceptor":0,"dispenser":1,
+	*							"is_success":1,"result":1}}
+	*							"EV_type"= EV_MDB_B_CON = 29: 表示MDB纸币配置结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:成功     0:失败			
+	*********************************************************************************************************/
+	public  static int EV_mdbBillConfig(String reqStr)
+	{
+		RequestObject req = new RequestObject();
+		req.type = EV_MDB_B_CON;
+		req.reqStr = reqStr;
+		return pushReq(req);
+	}
+	
+	
+	
+	
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbCoinConfig
+	** Descriptions		:		MDB纸币器配置  [异步]
+	** input parameters	:       port_id:串口编号;req:配置参数 json包
+ 								EV_JSON={"EV_json":{"EV_type":30,"port_id":0,"acceptor":2,"dispenser":2,"hight_en":0,
+ 								"ch_r":[{"ch":1,"value":100},{"ch":2,"value":500},{"ch":3,"value":1000},{"ch":4,"value":2000},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}],
+ 								"ch_d":[{"ch":1,"value":0},{"ch":2,"value":0},{"ch":3,"value":0},{"ch":4,"value":0},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}]}}
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":30,"port_id":0,"acceptor":0,"dispenser":1,
+	*							"is_success":1,"result":1}}
+	*							"EV_type"= EV_MDB_C_CON = 30: 表示MDB硬币配置结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:成功     0:失败			
+	*********************************************************************************************************/
+	public  static int EV_mdbCoinConfig(String reqStr)
+	{
+		RequestObject req = new RequestObject();
+		req.type = EV_MDB_C_CON;
+		req.reqStr = reqStr;
+		return pushReq(req);
+	}
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		EV_mdbHopperPayout
+	** Descriptions		:		MDB找币接口  [同步]
+	** input parameters	:       port_id:串口编号;no:hopper编号 1-8  nums:需要找币的枚数 ;
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":31,"port_id":0,"no":1,"nums":5,
+	*							"is_success":1,"result":1,"changed":5}}
+	*							"EV_type"= EV_MDB_HP_PAYOUT = 31: 表示hopper找币结果回应包类型
+	*							"port_id":原样返回,"no":原样返回,"nums":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:找币成功     0:找币失败
+	*							"changed":实际找零枚数
+	*********************************************************************************************************/
+	public   static int EV_mdbHopperPayout(int port_id,int no,int nums)
+	{
+		RequestObject req = new RequestObject();
+		req.type = EV_MDB_HP_PAYOUT;
+		req.fd = port_id;
+		req.box = no;
+		req.cost = nums;
+		return pushReq(req);
+	}
 	
 	
 	
@@ -606,6 +698,15 @@ public class EVprotocol {
 				break;
 			case EV_MDB_PAYOUT:
 				rptJson = EVmdbPayout(req.fd,req.bill,req.coin,req.billPay,req.coinPay);
+				break;
+			case EV_MDB_B_CON:
+				rptJson = EVmdbBillConfig(req.reqStr);
+				break;
+			case EV_MDB_C_CON:
+				rptJson = EVmdbCoinConfig(req.reqStr);
+				break;
+			case EV_MDB_HP_PAYOUT:
+				rptJson = EVmdbHopperPayout(req.fd, req.box, req.cost);
 				break;
 			default:
 				rptJson = "";
@@ -868,9 +969,9 @@ public class EVprotocol {
 	** Descriptions		:		MDB退币接口  [同步]
 	** input parameters	:       port_id:串口编号;bill:操作纸币器  1:操作,0:不操作,coin:操作硬币器  1:操作,0:不操作
 	** output parameters:		无
-	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"bill":1,"coin":1,"is_success":1,
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":27,"port_id":0,"bill":1,"coin":1,"is_success":1,
 	*							"result":1,"bill_changed":0,"coin_changed":100}}
-	*							"EV_type"= EV_MDB_COST = 26: 表示MDB退币结果回应包类型
+	*							"EV_type"= EV_MDB_PAYBACK = 27: 表示MDB退币结果回应包类型
 	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result":扣款结果	1:退币成功     0:退币失败
@@ -887,10 +988,10 @@ public class EVprotocol {
 	** input parameters	:       port_id:串口编号;bill:操作纸币器  1:操作,0:不操作,coin:操作硬币器  1:操作,0:不操作;
 	*							billPayout:纸币器下发找币金额 分为单位 ;coinPayout:硬币器下发找币金额 分为单位 
 	** output parameters:		无
-	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":26,"port_id":0,"bill":0,"coin":1,
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":28,"port_id":0,"bill":0,"coin":1,
 	*							"billPayout":0,"coinPayout":100,"is_success":1,
 	*							"result":1,"bill_changed":0,"coin_changed":100}}
-	*							"EV_type"= EV_MDB_COST = 26: 表示MDB找币结果回应包类型
+	*							"EV_type"= EV_MDB_PAYOUT = 28: 表示MDB找币结果回应包类型
 	*							"port_id":原样返回,"bill":原样返回,"coin":原样返回,"billPayout":原样返回,"coinPayout":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result":扣款结果	1:找币成功     0:找币失败
@@ -898,6 +999,75 @@ public class EVprotocol {
 	*							"coin_changed":硬币器当前找币金额	  以分为单位
 	*********************************************************************************************************/
 	public  native static String EVmdbPayout(int port_id,int bill,int coin,int billPay,int coinPay);
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		EVmdbBillConfig
+	** Descriptions		:		MDB纸币器配置  [同步]
+	** input parameters	:       port_id:串口编号;req:配置参数 json包
+ 								EV_JSON={"EV_json":{"EV_type":29,"port_id":0,"acceptor":2,"dispenser":2,
+ 								"ch_r":[{"ch":1,"value":100},{"ch":2,"value":500},{"ch":3,"value":1000},{"ch":4,"value":2000},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}],
+ 								"ch_d":[{"ch":1,"value":0},{"ch":2,"value":0},{"ch":3,"value":0},{"ch":4,"value":0},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}]}}
+	** output parameters:		无
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":29,"port_id":0,"acceptor":0,"dispenser":1,
+	*							"is_success":1,"result":1}}
+	*							"EV_type"= EV_MDB_B_CON = 29: 表示MDB纸币配置结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:成功     0:失败			
+	*********************************************************************************************************/
+	public  native static String EVmdbBillConfig(String req);
+	
+	
+	
+	
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		EVmdbCoinConfig
+	** Descriptions		:		MDB纸币器配置  [同步]
+	** input parameters	:       port_id:串口编号;req:配置参数 json包
+ 								EV_JSON={"EV_json":{"EV_type":30,"port_id":0,"acceptor":2,"dispenser":2,"hight_en":0,
+ 								"ch_r":[{"ch":1,"value":100},{"ch":2,"value":500},{"ch":3,"value":1000},{"ch":4,"value":2000},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}],
+ 								"ch_d":[{"ch":1,"value":0},{"ch":2,"value":0},{"ch":3,"value":0},{"ch":4,"value":0},
+ 										{"ch":5,"value":0},{"ch":6,"value":0},{"ch":7,"value":0},{"ch":8,"value":0},
+ 										{"ch":9,"value":0},{"ch":10,"value":0},{"ch":11,"value":0},{"ch":12,"value":0},
+ 										{"ch":13,"value":0},{"ch":14,"value":0},{"ch":15,"value":0},{"ch":16,"value":0}]}}
+	** output parameters:		无
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":30,"port_id":0,"acceptor":0,"dispenser":1,
+	*							"is_success":1,"result":1}}
+	*							"EV_type"= EV_MDB_C_CON = 30: 表示MDB硬币配置结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:成功     0:失败			
+	*********************************************************************************************************/
+	public  native static String EVmdbCoinConfig(String req);
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		EVmdbHopperPayout
+	** Descriptions		:		MDB找币接口  [同步]
+	** input parameters	:       port_id:串口编号;no:hopper编号 1-8  nums:需要找币的枚数 ;
+	** output parameters:		无
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":31,"port_id":0,"no":1,"nums":5,
+	*							"is_success":1,"result":1,"changed":5}}
+	*							"EV_type"= EV_MDB_HP_PAYOUT = 31: 表示hopper找币结果回应包类型
+	*							"port_id":原样返回,"no":原样返回,"nums":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result":扣款结果	1:找币成功     0:找币失败
+	*							"changed":实际找零枚数
+	*********************************************************************************************************/
+	public  native static String EVmdbHopperPayout(int port_id,int no,int nums);
+	
 	
 	
 	

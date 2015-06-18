@@ -37,7 +37,8 @@ public class BusZhiAmount  extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 1000; // 延迟1秒
 	public static BusZhiAmount BusZhiAmountAct=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
-	TextView txtbuszhiamountcount=null,txtbuszhiamountAmount=null,txtbuszhiamountbillAmount=null,txtbuszhiamounttime=null;
+	TextView txtbuszhiamountcount=null,txtbuszhiamountAmount=null,txtbuszhiamountbillAmount=null,txtbuszhiamounttime=null,
+			txtbuszhiamounttsxx=null;
 	ImageButton imgbtnbuszhiamountqxzf=null,imgbtnbuszhiamountqtzf=null;
 	float amount=0;//商品需要支付金额
 	float billmoney=0,coinmoney=0,money=0;//投币金额
@@ -90,6 +91,7 @@ public class BusZhiAmount  extends Activity
 		txtbuszhiamountAmount.setText(String.valueOf(amount));
 		txtbuszhiamountbillAmount= (TextView) findViewById(R.id.txtbuszhiamountbillAmount);		
 		txtbuszhiamounttime = (TextView) findViewById(R.id.txtbuszhiamounttime);
+		txtbuszhiamounttsxx = (TextView) findViewById(R.id.txtbuszhiamounttsxx);
 		timer.schedule(task, 1000, 1000);       // timeTask 
 		imgbtnbuszhiamountqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhiamountqxzf);
 		imgbtnbuszhiamountqxzf.setOnClickListener(new OnClickListener() {
@@ -145,6 +147,9 @@ public class BusZhiAmount  extends Activity
 				case EVprotocolAPI.EV_MDB_C_INFO:
 					break;	
 				case EVprotocolAPI.EV_MDB_HEART://心跳查询
+					String bill_enable=((Integer)Set.get("bill_enable")==1)?"":"纸币器不可用";
+					String coin_enable=((Integer)Set.get("coin_enable")==1)?"":"硬币器不可用";
+					txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable);
 				  	billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
 				  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));
 				  	money=billmoney+coinmoney;
