@@ -294,7 +294,7 @@ public class GoodsManager extends TabActivity
 				String productID[]=productAdapter.getProductID();
 				String productName[]=productAdapter.getProductName();
 				strInfo = productID[arg2];// 记录收入信息               
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo);
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo,"log.txt");
 				txtproidValue.setText(strInfo);
 				txtpronameValue.setText(productName[arg2]);
 //				intent = new Intent();
@@ -398,7 +398,7 @@ public class GoodsManager extends TabActivity
         //窗口高度  
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
-				+"],["+screenHeight+"]");	
+				+"],["+screenHeight+"]","log.txt");	
 		
     	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
     	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
@@ -457,7 +457,7 @@ public class GoodsManager extends TabActivity
 			{
 				Bundle bundle=data.getExtras();
 				String str=bundle.getString("back");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品ret="+str);
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品ret="+str,"log.txt");
 				productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
 				ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
 		    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
@@ -468,7 +468,7 @@ public class GoodsManager extends TabActivity
 			if(resultCode==GoodsManager.RESULT_OK)
 			{
 				 uri = data.getData();  
-		         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString());  
+		         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString(),"log.txt");  
 		         ContentResolver cr = this.getContentResolver();  
 		         try {  
 		             Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));  

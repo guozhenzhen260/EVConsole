@@ -59,7 +59,7 @@ public class BusgoodsSelect extends Activity
 		
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="+productID+" proImage="
 					+proImage+" prosales="+prosales+" procount="
-					+procount+" proType="+proType+" cabID="+cabID+" huoID="+huoID);
+					+procount+" proType="+proType+" cabID="+cabID+" huoID="+huoID,"log.txt");
 		ivbusgoodselProduct = (ImageView) findViewById(R.id.ivbusgoodselProduct);
 		/*为什么图片一定要转化为 Bitmap格式的！！ */
         Bitmap bitmap = ToolClass.getLoacalBitmap(proImage); //从本地取图片(在cdcard中获取)  //

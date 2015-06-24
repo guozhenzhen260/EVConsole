@@ -347,14 +347,14 @@ public class BusZhier extends Activity
   				//出货成功,结束交易
 				if(status==1)
 				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款");
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款","log.txt");
 					OrderDetail.addLog(BusZhier.this);
 					finish();
 				}
 				//出货失败,退钱
 				else
 				{	
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
 					payoutzhier();//退款操作
 					OrderDetail.setRealStatus(1);//记录退币成功
 					OrderDetail.setRealCard(amount);//记录退币金额

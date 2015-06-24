@@ -68,7 +68,7 @@ public class Weixinghttp implements Runnable
 				switch (msg.what)
 				{
 					case SETCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev=null;
@@ -132,7 +132,7 @@ public class Weixinghttp implements Runnable
 						
 					break;	
 					case SETQUERYCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara2 = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev2=null;
@@ -198,7 +198,7 @@ public class Weixinghttp implements Runnable
 				        }
 					break;
 					case SETPAYOUTCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara3 = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev3=null;

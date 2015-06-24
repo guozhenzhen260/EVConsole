@@ -45,7 +45,7 @@ public class ClassPictureAdapter extends BaseAdapter
         {
         	ClassPicture picture = new ClassPicture(proclassName[i],proImage[i]);// 使用标题和图像生成ProPicture对象
             pictures.add(picture);// 将Picture对象添加到泛型集合中
-            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img="+proclassName[i]+","+proImage[i]);
+            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img="+proclassName[i]+","+proImage[i],"log.txt");
         }
     }
 
@@ -88,7 +88,7 @@ public class ClassPictureAdapter extends BaseAdapter
         }
         
         viewHolder.busgoodsclassName.setText("类别:"+pictures.get(arg0).getProclassName());// 设置图像原价
-        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img2="+pictures.get(arg0).getProImage());
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img2="+pictures.get(arg0).getProImage(),"log.txt");
         if(pictures.get(arg0).getProImage()!=null)
         {
 	        if(pictures.get(arg0).getProImage().equals("0")!=true)

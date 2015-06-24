@@ -74,7 +74,7 @@ public class Zhifubaohttp implements Runnable
 				switch (msg.what)
 				{
 				case SETCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev=null;
@@ -189,7 +189,7 @@ public class Zhifubaohttp implements Runnable
 						
 					break;
 				case SETQUERYCHILD://子线程接收主线程消息
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString(),"log.txt");
 					Map<String, String> sPara2 = new HashMap<String, String>();
 					//1.添加订单信息
 					JSONObject ev2=null;
@@ -257,7 +257,7 @@ public class Zhifubaohttp implements Runnable
 			       }
 				break;
 				case SETPAYOUTCHILD://子线程接收主线程消息
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString(),"log.txt");
 					Map<String, String> sPara3 = new HashMap<String, String>();
 					//1.添加订单信息
 					JSONObject ev3=null;
@@ -315,7 +315,7 @@ public class Zhifubaohttp implements Runnable
 			       }
 				break;	
 				case SETDELETECHILD://子线程接收主线程消息
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIzhifubao>>]"+msg.obj.toString(),"log.txt");
 					Map<String, String> sPara4 = new HashMap<String, String>();
 					//1.添加订单信息
 					JSONObject ev4=null;

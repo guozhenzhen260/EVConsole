@@ -142,7 +142,7 @@ public class HuodaoTest extends TabActivity
 			@Override
 			public void jniCallback(Map<String, Object> allSet) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao货道相关");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao货道相关","log.txt");
 				Map<String, Object> Set= allSet;
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
@@ -183,7 +183,7 @@ public class HuodaoTest extends TabActivity
 						cool=(Integer)Set.get("cool");
 						hot=(Integer)Set.get("hot");
 						light=(Integer)Set.get("light");
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light);
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
 						if(light>0)
 						{
 							txtlight.setText("支持");
@@ -237,14 +237,14 @@ public class HuodaoTest extends TabActivity
 				            }
 				        } 
 				        huonum=huoSet.size();
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString());	
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
 						showhuodao();						
 						break;	
 					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
 						device=(Integer)allSet.get("addr");//出货柜号						
 						hdid=(Integer)allSet.get("box");//货道id
 						status=(Integer)allSet.get("result");//出货结果
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]");	
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
 						
 						txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
 						sethuorst(status);
@@ -259,7 +259,7 @@ public class HuodaoTest extends TabActivity
 								    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 								    	+" cabType="+String.valueOf(cabinetTypevar)
 								    	+" column="+huonno		    	
-								    	);	 
+								    	,"log.txt");	 
 								EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
 							}
 						}
@@ -272,7 +272,7 @@ public class HuodaoTest extends TabActivity
 						device=(Integer)allSet.get("addr");//柜号						
 						int opt=(Integer)allSet.get("opt");//货道id
 						status=(Integer)allSet.get("result");//结果
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货柜操作结果"+"device=["+device+"],opt=["+opt+"],status=["+status+"]");	
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货柜操作结果"+"device=["+device+"],opt=["+opt+"],status=["+status+"]","log.txt");	
 						txthuorst.setText("device=["+device+"],opt=["+opt+"],status=["+status+"]");						
 						break;	
 				}
@@ -321,7 +321,7 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub cabinetID[0],
 				String huo[]=huoAdapter.getHuoID();
 				String huoID = huo[arg2];// 记录收入信息               
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID+"status="+huoSet.get(huoID));
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID+"status="+huoSet.get(huoID),"log.txt");
 				Intent intent = new Intent();
 		    	intent.setClass(HuodaoTest.this, HuodaoSet.class);// 使用AddInaccount窗口初始化Intent
                 intent.putExtra("huoID", huoID);
@@ -374,7 +374,7 @@ public class HuodaoTest extends TabActivity
         //窗口高度  
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
-				+"],["+screenHeight+"]");	
+				+"],["+screenHeight+"]","log.txt");	
 		
     	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvhuodao.getLayoutParams(); // 取控件mGrid当前的布局参数
     	linearParams.height =  screenHeight-500;// 当控件的高强制设成75象素
@@ -488,7 +488,7 @@ public class HuodaoTest extends TabActivity
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 		    	+" cabType="+String.valueOf(cabinetTypevar)
-		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString()))		    	
+		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString())),"log.txt"		    	
 		    	);
 		    	if (edtcolumn.getText().toString().isEmpty()!=true)	
 		    	{
@@ -526,7 +526,7 @@ public class HuodaoTest extends TabActivity
 					ToolClass.Log(ToolClass.INFO,"EV_JNI",
 					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 					    	+" cabType="+String.valueOf(cabinetTypevar)
-					    	+" column="+huonno		    	
+					    	+" column="+huonno,"log.txt"		    	
 					    	);	 
 					EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
 				}
@@ -583,7 +583,7 @@ public class HuodaoTest extends TabActivity
 		//格子柜
 		if(cabinetTypesetvar==5)
 		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关");
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关","log.txt");
 			EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);
 		}
 		//普通柜

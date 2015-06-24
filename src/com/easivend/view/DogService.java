@@ -20,6 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.common.ToolClass;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -53,14 +54,14 @@ public class DogService extends Service {
 	}
 	public void setAllopen(int allopen) {
 		this.allopen = allopen;
-		Log.i("EV_JNI","setAllopen="+allopen);
+		ToolClass.Log(ToolClass.INFO,"EV_DOG","setAllopen="+allopen,"dog.txt");
 	}
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		timer = new Timer(true);
-		Log.i("EV_JNI","dog create");
+		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog create","dog.txt");
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class DogService extends Service {
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		Log.i("EV_JNI","dog start");
+		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog start","dog.txt");
 		timer.schedule(new TimerTask() { 
 	        @Override 
 	        public void run() { 
@@ -82,7 +83,7 @@ public class DogService extends Service {
 	        		int isopen=0;//1代表正在运行，0代表没在运行
 	        		for (RunningTaskInfo info : list) 
 	        		{	        			 
-	        			 Log.i("EV_JNI","appName:"+info.topActivity.getClassName()+"-->pack:"+info.topActivity.getPackageName());
+	        			 ToolClass.Log(ToolClass.INFO,"EV_DOG","appName:"+info.topActivity.getClassName()+"-->pack:"+info.topActivity.getPackageName(),"dog.txt");
 	        			 if (info.topActivity.getPackageName().equals(MY_PKG_NAME)||info.baseActivity.getPackageName().equals(MY_PKG_NAME)) 
 	        			 {	        				  
 	        				  isopen=1;
@@ -91,11 +92,11 @@ public class DogService extends Service {
 	        		}
 	        		if(isopen==1)
 	        		{
-	        			Log.i("EV_JNI", "applicationrun");
+	        			ToolClass.Log(ToolClass.INFO,"EV_DOG","applicationrun","dog.txt");
 	        		}
 	        		else
 	        		{
-	        			Log.i("EV_JNI", "applicationstop");
+	        			ToolClass.Log(ToolClass.INFO,"EV_DOG","applicationstop","dog.txt");
 		        		//1.开启应用程序
 		        		Intent intent=new Intent(DogService.this,MaintainActivity.class);
 		        		intent.setAction(Intent.ACTION_MAIN);  
@@ -108,7 +109,7 @@ public class DogService extends Service {
         		}
 	        	else
 	        	{
-	        		Log.i("EV_JNI","unopen");
+	        		ToolClass.Log(ToolClass.INFO,"EV_DOG","unopen","dog.txt");
 				}
 	        } 
 	    }, 15*1000, 15*1000);       // timeTask 

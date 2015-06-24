@@ -191,7 +191,7 @@ public class Business extends Activity
 		    public void onClick(View arg0) {
 		    	vmc_classDAO classdao = new vmc_classDAO(Business.this);// 创建InaccountDAO对象
 		    	long count=classdao.getCount();
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count);
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count,"log.txt");
 		    	if(count>0)
 		    	{
 			    	intent = new Intent(Business.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
@@ -222,17 +222,17 @@ public class Business extends Activity
 			{
 			  if(!files[i].isDirectory())
 			  {		
-				  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品1ID="+files[i].toString());
+				  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品1ID="+files[i].toString(),"log.txt");
 				  //是否视频文件
 				  if(MediaFileAdapter.isVideoFileType(files[i].toString())==true)
 				  {
-					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品videoID="+files[i].toString());
+					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品videoID="+files[i].toString(),"log.txt");
 					  mMusicList.add(files[i].toString());
 				  }
 				  //是否图片文件
 				  else if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
 				  {
-					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品imageID="+files[i].toString());
+					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品imageID="+files[i].toString(),"log.txt");
 					  imgMusicList.add(files[i].toString());
 				  }
 			  }
@@ -404,7 +404,7 @@ public class Business extends Activity
 			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 						+productID+" proType="
 						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1");
+						+"1","log.txt");
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");
@@ -434,7 +434,7 @@ public class Business extends Activity
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 						+productID+" proType="
 						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1");
+						+"1","log.txt");
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");

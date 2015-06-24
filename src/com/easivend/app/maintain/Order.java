@@ -325,7 +325,7 @@ public class Order extends TabActivity
         //窗口高度  
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
-				+"],["+screenHeight+"]");	
+				+"],["+screenHeight+"]","log.txt");	
 		
     	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvorder.getLayoutParams(); // 取控件mGrid当前的布局参数
     	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
@@ -377,7 +377,7 @@ public class Order extends TabActivity
 	//查询报表
 	private void grid()
 	{		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)));
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
 				(!edtordergridstart.getText().toString().isEmpty())
 			  &&(!edtordergridstart.getText().toString().isEmpty())
@@ -461,7 +461,7 @@ public class Order extends TabActivity
 	//删除查询报表
 	private void delgrid()
 	{		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)));
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
 				(!edtordergridstart.getText().toString().isEmpty())
 			  &&(!edtordergridstart.getText().toString().isEmpty())
@@ -519,12 +519,12 @@ public class Order extends TabActivity
 			//上半月
 			if(i%2==0)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月上：="+ToolClass.getLastDayOfMonth(eYear,(mon+1),0)+"到"+ToolClass.getLastDayOfMonth(eYear,(mon+1),1));
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月上：="+ToolClass.getLastDayOfMonth(eYear,(mon+1),0)+"到"+ToolClass.getLastDayOfMonth(eYear,(mon+1),1),"log.txt");
 				for(j=0;j<ourdercount;j++)
 				{
 					if(ToolClass.isdatein(ToolClass.getLastDayOfMonth(eYear,(mon+1),0),ToolClass.getLastDayOfMonth(eYear,(mon+1),1),payTime[j])==true)
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在","log.txt");
 						Amountvalue[i]+=salesPricevalue[j];
 						Countvalue[i]+=1;
 					}
@@ -537,12 +537,12 @@ public class Order extends TabActivity
 			//下半月
 			else
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月下：="+ToolClass.getLastDayOfMonth(eYear,(mon+1),1)+"到"+ToolClass.getLastDayOfMonth(eYear,(mon+1),2));
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+(mon+1)+"月下：="+ToolClass.getLastDayOfMonth(eYear,(mon+1),1)+"到"+ToolClass.getLastDayOfMonth(eYear,(mon+1),2),"log.txt");
 				for(j=0;j<ourdercount;j++)
 				{
 					if(ToolClass.isdatein(ToolClass.getLastDayOfMonth(eYear,(mon+1),1),ToolClass.getLastDayOfMonth(eYear,(mon+1),2),payTime[j])==true)
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+payTime[j]+"是在","log.txt");
 						Amountvalue[i]+=salesPricevalue[j];
 						Countvalue[i]+=1;
 						
@@ -561,6 +561,6 @@ public class Order extends TabActivity
 			Amountmax=(Amountvalue[i]>Amountmax)?Amountvalue[i]:Amountmax;
 			Countmax=(Countvalue[i]>Countmax)?Countvalue[i]:Countmax;			
 		}
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<amount="+Amountmax+",count="+Countmax);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<amount="+Amountmax+",count="+Countmax,"log.txt");
 	}
 }

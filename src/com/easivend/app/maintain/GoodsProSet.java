@@ -68,7 +68,7 @@ public class GoodsProSet extends Activity
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
 		proID=bundle.getString("proID");
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID,"log.txt");
 		//如果商品ID有存在则刷新页面为修改商品的页面
 		if(proID.isEmpty()!=true)
 		{
@@ -98,7 +98,7 @@ public class GoodsProSet extends Activity
 		    		break;
 		    	}
 		    }
-		    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品classID="+classID+",pos="+position);
+		    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品classID="+classID+",pos="+position,"log.txt");
 		    spinproductclassID.setSelection(position);	   
 		}
 		
@@ -148,7 +148,7 @@ public class GoodsProSet extends Activity
 		    		{
 		    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID+" productName="+productName+" marketPrice="
 		    					+marketPrice+" salesPrice="+salesPrice+" shelfLife="+shelfLife+" productDesc="+productDesc+" attBatch1="
-		    					+attBatch1+" attBatch2="+attBatch2+" attBatch3="+attBatch3+" classID="+classID);
+		    					+attBatch1+" attBatch2="+attBatch2+" attBatch3="+attBatch3+" classID="+classID,"log.txt");
 		    			// 创建InaccountDAO对象
 		    			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);
 			            //创建Tb_inaccount对象
@@ -217,7 +217,7 @@ public class GoodsProSet extends Activity
 	{  
 	     if (resultCode == RESULT_OK) {  
 	         uri = data.getData();  
-	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString());  
+	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<uri="+ uri.toString(),"log.txt");  
 	         ContentResolver cr = this.getContentResolver();  
 	         try {  
 	             Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));  

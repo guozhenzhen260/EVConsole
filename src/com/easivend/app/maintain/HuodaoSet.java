@@ -117,7 +117,7 @@ public class HuodaoSet extends Activity
 		huoID=bundle.getString("huoID");
 		cabID=bundle.getString("cabID");
 		temphuostatus=bundle.getString("huoStatus");		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+huoID+"cabID="+cabID+"status="+temphuostatus);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+huoID+"cabID="+cabID+"status="+temphuostatus,"log.txt");
 		txthuoCabID.setText(cabID);
 		txthuoColID.setText(huoID);
 		//如果该货道有绑定商品ID有存在则刷新页面为修改商品的页面
@@ -158,7 +158,7 @@ public class HuodaoSet extends Activity
 		    		pathRemain= Integer.parseInt(edthuopathRemain.getText().toString());
 		    	
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道cabineID="+cabID+" columnID="+huoID+" productID="
-    					+productID+" pathCount="+pathCount+" pathRemain="+pathRemain+" columnStatus="+huostatus);
+    					+productID+" pathCount="+pathCount+" pathRemain="+pathRemain+" columnStatus="+huostatus,"log.txt");
     			
 		    	if ((productID.isEmpty()!=true)&&(edthuopathCount.getText().toString().isEmpty()!=true)
 		    			&&(edthuopathRemain.getText().toString().isEmpty()!=true)
@@ -308,7 +308,7 @@ public class HuodaoSet extends Activity
 			{
 				Bundle bundle=data.getExtras();
 				productID = bundle.getString("productID");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID);
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID,"log.txt");
 				updateProduct(productID);
 			}			
 		}

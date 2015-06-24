@@ -109,7 +109,7 @@ public class vmc_orderDAO
 	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 
 	{   
 		List<Tb_vmc_order_pay> tb_inaccount = new ArrayList<Tb_vmc_order_pay>();// 创建集合对象
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime);         
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime,"log.txt");         
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +

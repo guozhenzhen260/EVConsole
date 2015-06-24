@@ -135,7 +135,7 @@ public class BusZhiAmount  extends Activity
 		public void jniCallback(Map<String, Object> allSet) {
 			float payin_amount=0,reamin_amount=0,payout_amount=0;
 			// TODO Auto-generated method stub	
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果");
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果","log.txt");
 			Map<String, Object> Set= allSet;
 			int jnirst=(Integer)Set.get("EV_TYPE");
 			switch (jnirst)
@@ -263,7 +263,7 @@ public class BusZhiAmount  extends Activity
 				{					
 				}
 				//2.更新投币金额
-  				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款money="+money);
+  				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款money="+money,"log.txt");
   				txtbuszhiamountbillAmount.setText(String.valueOf(money));
   				//没剩下余额了，不退币
   				if(money==0)

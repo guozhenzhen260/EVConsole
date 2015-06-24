@@ -292,14 +292,14 @@ public class BusZhiwei extends Activity
   				//出货成功,结束交易
 				if(status==1)
 				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款");
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款","log.txt");
 					OrderDetail.addLog(BusZhiwei.this);
 					finish();
 				}
 				//出货失败,退钱
 				else
 				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount);
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
 					////退款
 					OrderDetail.setRealStatus(3);//记录退币失败
 					OrderDetail.addLog(BusZhiwei.this);

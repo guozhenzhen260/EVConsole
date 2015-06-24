@@ -89,7 +89,7 @@ public class EVprotocolAPI
 			switch (msg.what)
 			{
 				case 1://接收JNI返回的消息
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<"+msg.obj.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<"+msg.obj.toString(),"log.txt");
 //					Map<String, Object> map=JsonToolUnpack.getMapListgson(msg.obj.toString());
 //					//ToolClass.Log(ToolClass.INFO,"EV_JNI",list.toString());
 //					/*
@@ -147,7 +147,7 @@ public class EVprotocolAPI
 						    	}
 						    	break;
 						    case EV_BENTO_CHECK://快递柜查询
-								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道状态上报");
+								ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道状态上报","log.txt");
 								if(ev_head.getInt("is_success")>0)
 								{
 									//往接口回调信息
@@ -566,7 +566,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int EV_portRegister(String portName)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+portName);		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+portName,"log.txt");		
 		return EVprotocol.EV_portRegister(portName);		
 	}
 	
@@ -584,7 +584,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_portRelease(int port_id)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenclose>>]"+port_id);		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenclose>>]"+port_id,"log.txt");		
 		return EVprotocol.EV_portRelease(port_id);		
 	}
 	
@@ -605,7 +605,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_bentoOpen(int port_id,int addr,int box)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[box]="+box);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[box]="+box,"log.txt");
 		return EVprotocol.EV_bentoOpen(port_id,addr,box);
 	}
 	
@@ -628,7 +628,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_bentoCheck(int port_id,int addr)
 	{				
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr,"log.txt");
 		return EVprotocol.EV_bentoCheck(port_id,addr);
 	}
 	
@@ -646,7 +646,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_bentoLight(int port_id,int addr,int opt)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[opt]="+opt);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[bentoCheck>>port_id=]"+port_id+"[addr]="+addr+"[opt]="+opt,"log.txt");
 		return EVprotocol.EV_bentoLight(port_id,addr,opt);
 	}
 		
@@ -662,7 +662,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int getColumn(int cabinet)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIgetColumn>>]"+cabinet);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIgetColumn>>]"+cabinet,"log.txt");
 		//return ev.getColumn(cabinet);		
 		return 0;
 	}
@@ -679,7 +679,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int trade(int cabinet,int column,int type,long cost)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIhuo>>]"+cost);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIhuo>>]"+cost,"log.txt");
 		//return ev.trade(cabinet,column,type,(int)cost);
 		return 0;
 	}
@@ -702,7 +702,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbEnable(int port_id,int bill,int coin,int opt)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbEnable>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin+"[opt]="+opt);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbEnable>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin+"[opt]="+opt,"log.txt");
 		return EVprotocol.EV_mdbEnable(port_id,bill,coin,opt);
 	}
 	/*********************************************************************************************************
@@ -729,7 +729,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbBillInfoCheck(int port_id)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbbillInfo>>port_id=]"+port_id);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbbillInfo>>port_id=]"+port_id,"log.txt");
 		return EVprotocol.EV_mdbBillInfoCheck(port_id);
 	}
 	
@@ -787,7 +787,7 @@ public class EVprotocolAPI
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[BillConfig>>]"+EV_json.toString());		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[BillConfig>>]"+EV_json.toString(),"log.txt");		
 		return EVprotocol.EV_mdbBillConfig(EV_json.toString());
 	}
 	
@@ -815,7 +815,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbCoinInfoCheck(int port_id)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbcoinInfo>>port_id=]"+port_id);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbcoinInfo>>port_id=]"+port_id,"log.txt");
 		return EVprotocol.EV_mdbCoinInfoCheck(port_id);
 	}
 	
@@ -885,7 +885,7 @@ public class EVprotocolAPI
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[CoinConfig>>]"+EV_json.toString());	
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[CoinConfig>>]"+EV_json.toString(),"log.txt");	
 		return EVprotocol.EV_mdbCoinConfig(EV_json.toString());		
 	}
 	
@@ -908,7 +908,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbPayout(int port_id,int bill,int coin,int billPay,int coinPay)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbPayout>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin+"[billPay]="+billPay+"[coinPay]="+coinPay);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbPayout>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin+"[billPay]="+billPay+"[coinPay]="+coinPay,"log.txt");
 		return EVprotocol.EV_mdbPayout(port_id,bill,coin,billPay,coinPay);
 	}
 	
@@ -928,7 +928,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int EV_mdbHopperPayout(int port_id,int no,int nums)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[HopperPayout>>no=]"+no+" nums="+nums);	
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[HopperPayout>>no=]"+no+" nums="+nums,"log.txt");	
 		return EVprotocol.EV_mdbHopperPayout(port_id,no,nums);
 	}
 		
@@ -959,7 +959,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbHeart(int port_id)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbHeart>>port_id=]"+port_id);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbHeart>>port_id=]"+port_id,"log.txt");
 		return EVprotocol.EV_mdbHeart(port_id);
 	}
 	/*********************************************************************************************************
@@ -979,7 +979,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbCost(int port_id,int cost)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbmdbCost>>port_id=]"+port_id+"[cost]="+cost);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbmdbCost>>port_id=]"+port_id+"[cost]="+cost,"log.txt");
 		return EVprotocol.EV_mdbCost(port_id,cost);
 	}
 	/*********************************************************************************************************
@@ -999,7 +999,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public  static int EV_mdbPayback(int port_id,int bill,int coin)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbPayback>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[mdbPayback>>port_id=]"+port_id+"[bill]="+bill+"[coin]="+coin,"log.txt");
 		return EVprotocol.EV_mdbPayback(port_id,bill,coin);
 	}
 					

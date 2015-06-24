@@ -45,7 +45,7 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         {
             HuoPicture picture = new HuoPicture(huoID[i],huoproID[i],huoRemain[i], huolasttime[i],proImage[i]);// 使用标题和图像生成ProPicture对象
             pictures.add(picture);// 将Picture对象添加到泛型集合中
-            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img="+huoID[i]+","+proImage[i]);
+            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Img="+huoID[i]+","+proImage[i],"log.txt");
         }
     }
 
@@ -96,7 +96,7 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.huolasttime.setText(pictures.get(arg0).getHuolasttime());
         if(pictures.get(arg0).getProImage().equals("0")!=true)
         {
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pro="+pictures.get(arg0).getHuoID()+","+pictures.get(arg0).getProImage());
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pro="+pictures.get(arg0).getHuoID()+","+pictures.get(arg0).getProImage(),"log.txt");
 	        /*为什么图片一定要转化为 Bitmap格式的！！ */
 	        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
 	        if(bitmap!=null)

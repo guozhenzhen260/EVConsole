@@ -347,7 +347,7 @@ public class vmc_productDAO
     {
         List<Tb_vmc_product> tb_inaccount = new ArrayList<Tb_vmc_product>();// 创建集合对象
         Cursor cursor = null;
-        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品sort="+datasort);
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品sort="+datasort,"log.txt");
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         if(datasort.equals("sale"))
         {
@@ -438,7 +438,7 @@ public class vmc_productDAO
         List<Tb_vmc_product> tb_inaccount = new ArrayList<Tb_vmc_product>();// 创建集合对象
         Cursor cursor = null;
         params="%"+param+"%";
-        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productName="+params+" sort="+datasort);
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productName="+params+" sort="+datasort,"log.txt");
         
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         if(datasort.equals("sale"))

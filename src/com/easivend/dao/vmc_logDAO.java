@@ -72,7 +72,7 @@ public class vmc_logDAO {
 		List<Tb_vmc_log> tb_inaccount = new ArrayList<Tb_vmc_log>();// 创建集合对象
              
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime);     
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime,"log.txt");     
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select logID,logType,logDesc,logTime " +
 				" from vmc_log where logTime between ? and ?", 

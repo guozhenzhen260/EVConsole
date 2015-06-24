@@ -33,15 +33,15 @@ public class WeiConfigAPI
     	//weixing
     	str=list.get("weiappid");    	
     	WeiConfig.setWeiappid(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weiappid="+str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weiappid="+str,"log.txt");
     	
     	str=list.get("weimch_id");
     	WeiConfig.setWeimch_id(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weimch_id="+str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weimch_id="+str,"log.txt");
     	
     	str=list.get("weikey");
     	WeiConfig.setWeikey(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weikey="+str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weikey="+str,"log.txt");
     	//weixing
     	
     }

@@ -106,7 +106,7 @@ public class ToolClass
 	}
 	
 	//Log方法，用于打印log，和在文本文件中打印操作日志
-	public static void Log(int info,String tag,String str)
+	public static void Log(int info,String tag,String str,String filename)
 	{
 		String infotype="";
 		switch(info)
@@ -133,13 +133,13 @@ public class ToolClass
 				break;	
 		}	
 		infotype="("+infotype+"),["+tag+"] "+str;
-		AppendLogFile(infotype);
+		AppendLogFile(infotype,filename);
 	}
 	
 	/**
      * 追加文件：使用FileWriter
      */
-    public static void AppendLogFile(String content) 
+    public static void AppendLogFile(String content,String filename) 
     {
     	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"logs";
     	final String NOSDCARD_DIR=File.separator+"logs";
@@ -169,7 +169,7 @@ public class ToolClass
         		dirName.mkdirs(); 
              }
         	 
-        	 fileName=new File(sDir+File.separator+"log.txt");         	
+        	 fileName=new File(sDir+File.separator+filename);         	
         	//如果不存在，则创建文件
         	if(!fileName.exists())
         	{  
@@ -220,14 +220,14 @@ public class ToolClass
 	  	          {
 	  	           	str=scan.next()+"\n";
 	  	          }
-	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str);
+	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
 	  	         //将json格式解包
 	  	         list=new HashMap<String,String>();      			
 				JSONObject object=new JSONObject(str);      				
 				Gson gson=new Gson();
 				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
 				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString(),"log.txt");
         	  }
         	             
         } catch (Exception e) {
@@ -276,7 +276,7 @@ public class ToolClass
   	          {
   	           	str=scan.next()+"\n";
   	          }
-  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str);
+  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
   	         if(str!=null)
   	         {
 	  	        Map<String, String> list=new HashMap<String,String>();      			
@@ -284,7 +284,7 @@ public class ToolClass
 				Gson gson=new Gson();
 				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
 				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString(),"log.txt");
 				Map<String,String> list2=new HashMap<String,String>();
 				//输出内容
 		        Set<Map.Entry<String,String>> allset=list.entrySet();  //实例化
@@ -303,10 +303,10 @@ public class ToolClass
 		        list2.put("com", com);
 		        list2.put("bentcom", bentcom);
 		        list2.put("isallopen", isallopen);
-		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString());
+		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
 		        JSONObject jsonObject = new JSONObject(list2);
 		        String mapstrString=jsonObject.toString();
-		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config4="+mapstrString);
+		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config4="+mapstrString,"log.txt");
 		        //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
 	            FileWriter writer = new FileWriter(fileName);
 	            writer.write(mapstrString);
@@ -320,7 +320,7 @@ public class ToolClass
   	        	jsonObject.put("bentcom", bentcom);
   	        	jsonObject.put("isallopen", isallopen);
   	        	String mapstrString=jsonObject.toString();
-  	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString);
+  	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
   	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
   	            FileWriter writer = new FileWriter(fileName, true);
   	            writer.write(mapstrString);

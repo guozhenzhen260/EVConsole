@@ -119,7 +119,7 @@ public class AddInaccount extends TabActivity
 			public void jniCallback(Map<String, Object> allSet) {
 				float payin_amount=0,reamin_amount=0,payout_amount=0;
 				// TODO Auto-generated method stub	
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果","log.txt");
 				Map<String, Object> Set= allSet;
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
@@ -237,7 +237,7 @@ public class AddInaccount extends TabActivity
 					    spinhopper.setSelection((Integer)Set.get("dispenser"));
 					    str2="";
 					    Map<String, Integer> allSet4=(Map<String, Integer>) Set.get("ch_d");
-					    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet4.toString());
+					    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet4.toString(),"log.txt");
 					    double all2[]=new double[allSet4.size()];	
 						i=0;
 						Set<Map.Entry<String,Integer>> allset4=allSet4.entrySet();  //实例化

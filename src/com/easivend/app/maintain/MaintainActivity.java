@@ -112,7 +112,7 @@ public class MaintainActivity extends Activity
 			@Override
 			public void jniCallback(Map<String, Object> allSet) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到");	
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到","log.txt");	
 				Map<String, Object> Set= allSet;
 				int jnirst=(Integer) Set.get("EV_TYPE");
 				//txtcom.setText(String.valueOf(jnirst));
@@ -122,13 +122,13 @@ public class MaintainActivity extends Activity
 						//主柜初始化完成
 						if(Set.get("port_com").equals(com))
 						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成");	
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成","log.txt");	
 							txtcom.setText(com+"[主柜]初始化完成");		
 							ToolClass.setCom_id((Integer)Set.get("port_id"));
 						}
 						else if(Set.get("port_com").equals(bentcom))
 						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜初始化完成");	
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜初始化完成","log.txt");	
 							txtbentcom.setText(bentcom+"[格子柜]初始化完成");		
 							ToolClass.setBentcom_id((Integer)Set.get("port_id"));
 						}

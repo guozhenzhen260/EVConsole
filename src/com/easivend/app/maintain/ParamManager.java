@@ -417,7 +417,7 @@ public class ParamManager extends TabActivity
     					+mainPwd+" amount="+amount+" card="+card+" zhifubaofaca="+zhifubaofaca+" zhifubaoer="+zhifubaoer
     					+" weixing="+weixing+" printer="+printer+" language="+language
     					+" rstTime="+rstTime+" rstDay="+rstDay+" baozhiProduct="+baozhiProduct
-    					+" emptyProduct="+emptyProduct+" proSortType="+proSortType+" marketAmount="+marketAmount+" billAmount="+billAmount);
+    					+" emptyProduct="+emptyProduct+" proSortType="+proSortType+" marketAmount="+marketAmount+" billAmount="+billAmount,"log.txt");
     			// 创建InaccountDAO对象
     			vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ParamManager.this);
 	            //创建Tb_inaccount对象 
@@ -453,7 +453,7 @@ public class ParamManager extends TabActivity
 					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
 					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
 					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
-					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()+" marketAmount="+tb_inaccount.getMarketAmount()+" billAmount="+tb_inaccount.getBillAmount()); 
+					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()+" marketAmount="+tb_inaccount.getMarketAmount()+" billAmount="+tb_inaccount.getBillAmount(),"log.txt"); 
 		    edtdevID.setText(tb_inaccount.getDevID().toString());
 		    edtdevhCode.setText(tb_inaccount.getDevhCode().toString());	  
 		    //switchisNet.setChecked(true);
@@ -490,7 +490,7 @@ public class ParamManager extends TabActivity
 					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
 					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
 					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
-					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()); 
+					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType(),"log.txt"); 
 		    
 		    switchamount.setChecked((tb_inaccount.getAmount()==1)?true:false);
 		    switchcard.setChecked((tb_inaccount.getCard()==1)?true:false);

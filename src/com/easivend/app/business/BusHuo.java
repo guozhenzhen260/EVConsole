@@ -83,14 +83,14 @@ public class BusHuo extends Activity
 			@Override
 			public void jniCallback(Map<String, Object> allSet) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<bushuo货道相关");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<bushuo货道相关","log.txt");
 				Map<String, Object> Set= allSet;
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
 					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
 						status=(Integer)allSet.get("result");//出货结果
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]");	
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
 						//1.更新出货结果
 						//扣除存货余量
 						chuhuoupdate(cabinetvar,huodaoNo);
@@ -274,7 +274,7 @@ public class BusHuo extends Activity
   	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-				+count+" zhifutype="+zhifutype);		
+				+count+" zhifutype="+zhifutype,"log.txt");		
 		this.data=new String[count][2];
 		draw=String.valueOf(R.drawable.shuaxin);
 		info=proID+"["+prosales+"]"+"->等待出货";
@@ -331,7 +331,7 @@ public class BusHuo extends Activity
 			cabinetvar=Integer.parseInt(alllist.get(0));
 			huodaoNo=Integer.parseInt(alllist.get(1));
 			cabinetTypevar=Integer.parseInt(alllist.get(2));
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt"); 
 		}
 		//按货道id出货
 		else if(proType.equals("2")==true)
@@ -341,7 +341,7 @@ public class BusHuo extends Activity
 			cabinetvar=Integer.parseInt(cabID);
 			huodaoNo=Integer.parseInt(huoID);
 			cabinetTypevar=Integer.parseInt(alllist);
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar); 
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt"); 
 		}
 				
 		//格子柜

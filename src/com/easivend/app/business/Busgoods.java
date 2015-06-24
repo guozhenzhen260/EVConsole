@@ -69,7 +69,7 @@ public class Busgoods extends Activity
         //窗口高度  
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
-				+"],["+screenHeight+"]");	
+				+"],["+screenHeight+"]","log.txt");	
 		
     	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvbusgoodsProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
     	linearParams.height =  screenHeight-170;// 当控件的高强制设成75象素
@@ -78,7 +78,7 @@ public class Busgoods extends Activity
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
 		proclassID=bundle.getString("proclassID");
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proclassID="+proclassID);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proclassID="+proclassID,"log.txt");
 		//如果存在商品分类id
 		if((proclassID!=null)&&(proclassID.isEmpty()!=true))
 		{

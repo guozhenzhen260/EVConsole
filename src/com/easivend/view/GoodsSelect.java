@@ -58,7 +58,7 @@ public class GoodsSelect extends Activity
 				// TODO Auto-generated method stub cabinetID[0],
 				String strInfo[]=productAdapter.getProductID();
 				String productID = strInfo[arg2];// 记录收入信息               
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID);
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID,"log.txt");
 				//退出时，返回intent
 	            Intent intent=new Intent();
 	            intent.putExtra("productID", productID);

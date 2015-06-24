@@ -44,7 +44,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         {        	
             ProPicture picture = new ProPicture(proID[i],promarket[i],prosales[i], proImage[i],procount[i]);// 使用标题和图像生成ProPicture对象
             pictures.add(picture);// 将Picture对象添加到泛型集合中
-            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+proID[i]+",promarket="+promarket[i]+",prosales="+prosales[i]+",proImage="+proImage[i]+",procount="+procount[i]);
+            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+proID[i]+",promarket="+promarket[i]+",prosales="+prosales[i]+",proImage="+proImage[i]+",procount="+procount[i],"log.txt");
         }
     }
 

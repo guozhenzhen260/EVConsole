@@ -26,15 +26,15 @@ public class AlipayConfigAPI {
     	//alipay
     	str=list.get("alipartner");    	
     	AlipayConfig.setPartner(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<partner="+str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<partner="+str,"log.txt");
     	
     	str=list.get("aliseller_email");
     	AlipayConfig.setSeller_email(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<seller_email="+str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<seller_email="+str,"log.txt");
     	
     	str=list.get("alikey");
     	AlipayConfig.setKey(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<alikey="+str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<alikey="+str,"log.txt");
     	//weixing
     	
     }
