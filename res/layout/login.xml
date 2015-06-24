@@ -36,12 +36,28 @@
         android:layout_height="wrap_content"        
         android:layout_below="@id/tvbent"        
         />
+    <TextView
+        android:id="@+id/tvallopen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtbent" 
+        android:text="一直保持应用开启"
+        android:textColor="#8C6931"
+        android:textSize="25dp" />
+    <Switch   
+       android:id="@+id/switchallopen"  
+       android:layout_width="wrap_content"  
+       android:layout_height="wrap_content"  
+       android:textOn="打开"  
+       android:textOff="关闭" 
+       android:layout_below="@id/txtbent" 
+       android:layout_toRightOf="@+id/tvallopen"/> 
     <Button
         android:id="@+id/btnClose"
         android:layout_width="100dp"
 		android:layout_height="70dp" 
         android:layout_alignParentRight="true"
-        android:layout_below="@id/txtbent"
+        android:layout_below="@id/tvallopen"
         android:layout_marginLeft="10dp"
         android:text="退出" />
 
@@ -49,7 +65,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="100dp"
 		android:layout_height="70dp" 
-        android:layout_below="@id/txtbent"
+        android:layout_below="@id/tvallopen"
         android:layout_toLeftOf="@id/btnClose"
         android:text="修改" />  
 </RelativeLayout>

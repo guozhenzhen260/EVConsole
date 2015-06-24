@@ -32,30 +32,39 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 public class Login extends Activity 
 {
 	private EditText txtlogin,txtbent;// 创建EditText对象
     private Button btnlogin, btnclose;// 创建两个Button对象
+    private Switch switchallopen;
     String com =null;
     String bentcom =null;
+    int isallopen=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);// 设置布局文件
-
+		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框
+        
         Map<String, String> list=ToolClass.ReadConfigFile();
         if(list!=null)
         {
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
+	        if(list.containsKey("isallopen"))
+	        {
+	        	isallopen=Integer.parseInt(list.get("isallopen"));
+	        }
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
+        switchallopen.setChecked((isallopen==1)?true:false);
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
         btnclose.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
@@ -69,11 +78,15 @@ public class Login extends Activity
             public void onClick(View arg0)
             {
             	com = txtlogin.getText().toString();
-    	        bentcom = txtbent.getText().toString();    	        
-            	ToolClass.WriteConfigFile(com, bentcom);
+    	        bentcom = txtbent.getText().toString(); 
+    	        isallopen= (switchallopen.isChecked()==true)?1:0;
+            	ToolClass.WriteConfigFile(com, bentcom,String.valueOf(isallopen));            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
+	            //退出时，返回intent
+	            Intent intent=new Intent();
+	            setResult(MaintainActivity.RESULT_OK,intent);
             	finish();// 退出当前程序           
             }
         });        

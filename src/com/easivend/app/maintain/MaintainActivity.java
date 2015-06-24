@@ -23,6 +23,8 @@ import java.util.Timer;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.view.DogService;
+import com.easivend.view.DogService.LocalBinder;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.Business;
@@ -34,11 +36,14 @@ import com.example.evconsole.R;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.R.string;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -69,7 +74,33 @@ public class MaintainActivity extends Activity
     String com=null,bentcom=null;
     final static int REQUEST_CODE=1;
     //private Handler myhHandler=null;
-    
+    //Dog服务相关
+    DogService localService;
+	boolean bound=false;
+	int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
+	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
+	//绑定的接口
+	private ServiceConnection conn=new ServiceConnection()
+	{
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			//Log.i("currenttime","service onBindSUC="+service.getInterfaceDescriptor());
+			LocalBinder binder=(LocalBinder) service;
+			localService = binder.getService();
+			bound=true;
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO Auto-generated method stub
+			//Log.i("currenttime","service onBindFail");
+			bound=false;
+		}
+
+		
+		
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -106,6 +137,29 @@ public class MaintainActivity extends Activity
 				}
 			}
 		}); 
+		//==========
+		//Dog服务相关
+		//==========
+		//延时3s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+        		localService.setAllopen(isallopen);
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);
+		//启动服务
+		startService(new Intent(this,DogService.class));
+		//绑定服务
+		Intent intent=new Intent(this,DogService.class);
+		bindService(intent, conn, Context.BIND_AUTO_CREATE);
+		bound=true;
+		
+		//================
+		//串口配置和注册相关
+		//================
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
 		
@@ -116,7 +170,11 @@ public class MaintainActivity extends Activity
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
-	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
+	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
+	        if(list.containsKey("isallopen"))
+	        {
+	        	isallopen=Integer.parseInt(list.get("isallopen"));	        	
+	        }
 			txtcom.setText(com+"主柜正在准备连接");	
 			EVprotocolAPI.vmcEVStart();//开启监听
 			//打开主柜串口		
@@ -143,7 +201,9 @@ public class MaintainActivity extends Activity
 		}
 				
 		
-				
+		//================
+		//九宫格相关
+		//================		
 		barmaintain= (ProgressBar) findViewById(R.id.barmaintain);
 		gvInfo = (GridView) findViewById(R.id.gvInfo);// 获取布局文件中的gvInfo组件
         PictureAdapter adapter = new PictureAdapter(titles, images, this);// 创建pictureAdapter对象
@@ -178,7 +238,7 @@ public class MaintainActivity extends Activity
                     break;
                 case 5:
                 	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent
-                    startActivity(intent);// 打开Accountflag
+                	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 6:
                     intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
@@ -198,10 +258,23 @@ public class MaintainActivity extends Activity
 		// TODO Auto-generated method stub
 		if(requestCode==REQUEST_CODE)
 		{
-			if(resultCode==GoodsManager.RESULT_CANCELED)
+			if(resultCode==MaintainActivity.RESULT_CANCELED)
 			{				
 				barmaintain.setVisibility(View.GONE);
-			}			
+			}	
+			else if(resultCode==MaintainActivity.RESULT_OK)
+			{				
+				//从配置文件获取数据
+				Map<String, String> list=ToolClass.ReadConfigFile();
+				if(list!=null)
+				{
+			        if(list.containsKey("isallopen"))
+			        {
+			        	isallopen=Integer.parseInt(list.get("isallopen"));	
+			        	localService.setAllopen(isallopen);
+			        }
+				}
+			}
 		}
 	}
 	

@@ -28,7 +28,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 		// TODO Auto-generated method stub
 		if (intent.getAction().equals(action_boot)){
             Intent ootStartIntent=new Intent(context,MaintainActivity.class);
-            ootStartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ootStartIntent.setAction(Intent.ACTION_MAIN);  
+            ootStartIntent.addCategory(Intent.CATEGORY_LAUNCHER);  
+            ootStartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+            ootStartIntent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED); 
             context.startActivity(ootStartIntent);
         }
 	}

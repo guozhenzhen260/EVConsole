@@ -239,7 +239,7 @@ public class ToolClass
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom) 
+    public static void WriteConfigFile(String com,String bentcom,String isallopen) 
     {
     	final String SDCARD_DIR=File.separator+"sdcard";
     	final String NOSDCARD_DIR=File.separator;
@@ -292,12 +292,17 @@ public class ToolClass
 		        while(iter.hasNext())
 		        {
 		            Map.Entry<String,String> me=iter.next();
-		            if((me.getKey().equals("com")!=true)&&(me.getKey().equals("bentcom")!=true))
+		            if(
+		            		(me.getKey().equals("com")!=true)
+		            	  &&(me.getKey().equals("bentcom")!=true)
+		            	  &&(me.getKey().equals("isallopen")!=true)
+		              )
 		            	list2.put(me.getKey(), me.getValue());
 		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
 		        } 	
 		        list2.put("com", com);
 		        list2.put("bentcom", bentcom);
+		        list2.put("isallopen", isallopen);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString());
 		        JSONObject jsonObject = new JSONObject(list2);
 		        String mapstrString=jsonObject.toString();
@@ -313,6 +318,7 @@ public class ToolClass
   	        	JSONObject jsonObject = new JSONObject();
   	        	jsonObject.put("com", com);
   	        	jsonObject.put("bentcom", bentcom);
+  	        	jsonObject.put("isallopen", isallopen);
   	        	String mapstrString=jsonObject.toString();
   	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString);
   	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件

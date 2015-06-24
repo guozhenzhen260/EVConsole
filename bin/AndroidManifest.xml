@@ -141,6 +141,8 @@
 		        <category android:name="android.intent.category.HOME" />
 	        </intent-filter>
 	    </receiver>
+	    <service
+            android:name="com.easivend.view.DogService"/>
     </application>
 	<!--往sdcard中写入数据的权限 -->
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
@@ -150,4 +152,6 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<!--开机自启动的权限 -->
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+	<!--搜索得到正在运行的应用的权限 -->
+	<uses-permission android:name="android.permission.GET_TASKS" />
 </manifest>
