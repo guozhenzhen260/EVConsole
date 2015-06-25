@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -182,6 +183,204 @@ public class ToolClass
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * 操作整理日志：隔一天就重命名文件，半个月就清掉这个文件
+     */
+    public static void optLogFile() 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"logs";
+    	final String NOSDCARD_DIR=File.separator+"logs";
+    	String  sDir =null;
+    	File fileName=null;
+    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
+                + "hh:mm:ss"); //精确到毫秒 
+        String datetime = tempDate.format(new java.util.Date()).toString();  
+        
+    	
+        try {
+        	  //1.首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	        	
+        	//2.如果存在log文件，则判断
+        	fileName=new File(sDir+File.separator+"log.txt"); 
+        	if(fileName.exists())
+        	{  
+        		System.out.println(" 判断重命名文件log.txt");
+            	String logdatetime = getFileCreated(fileName);
+            	int inter=getInterval(logdatetime,datetime); 
+            	if(inter>=4)
+            	{
+            		updatefile(fileName,sDir);
+            	}
+    	    }
+        	//3.如果存在dog文件，则判断
+        	fileName=new File(sDir+File.separator+"dog.txt"); 
+        	if(fileName.exists())
+        	{  
+        		System.out.println(" 判断重命名文件dog.txt");
+        		String logdatetime = getFileCreated(fileName);
+            	int inter=getInterval(logdatetime,datetime); 
+            	if(inter>=4)
+            	{
+            		updatefile(fileName,sDir);
+            	}
+    	    } 
+        	
+        	//4.将目录下的所有文件，如果有超出半个月的，全部删除
+        	delFiles(dirName,datetime);
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
+	//获取文件创建时间
+    public static String getFileCreated(final File file)  
+    {  
+		 String res=null;
+		 Scanner scan = null ;
+		 try{
+		 	scan = new Scanner(file) ;	// 从文件接收数据
+		 	if(scan.hasNext())
+		 	{
+		 		res=scan.next()+" "+scan.next();	//	取数据		 		
+		 	}
+		 	
+		 }catch(Exception e){}
+		 res=res.substring(0, res.indexOf("(INFO)"));// 从收入信息中截取收入编号
+		 System.out.println(" 文件创建时间1="+res);
+         return res;
+    }
+	
+	 /**
+     * 判断与当前时间差距多久,createtime是文件创建时间,datetime是当前时间
+     * 传入的时间格式必须类似于2012-8-21 17:53:20这样的格式  
+     * 返回值：1秒，2分，3时，4天，5半个月
+     */
+    public static int getInterval(String createtime,String datetime) 
+	 { 
+	        String interval = null;  
+	        int inter=0;
+	        
+	        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+	        
+	        ParsePosition pos = new ParsePosition(0);  
+	        Date d1 = (Date) sd.parse(createtime, pos); 
+	        System.out.println(" 文件创建时间2="+createtime+",="+d1.getTime());
+	        
+	        ParsePosition posnow = new ParsePosition(0);  
+	        Date dnow = (Date) sd.parse(datetime, posnow);
+	        System.out.println(" 当前时间="+datetime+",="+dnow.getTime());
+	          
+	        //用现在距离1970年的时间间隔new Date().getTime()减去以前的时间距离1970年的时间间隔d1.getTime()得出的就是以前的时间与现在时间的时间间隔  
+	        long time = dnow.getTime() - d1.getTime();// 得出的时间间隔是毫秒  
+	        
+        	  
+	        if(time/1000 < 60 && time/1000 >= 0) 
+	        {  
+	        //如果时间间隔小于60秒则显示多少秒前  
+	        	if(time/1000>0)
+	        	{
+		            int se = (int) (time/1000);  
+		            interval = se + "秒前";  
+		            inter=1;
+	        	}	        	
+	        }
+	        else if(time/60000 < 60 && time/60000 >= 0)
+	        {  
+	            //如果时间间隔小于60分钟则显示多少分钟前  
+	        	if(time/60000>0)
+	        	{
+		            int m = (int) (time/60000);//得出的时间间隔的单位是分钟  
+		            interval = m + "分钟前"; 
+		            inter=2;
+	        	}
+	        }
+	        else if(time/3600000 < 24 && time/3600000 >= 0) 
+	        {  
+	            //如果时间间隔小于24小时则显示多少小时前  
+	        	if(time/3600000>0)
+	        	{
+		            int h = (int) (time/3600000);//得出的时间间隔的单位是小时  
+		            interval = h + "小时前";  
+		            inter=3;
+	        	}
+	        }
+	        else if(time/86400000 < 15 && time/86400000 >= 0)
+	        {  
+	        	//如果时间间隔小于15天则显示多少天前  
+	        	if(time/86400000>0)
+	        	{
+		            int d = (int) (time/86400000);//得出的时间间隔的单位是小时 
+		            interval = d + "天前";  
+		            inter=4;
+	        	}
+	        } 
+	        else
+	        {
+	        	interval = "过了半个月了"; 
+	            inter=5;
+			}
+	        System.out.println(" 时间相差="+time+",interval="+interval);
+	        return inter;  
+	 }
+	 
+	//重命名文件名fileName原文件名,sDir是目录
+    public static void updatefile(File fileName,String  sDir)
+	{
+		SimpleDateFormat tempDate2 = new SimpleDateFormat("yyyy-MM-dd-hhmmss"); //精确到毫秒 
+        String datetime2 = tempDate2.format(new java.util.Date()).toString();
+        String oldname=fileName.getName();
+		String newname=datetime2+oldname;
+		System.out.println(fileName+" 修改文件操作="+newname);            		
+		fileName.renameTo(new File(sDir+File.separator+newname));
+	}
+	
+	 /* 遍历目录内文件列表， file是目录名，datetime是当前时间，如果超过半个月，就删除掉这个文件
+	  * */  
+    public static void delFiles(File file,String datetime) 
+    {  
+    	//遍历这个文件夹里的所有文件
+		File[] files = file.listFiles();
+		if (files.length > 0) 
+		{  
+			for (int i = 0; i < files.length; i++) 
+			{
+			  if(!files[i].isDirectory())
+			  {		
+				    System.out.println(" 判断删除目录内文件="+files[i].toString()); 
+				    //3.如果存在dog文件，则判断
+		        	File fileName=new File(files[i].toString()); 
+		        	if(fileName.exists())
+		        	{  
+		        		String logdatetime = getFileCreated(fileName);
+		            	int inter=getInterval(logdatetime,datetime); 
+		            	if(inter>=5)
+		            	{
+		            		System.out.println(" 该文件删除");
+		            		fileName.delete();		            		
+		            	}
+		    	    } 
+			  }
+			}
+		}    
     }
     
     /**

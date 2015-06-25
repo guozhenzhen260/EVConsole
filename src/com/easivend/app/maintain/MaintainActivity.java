@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
@@ -73,7 +74,7 @@ public class MaintainActivity extends Activity
     int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开    
     String com=null,bentcom=null;
     final static int REQUEST_CODE=1;
-    //private Handler myhHandler=null;
+    Timer timer = new Timer();
     //Dog服务相关
     DogService localService;
 	boolean bound=false;
@@ -137,6 +138,20 @@ public class MaintainActivity extends Activity
 				}
 			}
 		}); 
+		
+		timer.schedule(new TimerTask() { 
+	        @Override 
+	        public void run() { 
+	  
+	            runOnUiThread(new Runnable() {      // UI thread 
+	                @Override 
+	                public void run() { 
+	                	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Maintain run","log.txt"); 
+	                	ToolClass.optLogFile(); 
+	                } 
+	            }); 
+	        } 
+	    }, 24*60*60*1000, 24*60*60*1000);       // timeTask 
 		//==========
 		//Dog服务相关
 		//==========
