@@ -60,8 +60,8 @@ public class AddInaccount extends TabActivity
 	private String [] billStringArray; 
 	private ArrayAdapter<String> billAdapter ;
 	private EditText edtpayout=null;
-	private TextView txtbillmanagerpar=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillincount=null
-			,txtbillmanagerbillpay=null,txtbillmanagerbillpaycount=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
+	private TextView txtbillmanagerpar=null,txtbillmanagerpar2=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillin2=null,txtbillmanagerbillincount=null
+			,txtbillmanagerbillpay=null,txtbillmanagerbillpay2=null,txtbillmanagerbillpaycount=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
 			txtpaymoney=null,txtbillpayback=null,txtbillerr=null;
 	private Button btnbillon=null,btnbilloff=null,btnbillquery=null,btnbillset=null,btnbillexit=null,btnbillpayout=null;// 创建Button对象“退出”
 	//硬币器
@@ -147,32 +147,59 @@ public class AddInaccount extends TabActivity
 						String ver=(String) Set.get("ver");
 						int capacity=(Integer)Set.get("capacity");
 						String str="纸币接收器:"+acceptor+"纸币找零器:"+dispenser+"厂商:"+code
-								+"序列号"+sn+" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
+								+"序列号"+sn;
 						txtbillmanagerpar.setText(str);
+						str=" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
+						txtbillmanagerpar2.setText(str);
 						if((Integer)Set.get("acceptor")==2)
 							spinbillmanagerbill.setSelection((Integer)Set.get("acceptor")-1);
 						else if((Integer)Set.get("acceptor")==0)
 							spinbillmanagerbill.setSelection(0);	
-						str="";
+						
 						Map<String,Integer> allSet1=(Map<String, Integer>) Set.get("ch_r");
+						String allb1[]=new String[allSet1.size()];	
+						int bi=0;
 						Set<Map.Entry<String,Integer>> allset=allSet1.entrySet();  //实例化
 					    Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
 					    while(iter.hasNext())
 					    {
 					        Map.Entry<String,Integer> me=iter.next();
-					        str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					        //str+="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue()) + ",";
+					        allb1[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
 					    }
-					    txtbillmanagerbillin.setText(str);
-					    str="";
+					    String bstr1="",bstr2="";
+					    for(bi=0;bi<16;bi++)
+					    {
+					    	if(bi<8)
+					    		bstr1+=allb1[bi];
+					    	else
+					    		bstr2+=allb1[bi];							
+					    }
+					    txtbillmanagerbillin.setText(bstr1);
+					    txtbillmanagerbillin2.setText(bstr2);
+					  
 					    Map<String,Integer> allSet2=(Map<String, Integer>) Set.get("ch_d");
+					    String allb2[]=new String[allSet2.size()];	
+					    bi=0;
 						Set<Map.Entry<String,Integer>> allset2=allSet2.entrySet();  //实例化
 					    Iterator<Map.Entry<String,Integer>> iter2=allset2.iterator();
 					    while(iter2.hasNext())
 					    {
 					        Map.Entry<String,Integer> me=iter2.next();
-					        str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					        allb2[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
 					    }
-					    txtbillmanagerbillpay.setText(str);
+					    bstr1="";
+					    bstr2="";
+					    for(bi=0;bi<16;bi++)
+					    {
+					    	if(bi<8)
+					    		bstr1+=allb2[bi];
+					    	else
+					    		bstr2+=allb2[bi];							
+					    }
+					    txtbillmanagerbillpay.setText(bstr1);
+					    txtbillmanagerbillpay2.setText(bstr2);
 						break;
 					case EVprotocolAPI.EV_MDB_C_INFO:
 						String acceptor2="";
@@ -279,6 +306,13 @@ public class AddInaccount extends TabActivity
 					  	txtcoinpayin.setText(String.valueOf(money));					  	
 					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
 					  	txtcoinmanagercoininamount.setText(String.valueOf(money));
+					  	
+					  	String hopperString=null;
+					  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))
+					  				+"[[3]:"+ToolClass.gethopperstats((Integer)Set.get("hopper3"))+"[4]:"+ToolClass.gethopperstats((Integer)Set.get("hopper4"))
+						  			+"[5]:"+ToolClass.gethopperstats((Integer)Set.get("hopper5"))+"[6]:"+ToolClass.gethopperstats((Integer)Set.get("hopper6"))
+						  			+"[7]:"+ToolClass.gethopperstats((Integer)Set.get("hopper7"))+"[8]:"+ToolClass.gethopperstats((Integer)Set.get("hopper8"));
+					  	txthopperincount.setText(hopperString);
 						break;
 					case EVprotocolAPI.EV_MDB_PAYOUT://找零
 						money=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));					  	
@@ -304,12 +338,15 @@ public class AddInaccount extends TabActivity
         billAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner,billStringArray);
         spinbillmanagerbill.setAdapter(billAdapter);// 为ListView列表设置数据源
 	  	txtbillmanagerpar = (TextView) findViewById(R.id.txtbillmanagerpar);
+	  	txtbillmanagerpar2 = (TextView) findViewById(R.id.txtbillmanagerpar2);
 	  	txtbillmanagerstate = (TextView) findViewById(R.id.txtbillmanagerstate);
 	  	txtbillpayback = (TextView) findViewById(R.id.txtbillpayback);
 	  	txtbillerr = (TextView) findViewById(R.id.txtbillerr);
 	  	txtbillmanagerbillin = (TextView) findViewById(R.id.txtbillmanagerbillin);
+	  	txtbillmanagerbillin2 = (TextView) findViewById(R.id.txtbillmanagerbillin2);
 	  	txtbillmanagerbillincount = (TextView) findViewById(R.id.txtbillmanagerbillincount);
 	  	txtbillmanagerbillpay = (TextView) findViewById(R.id.txtbillmanagerbillpay);
+	  	txtbillmanagerbillpay2 = (TextView) findViewById(R.id.txtbillmanagerbillpay2);
 	  	txtbillmanagerbillpaycount = (TextView) findViewById(R.id.txtbillmanagerbillpaycount);
 	  	txtbillmanagerbillpayamount = (TextView) findViewById(R.id.txtbillmanagerbillpayamount);
 	  	txtbillpayin = (TextView) findViewById(R.id.txtbillpayin);
@@ -492,6 +529,7 @@ public class AddInaccount extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+		    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 		    }
 		});
 	  	btnhopperpay = (Button) findViewById(R.id.btnhopperpay);
@@ -545,31 +583,31 @@ public class AddInaccount extends TabActivity
 	    					// TODO Auto-generated method stub	
 	    					Map<Integer, Integer>ch_r=new HashMap<Integer, Integer>();
 	    			    	Map<Integer, Integer>ch_d=new HashMap<Integer, Integer>();
-	    			    	ch_r.put(1, Integer.parseInt(txtcoinmanagercoinin1.getText().toString()));
-	    			    	ch_r.put(2, Integer.parseInt(txtcoinmanagercoinin2.getText().toString()));
-	    			    	ch_r.put(3, Integer.parseInt(txtcoinmanagercoinin3.getText().toString()));
-	    			    	ch_r.put(4, Integer.parseInt(txtcoinmanagercoinin4.getText().toString()));
-	    			    	ch_r.put(5, Integer.parseInt(txtcoinmanagercoinin5.getText().toString()));
-	    			    	ch_r.put(6, Integer.parseInt(txtcoinmanagercoinin6.getText().toString()));
-	    			    	ch_r.put(7, Integer.parseInt(txtcoinmanagercoinin7.getText().toString()));
-	    			    	ch_r.put(8, Integer.parseInt(txtcoinmanagercoinin8.getText().toString()));
-	    			    	ch_r.put(9, Integer.parseInt(txtcoinmanagercoinin9.getText().toString()));
-	    			    	ch_r.put(10, Integer.parseInt(txtcoinmanagercoinin10.getText().toString()));
-	    			    	ch_r.put(11, Integer.parseInt(txtcoinmanagercoinin11.getText().toString()));
-	    			    	ch_r.put(12, Integer.parseInt(txtcoinmanagercoinin12.getText().toString()));
-	    			    	ch_r.put(13, Integer.parseInt(txtcoinmanagercoinin13.getText().toString()));
-	    			    	ch_r.put(14, Integer.parseInt(txtcoinmanagercoinin14.getText().toString()));
-	    			    	ch_r.put(15, Integer.parseInt(txtcoinmanagercoinin15.getText().toString()));
-	    			    	ch_r.put(16, Integer.parseInt(txtcoinmanagercoinin16.getText().toString()));
+	    			    	ch_r.put(1, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin1.getText().toString())));
+	    			    	ch_r.put(2, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin2.getText().toString())));
+	    			    	ch_r.put(3, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin3.getText().toString())));
+	    			    	ch_r.put(4, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin4.getText().toString())));
+	    			    	ch_r.put(5, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin5.getText().toString())));
+	    			    	ch_r.put(6, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin6.getText().toString())));
+	    			    	ch_r.put(7, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin7.getText().toString())));
+	    			    	ch_r.put(8, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin8.getText().toString())));
+	    			    	ch_r.put(9, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin9.getText().toString())));
+	    			    	ch_r.put(10, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin10.getText().toString())));
+	    			    	ch_r.put(11, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin11.getText().toString())));
+	    			    	ch_r.put(12, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin12.getText().toString())));
+	    			    	ch_r.put(13, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin13.getText().toString())));
+	    			    	ch_r.put(14, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin14.getText().toString())));
+	    			    	ch_r.put(15, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin15.getText().toString())));
+	    			    	ch_r.put(16, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin16.getText().toString())));
 	    			    	
-	    			    	ch_d.put(1, Integer.parseInt(txthopperin1.getText().toString()));
-	    			    	ch_d.put(2, Integer.parseInt(txthopperin2.getText().toString()));
-	    			    	ch_d.put(3, Integer.parseInt(txthopperin3.getText().toString()));
-	    			    	ch_d.put(4, Integer.parseInt(txthopperin4.getText().toString()));
-	    			    	ch_d.put(5, Integer.parseInt(txthopperin5.getText().toString()));
-	    			    	ch_d.put(6, Integer.parseInt(txthopperin6.getText().toString()));
-	    			    	ch_d.put(7, Integer.parseInt(txthopperin7.getText().toString()));
-	    			    	ch_d.put(8, Integer.parseInt(txthopperin8.getText().toString()));
+	    			    	ch_d.put(1, ToolClass.MoneySend(Float.parseFloat(txthopperin1.getText().toString())));
+	    			    	ch_d.put(2, ToolClass.MoneySend(Float.parseFloat(txthopperin2.getText().toString())));
+	    			    	ch_d.put(3, ToolClass.MoneySend(Float.parseFloat(txthopperin3.getText().toString())));
+	    			    	ch_d.put(4, ToolClass.MoneySend(Float.parseFloat(txthopperin4.getText().toString())));
+	    			    	ch_d.put(5, ToolClass.MoneySend(Float.parseFloat(txthopperin5.getText().toString())));
+	    			    	ch_d.put(6, ToolClass.MoneySend(Float.parseFloat(txthopperin6.getText().toString())));
+	    			    	ch_d.put(7, ToolClass.MoneySend(Float.parseFloat(txthopperin7.getText().toString())));
+	    			    	ch_d.put(8, ToolClass.MoneySend(Float.parseFloat(txthopperin8.getText().toString())));
 	    			    	ch_d.put(9, 0);
 	    			    	ch_d.put(10, 0);
 	    			    	ch_d.put(11, 0);
@@ -596,5 +634,5 @@ public class AddInaccount extends TabActivity
 		        .create();//创建一个对话框
 		        alert.show();//显示对话框
 	}
-
+	
 }

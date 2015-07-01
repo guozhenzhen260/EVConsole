@@ -149,7 +149,10 @@ public class BusZhiAmount  extends Activity
 				case EVprotocolAPI.EV_MDB_HEART://心跳查询
 					String bill_enable=((Integer)Set.get("bill_enable")==1)?"":"纸币器不可用";
 					String coin_enable=((Integer)Set.get("coin_enable")==1)?"":"硬币器不可用";
-					txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable);
+					String hopperString=null;
+					if((Integer)Set.get("hopper1")>0)
+						hopperString="[找零器]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"));
+				  	txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable+hopperString);
 				  	billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
 				  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));
 				  	money=billmoney+coinmoney;

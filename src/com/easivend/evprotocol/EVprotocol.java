@@ -282,7 +282,10 @@ public class EVprotocol {
 	** Returned value	:		1：发送成功  0：发送失败
 	*  通过回调返回json包     例如： EV_JSON={"EV_json":{"EV_type":23,"port_id":0,"is_success":1,
 	*							"bill_enable":1,"bill_payback":0,"bill_err":0,"bill_recv":0,"bill_remain":0,
-	*							"coin_enable":1,"coin_payback":0,"coin_err":0,"coin_recv":0,"coin_remain":0}}
+	*							"coin_enable":1,"coin_payback":0,"coin_err":0,"coin_recv":0,"coin_remain":0,
+	*							"hopper":{"hopper1":1,"hopper2":1,"hopper3":0,"hopper4":0,"hopper5":0,"hopper6":0,
+	*                           "hopper7":0,"hopper8":0}
+	*                           }}
 	*							"EV_type"= EV_MDB_HEART = 23: 表示MDB心跳查询结果回应包类型
 	*							"port_id":原样返回,
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
@@ -296,6 +299,7 @@ public class EVprotocol {
 	*							"coin_err":硬币器故障状态			0:正常   非0 为故障码
 	*							"coin_recv":硬币器当前收币金额	以分为单位
 	*							"coin_remain":硬币器当前储币金额	以分为单位
+	*							"hopper":8个hopper的状态,0正常,1缺币,2故障,3通讯故障
 	*********************************************************************************************************/
 	public  static int EV_mdbHeart(int port_id)
 	{

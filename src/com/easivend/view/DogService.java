@@ -67,13 +67,14 @@ public class DogService extends Service {
 	@Override
 	@Deprecated
 	public void onStart(Intent intent, int startId) {
+		final int logno[]=new int[]{0};
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog start","dog.txt");
 		timer.schedule(new TimerTask() { 
 	        @Override 
 	        public void run() { 
-	        	String str=null;
+	        	String str=null;	        	
 	        	if(allopen==1)
         		{
 	        		//判断应用是否在运行 
@@ -110,7 +111,17 @@ public class DogService extends Service {
 	        	else
 	        	{
 	        		ToolClass.Log(ToolClass.INFO,"EV_DOG","unopen","dog.txt");
-				}
+				}	
+	        	ToolClass.Log(ToolClass.INFO,"EV_DOG","logno="+logno[0],"dog.txt");
+	        	if(logno[0]<300)
+	        	{
+	        		logno[0]++;
+	        	}
+	        	else 
+	        	{
+	        		logno[0]=0;
+	        		ToolClass.optLogFile(); 
+				}	        	
 	        } 
 	    }, 15*1000, 15*1000);       // timeTask 
 	}

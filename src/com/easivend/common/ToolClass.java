@@ -873,4 +873,28 @@ public class ToolClass
 		}
 		return c1.compareTo(c2);
 	}
+	
+	//得到hopper设备的当前状态
+	public static String gethopperstats(int hopper)
+	{
+		String res=null;
+		//"hopper":8个hopper的状态,0正常,1缺币,2故障,3通讯故障
+		if(hopper==0)
+		{
+			res="正常";
+		}
+		else if(hopper==1)
+		{
+			res="缺币";
+		}
+		else if(hopper==2)
+		{
+			res="故障";
+		}
+		else if(hopper==3)
+		{
+			res="通讯故障";
+		}
+		return res;
+	}
 }

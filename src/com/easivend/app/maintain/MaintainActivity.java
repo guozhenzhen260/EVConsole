@@ -73,8 +73,7 @@ public class MaintainActivity extends Activity
     //EVprotocolAPI ev=null;
     int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开    
     String com=null,bentcom=null;
-    final static int REQUEST_CODE=1;
-    Timer timer = new Timer();
+    final static int REQUEST_CODE=1;   
     //Dog服务相关
     DogService localService;
 	boolean bound=false;
@@ -139,19 +138,6 @@ public class MaintainActivity extends Activity
 			}
 		}); 
 		
-		timer.schedule(new TimerTask() { 
-	        @Override 
-	        public void run() { 
-	  
-	            runOnUiThread(new Runnable() {      // UI thread 
-	                @Override 
-	                public void run() { 
-	                	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Maintain run","log.txt"); 
-	                	ToolClass.optLogFile(); 
-	                } 
-	            }); 
-	        } 
-	    }, 24*60*60*1000, 24*60*60*1000);       // timeTask 
 		//==========
 		//Dog服务相关
 		//==========

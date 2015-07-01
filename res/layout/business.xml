@@ -22,14 +22,14 @@
 	    <ImageButton
 	        android:id="@+id/btnadsclass"
 	        android:layout_width="360dp"
-	        android:layout_height="120dp"
+	        android:layout_height="163dp"
 	        android:textColor="#8C6931"
 	        android:src="@drawable/shpfl"
 	        android:textSize="40dp"/>  
 	    <ImageButton
 	        android:id="@+id/btnadscuxiao"
 	        android:layout_width="360dp"
-	        android:layout_height="120dp"
+	        android:layout_height="163dp"
 	        android:layout_toRightOf="@+id/btnadsclass"       
 	        android:textColor="#8C6931"
 	        android:src="@drawable/hdxx"
@@ -37,7 +37,7 @@
 	    <ImageButton
 	        android:id="@+id/btnadsbuysale"
 	        android:layout_width="360dp"
-	        android:layout_height="120dp"
+	        android:layout_height="163dp"
 	        android:layout_below="@+id/btnadsclass"	
 	        android:textColor="#8C6931"
 	        android:src="@drawable/gmys"
@@ -45,7 +45,7 @@
 	    <ImageButton
 	        android:id="@+id/btnadsquhuo"
 	        android:layout_width="360dp"
-	        android:layout_height="120dp"
+	        android:layout_height="163dp"
 	        android:layout_below="@+id/btnadsclass"	
 	        android:layout_toRightOf="@+id/btnadsbuysale"       
 	        android:textColor="#8C6931"

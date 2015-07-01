@@ -42,6 +42,7 @@ import com.easivend.common.Vmc_HuoAdapter;
 import com.easivend.common.Vmc_ProductAdapter;
 import com.example.evconsole.R;
 
+import android.R.color;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -84,13 +85,13 @@ public class HuodaoTest extends TabActivity
 {
 	private TabHost mytabhost = null;
 	private ProgressBar barhuomanager=null;
-	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest};//内嵌布局文件的id
+	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest,R.id.tab_huodaoset};//内嵌布局文件的id
 	private TextView txthuosetrst=null;
 	private int con=1;//查询连接次数
 	private int ishuoquery=0;//是否正在查询1,正在查询,0查询完成
 	Timer timer = new Timer(); 
 	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetbu=null,btnhuosetexit=null;
-	private Spinner spinhuosetCab=null,spinhuotestCab=null;
+	private Spinner spinhuosetCab=null,spinhuotestCab=null,spinhuopeiCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0,cabinetTypesetvar=0;
@@ -116,6 +117,28 @@ public class HuodaoTest extends TabActivity
 	private TextView txtlight=null,txtcold=null,txthot=null;
 	private Switch switchlight = null,switcold = null,switchhot = null;
 	private int cabinetvar=0,cabinetTypevar=0;
+	//货道配置页面
+	private int cabinetpeivar=0,cabinetTypepeivar=0;
+	private Switch btnhuosetc1=null,btnhuosetc2=null,btnhuosetc3=null,btnhuosetc4=null,
+			btnhuosetc5=null,btnhuosetc6=null,btnhuosetc7=null,btnhuosetc8=null,
+			btnhuoset11=null,btnhuoset12=null,btnhuoset13=null,btnhuoset14=null,btnhuoset15=null,
+			btnhuoset16=null,btnhuoset17=null,btnhuoset18=null,btnhuoset19=null,btnhuoset110=null,
+			btnhuoset21=null,btnhuoset22=null,btnhuoset23=null,btnhuoset24=null,btnhuoset25=null,
+			btnhuoset26=null,btnhuoset27=null,btnhuoset28=null,btnhuoset29=null,btnhuoset210=null,
+			btnhuoset31=null,btnhuoset32=null,btnhuoset33=null,btnhuoset34=null,btnhuoset35=null,
+			btnhuoset36=null,btnhuoset37=null,btnhuoset38=null,btnhuoset39=null,btnhuoset310=null,
+			btnhuoset41=null,btnhuoset42=null,btnhuoset43=null,btnhuoset44=null,btnhuoset45=null,
+			btnhuoset46=null,btnhuoset47=null,btnhuoset48=null,btnhuoset49=null,btnhuoset410=null,
+			btnhuoset51=null,btnhuoset52=null,btnhuoset53=null,btnhuoset54=null,btnhuoset55=null,
+			btnhuoset56=null,btnhuoset57=null,btnhuoset58=null,btnhuoset59=null,btnhuoset510=null,
+			btnhuoset61=null,btnhuoset62=null,btnhuoset63=null,btnhuoset64=null,btnhuoset65=null,
+			btnhuoset66=null,btnhuoset67=null,btnhuoset68=null,btnhuoset69=null,btnhuoset610=null,
+			btnhuoset71=null,btnhuoset72=null,btnhuoset73=null,btnhuoset74=null,btnhuoset75=null,
+			btnhuoset76=null,btnhuoset77=null,btnhuoset78=null,btnhuoset79=null,btnhuoset710=null,
+			btnhuoset81=null,btnhuoset82=null,btnhuoset83=null,btnhuoset84=null,btnhuoset85=null,
+			btnhuoset86=null,btnhuoset87=null,btnhuoset88=null,btnhuoset89=null,btnhuoset810=null;
+	private Button btnhuosetsethuo=null,btnhuosetclose=null;							
+			
 	private Handler myhHandler=null;
 	//EVprotocolAPI ev=null;
 	@Override
@@ -134,7 +157,12 @@ public class HuodaoTest extends TabActivity
     	TabSpec myTabhuodaotest=this.mytabhost.newTabSpec("tab1");
     	myTabhuodaotest.setIndicator("货道测试");
     	myTabhuodaotest.setContent(this.layres[1]);
-    	this.mytabhost.addTab(myTabhuodaotest); 
+    	this.mytabhost.addTab(myTabhuodaotest);
+    	
+    	TabSpec myTabhuodaoset=this.mytabhost.newTabSpec("tab2");
+    	myTabhuodaoset.setIndicator("货道配置");
+    	myTabhuodaoset.setContent(this.layres[2]);
+    	this.mytabhost.addTab(myTabhuodaoset); 
     	
     	//注册出货监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
@@ -288,6 +316,7 @@ public class HuodaoTest extends TabActivity
   	    this.gvhuodao=(GridView) findViewById(R.id.gvhuodao); 
     	spinhuosetCab= (Spinner) findViewById(R.id.spinhuosetCab); 
     	spinhuotestCab= (Spinner) findViewById(R.id.spinhuotestCab); 
+    	spinhuopeiCab= (Spinner) findViewById(R.id.spinhuopeiCab); 
     	//显示柜信息
     	showabinet();
     	this.spinhuosetCab.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -551,6 +580,264 @@ public class HuodaoTest extends TabActivity
 		    	finish();
 		    }
 		});
+		
+		//===============
+    	//货道配置页面
+    	//===============		
+		btnhuosetc1 = (Switch) findViewById(R.id.btnhuosetc1);
+		btnhuosetc2 = (Switch) findViewById(R.id.btnhuosetc2);
+		btnhuosetc3 = (Switch) findViewById(R.id.btnhuosetc3);
+		btnhuosetc4 = (Switch) findViewById(R.id.btnhuosetc4);
+		btnhuosetc5 = (Switch) findViewById(R.id.btnhuosetc5);
+		btnhuosetc6 = (Switch) findViewById(R.id.btnhuosetc6);
+		btnhuosetc7 = (Switch) findViewById(R.id.btnhuosetc7);
+		btnhuosetc8 = (Switch) findViewById(R.id.btnhuosetc8);		
+		btnhuoset11 = (Switch) findViewById(R.id.btnhuoset11);
+		btnhuoset12 = (Switch) findViewById(R.id.btnhuoset12);
+		btnhuoset13 = (Switch) findViewById(R.id.btnhuoset13);
+		btnhuoset14 = (Switch) findViewById(R.id.btnhuoset14);
+		btnhuoset15 = (Switch) findViewById(R.id.btnhuoset15);
+		btnhuoset16 = (Switch) findViewById(R.id.btnhuoset16);
+		btnhuoset17 = (Switch) findViewById(R.id.btnhuoset17);
+		btnhuoset18 = (Switch) findViewById(R.id.btnhuoset18);
+		btnhuoset19 = (Switch) findViewById(R.id.btnhuoset19);
+		btnhuoset110 = (Switch) findViewById(R.id.btnhuoset110);
+		btnhuoset21 = (Switch) findViewById(R.id.btnhuoset21);
+		btnhuoset22 = (Switch) findViewById(R.id.btnhuoset22);
+		btnhuoset23 = (Switch) findViewById(R.id.btnhuoset23);
+		btnhuoset24 = (Switch) findViewById(R.id.btnhuoset24);
+		btnhuoset25 = (Switch) findViewById(R.id.btnhuoset25);
+		btnhuoset26 = (Switch) findViewById(R.id.btnhuoset26);
+		btnhuoset27 = (Switch) findViewById(R.id.btnhuoset27);
+		btnhuoset28 = (Switch) findViewById(R.id.btnhuoset28);
+		btnhuoset29 = (Switch) findViewById(R.id.btnhuoset29);
+		btnhuoset210 = (Switch) findViewById(R.id.btnhuoset210);
+		btnhuoset31 = (Switch) findViewById(R.id.btnhuoset31);
+		btnhuoset32 = (Switch) findViewById(R.id.btnhuoset32);
+		btnhuoset33 = (Switch) findViewById(R.id.btnhuoset33);
+		btnhuoset34 = (Switch) findViewById(R.id.btnhuoset34);
+		btnhuoset35 = (Switch) findViewById(R.id.btnhuoset35);
+		btnhuoset36 = (Switch) findViewById(R.id.btnhuoset36);
+		btnhuoset37 = (Switch) findViewById(R.id.btnhuoset37);
+		btnhuoset38 = (Switch) findViewById(R.id.btnhuoset38);
+		btnhuoset39 = (Switch) findViewById(R.id.btnhuoset39);
+		btnhuoset310 = (Switch) findViewById(R.id.btnhuoset310);
+		btnhuoset41 = (Switch) findViewById(R.id.btnhuoset41);
+		btnhuoset42 = (Switch) findViewById(R.id.btnhuoset42);
+		btnhuoset43 = (Switch) findViewById(R.id.btnhuoset43);
+		btnhuoset44 = (Switch) findViewById(R.id.btnhuoset44);
+		btnhuoset45 = (Switch) findViewById(R.id.btnhuoset45);
+		btnhuoset46 = (Switch) findViewById(R.id.btnhuoset46);
+		btnhuoset47 = (Switch) findViewById(R.id.btnhuoset47);
+		btnhuoset48 = (Switch) findViewById(R.id.btnhuoset48);
+		btnhuoset49 = (Switch) findViewById(R.id.btnhuoset49);
+		btnhuoset410 = (Switch) findViewById(R.id.btnhuoset410);
+		btnhuoset51 = (Switch) findViewById(R.id.btnhuoset51);
+		btnhuoset52 = (Switch) findViewById(R.id.btnhuoset52);
+		btnhuoset53 = (Switch) findViewById(R.id.btnhuoset53);
+		btnhuoset54 = (Switch) findViewById(R.id.btnhuoset54);
+		btnhuoset55 = (Switch) findViewById(R.id.btnhuoset55);
+		btnhuoset56 = (Switch) findViewById(R.id.btnhuoset56);
+		btnhuoset57 = (Switch) findViewById(R.id.btnhuoset57);
+		btnhuoset58 = (Switch) findViewById(R.id.btnhuoset58);
+		btnhuoset59 = (Switch) findViewById(R.id.btnhuoset59);
+		btnhuoset510 = (Switch) findViewById(R.id.btnhuoset510);
+		btnhuoset61 = (Switch) findViewById(R.id.btnhuoset61);
+		btnhuoset62 = (Switch) findViewById(R.id.btnhuoset62);
+		btnhuoset63 = (Switch) findViewById(R.id.btnhuoset63);
+		btnhuoset64 = (Switch) findViewById(R.id.btnhuoset64);
+		btnhuoset65 = (Switch) findViewById(R.id.btnhuoset65);
+		btnhuoset66 = (Switch) findViewById(R.id.btnhuoset66);
+		btnhuoset67 = (Switch) findViewById(R.id.btnhuoset67);
+		btnhuoset68 = (Switch) findViewById(R.id.btnhuoset68);
+		btnhuoset69 = (Switch) findViewById(R.id.btnhuoset69);
+		btnhuoset610 = (Switch) findViewById(R.id.btnhuoset610);
+		btnhuoset71 = (Switch) findViewById(R.id.btnhuoset71);
+		btnhuoset72 = (Switch) findViewById(R.id.btnhuoset72);
+		btnhuoset73 = (Switch) findViewById(R.id.btnhuoset73);
+		btnhuoset74 = (Switch) findViewById(R.id.btnhuoset74);
+		btnhuoset75 = (Switch) findViewById(R.id.btnhuoset75);
+		btnhuoset76 = (Switch) findViewById(R.id.btnhuoset76);
+		btnhuoset77 = (Switch) findViewById(R.id.btnhuoset77);
+		btnhuoset78 = (Switch) findViewById(R.id.btnhuoset78);
+		btnhuoset79 = (Switch) findViewById(R.id.btnhuoset79);
+		btnhuoset710 = (Switch) findViewById(R.id.btnhuoset710);
+		btnhuoset81 = (Switch) findViewById(R.id.btnhuoset81);
+		btnhuoset82 = (Switch) findViewById(R.id.btnhuoset82);
+		btnhuoset83 = (Switch) findViewById(R.id.btnhuoset83);
+		btnhuoset84 = (Switch) findViewById(R.id.btnhuoset84);
+		btnhuoset85 = (Switch) findViewById(R.id.btnhuoset85);
+		btnhuoset86 = (Switch) findViewById(R.id.btnhuoset86);
+		btnhuoset87 = (Switch) findViewById(R.id.btnhuoset87);
+		btnhuoset88 = (Switch) findViewById(R.id.btnhuoset88);
+		btnhuoset89 = (Switch) findViewById(R.id.btnhuoset89);
+		btnhuoset810 = (Switch) findViewById(R.id.btnhuoset810);
+		
+		btnhuosetc1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset11.setChecked(isChecked);
+				btnhuoset12.setChecked(isChecked);
+				btnhuoset13.setChecked(isChecked);
+				btnhuoset14.setChecked(isChecked);
+				btnhuoset15.setChecked(isChecked);
+				btnhuoset16.setChecked(isChecked);
+				btnhuoset17.setChecked(isChecked);
+				btnhuoset18.setChecked(isChecked);
+				btnhuoset19.setChecked(isChecked);
+				btnhuoset110.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset21.setChecked(isChecked);
+				btnhuoset22.setChecked(isChecked);
+				btnhuoset23.setChecked(isChecked);
+				btnhuoset24.setChecked(isChecked);
+				btnhuoset25.setChecked(isChecked);
+				btnhuoset26.setChecked(isChecked);
+				btnhuoset27.setChecked(isChecked);
+				btnhuoset28.setChecked(isChecked);
+				btnhuoset29.setChecked(isChecked);
+				btnhuoset210.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset31.setChecked(isChecked);
+				btnhuoset32.setChecked(isChecked);
+				btnhuoset33.setChecked(isChecked);
+				btnhuoset34.setChecked(isChecked);
+				btnhuoset35.setChecked(isChecked);
+				btnhuoset36.setChecked(isChecked);
+				btnhuoset37.setChecked(isChecked);
+				btnhuoset38.setChecked(isChecked);
+				btnhuoset39.setChecked(isChecked);
+				btnhuoset310.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset41.setChecked(isChecked);
+				btnhuoset42.setChecked(isChecked);
+				btnhuoset43.setChecked(isChecked);
+				btnhuoset44.setChecked(isChecked);
+				btnhuoset45.setChecked(isChecked);
+				btnhuoset46.setChecked(isChecked);
+				btnhuoset47.setChecked(isChecked);
+				btnhuoset48.setChecked(isChecked);
+				btnhuoset49.setChecked(isChecked);
+				btnhuoset410.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset51.setChecked(isChecked);
+				btnhuoset52.setChecked(isChecked);
+				btnhuoset53.setChecked(isChecked);
+				btnhuoset54.setChecked(isChecked);
+				btnhuoset55.setChecked(isChecked);
+				btnhuoset56.setChecked(isChecked);
+				btnhuoset57.setChecked(isChecked);
+				btnhuoset58.setChecked(isChecked);
+				btnhuoset59.setChecked(isChecked);
+				btnhuoset510.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset61.setChecked(isChecked);
+				btnhuoset62.setChecked(isChecked);
+				btnhuoset63.setChecked(isChecked);
+				btnhuoset64.setChecked(isChecked);
+				btnhuoset65.setChecked(isChecked);
+				btnhuoset66.setChecked(isChecked);
+				btnhuoset67.setChecked(isChecked);
+				btnhuoset68.setChecked(isChecked);
+				btnhuoset69.setChecked(isChecked);
+				btnhuoset610.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc7.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset71.setChecked(isChecked);
+				btnhuoset72.setChecked(isChecked);
+				btnhuoset73.setChecked(isChecked);
+				btnhuoset74.setChecked(isChecked);
+				btnhuoset75.setChecked(isChecked);
+				btnhuoset76.setChecked(isChecked);
+				btnhuoset77.setChecked(isChecked);
+				btnhuoset78.setChecked(isChecked);
+				btnhuoset79.setChecked(isChecked);
+				btnhuoset710.setChecked(isChecked);
+			} 
+        });
+		btnhuosetc8.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnhuoset81.setChecked(isChecked);
+				btnhuoset82.setChecked(isChecked);
+				btnhuoset83.setChecked(isChecked);
+				btnhuoset84.setChecked(isChecked);
+				btnhuoset85.setChecked(isChecked);
+				btnhuoset86.setChecked(isChecked);
+				btnhuoset87.setChecked(isChecked);
+				btnhuoset88.setChecked(isChecked);
+				btnhuoset89.setChecked(isChecked);
+				btnhuoset810.setChecked(isChecked);
+			} 
+        });
+		
+		this.spinhuopeiCab.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				//只有有柜号的时候，才请求加载柜内货道信息
+				if(cabinetID!=null)
+				{
+					cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
+					cabinetTypepeivar=cabinetType[arg2]; 
+				}				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	//===============
 	//货道设置页面
@@ -698,6 +985,7 @@ public class HuodaoTest extends TabActivity
 	    arrayAdapter = new ArrayAdapter<String>(this,R.layout.viewspinner, strInfos);
 	    spinhuosetCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
+	    spinhuopeiCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
 	    cabinetType=vmc_cabAdapter.getCabinetType();
 	    //只有有柜号的时候，才请求加载柜内货道信息
