@@ -84,5 +84,29 @@
 		android:layout_height="70dp" 
         android:layout_below="@id/tvallopen"
         android:layout_toLeftOf="@id/btnClose"
-        android:text="修改" />  
+        android:text="修改" />
+    <Button
+        android:id="@+id/btnGaoji"
+        android:layout_width="100dp"
+		android:layout_height="70dp" 
+        android:layout_below="@id/tvallopen"
+        android:layout_toLeftOf="@id/btnLogin"
+        android:text="高级设置" /> 
+     <TextView
+        android:id="@+id/tvip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnGaoji"   
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:text="请输入服务端绝对地址："
+        android:textColor="#8C6931"
+        android:textSize="25dp" />
+
+    <EditText
+        android:id="@+id/txtip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"        
+        android:layout_below="@id/tvip"        
+        />     
 </RelativeLayout>

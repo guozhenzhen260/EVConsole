@@ -33,16 +33,18 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin,txtbent,txtserver;// 创建EditText对象
-    private Button btnlogin, btnclose;// 创建两个Button对象
+	private EditText txtlogin,txtbent,txtserver,txtip;// 创建EditText对象
+	private TextView tvip=null;
+    private Button btnlogin, btnclose,btnGaoji;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
     String bentcom =null;
-    String server =null;
+    String server =null,sercom=null,serip=null;
     int isallopen=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +54,22 @@ public class Login extends Activity
 		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框
-        txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端地址文本框
+        txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
+        txtip = (EditText) findViewById(R.id.txtip);// 获取服务端ip地址文本框
+        tvip = (TextView) findViewById(R.id.tvip);
+        tvip.setVisibility(View.GONE);
+        txtip.setVisibility(View.GONE);
         Map<String, String> list=ToolClass.ReadConfigFile();
         if(list!=null)
         {
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
-	        server = list.get("server");
+	        if(list.containsKey("server"))
+	        {
+	        	server = list.get("server");
+	        	sercom=server.substring(server.lastIndexOf('/')+1,server.length());
+	        	serip=server.substring(0,server.lastIndexOf('/')+1);
+	        }	        
 	        if(list.containsKey("isallopen"))
 	        {
 	        	isallopen=Integer.parseInt(list.get("isallopen"));
@@ -66,10 +77,12 @@ public class Login extends Activity
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
-        txtserver.setText(server);
+        txtserver.setText(sercom);
+        txtip.setText(serip);
         switchallopen.setChecked((isallopen==1)?true:false);
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
+        btnGaoji = (Button) findViewById(R.id.btnGaoji);// 获取高级按钮
         btnclose.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
             @Override
             public void onClick(View arg0) {
@@ -83,7 +96,9 @@ public class Login extends Activity
             	com = txtlogin.getText().toString();
     	        bentcom = txtbent.getText().toString(); 
     	        isallopen= (switchallopen.isChecked()==true)?1:0;
-    	        server = txtserver.getText().toString(); 
+    	        serip = txtip.getText().toString();
+    	        sercom = txtserver.getText().toString(); 
+    	        server=serip+sercom;
             	ToolClass.WriteConfigFile(com, bentcom,server,String.valueOf(isallopen));            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
@@ -93,7 +108,22 @@ public class Login extends Activity
 	            setResult(MaintainActivity.RESULT_OK,intent);
             	finish();// 退出当前程序           
             }
-        });        
+        });
+        btnGaoji.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
+            @Override
+            public void onClick(View arg0) {
+                if(txtip.getVisibility()==View.GONE)
+                {
+                	tvip.setVisibility(View.VISIBLE);
+                    txtip.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                	tvip.setVisibility(View.GONE);
+                    txtip.setVisibility(View.GONE);
+				}
+            }
+        });
 	}
 	
 }

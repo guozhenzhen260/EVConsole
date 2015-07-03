@@ -24,8 +24,10 @@ import java.util.TimerTask;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.http.EVServerhttp;
 import com.easivend.view.DogService;
 import com.easivend.view.DogService.LocalBinder;
+import com.easivend.view.EVServerService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.Business;
@@ -41,9 +43,11 @@ import android.os.IBinder;
 import android.os.Message;
 import android.R.string;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.util.Log;
 import android.view.Gravity;
@@ -79,6 +83,9 @@ public class MaintainActivity extends Activity
 	boolean bound=false;
 	int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
+	//Server服务相关
+	EVServerReceiver receiver;
+	boolean issuc=false;
 	//绑定的接口
 	private ServiceConnection conn=new ServiceConnection()
 	{
@@ -157,6 +164,39 @@ public class MaintainActivity extends Activity
 		Intent intent=new Intent(this,DogService.class);
 		bindService(intent, conn, Context.BIND_AUTO_CREATE);
 		bound=true;
+		//=============
+		//Server服务相关
+		//=============
+		//3.开启服务
+		startService(new Intent(MaintainActivity.this,EVServerService.class));
+		//4.注册接收器
+		receiver=new EVServerReceiver();
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("android.intent.action.vmserverrec");
+		this.registerReceiver(receiver,filter);
+		//7.发送指令广播给EVServerService
+		final Map<String, String> vmcmap = ToolClass.getvmc_no(MaintainActivity.this);
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() { 
+	        @Override 
+	        public void run() { 
+	  
+	            runOnUiThread(new Runnable() {      // UI thread 
+	                @Override 
+	                public void run() { 
+	                	if(issuc==false)
+	                	{
+		                	Intent intent=new Intent();
+		    				intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
+		    				intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
+		    				intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+		    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+		    				sendBroadcast(intent);  
+	                	}
+	                } 
+	            }); 
+	        } 
+	    }, 3*1000, 60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
@@ -280,6 +320,34 @@ public class MaintainActivity extends Activity
 		}
 	}
 	
+	//=============
+	//Server服务相关
+	//=============
+	//2.创建EVServerReceiver的接收器广播，用来接收服务器同步的内容
+	public class EVServerReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			case EVServerhttp.SETMAIN:
+				Log.i("EV_JNI","activity=签到成功");
+				issuc=true;
+	    		break;
+			case EVServerhttp.SETFAILMAIN:
+				Log.i("EV_JNI","activity=签到失败");
+				issuc=false;
+	    		break;	
+			}	
+		}
+
+	}
+	
 	@Override
 	protected void onDestroy() {
 		EVprotocolAPI.vmcEVStop();//关闭监听
@@ -289,6 +357,13 @@ public class MaintainActivity extends Activity
 		if(bentopen>0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
 		EVprotocolAPI.vmcEVStop();//关闭监听
+		//=============
+		//Server服务相关
+		//=============
+		//5.解除注册接收器
+		MaintainActivity.this.unregisterReceiver(receiver);
+		//6.结束服务
+		stopService(new Intent(MaintainActivity.this, EVServerService.class));
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}

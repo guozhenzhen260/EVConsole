@@ -242,8 +242,19 @@ public class ToolClass
             		updatefile(fileName,sDir);
             	}
     	    } 
-        	
-        	//4.将目录下的所有文件，如果有超出半个月的，全部删除
+        	//4.如果存在server文件，则判断
+        	fileName=new File(sDir+File.separator+"server.txt"); 
+        	if(fileName.exists())
+        	{  
+        		System.out.println(" 判断重命名文件server.txt");
+        		String logdatetime = getFileCreated(fileName);
+            	int inter=getInterval(logdatetime,datetime); 
+            	if(inter>=4)
+            	{
+            		updatefile(fileName,sDir);
+            	}
+    	    } 
+        	//5.将目录下的所有文件，如果有超出半个月的，全部删除
         	delFiles(dirName,datetime);
         	
         } catch (Exception e) {
@@ -702,6 +713,21 @@ public class ToolClass
         String datetime = tempDate.format(new java.util.Date()).toString(); 					
         out_trade_no=id+datetime;
         return out_trade_no;
+ 	}
+ 	
+ 	//vmc_no方法，得到设备id,签到码id号
+ 	public static Map<String, String> getvmc_no(Context context)
+ 	{
+ 		Map<String,String> allSet = new HashMap<String,String>() ;
+ 	    vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 得到设备ID号
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		allSet.put("vmc_no",tb_inaccount.getDevID().toString());
+    		allSet.put("vmc_auth_code",tb_inaccount.getDevhCode().toString());
+    	}
+    	return allSet;
  	}
  	
  	/*********************************************************************************************************
