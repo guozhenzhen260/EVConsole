@@ -72,7 +72,7 @@ public class MaintainActivity extends Activity
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
     int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开    
-    String com=null,bentcom=null;
+    String com=null,bentcom=null,server="";
     final static int REQUEST_CODE=1;   
     //Dog服务相关
     DogService localService;
@@ -170,6 +170,7 @@ public class MaintainActivity extends Activity
 		{
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
+	        server = list.get("server");
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
 	        if(list.containsKey("isallopen"))

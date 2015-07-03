@@ -37,10 +37,27 @@
         android:layout_below="@id/tvbent"        
         />
     <TextView
+        android:id="@+id/tvserver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtbent"   
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:text="请输入服务端地址："
+        android:textColor="#8C6931"
+        android:textSize="25dp" />
+
+    <EditText
+        android:id="@+id/txtserver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"        
+        android:layout_below="@id/tvserver"        
+        />
+    <TextView
         android:id="@+id/tvallopen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtbent" 
+        android:layout_below="@id/txtserver" 
         android:text="一直保持应用开启"
         android:textColor="#8C6931"
         android:textSize="25dp" />
@@ -50,7 +67,7 @@
        android:layout_height="wrap_content"  
        android:textOn="打开"  
        android:textOff="关闭" 
-       android:layout_below="@id/txtbent" 
+       android:layout_below="@id/txtserver" 
        android:layout_toRightOf="@+id/tvallopen"/> 
     <Button
         android:id="@+id/btnClose"

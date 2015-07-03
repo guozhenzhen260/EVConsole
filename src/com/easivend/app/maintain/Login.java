@@ -37,11 +37,12 @@ import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin,txtbent;// 创建EditText对象
+	private EditText txtlogin,txtbent,txtserver;// 创建EditText对象
     private Button btnlogin, btnclose;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
     String bentcom =null;
+    String server =null;
     int isallopen=0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +52,13 @@ public class Login extends Activity
 		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框
-        
+        txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端地址文本框
         Map<String, String> list=ToolClass.ReadConfigFile();
         if(list!=null)
         {
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
+	        server = list.get("server");
 	        if(list.containsKey("isallopen"))
 	        {
 	        	isallopen=Integer.parseInt(list.get("isallopen"));
@@ -64,6 +66,7 @@ public class Login extends Activity
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
+        txtserver.setText(server);
         switchallopen.setChecked((isallopen==1)?true:false);
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
@@ -80,7 +83,8 @@ public class Login extends Activity
             	com = txtlogin.getText().toString();
     	        bentcom = txtbent.getText().toString(); 
     	        isallopen= (switchallopen.isChecked()==true)?1:0;
-            	ToolClass.WriteConfigFile(com, bentcom,String.valueOf(isallopen));            	
+    	        server = txtserver.getText().toString(); 
+            	ToolClass.WriteConfigFile(com, bentcom,server,String.valueOf(isallopen));            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
