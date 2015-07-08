@@ -341,7 +341,7 @@ public class MaintainActivity extends Activity
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
 				Log.i("EV_JNI","activity=Ç©µ½Ê§°Ü");
-				issuc=false;
+				//issuc=false;
 	    		break;	
 			}	
 		}

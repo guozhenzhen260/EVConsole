@@ -143,6 +143,22 @@ public class vmc_productDAO
  		}
  		db.close();
 	}
+	//添加或者修改
+	public void addorupdate(Tb_vmc_product tb_vmc_product,String classID) {
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select productID from vmc_product where productID=?", new String[] { tb_vmc_product.getProductID()});// 获取收入信息表中的最大编号
+        if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
+        	update(tb_vmc_product,classID);//执行修改
+        }
+        else {
+        	add(tb_vmc_product,classID);//执行添加
+		}
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+        db.close(); 
+	}
 	//删除单条
 	public void detele(Tb_vmc_product tb_vmc_product) 
 	{       

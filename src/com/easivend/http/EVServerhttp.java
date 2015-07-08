@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +26,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.app.maintain.GoodsManager;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_classDAO;
+import com.easivend.model.Tb_vmc_class;
+import com.easivend.view.EVServerService;
 import com.google.gson.Gson;
 
 import android.os.Handler;
@@ -34,11 +39,25 @@ import android.os.Message;
 import android.util.Log;
 
 public class EVServerhttp implements Runnable {
+	String vmc_no="";
+	String vmc_auth_code="";
 	public final static int SETCHILD=2;//what标记,发送给子线程签到
 	public final static int SETMAIN=1;//what标记,发送给主线程签到完成返回	
 	public final static int SETERRFAILMAIN=4;//what标记,发送给主线程签到故障失败返回	
+	
 	public final static int SETHEARTCHILD=5;//what标记,发送给子线程心跳
-	public final static int SETCLASSCHILD=6;//what标记,发送给子线程心跳
+	
+	public final static int SETCLASSCHILD=6;//what标记,发送给子线程获取商品分类
+	public final static int SETERRFAILCLASSMAIN=7;//what标记,发送给主线程获取商品分类故障
+	public final static int SETCLASSMAIN=8;//what标记,发送给主线程获取商品分类返回
+	
+	public final static int SETPRODUCTCHILD=9;//what标记,发送给子线程获取商品信息
+	public final static int SETERRFAILRODUCTMAIN=10;//what标记,发送给主线程获取商品故障
+	public final static int SETRODUCTMAIN=11;//what标记,发送给主线程获取商品返回
+	
+	public final static int SETHUODAOCHILD=12;//what标记,发送给子线程获取货道信息
+	public final static int SETERRFAILHUODAOMAIN=13;//what标记,发送给主线程获取货道故障
+	public final static int SETHUODAOMAIN=14;//what标记,发送给主线程获取货道返回
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
 	String Tok="";	
@@ -65,9 +84,7 @@ public class EVServerhttp implements Runnable {
 			public void handleMessage(Message msg) {
 				switch (msg.what)
 				{
-				case SETCHILD://子线程接收主线程签到消息
-					String vmc_no="";
-					String vmc_auth_code="";
+				case SETCHILD://子线程接收主线程签到消息					
 					//1.得到本机编号信息
 					JSONObject ev=null;
 					try {
@@ -220,29 +237,32 @@ public class EVServerhttp implements Runnable {
 					try {
 						httppost3.setEntity(new UrlEncodedFormEntity(params3, "utf-8")); //设置编码方式
 						HttpResponse httpResponse = httpclient3.execute(httppost3);	//执行HttpClient请求
+						//向主线程返回签到信息
+						Message tomain=mainhand.obtainMessage();
 						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
 							result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
-							
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object=new JSONObject(result);
+							int errType =  object.getInt("Error");
+							//返回有故障
+							if(errType>0)
+							{
+								tomain.what=SETERRFAILCLASSMAIN;
+								tomain.obj=object.getString("Message");
+							}
+							else
+							{
+								tomain.what=SETCLASSMAIN;
+								tomain.obj=result;
+							}			    	    
+				    	    mainhand.sendMessage(tomain); // 发送消息							
 						}else{
 							result = "请求失败！";
+							tomain.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain); // 发送消息
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
 						}
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
-						//向主线程返回签到信息
-//						Message tomain=mainhand.obtainMessage();
-//						JSONObject object=new JSONObject(result);
-//						int errType =  object.getInt("Error");
-//						//返回有故障
-//						if(errType>0)
-//						{
-//							tomain.what=SETERRFAILMAIN;
-//							tomain.obj=object.getString("Message");
-//						}
-//						else
-//						{
-//							tomain.what=SETMAIN;
-//							Tok=object.getString("Token");
-//						}			    	    
-//			    	    mainhand.sendMessage(tomain); // 发送消息
+
 					}
 					catch (Exception e) 
 			        {  
@@ -253,6 +273,129 @@ public class EVServerhttp implements Runnable {
 			    	    mainhand.sendMessage(tomain); // 发送消息
 			        }
 					break;
+				case SETPRODUCTCHILD://获取商品信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品信息","server.txt");
+					String target4 = httpStr+"/api/productData";	//要提交的目标地址
+					
+					HttpClient httpclient4 = new DefaultHttpClient();	//创建HttpClient对象
+					HttpPost httppost4 = new HttpPost(target4);	//创建HttpPost对象
+					//添加到类集中，其中key,value类型为String
+//					Map<String,Object> parammap = new TreeMap<String,Object>() ;
+//					parammap.put("Token",Tok);
+//					parammap.put("LastPollTime",new Date());			
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",parammap.toString(),"server.txt");
+//					//将map类集转为json格式
+//					Gson gson=new Gson();
+//					String param=gson.toJson(parammap);		
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",param.toString(),"server.txt");
+					//添加params
+					List<NameValuePair> params4 = new ArrayList<NameValuePair>();
+					params4.add(new BasicNameValuePair("Token", Tok));
+					params4.add(new BasicNameValuePair("VMC_NO", vmc_no));
+					params4.add(new BasicNameValuePair("PAGE_INDEX", ""));
+					params4.add(new BasicNameValuePair("PAGE_SIZE", ""));
+					params4.add(new BasicNameValuePair("LAST_EDIT_TIME", ""));
+					params4.add(new BasicNameValuePair("PRODUCT_NO", ""));
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params4.toString(),"server.txt");
+					try {
+						httppost4.setEntity(new UrlEncodedFormEntity(params4, "utf-8")); //设置编码方式
+						HttpResponse httpResponse = httpclient4.execute(httppost4);	//执行HttpClient请求
+						//向主线程返回签到信息
+						Message tomain=mainhand.obtainMessage();
+						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
+							result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object=new JSONObject(result);
+							int errType =  object.getInt("Error");
+							//返回有故障
+							if(errType>0)
+							{
+								tomain.what=SETERRFAILRODUCTMAIN;
+								tomain.obj=object.getString("Message");
+							}
+							else
+							{
+								tomain.what=SETRODUCTMAIN;
+								tomain.obj=result;
+							}			    	    
+				    	    mainhand.sendMessage(tomain); // 发送消息							
+						}else{
+							result = "请求失败！";
+							tomain.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain); // 发送消息
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+						}
+
+					}
+					catch (Exception e) 
+			        {  
+			           //e.printStackTrace();  
+			    	   //向主线程返回网络失败信息
+						Message tomain=mainhand.obtainMessage();
+			    	    tomain.what=SETFAILMAIN;
+			    	    mainhand.sendMessage(tomain); // 发送消息
+			        }
+					break;
+				case SETHUODAOCHILD://获取货道信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取货道信息","server.txt");
+					String target5 = httpStr+"/api/vmcPathConfigDownload";	//要提交的目标地址
+					
+					HttpClient httpclient5 = new DefaultHttpClient();	//创建HttpClient对象
+					HttpPost httppost5 = new HttpPost(target5);	//创建HttpPost对象
+					//添加到类集中，其中key,value类型为String
+//					Map<String,Object> parammap = new TreeMap<String,Object>() ;
+//					parammap.put("Token",Tok);
+//					parammap.put("LastPollTime",new Date());			
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",parammap.toString(),"server.txt");
+//					//将map类集转为json格式
+//					Gson gson=new Gson();
+//					String param=gson.toJson(parammap);		
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",param.toString(),"server.txt");
+					//添加params
+					List<NameValuePair> params5 = new ArrayList<NameValuePair>();
+					params5.add(new BasicNameValuePair("Token", Tok));
+					params5.add(new BasicNameValuePair("VMC_NO", vmc_no));
+					params5.add(new BasicNameValuePair("LAST_EDIT_TIME", ""));
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params5.toString(),"server.txt");
+					try {
+						httppost5.setEntity(new UrlEncodedFormEntity(params5, "utf-8")); //设置编码方式
+						HttpResponse httpResponse = httpclient5.execute(httppost5);	//执行HttpClient请求
+						//向主线程返回签到信息
+						Message tomain=mainhand.obtainMessage();
+						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
+							result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object=new JSONObject(result);
+							int errType =  object.getInt("Error");
+							//返回有故障
+							if(errType>0)
+							{
+								tomain.what=SETERRFAILHUODAOMAIN;
+								tomain.obj=object.getString("Message");
+							}
+							else
+							{
+								tomain.what=SETHUODAOMAIN;
+								tomain.obj=result;
+							}			    	    
+				    	    mainhand.sendMessage(tomain); // 发送消息							
+						}else{
+							result = "请求失败！";
+							tomain.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain); // 发送消息
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+						}
+
+					}
+					catch (Exception e) 
+			        {  
+			           //e.printStackTrace();  
+			    	   //向主线程返回网络失败信息
+						Message tomain=mainhand.obtainMessage();
+			    	    tomain.what=SETFAILMAIN;
+			    	    mainhand.sendMessage(tomain); // 发送消息
+			        }
+					break;	
 				default:
 					break;
 				}
@@ -269,6 +412,7 @@ public class EVServerhttp implements Runnable {
         String datetime = tempDate.format(new java.util.Date()).toString()+"T"
         		+tempTime.format(new java.util.Date()).toString(); 
 		return datetime;
-	}
+	}	
+	
 
 }

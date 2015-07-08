@@ -21,7 +21,7 @@ public class WeixingSubmit
     public static String buildRequestPara(Map<String, String> sParaTemp,String key) {
     	//除去数组中的空值和签名参数
     	Map<String, String> paraMap = paraFilter(sParaTemp);
-    	Log.i("EV_JNI","Send2="+paraMap);
+    	Log.i("EV_JNI","Send0.3="+paraMap+"key="+key);
         //生成签名结果
         String mysign = buildRequestMysign(paraMap,key);   
         return mysign;
@@ -83,7 +83,7 @@ public class WeixingSubmit
 	   String mysign=null;
 	   mysign=MD5.GetMD5Code(preStr).toUpperCase();
 	   //String mysign=md5(preStr.getBytes());
-	   Log.i("EV_JNI","Send4="+mysign);
+	   Log.i("EV_JNI","Send0.4SIGN="+mysign);
 	   return mysign;
 	}
 	//把参数组中所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串

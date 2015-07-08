@@ -61,6 +61,22 @@ public class vmc_classDAO
         		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getAttBatch1(),tb_vmc_class.getClassID()});
         db.close(); 
 	}
+	//添加或者修改
+	public void addorupdate(Tb_vmc_class tb_vmc_class) {
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select classID from vmc_class where classID=?", new String[] { tb_vmc_class.getClassID()});// 获取收入信息表中的最大编号
+        if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
+        	update(tb_vmc_class);//执行修改
+        }
+        else {
+        	add(tb_vmc_class);//执行添加
+		}
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+        db.close(); 
+	}
 	//删除单条
 	public void detele(Tb_vmc_class tb_vmc_class) 
 	{           
