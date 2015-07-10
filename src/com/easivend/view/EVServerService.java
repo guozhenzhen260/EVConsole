@@ -1,5 +1,6 @@
 package com.easivend.view;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +14,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.easivend.app.maintain.GoodsProSet;
+import com.easivend.app.maintain.HuodaoSet;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
+import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
 
 import android.app.ActivityManager;
@@ -45,10 +50,7 @@ public class EVServerService extends Service {
     EVServerhttp serverhttp=null;
     boolean isev=false;
     ActivityReceiver receiver;
-    //获取货柜信息
-    String[] cabinetID = null;//用来分离出货柜编号
-	int[] cabinetType=null;//货柜类型
-	int m = 0;// 定义一个开始标识
+    Map<String,Integer> huoSet=null;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -66,10 +68,15 @@ public class EVServerService extends Service {
 			int EVWhat=bundle.getInt("EVWhat");
 			switch(EVWhat)
 			{
+			//签到
 			case EVServerhttp.SETCHILD:
 				String vmc_no=bundle.getString("vmc_no");
 				String vmc_auth_code=bundle.getString("vmc_auth_code");
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code,"server.txt");
+				SerializableMap serializableMap = (SerializableMap) bundle.get("huoSet");
+				huoSet=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+						+"huoSet="+huoSet.toString(),"server.txt");
+				
 				//处理接收到的内容,发送签到命令到子线程中
 				//初始化一:发送签到指令
 	        	childhand=serverhttp.obtainHandler();
@@ -88,6 +95,64 @@ public class EVServerService extends Service {
 	    		childmsg.obj=ev;
 	    		childhand.sendMessage(childmsg);
 	    		break;
+	    	//单货道状态上报	
+			case EVServerhttp.SETHUODAOSTATUONECHILD:
+				// 创建InaccountDAO对象
+    			vmc_columnDAO columnDAO = new vmc_columnDAO(EVServerService.this);
+    			Tb_vmc_column tb_vmc_column = columnDAO.find(bundle.getString("CABINET_NO"),bundle.getString("PATH_NO"));// 添加商品信息 
+    			String CABINET_NO=bundle.getString("CABINET_NO");
+    			String PATH_NO=bundle.getString("PATH_NO");
+    			String PATH_STATUS=String.valueOf(tb_vmc_column.getColumnStatus());
+    			String PATH_COUNT=String.valueOf(tb_vmc_column.getPathCount());
+    			String PATH_REMAINING=String.valueOf(tb_vmc_column.getPathRemain());
+    			String PRODUCT_NO=tb_vmc_column.getProductID();
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道CABINET_NO="+CABINET_NO
+						+" PATH_NO="+PATH_NO+" PATH_STATUS="+PATH_STATUS+" PATH_COUNT="+PATH_COUNT
+						+" PATH_REMAINING="+PATH_REMAINING+" PRODUCT_NO="+PRODUCT_NO,"server.txt");				
+    			//
+	        	childhand=serverhttp.obtainHandler();
+	    		Message childmsg2=childhand.obtainMessage();
+	    		childmsg2.what=EVServerhttp.SETHUODAOSTATUONECHILD;
+	    		JSONObject ev2=null;
+	    		try {
+	    			ev2=new JSONObject();
+	    			ev2.put("CABINET_NO", CABINET_NO);
+	    			ev2.put("PATH_NO", PATH_NO);
+	    			ev2.put("PATH_STATUS", PATH_STATUS);
+	    			ev2.put("PATH_COUNT", PATH_COUNT);
+	    			ev2.put("PATH_REMAINING", PATH_REMAINING);
+	    			ev2.put("PRODUCT_NO", PRODUCT_NO);	    			
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev2.toString(),"server.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		childmsg2.obj=ev2;
+	    		childhand.sendMessage(childmsg2);
+    			break;
+    		//设备状态上报	
+			case EVServerhttp.SETDEVSTATUCHILD:
+				int bill_err=bundle.getInt("bill_err");
+				int coin_err=bundle.getInt("coin_err");
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备bill_err="+bill_err
+						+" coin_err="+coin_err,"server.txt");				
+    			//
+	        	childhand=serverhttp.obtainHandler();
+	    		Message childmsg3=childhand.obtainMessage();
+	    		childmsg3.what=EVServerhttp.SETDEVSTATUCHILD;
+	    		JSONObject ev3=null;
+	    		try {
+	    			ev3=new JSONObject();
+	    			ev3.put("bill_err", bill_err);
+	    			ev3.put("coin_err", coin_err);	    			  			
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev3.toString(),"server.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		childmsg3.obj=ev3;
+	    		childhand.sendMessage(childmsg3);
+    			break;	
 			}			
 		}
 
@@ -120,118 +185,7 @@ public class EVServerService extends Service {
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service start","server.txt");
-		//注册出货监听器
-  	    EVprotocolAPI.setCallBack(new JNIInterface() {
-			
-			@Override
-			public void jniCallback(Map<String, Object> allSet) {
-				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao货道相关","server.txt");
-				Map<String, Object> Set= allSet;
-				int jnirst=(Integer)Set.get("EV_TYPE");
-				switch (jnirst)
-				{
-					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-//						device=allSet.get("device");//出货柜号
-//						status=allSet.get("status");//出货结果
-//						hdid=allSet.get("hdid");//货道id
-//						hdtype=allSet.get("type");//出货类型
-//						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
-//						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
-//						huodao=allSet.get("huodao");//剩余存货数量
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
-//						
-//						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
-//						sethuorst(status);
-						break;
-					case EVprotocolAPI.EV_COLUMN_RPT://接收子线程消息
-//						huoSet.clear();
-//						//输出内容
-//				        Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
-//				        Iterator<Entry<String, Integer>> iter=allmap.iterator();
-//				        while(iter.hasNext())
-//				        {
-//				            Entry<String, Integer> me=iter.next();
-//				            if(me.getKey().equals("EV_TYPE")!=true)
-//				            	huoSet.put(me.getKey(), me.getValue());
-//				        } 
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
-//						showhuodao();						
-						break;
-					case EVprotocolAPI.EV_BENTO_CHECK://格子柜查询
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜查询","server.txt");
-//						String tempno=null;
-//						
-//						cool=(Integer)Set.get("cool");
-//						hot=(Integer)Set.get("hot");
-//						light=(Integer)Set.get("light");
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
-//						if(light>0)
-//						{
-//							txtlight.setText("支持");
-//							switchlight.setEnabled(true);
-//							
-//						}
-//						else
-//						{
-//							txtlight.setText("不支持");
-//							switchlight.setEnabled(false);
-//						}
-//						if(cool>0)
-//						{
-//							txtcold.setText("支持");
-//							switcold.setEnabled(true);
-//						}
-//						else
-//						{
-//							txtcold.setText("不支持");
-//							switcold.setEnabled(false);
-//						}
-//						if(hot>0)
-//						{
-//							txthot.setText("支持");
-//							switchhot.setEnabled(true);
-//						}
-//						else
-//						{
-//							txthot.setText("不支持");
-//							switchhot.setEnabled(false);
-//						}
-//						
-//						huoSet.clear();
-//						//输出内容
-//				        Set<Entry<String, Object>> allmap=Set.entrySet();  //实例化
-//				        Iterator<Entry<String, Object>> iter=allmap.iterator();
-//				        while(iter.hasNext())
-//				        {
-//				            Entry<String, Object> me=iter.next();
-//				            if(
-//				               (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
-//				               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
-//				            )   
-//				            {
-//				            	if(Integer.parseInt(me.getKey())<10)
-//				    				tempno="0"+me.getKey();
-//				    			else 
-//				    				tempno=me.getKey();
-//				            	
-//				            	huoSet.put(tempno, (Integer)me.getValue());
-//				            }
-//				        } 
-//				        huonum=huoSet.size();
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
-//						showhuodao();						
-						break;	
-					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
-						break;	
-					case EVprotocolAPI.EV_BENTO_LIGHT://格子柜开灯
-						break;	
-				}
-			}
-		});
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service start","server.txt");		
 		//***********************
 		//线程进行vmserver操作
 		//***********************
@@ -310,8 +264,7 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETHUODAOMAIN://子线程接收主线程消息获取货道信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取货道信息成功","server.txt");
 						try 
-						{
-							getcolumnstat();
+						{							
 							updatevmcColumn(msg.obj.toString());
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
@@ -393,42 +346,7 @@ public class EVServerService extends Service {
 			productDAO.addorupdate(tb_vmc_product,product_Class_NO);// 修改
 		}
 	}
-	
-	//获取当前货道信息
-	private void getcolumnstat()
-	{		
-		vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(EVServerService.this);// 创建InaccountDAO对象
-	    // 1.获取所有柜号
-	    List<Tb_vmc_cabinet> listinfos = cabinetDAO.getScrollData();
-	    cabinetID = new String[listinfos.size()];// 设置字符串数组的长度
-	    cabinetType=new int[listinfos.size()];// 设置字符串数组的长度	    
-	    // 遍历List泛型集合
-	    for (Tb_vmc_cabinet tb_inaccount : listinfos) 
-	    {
-	        cabinetID[m] = tb_inaccount.getCabID();
-	        cabinetType[m]= tb_inaccount.getCabType();
-	        ToolClass.Log(ToolClass.INFO,"EV_SERVER","获取柜号="+cabinetID[m]+"类型="+cabinetType[m],"server.txt");
-		    m++;// 标识加1
-	    }
-	    m=0;
-	    //2.获取所有货道号
-	    queryhuodao(Integer.parseInt(cabinetID[m]),cabinetType[m]);
-	}
-	//获取本柜所有货道号
-	private void queryhuodao(int cabinetsetvar,int cabinetTypesetvar)
-	{
-		//格子柜
-		if(cabinetTypesetvar==5)
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<huodao格子柜相关","server.txt");
-			EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);
-		}
-		//普通柜
-		else 
-		{
-			EVprotocolAPI.getColumn(cabinetsetvar);
-		}
-	}
+		
 	//更新货道信息
 	private void updatevmcColumn(String classrst) throws JSONException
 	{
@@ -437,16 +355,70 @@ public class EVServerService extends Service {
 		for(int i=0;i<arr1.length();i++)
 		{
 			JSONObject object2=arr1.getJSONObject(i);
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道CABINET_NO="+object2.getString("CABINET_NO")
-					+"PATH_NO="+object2.getString("PATH_NO")+"PRODUCT_NO="+object2.getString("PRODUCT_NO")
-					+"PATH_COUNT="+object2.getString("PATH_COUNT"),"server.txt");										
-//			// 创建InaccountDAO对象
-//			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
-//            //创建Tb_inaccount对象
-//			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(object2.getString("product_NO"), object2.getString("product_Name"),object2.getString("product_TXT"),Float.parseFloat(object2.getString("market_Price")),
-//					Float.parseFloat(object2.getString("sales_Price")),0,object2.getString("create_Time"),object2.getString("last_Edit_Time"),"","","",0,0);
-//			productDAO.addorupdate(tb_vmc_product,product_Class_NO);// 修改
+			int CABINET_NO=Integer.parseInt(object2.getString("CABINET_NO"));
+			int PATH_NO=Integer.parseInt(object2.getString("PATH_NO"));
+			String PATH_NOSTR=(PATH_NO<10)?("0"+object2.getString("PATH_NO")):object2.getString("PATH_NO");
+			int PATH_REMAINING=Integer.parseInt(object2.getString("PATH_REMAINING"));
+			int status=0;
+			int j=0;
+			//输出内容
+	        Set<Map.Entry<String,Integer>> allset=huoSet.entrySet();  //实例化
+	        Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
+	        while(iter.hasNext())
+	        {
+	            Map.Entry<String,Integer> me=iter.next();
+				String huo=me.getKey();
+				int cabid=Integer.parseInt(huo.substring(0, 1));
+				int huoid=Integer.parseInt(huo.substring(1, huo.length()));
+				status=me.getValue();				
+			    if((CABINET_NO==cabid)&&(PATH_NO==huoid))
+			    {
+			    	j=1;
+			    	break;
+			    }
+				//ToolClass.Log(ToolClass.INFO,"EV_SERVER","huo="+cabid+","+huoid+"sta="+me.getValue(),"server.txt");
+	        } 			
+
+	        //可以更新货道
+			if(j==1)
+			{		
+				status=updatehuodaostatus(status,PATH_REMAINING);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道CABINET_NO="+object2.getString("CABINET_NO")
+						+"PATH_NO="+PATH_NOSTR+"PRODUCT_NO="+object2.getString("PRODUCT_NO")
+						+"PATH_COUNT="+object2.getString("PATH_COUNT")+"status="+status,"server.txt");	
+				// 创建InaccountDAO对象
+    			vmc_columnDAO columnDAO = new vmc_columnDAO(EVServerService.this);
+	            //创建Tb_inaccount对象
+    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,object2.getString("PRODUCT_NO"),
+    					Integer.parseInt(object2.getString("PATH_COUNT")),Integer.parseInt(object2.getString("PATH_REMAINING")),
+    					status,"");    			
+    			columnDAO.addorupdate(tb_vmc_column);// 添加商品信息
+			}
+			//更新货道失败
+			else
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道失败CABINET_NO="+object2.getString("CABINET_NO")
+						+"PATH_NO="+PATH_NOSTR+"PRODUCT_NO="+object2.getString("PRODUCT_NO")
+						+"PATH_COUNT="+object2.getString("PATH_COUNT"),"server.txt");										
+			}			
 		}
+	}
+	
+	//更新货道状态信息
+	//huostate从货道板上得到的货道状态，upremain从服务端下载的货道存货数量
+	private int updatehuodaostatus(int huostate,int upremain)
+	{
+		int huostatus=0;
+		if(huostate==0)//货道故障
+			huostatus=2;
+		else if(huostate==1)//货道正常
+		{
+			if(upremain>0)
+	    		huostatus=1;
+	    	else                             //缺货
+	    		huostatus=3;	
+		}
+		return huostatus;
 	}
 
 }

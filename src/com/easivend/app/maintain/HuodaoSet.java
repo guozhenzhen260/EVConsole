@@ -8,6 +8,7 @@ import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
+import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.view.GoodsSelect;
@@ -175,7 +176,17 @@ public class HuodaoSet extends Activity
 		    			
 		    			columnDAO.addorupdate(tb_vmc_column);// 添加商品信息
 		    			ToolClass.addOptLog(HuodaoSet.this,0,"上架货道:"+cabID+huoID);
-		    			
+		    			//=============
+		    			//Server服务相关
+		    			//=============
+		    			//7.发送指令广播给EVServerService
+//		    			Intent intent2=new Intent();
+//	    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUONECHILD);
+//	    				intent2.putExtra("CABINET_NO", cabID);
+//	    				intent2.putExtra("PATH_NO", huoID);
+//	    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+//	    				sendBroadcast(intent2);
+	    				
 			        	// 弹出信息提示
 			            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
 			            //退出时，返回intent

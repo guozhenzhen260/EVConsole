@@ -58,6 +58,11 @@ public class EVServerhttp implements Runnable {
 	public final static int SETHUODAOCHILD=12;//what标记,发送给子线程获取货道信息
 	public final static int SETERRFAILHUODAOMAIN=13;//what标记,发送给主线程获取货道故障
 	public final static int SETHUODAOMAIN=14;//what标记,发送给主线程获取货道返回
+	
+	public final static int SETHUODAOSTATUONECHILD=15;//what标记,发送给子线程上报一个货道信息
+	public final static int SETHUODAOSTATUALLCHILD=16;//what标记,发送给子线程上报全部货道信息
+	
+	public final static int SETDEVSTATUCHILD=17;//what标记,发送给子线程上报设备状态信息
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
 	String Tok="";	
@@ -396,6 +401,161 @@ public class EVServerhttp implements Runnable {
 			    	    mainhand.sendMessage(tomain); // 发送消息
 			        }
 					break;	
+				case SETHUODAOSTATUONECHILD://子线程接收主线程单个货道上报消息	
+					String CABINET_NO=null;
+	    			String PATH_NO=null;
+	    			String PATH_STATUS=null;
+	    			String PATH_COUNT=null;
+	    			String PATH_REMAINING=null;
+	    			String PRODUCT_NO=null;
+					//1.得到本机编号信息
+					JSONObject ev2=null;
+					try {
+						ev2 = new JSONObject(msg.obj.toString());
+						CABINET_NO=ev2.getString("CABINET_NO");
+		    			PATH_NO=ev2.getString("PATH_NO");
+		    			PATH_STATUS=ev2.getString("PATH_STATUS");
+		    			PATH_COUNT=ev2.getString("PATH_COUNT");
+		    			PATH_REMAINING=ev2.getString("PATH_REMAINING");
+		    			PRODUCT_NO=ev2.getString("PRODUCT_NO");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=vmc_no="+vmc_no+"CABINET_NO="+CABINET_NO
+						+" PATH_NO="+PATH_NO+" PATH_STATUS="+PATH_STATUS+" PATH_COUNT="+PATH_COUNT
+						+" PATH_REMAINING="+PATH_REMAINING+" PRODUCT_NO="+PRODUCT_NO,"server.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					String target6 = httpStr+"/api/vmcPathStatus";	//要提交的目标地址
+					HttpClient httpclient6 = new DefaultHttpClient();	//创建HttpClient对象
+					HttpPost httppost6 = new HttpPost(target6);	//创建HttpPost对象
+					JSONObject json=new JSONObject();
+					try {
+						json.put("VMC_NO", vmc_no);
+						json.put("PATH_NO", PATH_NO);
+						json.put("cabinetNumber", CABINET_NO);
+						json.put("PATH_STATUS",Integer.parseInt(PATH_STATUS));
+						json.put("PATH_REMAINING",Integer.parseInt(PATH_REMAINING));
+						json.put("PATH_COUNT",Integer.parseInt(PATH_COUNT));
+						json.put("PRODUCT_NO", PRODUCT_NO);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					
+//					//1.添加到类集中，其中key,value类型为String
+//					Map<String,Object> parammap6 = new TreeMap<String,Object>() ;
+////					parammap6.put("VMC_NO",vmc_no);
+////					//parammap6.put("cabinetNumber",CABINET_NO);
+////					parammap6.put("PATH_NO",PATH_NO);	
+////					parammap6.put("PATH_STATUS",PATH_STATUS);	
+////					parammap6.put("PATH_COUNT",PATH_COUNT);
+////					parammap6.put("PATH_REMAINING",PATH_REMAINING);	
+////					parammap6.put("PRODUCT_NO",PRODUCT_NO);	
+//					
+//					parammap6.put("VMC_NO",vmc_no);
+//					parammap6.put("pathID","2596");
+//					parammap6.put("cabinetNumber",CABINET_NO);
+//					parammap6.put("pathName",PATH_NO);	
+//					parammap6.put("pathStatus",PATH_STATUS);	
+//					parammap6.put("pathCount",PATH_COUNT);
+//					parammap6.put("pathRemaining",PATH_REMAINING);	
+//					parammap6.put("productID",PRODUCT_NO);
+//					parammap6.put("productNum","12");
+//					parammap6.put("LAST_EDIT_TIME",getLasttime());
+//					parammap6.put("IS_DISABLE","0");
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap6.toString(),"server.txt");
+//					//将2.map类集转为json格式
+//					Gson gson6=new Gson();
+					String param6=json.toString();		
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param6.toString(),"server.txt");
+					//3.添加params
+					List<NameValuePair> params6 = new ArrayList<NameValuePair>();
+					params6.add(new BasicNameValuePair("param", param6));
+					params6.add(new BasicNameValuePair("Token", Tok));
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params6.toString(),"server.txt");
+					
+					try {
+						httppost6.setEntity(new UrlEncodedFormEntity(params6, "utf-8")); //设置编码方式
+						HttpResponse httpResponse = httpclient6.execute(httppost6);	//执行HttpClient请求
+						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
+							result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+							
+						}else{
+							result = "请求失败！";
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+
+					} 
+			       catch (Exception e) 
+			       {  
+			           //e.printStackTrace();  
+			    	   //向主线程返回网络失败信息
+						Message tomain=mainhand.obtainMessage();
+			    	    tomain.what=SETFAILMAIN;
+			    	    mainhand.sendMessage(tomain); // 发送消息
+			       }
+					break;						
+				case EVServerhttp.SETDEVSTATUCHILD://设备状态上报
+					int bill_err=0;
+	    			int coin_err=0;
+					//1.得到本机编号信息
+					JSONObject ev7=null;
+					try {
+						ev7 = new JSONObject(msg.obj.toString());
+						bill_err=ev7.getInt("bill_err");
+						coin_err=ev7.getInt("coin_err");
+		    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=bill_err="+bill_err+"coin_err="+coin_err
+						,"server.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//设备状态上报
+					String target7 = httpStr+"/api/vmcStatus";	//要提交的目标地址
+					HttpClient httpclient7 = new DefaultHttpClient();	//创建HttpClient对象
+					HttpPost httppost7 = new HttpPost(target7);	//创建HttpPost对象
+					//1.添加到类集中，其中key,value类型为String
+					Map<String,Object> parammap7 = new TreeMap<String,Object>() ;
+					parammap7.put("VMC_NO",vmc_no);
+					parammap7.put("CLIENT_STATUS","0");
+					parammap7.put("COINS_STATUS",coin_err);
+					parammap7.put("NOTE_STATUS",bill_err);	
+					parammap7.put("DOOR_STATUS","0");	
+					parammap7.put("WAREHOUSE_TEMPERATURE","0");					
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap7.toString(),"server.txt");
+					//将2.map类集转为json格式
+					Gson gson7=new Gson();
+					String param7=gson7.toJson(parammap7);		
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param7.toString(),"server.txt");
+					//3.添加params
+					List<NameValuePair> params7 = new ArrayList<NameValuePair>();
+					params7.add(new BasicNameValuePair("param", param7));
+					params7.add(new BasicNameValuePair("Token", Tok));
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params7.toString(),"server.txt");
+					
+					try {
+						httppost7.setEntity(new UrlEncodedFormEntity(params7, "utf-8")); //设置编码方式
+						HttpResponse httpResponse = httpclient7.execute(httppost7);	//执行HttpClient请求
+						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
+							result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+							
+						}else{
+							result = "请求失败！";
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+
+					} 
+			       catch (Exception e) 
+			       {  
+			           //e.printStackTrace();  
+			    	   //向主线程返回网络失败信息
+						Message tomain=mainhand.obtainMessage();
+			    	    tomain.what=SETFAILMAIN;
+			    	    mainhand.sendMessage(tomain); // 发送消息
+			       }
+					break;
 				default:
 					break;
 				}

@@ -15,16 +15,25 @@
 
 package com.easivend.app.maintain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Map.Entry;
 
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.view.DogService;
 import com.easivend.view.DogService.LocalBinder;
 import com.easivend.view.EVServerService;
@@ -33,6 +42,7 @@ import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.Business;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.ProPictureAdapter;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 
@@ -78,6 +88,11 @@ public class MaintainActivity extends Activity
     int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开    
     String com=null,bentcom=null,server="";
     final static int REQUEST_CODE=1;   
+    //获取货柜信息
+    private String[] cabinetID = null;//用来分离出货柜编号
+    private int[] cabinetType=null;//货柜类型
+    private int huom = 0;// 定义一个开始标识
+    Map<String,Integer> huoSet=new HashMap<String,Integer>();
     //Dog服务相关
     DogService localService;
 	boolean bound=false;
@@ -85,7 +100,7 @@ public class MaintainActivity extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
 	//Server服务相关
 	EVServerReceiver receiver;
-	boolean issuc=false;
+	boolean issuc=false;//是否签到成功	
 	//绑定的接口
 	private ServiceConnection conn=new ServiceConnection()
 	{
@@ -114,37 +129,8 @@ public class MaintainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maintain);	
 		//注册串口监听器
-		EVprotocolAPI.setCallBack(new JNIInterface() {
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());			
 			
-			@Override
-			public void jniCallback(Map<String, Object> allSet) {
-				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到","log.txt");	
-				Map<String, Object> Set= allSet;
-				int jnirst=(Integer) Set.get("EV_TYPE");
-				//txtcom.setText(String.valueOf(jnirst));
-				switch (jnirst)
-				{
-					case EVprotocolAPI.EV_REGISTER://接收子线程消息
-						//主柜初始化完成
-						if(Set.get("port_com").equals(com))
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜初始化完成","log.txt");	
-							txtcom.setText(com+"[主柜]初始化完成");		
-							ToolClass.setCom_id((Integer)Set.get("port_id"));
-						}
-						else if(Set.get("port_com").equals(bentcom))
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜初始化完成","log.txt");	
-							txtbentcom.setText(bentcom+"[格子柜]初始化完成");		
-							ToolClass.setBentcom_id((Integer)Set.get("port_id"));
-						}
-										
-						break;
-				}
-			}
-		}); 
-		
 		//==========
 		//Dog服务相关
 		//==========
@@ -190,13 +176,24 @@ public class MaintainActivity extends Activity
 		    				intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
 		    				intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
 		    				intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+		    				//传递数据
+                            final SerializableMap myMap=new SerializableMap();
+                            myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
+                            Bundle bundle=new Bundle();
+                            bundle.putSerializable("huoSet", myMap);
+                            intent.putExtras(bundle);
 		    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
 		    				sendBroadcast(intent);  
 	                	}
+	                	else 
+	                	{
+	                		//先查询设备信息，再上报给服务器
+	                		EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+						}
 	                } 
 	            }); 
 	        } 
-	    }, 3*1000, 60*1000);       // timeTask 
+	    }, 4*1000, 3*60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
@@ -217,17 +214,17 @@ public class MaintainActivity extends Activity
 	        {
 	        	isallopen=Integer.parseInt(list.get("isallopen"));	        	
 	        }
-			txtcom.setText(com+"主柜正在准备连接");	
+			txtcom.setText(com+"现金模块正在准备连接");	
 			EVprotocolAPI.vmcEVStart();//开启监听
 			//打开主柜串口		
 			comopen = EVprotocolAPI.EV_portRegister(com);
 			if(comopen == 1)
 			{
-				txtcom.setText(com+"[主柜]串口正在准备连接");			
+				txtcom.setText(com+"[现金模块]串口正在准备连接");			
 			}
 			else
 			{
-				txtcom.setText(com+"[主柜]串口打开失败");
+				txtcom.setText(com+"[现金模块]串口打开失败");
 			}			
 			txtbentcom.setText(bentcom+"[格子柜]正在准备连接");	
 			//打开格子柜
@@ -294,6 +291,88 @@ public class MaintainActivity extends Activity
 
 	}
 	
+	//创建一个专门处理单击接口的子类
+	private class jniInterfaceImp implements JNIInterface
+	{
+		@Override
+		public void jniCallback(Map<String, Object> allSet) {
+			// TODO Auto-generated method stub
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到","log.txt");	
+			Map<String, Object> Set= allSet;
+			int jnirst=(Integer) Set.get("EV_TYPE");
+			//txtcom.setText(String.valueOf(jnirst));
+			switch (jnirst)
+			{
+				case EVprotocolAPI.EV_REGISTER://接收子线程消息
+					//现金模块初始化完成
+					if(Set.get("port_com").equals(com))
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金模块连接完成","log.txt");	
+						txtcom.setText(com+"[现金模块]连接完成");		
+						ToolClass.setCom_id((Integer)Set.get("port_id"));
+					}
+					//格子柜初始化完成
+					else if(Set.get("port_com").equals(bentcom))
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜连接完成","log.txt");	
+						txtbentcom.setText(bentcom+"[格子柜]连接完成");		
+						ToolClass.setBentcom_id((Integer)Set.get("port_id"));
+						//初始化货道信息
+						if((Integer)Set.get("port_id")>=0)
+						{
+							getcolumnstat();
+						}
+					}
+					break;
+				//格子柜查询	
+				case EVprotocolAPI.EV_BENTO_CHECK:
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<返回货道状态:","log.txt");	
+					String tempno=null;
+				
+					//输出内容
+			        Set<Entry<String, Object>> allmap=Set.entrySet();  //实例化
+			        Iterator<Entry<String, Object>> iter=allmap.iterator();
+			        while(iter.hasNext())
+			        {
+			            Entry<String, Object> me=iter.next();
+			            if(
+			               (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
+			               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
+			            )   
+			            {
+			            	if(Integer.parseInt(me.getKey())<10)
+			    				tempno="0"+me.getKey();
+			    			else 
+			    				tempno=me.getKey();
+			            	
+			            	huoSet.put(cabinetID[huom]+tempno,(Integer)me.getValue());
+			            }
+			        } 
+			        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huoSet.size()+"货道状态:"+huoSet.toString(),"log.txt");	
+			        huom++;
+			        if(huom<cabinetID.length)
+			        {
+			        	//2.获取所有货道号
+			    	    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
+			        }
+					break;	
+				//现金设备状态查询
+				case EVprotocolAPI.EV_MDB_HEART://心跳查询
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
+					int bill_err=((Integer)Set.get("bill_err")==0)?0:2;
+					int coin_err=((Integer)Set.get("coin_err")==0)?0:2;
+					//上报给服务器
+					Intent intent=new Intent();
+    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
+    				intent.putExtra("bill_err", bill_err);
+    				intent.putExtra("coin_err", coin_err);
+    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+    				sendBroadcast(intent); 
+					break; 	
+			}
+		}
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
@@ -318,8 +397,50 @@ public class MaintainActivity extends Activity
 				}
 			}
 		}
+		//注册串口监听器
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());	
 	}
 	
+	//=============
+	//货柜相关
+	//=============
+	//获取当前货道信息
+	private void getcolumnstat()
+	{		
+		vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(MaintainActivity.this);// 创建InaccountDAO对象
+	    // 1.获取所有柜号
+	    List<Tb_vmc_cabinet> listinfos = cabinetDAO.getScrollData();
+	    cabinetID = new String[listinfos.size()];// 设置字符串数组的长度
+	    cabinetType=new int[listinfos.size()];// 设置字符串数组的长度	    
+	    // 遍历List泛型集合
+	    for (Tb_vmc_cabinet tb_inaccount : listinfos) 
+	    {
+	        cabinetID[huom] = tb_inaccount.getCabID();
+	        cabinetType[huom]= tb_inaccount.getCabType();
+	        ToolClass.Log(ToolClass.INFO,"EV_JNI","获取柜号="+cabinetID[huom]+"类型="+cabinetType[huom],"log.txt");
+		    huom++;// 标识加1
+	    }
+	    huom=0;
+	    //2.获取所有货道号
+	    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
+	}
+	
+	//获取本柜所有货道号
+	private void queryhuodao(int cabinetsetvar,int cabinetTypesetvar)
+	{
+		//格子柜
+		if(cabinetTypesetvar==5)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜查询","log.txt");
+			EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);
+		}
+		//普通柜
+		else 
+		{
+			EVprotocolAPI.getColumn(cabinetsetvar);
+		}
+	}
+		
 	//=============
 	//Server服务相关
 	//=============
