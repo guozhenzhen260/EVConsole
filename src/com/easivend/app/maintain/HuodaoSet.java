@@ -172,7 +172,7 @@ public class HuodaoSet extends Activity
 		    			vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoSet.this);
 			            //创建Tb_inaccount对象
 		    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID, huoID,productID,pathCount,
-		    					pathRemain,Integer.parseInt(huostatus),date);
+		    					pathRemain,Integer.parseInt(huostatus),date,0,0);
 		    			
 		    			columnDAO.addorupdate(tb_vmc_column);// 添加商品信息
 		    			ToolClass.addOptLog(HuodaoSet.this,0,"上架货道:"+cabID+huoID);
@@ -180,12 +180,12 @@ public class HuodaoSet extends Activity
 		    			//Server服务相关
 		    			//=============
 		    			//7.发送指令广播给EVServerService
-//		    			Intent intent2=new Intent();
-//	    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUONECHILD);
-//	    				intent2.putExtra("CABINET_NO", cabID);
-//	    				intent2.putExtra("PATH_NO", huoID);
-//	    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-//	    				sendBroadcast(intent2);
+		    			Intent intent2=new Intent();
+	    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUONECHILD);
+	    				intent2.putExtra("CABINET_NO", cabID);
+	    				intent2.putExtra("PATH_NO", huoID);
+	    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+	    				sendBroadcast(intent2);
 	    				
 			        	// 弹出信息提示
 			            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -229,7 +229,7 @@ public class HuodaoSet extends Activity
 			    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoSet.this);
 						            //创建Tb_inaccount对象
 			    					Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID, huoID,productID,0,
-					    					0,Integer.parseInt(huostatus),date);				    			
+					    					0,Integer.parseInt(huostatus),date,0,0);				    			
 			    					columnDAO.detele(tb_vmc_column);// 删除货道信息	
 			    					ToolClass.addOptLog(HuodaoSet.this,2,"下架货道:"+cabID+huoID);
 			    					// 弹出信息提示

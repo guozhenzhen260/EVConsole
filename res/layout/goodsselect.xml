@@ -6,16 +6,19 @@
     <GridView 
 	    android:id="@+id/gvselectProduct"
 	    android:layout_width="wrap_content"
-	    android:layout_height="600dp"
-	    android:columnWidth="90dp"
-	    android:gravity="center"
+	    android:layout_height="wrap_content"
 	    android:horizontalSpacing="10dp"
+	    android:verticalSpacing="10dp"
+	    android:columnWidth="205dp"
+	    android:gravity="center"	    
 	    android:numColumns="auto_fit"
 	    android:stretchMode="spacingWidthUniform"
-	    android:verticalSpacing="10dp" />
+	     />
 	<Button
         android:id="@+id/btnselectexit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        android:textColor="#FF0000"  
+        android:textSize="40sp"
         android:text="返回" />
 </LinearLayout>

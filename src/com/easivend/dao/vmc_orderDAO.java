@@ -105,6 +105,53 @@ public class vmc_orderDAO
  		}  
         db.close();
     }
+	//查找所有的订单支付数据
+	public List<Tb_vmc_order_pay> getScrollPay() 
+	{   
+		List<Tb_vmc_order_pay> tb_inaccount = new ArrayList<Tb_vmc_order_pay>();// 创建集合对象
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是所有时间","log.txt");         
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        //取得时间范围内订单支付单号
+		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
+				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime " +
+				" FROM [vmc_order_pay] where isupload<>1", null);// 获取收入信息表中的最大编号
+		while (cursor.moveToNext()) 
+        {
+			// 将遍历到的收入信息添加到集合中
+            tb_inaccount.add(new Tb_vmc_order_pay
+        		(
+        				cursor.getString(cursor.getColumnIndex("ordereID")), cursor.getInt(cursor.getColumnIndex("payType")),
+        				cursor.getInt(cursor.getColumnIndex("payStatus")),cursor.getInt(cursor.getColumnIndex("RealStatus")),
+        				cursor.getFloat(cursor.getColumnIndex("smallNote")),cursor.getFloat(cursor.getColumnIndex("smallConi")),
+        				cursor.getFloat(cursor.getColumnIndex("smallAmount")),cursor.getFloat(cursor.getColumnIndex("smallCard")),
+        				cursor.getFloat(cursor.getColumnIndex("shouldPay")), cursor.getInt(cursor.getColumnIndex("shouldNo")),
+        				cursor.getFloat(cursor.getColumnIndex("realNote")),cursor.getFloat(cursor.getColumnIndex("realCoin")),
+        				cursor.getFloat(cursor.getColumnIndex("realAmount")),cursor.getFloat(cursor.getColumnIndex("debtAmount")),
+        				cursor.getFloat(cursor.getColumnIndex("realCard")),cursor.getString(cursor.getColumnIndex("payTime"))
+        		)
+           );
+        }
+				
+		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+        db.close();
+        return tb_inaccount;// 返回集合
+    }
+	/**
+     * 上报成功后，修改已上报状态
+     * 
+     * @return
+     */
+  	public void update(String orderno) 
+  	{       
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
+          // 执行删除商品表
+          db.execSQL("update [vmc_order_pay] set isupload=1 where ordereID=?", 
+          		new Object[] { orderno});        
+          db.close(); 
+  	}  	
 	//查找时间范围内的订单支付数据
 	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 
 	{   

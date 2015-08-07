@@ -54,7 +54,7 @@ public class vmc_columnDAO
 	 		db.execSQL(
 				"update vmc_column set " +
 				"productID=?,pathCount=?,pathRemain=?,columnStatus=?," +
-				"lasttime=(datetime('now', 'localtime')) " +
+				"lasttime=(datetime('now', 'localtime')),isupload=0 " +
 				"where cabID=? and columnID=?",
 		        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
 						tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
@@ -68,14 +68,61 @@ public class vmc_columnDAO
      				"insert into vmc_column" +
      				"(" +
      				"cabID,columnID,productID,pathCount,pathRemain," +
-     				"columnStatus,lasttime" +
+     				"columnStatus,lasttime,isupload" +
      				") " +
      				"values" +
      				"(" +
-     				"?,?,?,?,?,?,(datetime('now', 'localtime'))" +
+     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?" +
      				")",
      		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
-     						tb_vmc_column.getPathCount(),tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus()});
+     						tb_vmc_column.getPathCount(),tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
+     						tb_vmc_column.getIsupload()});
+     		
+        }
+        
+        
+        
+ 		if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
+	}
+	//为服务器设备下载添加或修改货道数据
+	public void addorupdateforserver(Tb_vmc_column tb_vmc_column)throws SQLException
+	{
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+		//是否已经存在本商品
+        Cursor cursor = db.rawQuery("select columnID from vmc_column where cabID = ? and columnID=?", 
+        		new String[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID() });// 根据编号查找支出信息，并存储到Cursor类中
+        if (cursor.moveToNext()) // 遍历查找到的支出信息
+        {
+        	//执行修改货道数据
+	 		db.execSQL(
+				"update vmc_column set " +
+				"productID=?,pathCount=?,path_id=?," +
+				"lasttime=(datetime('now', 'localtime')),isupload=0 " +
+				"where cabID=? and columnID=?",
+		        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
+						tb_vmc_column.getPath_id(),
+						tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
+		
+		}	      
+        else
+        {	
+        	// 执行添加货道		
+     		db.execSQL(
+     				"insert into vmc_column" +
+     				"(" +
+     				"cabID,columnID,productID,pathCount,pathRemain," +
+     				"columnStatus,lasttime,path_id,isupload" +
+     				") " +
+     				"values" +
+     				"(" +
+     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?,?" +
+     				")",
+     		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
+     						tb_vmc_column.getPathCount(),0,3,tb_vmc_column.getPath_id(),tb_vmc_column.getIsupload()});
      		
         }
         
@@ -127,7 +174,7 @@ public class vmc_columnDAO
     	Tb_vmc_column tb_vmc_column=null;
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select cabID,columnID,productID,pathCount,pathRemain," +
-            		"columnStatus,lasttime from vmc_column where cabID=? and columnID=?", 
+            		"columnStatus,lasttime,path_id,isupload from vmc_column where cabID=? and columnID=?", 
             		new String[] { cabID,columnID });// 根据编号查找支出信息，并存储到Cursor类中
         if (cursor.moveToNext()) {// 遍历查找到的支出信息
 
@@ -136,7 +183,8 @@ public class vmc_columnDAO
     				cursor.getString(cursor.getColumnIndex("cabID")), cursor.getString(cursor.getColumnIndex("columnID")),
     				cursor.getString(cursor.getColumnIndex("productID")),cursor.getInt(cursor.getColumnIndex("pathCount")),
     				cursor.getInt(cursor.getColumnIndex("pathRemain")),cursor.getInt(cursor.getColumnIndex("columnStatus")),
-    				cursor.getString(cursor.getColumnIndex("lasttime"))
+    				cursor.getString(cursor.getColumnIndex("lasttime")),cursor.getInt(cursor.getColumnIndex("path_id")),
+    				cursor.getInt(cursor.getColumnIndex("isupload"))
     		);
         }
         if (!cursor.isClosed()) 
@@ -159,7 +207,7 @@ public class vmc_columnDAO
         List<Tb_vmc_column> tb_inaccount = new ArrayList<Tb_vmc_column>();// 创建集合对象
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select cabID,columnID,productID,pathCount,pathRemain," +
-        		"columnStatus,lasttime from vmc_column where cabID=? ", 
+        		"columnStatus,lasttime,path_id,isupload from vmc_column where cabID=? ", 
         		new String[] { cabID});// 根据编号查找支出信息，并存储到Cursor类中
     
         //遍历所有的收入信息
@@ -171,7 +219,8 @@ public class vmc_columnDAO
         				cursor.getString(cursor.getColumnIndex("cabID")), cursor.getString(cursor.getColumnIndex("columnID")),
         				cursor.getString(cursor.getColumnIndex("productID")),cursor.getInt(cursor.getColumnIndex("pathCount")),
         				cursor.getInt(cursor.getColumnIndex("pathRemain")),cursor.getInt(cursor.getColumnIndex("columnStatus")),
-        				cursor.getString(cursor.getColumnIndex("lasttime"))
+        				cursor.getString(cursor.getColumnIndex("lasttime")),cursor.getInt(cursor.getColumnIndex("path_id")),
+        				cursor.getInt(cursor.getColumnIndex("isupload"))
         		)
            );
         }

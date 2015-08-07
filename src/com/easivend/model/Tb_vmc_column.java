@@ -26,9 +26,12 @@ public class Tb_vmc_column
     private int pathRemain;// 货道剩余商品数量
     private int columnStatus;// 货道状态0,未设置,1正确，2故障，3卖完
     private String lasttime;//货道最新更新时间
+    private int path_id;//下载的编号
+    private int isupload;//是否已经上传，1是，0不是
  // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_column(String cabineID, String columnID, String productID,
-			int pathCount, int pathRemain, int columnStatus, String lasttime) {
+			int pathCount, int pathRemain, int columnStatus, String lasttime,
+			int path_id, int isupload) {
 		super();
 		this.cabineID = cabineID;
 		this.columnID = columnID;
@@ -37,6 +40,8 @@ public class Tb_vmc_column
 		this.pathRemain = pathRemain;
 		this.columnStatus = columnStatus;
 		this.lasttime = lasttime;
+		this.path_id = path_id;
+		this.isupload = isupload;
 	}
 	public String getCabineID() {
 		return cabineID;
@@ -79,6 +84,18 @@ public class Tb_vmc_column
 	}
 	public void setLasttime(String lasttime) {
 		this.lasttime = lasttime;
+	}
+	public int getPath_id() {
+		return path_id;
+	}
+	public void setPath_id(int path_id) {
+		this.path_id = path_id;
+	}
+	public int getIsupload() {
+		return isupload;
+	}
+	public void setIsupload(int isupload) {
+		this.isupload = isupload;
 	}
     
 }

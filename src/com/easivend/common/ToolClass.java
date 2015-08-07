@@ -18,8 +18,10 @@ package com.easivend.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,11 +53,13 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import android.R.bool;
 import android.R.integer;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
@@ -392,6 +396,129 @@ public class ToolClass
 			  }
 			}
 		}    
+    }
+    
+    /**
+     * 使用isImgFile,判断这个商品图片是已经存在目录中,true存在,false不存在
+     */
+    public static boolean isImgFile(String filename) 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"productImage";
+    	final String NOSDCARD_DIR=File.separator+"productImage";
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则创建文件
+        	if(!fileName.exists())
+        	{  
+        		fileext=false; 
+    	    }  
+        	else
+        		fileext=true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileext; 
+    }
+            
+    //将Bitmap图片保存在本地
+    public static boolean  saveBitmaptofile(Bitmap bmp,String filename)
+    {  
+    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"productImage";
+    	final String NOSDCARD_DIR=File.separator+"productImage";
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则开始保存图片
+        	if(!fileName.exists())
+        	{  
+        		CompressFormat format= Bitmap.CompressFormat.JPEG;  
+    	        int quality = 100;  
+    	        OutputStream stream = null;  
+    	        stream = new FileOutputStream(fileName);      	         
+    	        fileext=bmp.compress(format, quality, stream); 
+    	    }  
+        	else
+        		fileext=false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     } 
+    
+    /**
+     * 使用getImgFile,得到这个商品图片的完整目录
+     */
+    public static String getImgFile(String filename) 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"productImage";
+    	final String NOSDCARD_DIR=File.separator+"productImage";
+    	String  sDir =null;
+    	String fileName=null;
+    	try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	fileName=sDir+File.separator+filename+".jpg";  
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
     }
     
     /**

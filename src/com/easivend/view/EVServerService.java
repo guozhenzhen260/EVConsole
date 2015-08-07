@@ -1,6 +1,10 @@
 package com.easivend.view;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +19,14 @@ import org.json.JSONObject;
 
 import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.HuodaoSet;
+import com.easivend.app.maintain.Order;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.common.Vmc_OrderAdapter;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
@@ -28,6 +35,7 @@ import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
+import com.example.evconsole.R;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -41,14 +49,14 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class EVServerService extends Service {
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
-	Timer timer; 
 	private Thread thread=null;
     private Handler mainhand=null,childhand=null;   
     EVServerhttp serverhttp=null;
-    boolean isev=false;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
 	@Override
@@ -106,7 +114,8 @@ public class EVServerService extends Service {
     			String PATH_COUNT=String.valueOf(tb_vmc_column.getPathCount());
     			String PATH_REMAINING=String.valueOf(tb_vmc_column.getPathRemain());
     			String PRODUCT_NO=tb_vmc_column.getProductID();
-    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道CABINET_NO="+CABINET_NO
+    			String PATH_ID=String.valueOf(tb_vmc_column.getPath_id());
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道PATH_ID="+PATH_ID+"CABINET_NO="+CABINET_NO
 						+" PATH_NO="+PATH_NO+" PATH_STATUS="+PATH_STATUS+" PATH_COUNT="+PATH_COUNT
 						+" PATH_REMAINING="+PATH_REMAINING+" PRODUCT_NO="+PRODUCT_NO,"server.txt");				
     			//
@@ -121,7 +130,8 @@ public class EVServerService extends Service {
 	    			ev2.put("PATH_STATUS", PATH_STATUS);
 	    			ev2.put("PATH_COUNT", PATH_COUNT);
 	    			ev2.put("PATH_REMAINING", PATH_REMAINING);
-	    			ev2.put("PRODUCT_NO", PRODUCT_NO);	    			
+	    			ev2.put("PRODUCT_NO", PRODUCT_NO);	    
+	    			ev2.put("PATH_ID", PATH_ID);	
 	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev2.toString(),"server.txt");
 	    		} catch (JSONException e) {
 	    			// TODO Auto-generated catch block
@@ -162,7 +172,6 @@ public class EVServerService extends Service {
 		// TODO Auto-generated method stub
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service create","server.txt");
 		super.onCreate();
-		timer = new Timer();
 		//9.注册接收器
 		receiver=new ActivityReceiver();
 		IntentFilter filter=new IntentFilter();
@@ -174,7 +183,6 @@ public class EVServerService extends Service {
 	public void onDestroy() {
 		// TODO Auto-generated method stub		
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service destroy","server.txt");
-		isev=false;//即使service销毁线程也不会停止，所以这里通过设置isev来停止线程
 		//解除注册接收器
 		this.unregisterReceiver(receiver);
 		super.onDestroy();
@@ -200,11 +208,6 @@ public class EVServerService extends Service {
 					//签到
 					case EVServerhttp.SETMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
-						//返回给activity广播
-						intent=new Intent();
-						intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
-						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-						sendBroadcast(intent);
 						//初始化二:获取商品分类信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg=childhand.obtainMessage();
@@ -246,7 +249,7 @@ public class EVServerService extends Service {
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息成功","server.txt");
 						try 
 						{
-							updatevmcProduct(msg.obj.toString());
+							boolean shprst=updatevmcProduct(msg.obj.toString());
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -270,8 +273,54 @@ public class EVServerService extends Service {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//初始化五:允许心跳
-						isev=true;
+						//初始化五
+						//返回给activity广播,初始化完成
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						sendBroadcast(intent);
+						
+						break;
+					//获取设备信息	
+					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息获取设备信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
+						//同步二、发送心跳命令到子线程中
+		            	childhand=serverhttp.obtainHandler();
+		        		Message childheartmsg=childhand.obtainMessage();
+		        		childheartmsg.what=EVServerhttp.SETHEARTCHILD;
+		        		childhand.sendMessage(childheartmsg);
+						
+						break;
+					//获取心跳信息	
+					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息失败，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
+						vmc_orderDAO orderDAO = new vmc_orderDAO(EVServerService.this);
+						//同步三、发送交易记录命令到子线程中
+		            	childhand=serverhttp.obtainHandler();
+		        		Message childheartmsg2=childhand.obtainMessage();
+		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
+		        		childheartmsg2.obj=grid();
+		        		childhand.sendMessage(childheartmsg2);						
+						break;
+					//获取上报交易记录返回	
+					case EVServerhttp.SETERRFAILRECORDMAIN://子线程接收主线程消息上报交易记录失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录失败","server.txt");
+						break;
+					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
+						//修改数据上报状态为已上报
+						updategrid(msg.obj.toString());
+						//同步三、发送交易记录命令到子线程中
+//		            	childhand=serverhttp.obtainHandler();
+//		        		Message childheartmsg2=childhand.obtainMessage();
+//		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
+//		        		childheartmsg2.obj=grid();
+//		        		childhand.sendMessage(childheartmsg2);						
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败
@@ -289,23 +338,7 @@ public class EVServerService extends Service {
 		//启动用户自己定义的类，启动线程
   		serverhttp=new EVServerhttp(mainhand);
   		thread=new Thread(serverhttp,"serverhttp Thread");
-  		thread.start();
-		
-	    //每隔一段时间，心跳同步一次
-	    timer.schedule(new TimerTask() { 
-	        @Override 
-	        public void run() { 
-	        	if(isev)
-	        	{
-		        	//发送心跳命令到子线程中
-	            	childhand=serverhttp.obtainHandler();
-	        		Message childmsg=childhand.obtainMessage();
-	        		childmsg.what=EVServerhttp.SETHEARTCHILD;
-	        		childhand.sendMessage(childmsg);	
-	        	}
-	        } 
-	    }, 15*1000, 3*60*1000);       // timeTask 
-
+  		thread.start();		
 	}	
 	
 	//更新商品分类信息
@@ -327,24 +360,30 @@ public class EVServerService extends Service {
 	}
 	
 	//更新商品信息
-	private void updatevmcProduct(String classrst) throws JSONException
+	private boolean updatevmcProduct(String classrst) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject(classrst); 
 		JSONArray arr1=jsonObject.getJSONArray("ProductList");
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品="+arr1.length()+"txt="+classrst,"server.txt");
+		
 		for(int i=0;i<arr1.length();i++)
 		{
 			JSONObject object2=arr1.getJSONObject(i);
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品="+i+"txt="+object2.toString(),"server.txt");
+			
 			String product_Class_NO=(object2.getString("product_Class_NO").isEmpty())?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品product_NO="+object2.getString("product_NO")
-					+"product_Name="+object2.getString("product_Name")+"product_Class_NO="+product_Class_NO,"server.txt");										
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","2更新商品"+i+"txt=product_NO="+object2.getString("product_NO")
+					+"product_Name="+object2.getString("product_Name")+"product_Class_NO="+product_Class_NO
+					+"AttImg="+object2.getString("AttImg"),"server.txt");										
 			// 创建InaccountDAO对象
 			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
             //创建Tb_inaccount对象
 			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(object2.getString("product_NO"), object2.getString("product_Name"),object2.getString("product_TXT"),Float.parseFloat(object2.getString("market_Price")),
-					Float.parseFloat(object2.getString("sales_Price")),0,object2.getString("create_Time"),object2.getString("last_Edit_Time"),"","","",0,0);
+					Float.parseFloat(object2.getString("sales_Price")),0,object2.getString("create_Time"),object2.getString("last_Edit_Time"),object2.getString("AttImg"),"","",0,0);
 			productDAO.addorupdate(tb_vmc_product,product_Class_NO);// 修改
 		}
+		return true;
 	}
 		
 	//更新货道信息
@@ -355,6 +394,7 @@ public class EVServerService extends Service {
 		for(int i=0;i<arr1.length();i++)
 		{
 			JSONObject object2=arr1.getJSONObject(i);
+			int PATH_ID=object2.getInt("PATH_ID");
 			int CABINET_NO=Integer.parseInt(object2.getString("CABINET_NO"));
 			int PATH_NO=Integer.parseInt(object2.getString("PATH_NO"));
 			String PATH_NOSTR=(PATH_NO<10)?("0"+object2.getString("PATH_NO")):object2.getString("PATH_NO");
@@ -383,16 +423,16 @@ public class EVServerService extends Service {
 			if(j==1)
 			{		
 				status=updatehuodaostatus(status,PATH_REMAINING);
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道CABINET_NO="+object2.getString("CABINET_NO")
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道PATH_ID="+PATH_ID+"CABINET_NO="+object2.getString("CABINET_NO")
 						+"PATH_NO="+PATH_NOSTR+"PRODUCT_NO="+object2.getString("PRODUCT_NO")
-						+"PATH_COUNT="+object2.getString("PATH_COUNT")+"status="+status,"server.txt");	
+						+"PATH_COUNT="+object2.getString("PATH_COUNT"),"server.txt");	
 				// 创建InaccountDAO对象
     			vmc_columnDAO columnDAO = new vmc_columnDAO(EVServerService.this);
 	            //创建Tb_inaccount对象
     			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,object2.getString("PRODUCT_NO"),
     					Integer.parseInt(object2.getString("PATH_COUNT")),Integer.parseInt(object2.getString("PATH_REMAINING")),
-    					status,"");    			
-    			columnDAO.addorupdate(tb_vmc_column);// 添加商品信息
+    					status,"",PATH_ID,0);    			
+    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加商品信息
 			}
 			//更新货道失败
 			else
@@ -419,6 +459,225 @@ public class EVServerService extends Service {
 	    		huostatus=3;	
 		}
 		return huostatus;
+	}
+	
+	//获取需要上报的报表
+	private JSONArray grid()
+	{		
+		//总支付订单
+		String[] ordereID;// 订单ID[pk]
+		String[] payType;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+		String[] payStatus;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+		String[] RealStatus;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+		String[] smallNote;// 纸币金额
+		String[] smallConi;// 硬币金额
+		String[] smallAmount;// 现金投入金额
+		String[] smallCard;// 非现金支付金额
+		String[] shouldPay;// 商品总金额
+		String[] shouldNo;// 商品总数量
+		String[] realNote;// 纸币退币金额
+		String[] realCoin;// 硬币退币金额
+		String[] realAmount;// 现金退币金额
+		String[] debtAmount;// 欠款金额
+		String[] realCard;// 非现金退币金额
+		String[] payTime;//支付时间
+			//详细支付订单
+		String[] productID;//商品id
+		String[] cabID;//货柜号
+		String[] columnID;//货道号
+		    //商品信息
+		String[] productName;// 商品全名
+		String[] salesPrice;// 优惠价,如”20.00”
+		
+		//数字类型订单信息
+	    //总支付订单
+		int[] payTypevalue;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+	    int[] payStatusvalue;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+	    int[] RealStatusvalue;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+	  	double[] smallNotevalue;// 纸币金额
+		double[] smallConivalue;// 硬币金额
+		double[] smallAmountvalue;// 现金投入金额
+		double[] smallCardvalue;// 非现金支付金额
+		double[] shouldPayvalue;// 商品总金额
+		double[] shouldNovalue;// 商品总数量
+		double[] realNotevalue;// 纸币退币金额
+		double[] realCoinvalue;// 硬币退币金额
+		double[] realAmountvalue;// 现金退币金额
+		double[] debtAmountvalue;// 欠款金额
+		double[] realCardvalue;// 非现金退币金额
+	  	//商品信息
+		double[] salesPricevalue;// 优惠价,如”20.00”
+		int ourdercount=0;//记录的数量
+		JSONArray array=new JSONArray();
+		
+		
+		Vmc_OrderAdapter vmc_OrderAdapter=new Vmc_OrderAdapter();
+		vmc_OrderAdapter.grid(EVServerService.this);
+		//总支付订单
+		ordereID = vmc_OrderAdapter.getOrdereID();// 订单ID[pk]
+		payType = vmc_OrderAdapter.getPayType();// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+		payStatus = vmc_OrderAdapter.getPayStatus();// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+		RealStatus = vmc_OrderAdapter.getRealStatus();// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+		smallNote = vmc_OrderAdapter.getSmallNote();// 纸币金额
+		smallConi = vmc_OrderAdapter.getSmallConi();// 硬币金额
+		smallAmount = vmc_OrderAdapter.getSmallAmount();// 现金投入金额
+		smallCard = vmc_OrderAdapter.getSmallCard();// 非现金支付金额
+		shouldPay = vmc_OrderAdapter.getShouldPay();// 商品总金额
+		shouldNo = vmc_OrderAdapter.getShouldNo();// 商品总数量
+		realNote = vmc_OrderAdapter.getRealNote();// 纸币退币金额
+		realCoin = vmc_OrderAdapter.getRealCoin();// 硬币退币金额
+		realAmount = vmc_OrderAdapter.getRealAmount();// 现金退币金额
+		debtAmount = vmc_OrderAdapter.getDebtAmount();// 欠款金额
+		realCard = vmc_OrderAdapter.getRealCard();// 非现金退币金额
+		payTime = vmc_OrderAdapter.getPayTime();//支付时间
+		//详细支付订单
+		productID = vmc_OrderAdapter.getProductID();//商品id
+		cabID = vmc_OrderAdapter.getCabID();//货柜号
+	    columnID = vmc_OrderAdapter.getColumnID();//货道号
+	    //商品信息
+	    productName = vmc_OrderAdapter.getProductName();// 商品全名
+	    salesPrice = vmc_OrderAdapter.getSalesPrice();// 优惠价,如”20.00”
+	    
+	    //数字类型订单信息
+	    payTypevalue= vmc_OrderAdapter.getPayTypevalue();// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+		payStatusvalue = vmc_OrderAdapter.getPayStatusvalue();// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+		RealStatusvalue = vmc_OrderAdapter.getRealStatusvalue();// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
+	    smallNotevalue= vmc_OrderAdapter.getSmallNotevalue();// 纸币金额
+	    smallConivalue= vmc_OrderAdapter.getSmallConivalue();// 硬币金额
+	    smallAmountvalue= vmc_OrderAdapter.getSmallAmountvalue();// 现金投入金额
+	    smallCardvalue= vmc_OrderAdapter.getSmallCardvalue();// 非现金支付金额
+	    shouldPayvalue= vmc_OrderAdapter.getShouldPayvalue();// 商品总金额
+	    shouldNovalue= vmc_OrderAdapter.getShouldNovalue();// 商品总数量
+	    realNotevalue= vmc_OrderAdapter.getRealNotevalue();// 纸币退币金额
+	    realCoinvalue= vmc_OrderAdapter.getRealCoinvalue();// 硬币退币金额
+	    realAmountvalue= vmc_OrderAdapter.getRealAmountvalue();// 现金退币金额
+	    debtAmountvalue= vmc_OrderAdapter.getDebtAmountvalue();// 欠款金额
+	    realCardvalue= vmc_OrderAdapter.getRealCardvalue();// 非现金退币金额
+	    //商品信息
+	    salesPricevalue= vmc_OrderAdapter.getSalesPricevalue();// 优惠价,如”20.00”
+	    ourdercount=vmc_OrderAdapter.getCount();
+	    
+	    int orderStatus=0;//1未支付,2出货成功,3出货未完成
+	    int payStatue=0;//0未付款,1正在付款,2付款完成,3付款失败
+	    int payTyp=0;//0现金,1支付宝声波,2银联,3支付宝二维码,4微信
+	    double RefundAmount=0;//退款金额
+	    int actualQuantity=0;//实际出货,1成功,0失败
+	    try {
+	    	for(int x=0;x<vmc_OrderAdapter.getCount();x++)	
+			{
+		    	// 订单状态0出货成功，1出货失败，2支付失败，3未支付
+		    	if(payStatusvalue[x]==2||payStatusvalue[x]==3)
+				{
+		    		orderStatus=1;
+		    		payStatue=3;
+		    		actualQuantity=0;
+				}
+				else if(payStatusvalue[x]==0)
+				{
+					orderStatus=2;
+					payStatue=2;
+					actualQuantity=1;
+				}
+				else if(payStatusvalue[x]==1)
+				{
+					orderStatus=3;
+					payStatue=2;
+					actualQuantity=0;
+				}
+		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+		    	if(payTypevalue[x]==0)
+				{
+		    		payTyp=0;
+				}
+				else if(payTypevalue[x]==1)
+				{
+					payTyp=2;
+				}
+				else if(payTypevalue[x]==2)
+				{
+					payTyp=1;
+				}
+				else if(payTypevalue[x]==3)
+				{
+					payTyp=3;
+				}
+				else if(payTypevalue[x]==4)
+				{
+					payTyp=4;
+				}
+		    	RefundAmount=realAmountvalue[x]+realCardvalue[x];
+		    	//ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售payStatus="+payStatusvalue[x]+"payType="+payTypevalue[x],"server.txt");
+				
+		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
+				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"productNo="+productID[x]+"quantity="+1+
+				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
+		    	JSONObject object=new JSONObject();
+		    	object.put("orderNo", ordereID[x]);
+		    	object.put("orderTime", getStrtime(payTime[x]));
+		    	object.put("orderStatus", orderStatus);
+		    	object.put("payStatus", payStatue);
+		    	object.put("payType", payTyp);
+		    	object.put("shouldPay", shouldPay[x]);
+		    	object.put("RefundAmount", RefundAmount);
+		    	object.put("productNo", productID[x]);		    	
+		    	object.put("quantity", 1);
+		    	object.put("actualQuantity", actualQuantity);
+		    	object.put("customerPrice", salesPrice[x]);
+		    	object.put("productName", productName[x]);	
+		    	
+		    	array.put(object);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	    return array;
+	}
+	private String getStrtime(String orderTime)
+	{
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date =null;
+		try {
+			date = df.parse(orderTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd"); //精确到毫秒 
+		SimpleDateFormat tempTime = new SimpleDateFormat("HH:mm:ss"); //精确到毫秒 
+        String datetime = tempDate.format(date).toString()+"T"
+        		+tempTime.format(date).toString(); 
+		return datetime;
+	}
+	
+	//修改数据上报状态为已上报
+	private void updategrid(String str)
+	{	
+		// 创建InaccountDAO对象
+  		vmc_orderDAO orderDAO = new vmc_orderDAO(EVServerService.this);
+  		
+		JSONArray json=null;
+		try {
+			json=new JSONArray(str);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录成功="+json.toString(),"server.txt");
+		for(int i=0;i<json.length();i++)
+		{
+			JSONObject object2=null;
+			String orderno=null;
+			try {
+				object2 = json.getJSONObject(i);
+				orderno=object2.getString("orderno");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新交易记录="+orderno
+					,"server.txt");
+			orderDAO.update(orderno);
+		}		  	
 	}
 
 }
