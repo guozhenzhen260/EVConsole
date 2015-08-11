@@ -180,12 +180,12 @@ public class HuodaoSet extends Activity
 		    			//Server服务相关
 		    			//=============
 		    			//7.发送指令广播给EVServerService
-		    			Intent intent2=new Intent();
-	    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUONECHILD);
-	    				intent2.putExtra("CABINET_NO", cabID);
-	    				intent2.putExtra("PATH_NO", huoID);
-	    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-	    				sendBroadcast(intent2);
+//		    			Intent intent2=new Intent();
+//	    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUONECHILD);
+//	    				intent2.putExtra("CABINET_NO", cabID);
+//	    				intent2.putExtra("PATH_NO", huoID);
+//	    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+//	    				sendBroadcast(intent2);
 	    				
 			        	// 弹出信息提示
 			            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();

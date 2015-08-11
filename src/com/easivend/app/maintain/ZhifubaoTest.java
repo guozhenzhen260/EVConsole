@@ -104,7 +104,7 @@ public class ZhifubaoTest extends Activity
 				JSONObject ev=null;
 				try {
 					ev=new JSONObject();
-					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //精确到毫秒 
 			        String datetime = tempDate.format(new java.util.Date()).toString(); 					
 			        out_trade_no=id+datetime;
 			        ev.put("out_trade_no", out_trade_no);
@@ -182,7 +182,7 @@ public class ZhifubaoTest extends Activity
 					ev.put("out_trade_no", out_trade_no);		
 					//ev.put("out_trade_no", "000120150301113215800");
 					ev.put("refund_amount", edtzhifubaotest.getText());
-					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //精确到毫秒 
 			        String datetime = tempDate.format(new java.util.Date()).toString(); 					
 			        ev.put("out_request_no", id+datetime);
 					Log.i("EV_JNI","Send0.1="+ev.toString());

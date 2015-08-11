@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_column;
+import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 
@@ -164,7 +165,7 @@ public class vmc_columnDAO
           db.close(); 
   	}	
 	/**
-     * 查找一条商品信息
+     * 查找一条货道信息
      * 
      * @param id
      * @return
@@ -194,6 +195,52 @@ public class vmc_columnDAO
  		db.close();
         return tb_vmc_column;// 如果没有信息，则返回null
     }
+    
+    /**
+     * 查找所有未上报的货道信息
+     * 
+     * @param id
+     * @return
+     */
+    public List<Tb_vmc_column> getScrollPay() 
+    {
+    	List<Tb_vmc_column> tb_vmc_column = new ArrayList<Tb_vmc_column>();// 创建集合对象
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select cabID,columnID,productID,pathCount,pathRemain," +
+            		"columnStatus,lasttime,path_id,isupload from vmc_column where isupload <> 1 ", null);// 根据编号查找支出信息，并存储到Cursor类中
+        while (cursor.moveToNext()) {// 遍历查找到的支出信息
+
+            // 将遍历到的支出信息存储到Tb_outaccount类中
+        	tb_vmc_column.add(new Tb_vmc_column
+        			(
+    				cursor.getString(cursor.getColumnIndex("cabID")), cursor.getString(cursor.getColumnIndex("columnID")),
+    				cursor.getString(cursor.getColumnIndex("productID")),cursor.getInt(cursor.getColumnIndex("pathCount")),
+    				cursor.getInt(cursor.getColumnIndex("pathRemain")),cursor.getInt(cursor.getColumnIndex("columnStatus")),
+    				cursor.getString(cursor.getColumnIndex("lasttime")),cursor.getInt(cursor.getColumnIndex("path_id")),
+    				cursor.getInt(cursor.getColumnIndex("isupload"))
+    				)
+    		);
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close();
+        return tb_vmc_column;// 如果没有信息，则返回null
+    }
+    /**
+     * 上报成功后，修改已上报状态
+     * 
+     * @return
+     */
+  	public void updatecol(String cabID,String columnID) 
+  	{       
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
+          // 执行删除商品表
+          db.execSQL("update [vmc_column] set isupload=1 where cabID=? and columnID=?", 
+            		new String[] { cabID,columnID });        
+          db.close(); 
+  	}  
     
     /**
      * 获取所有条数商品信息

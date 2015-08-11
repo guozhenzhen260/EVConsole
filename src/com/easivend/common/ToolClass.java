@@ -151,7 +151,7 @@ public class ToolClass
     	String  sDir =null;
     	File fileName=null;
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
-                + "hh:mm:ss:SSS"); //精确到毫秒 
+                + "HH:mm:ss:SSS"); //精确到毫秒 
         String datetime = tempDate.format(new java.util.Date()).toString();  
         String cont=datetime+content+"\n";
     	
@@ -199,7 +199,7 @@ public class ToolClass
     	String  sDir =null;
     	File fileName=null;
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
-                + "hh:mm:ss"); //精确到毫秒 
+                + "HH:mm:ss"); //精确到毫秒 
         String datetime = tempDate.format(new java.util.Date()).toString();  
         
     	
@@ -360,7 +360,7 @@ public class ToolClass
 	//重命名文件名fileName原文件名,sDir是目录
     public static void updatefile(File fileName,String  sDir)
 	{
-		SimpleDateFormat tempDate2 = new SimpleDateFormat("yyyy-MM-dd-hhmmss"); //精确到毫秒 
+		SimpleDateFormat tempDate2 = new SimpleDateFormat("yyyy-MM-dd-HHmmss"); //精确到毫秒 
         String datetime2 = tempDate2.format(new java.util.Date()).toString();
         String oldname=fileName.getName();
 		String newname=datetime2+oldname;
@@ -692,7 +692,7 @@ public class ToolClass
     		id=tb_inaccount.getDevhCode().toString();
     	}
     	Log.i("EV_JNI","Send0.0="+id);
-    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //精确到毫秒 
         String datetime = tempDate.format(new java.util.Date()).toString(); 					
         String logID="log"+id+datetime;
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
@@ -836,7 +836,7 @@ public class ToolClass
     		id=tb_inaccount.getDevhCode().toString();
     	}
     	Log.i("EV_JNI","Send0.0="+id);
-    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddhhmmssSSS"); //精确到毫秒 
+    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //精确到毫秒 
         String datetime = tempDate.format(new java.util.Date()).toString(); 					
         out_trade_no=id+datetime;
         return out_trade_no;
