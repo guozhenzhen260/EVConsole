@@ -8,6 +8,30 @@ public class WeiConfig
 	public static String weimch_id="";
 	// 商户的私钥
 	public static String weikey = "";
+	
+	public static String weisubmch_id="";//分账账号
+	//是否使用分账模式,0是不分账,0.99是指99%钱打到分账号上,1%打到主账号上,
+	//最大值是1，代表所有钱都打到分账号上
+	public static float isweisub=0;
+	
+	public static String getWeisubmch_id() {
+		return weisubmch_id;
+	}
+
+	public static void setWeisubmch_id(String weisubmch_id) {
+		WeiConfig.weisubmch_id = weisubmch_id;
+	}
+
+	
+	public static float getIsweisub() {
+		return isweisub;
+	}
+
+	public static void setIsweisub(float isweisub) {
+		WeiConfig.isweisub = isweisub;
+	}
+
+
 	// 字符编码格式 目前支持 gbk 或 utf-8
 	public static String input_charset = "utf-8";
 	

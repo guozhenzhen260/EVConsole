@@ -3,6 +3,7 @@ package com.easivend.alipay;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.easivend.alipay.AlipayConfig;
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.ToolClass;
 
 public class AlipayConfigAPI {
@@ -26,17 +28,24 @@ public class AlipayConfigAPI {
     	//alipay
     	str=list.get("alipartner");    	
     	AlipayConfig.setPartner(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<partner="+str,"log.txt");
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<partner="+AlipayConfig.getPartner(),"log.txt");
     	
     	str=list.get("aliseller_email");
     	AlipayConfig.setSeller_email(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<seller_email="+str,"log.txt");
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<seller_email="+AlipayConfig.getSeller_email(),"log.txt");
     	
     	str=list.get("alikey");
     	AlipayConfig.setKey(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<alikey="+str,"log.txt");
-    	//weixing
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<alikey="+AlipayConfig.getKey(),"log.txt");
+
+    	str=list.get("alisubpartner");    	
+    	AlipayConfig.setSubpartner(str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<subpartner="+AlipayConfig.getSubpartner(),"log.txt");
     	
+    	str=list.get("isalisub");    	
+    	AlipayConfig.setIsalisub(Float.parseFloat(str));
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isalisub="+AlipayConfig.getIsalisub(),"log.txt");
+    	    	
     }
     
     //生成支付请求消息
@@ -54,6 +63,42 @@ public class AlipayConfigAPI {
 		 sPara.put("seller_email", AlipayConfig.getSeller_email());//卖家支付宝帐户		 
 		 sPara.put("goods_detail",list.get("goods_detail"));//商品明细
 		 sPara.put("it_b_pay",list.get("it_b_pay"));//交易关闭时间	
+		 //添加分账账号
+		 if(AlipayConfig.getIsalisub()>0)
+		 {
+			 JSONArray array=new JSONArray();
+			 JSONObject json=new JSONObject();
+			 try {
+				json.put("serialNo", 1);
+				json.put("transOut", AlipayConfig.getPartner());
+				json.put("transIn", AlipayConfig.getSubpartner());
+				float total_fee=Float.parseFloat(list.get("total_fee"));
+				total_fee=total_fee*AlipayConfig.getIsalisub();
+				BigDecimal b=new BigDecimal(total_fee);  
+				double amount=b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();  
+				json.put("amount", amount);
+				json.put("desc", "分账交易");
+				array.put(json);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Log.i("EV_JNI","Send0.3="+array.toString());
+			sPara.put("royalty_type","ROYALTY");//分账类型
+			sPara.put("royalty_parameters",array.toString());//分账信息
+		 }
+		 String vmc_no=ToolClass.getVmc_no();
+		 JSONObject extend=new JSONObject();
+		 try {
+			extend.put("STORE_TYPE", "1");
+			extend.put("STORE_ID", vmc_no);
+			extend.put("TERMINAL_ID", vmc_no);
+			Log.i("EV_JNI","Send0.4="+extend.toString());
+			sPara.put("extend_params",extend.toString());//分账信息
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		 
 		 Map<String, String> map1 = AlipaySubmit.buildRequestPara(sPara);
 		 Log.i("EV_JNI","Send1="+map1);

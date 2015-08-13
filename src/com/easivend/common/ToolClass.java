@@ -76,8 +76,16 @@ public class ToolClass
 	public final static int WARN=3;
 	public final static int ERROR=4;
 	private static int bentcom_id=-1,com_id=-1;
+	public static String vmc_no="";
 	
-	
+	public static String getVmc_no() {
+		return vmc_no;
+	}
+
+	public static void setVmc_no(String vmc_no) {
+		ToolClass.vmc_no = vmc_no;
+	}
+
 	public static int getBentcom_id() {
 		return bentcom_id;
 	}
@@ -853,6 +861,7 @@ public class ToolClass
     	{
     		allSet.put("vmc_no",tb_inaccount.getDevID().toString());
     		allSet.put("vmc_auth_code",tb_inaccount.getDevhCode().toString());
+    		ToolClass.setVmc_no(tb_inaccount.getDevID().toString());
     	}
     	return allSet;
  	}
