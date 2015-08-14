@@ -31,7 +31,9 @@ import org.json.JSONObject;
 import com.easivend.common.ToolClass;
 import com.easivend.evprotocol.EVprotocol.EV_listener;
 import com.easivend.evprotocol.EVprotocol.RequestObject;
+import com.easivend.http.EVServerhttp;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -403,7 +405,7 @@ public class EVprotocolAPI
 									allSet.put("hopper7", 0);
 									allSet.put("hopper8", 0);
 									callBack.jniCallback(allSet);
-						    	}
+						    	}	
 						    	break;
 						    case EV_MDB_COST:
 //						    	if(ev_head.getInt("is_success")>0)

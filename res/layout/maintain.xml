@@ -22,14 +22,7 @@
 	        android:id="@+id/txtbentcom"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="格子柜串口未配置" />
-   		 <ProgressBar
-	        android:id="@+id/barmaintain"
-	        style="?android:attr/progressBarStyleLarge"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:visibility="gone"
-	        android:indeterminate="true" />
+	        android:text="格子柜串口未配置" />   		 
    	</LinearLayout>
 	<GridView 
 	    android:id="@+id/gvInfo"

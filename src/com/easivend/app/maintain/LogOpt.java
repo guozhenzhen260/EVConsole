@@ -24,11 +24,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -111,6 +113,21 @@ public class LogOpt extends Activity {
 		    	finish();
 		    }
 		});
+    	//动态设置控件高度
+    	//
+    	DisplayMetrics  dm = new DisplayMetrics();  
+        //取得窗口属性  
+        getWindowManager().getDefaultDisplay().getMetrics(dm);  
+        //窗口的宽度  
+        int screenWidth = dm.widthPixels;          
+        //窗口高度  
+        int screenHeight = dm.heightPixels;      
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
+				+"],["+screenHeight+"]","log.txt");	
+		
+    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvlog.getLayoutParams(); // 取控件mGrid当前的布局参数
+    	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
+    	lvlog.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
 	}
 	@Override
     protected Dialog onCreateDialog(int id) {// 重写onCreateDialog方法	

@@ -56,7 +56,10 @@ import android.widget.Toast;
 public class EVServerService extends Service {
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
 	private Thread thread=null;
-    private Handler mainhand=null,childhand=null;   
+    private Handler mainhand=null,childhand=null;  
+    private String vmc_no=null;
+    private String vmc_auth_code=null;
+    private int tokenno=0;
     EVServerhttp serverhttp=null;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
@@ -79,8 +82,8 @@ public class EVServerService extends Service {
 			{
 			//签到
 			case EVServerhttp.SETCHILD:
-				String vmc_no=bundle.getString("vmc_no");
-				String vmc_auth_code=bundle.getString("vmc_auth_code");
+				vmc_no=bundle.getString("vmc_no");
+				vmc_auth_code=bundle.getString("vmc_auth_code");
 				SerializableMap serializableMap = (SerializableMap) bundle.get("huoSet");
 				huoSet=serializableMap.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
@@ -104,43 +107,6 @@ public class EVServerService extends Service {
 	    		childmsg.obj=ev;
 	    		childhand.sendMessage(childmsg);
 	    		break;
-//	    	//单货道状态上报	
-//			case EVServerhttp.SETHUODAOSTATUONECHILD:
-//				// 创建InaccountDAO对象
-//    			vmc_columnDAO columnDAO = new vmc_columnDAO(EVServerService.this);
-//    			Tb_vmc_column tb_vmc_column = columnDAO.find(bundle.getString("CABINET_NO"),bundle.getString("PATH_NO"));// 添加商品信息 
-//    			String CABINET_NO=bundle.getString("CABINET_NO");
-//    			String PATH_NO=bundle.getString("PATH_NO");
-//    			String PATH_STATUS=String.valueOf(tb_vmc_column.getColumnStatus());
-//    			String PATH_COUNT=String.valueOf(tb_vmc_column.getPathCount());
-//    			String PATH_REMAINING=String.valueOf(tb_vmc_column.getPathRemain());
-//    			String PRODUCT_NO=tb_vmc_column.getProductID();
-//    			String PATH_ID=String.valueOf(tb_vmc_column.getPath_id());
-//    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道PATH_ID="+PATH_ID+"CABINET_NO="+CABINET_NO
-//						+" PATH_NO="+PATH_NO+" PATH_STATUS="+PATH_STATUS+" PATH_COUNT="+PATH_COUNT
-//						+" PATH_REMAINING="+PATH_REMAINING+" PRODUCT_NO="+PRODUCT_NO,"server.txt");				
-//    			//
-//	        	childhand=serverhttp.obtainHandler();
-//	    		Message childmsg2=childhand.obtainMessage();
-//	    		childmsg2.what=EVServerhttp.SETHUODAOSTATUONECHILD;
-//	    		JSONObject ev2=null;
-//	    		try {
-//	    			ev2=new JSONObject();
-//	    			ev2.put("CABINET_NO", CABINET_NO);
-//	    			ev2.put("PATH_NO", PATH_NO);
-//	    			ev2.put("PATH_STATUS", PATH_STATUS);
-//	    			ev2.put("PATH_COUNT", PATH_COUNT);
-//	    			ev2.put("PATH_REMAINING", PATH_REMAINING);
-//	    			ev2.put("PRODUCT_NO", PRODUCT_NO);	    
-//	    			ev2.put("PATH_ID", PATH_ID);	
-//	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev2.toString(),"server.txt");
-//	    		} catch (JSONException e) {
-//	    			// TODO Auto-generated catch block
-//	    			e.printStackTrace();
-//	    		}
-//	    		childmsg2.obj=ev2;
-//	    		childhand.sendMessage(childmsg2);
-//    			break;
     		//设备状态上报	
 			case EVServerhttp.SETDEVSTATUCHILD:
 				int bill_err=bundle.getInt("bill_err");
@@ -317,7 +283,7 @@ public class EVServerService extends Service {
 						//修改数据上报状态为已上报
 						updategrid(msg.obj.toString());
 						
-						//同步四、发送货道更改命令到子线程中
+						//同步四、发送货道上传命令到子线程中
 						childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg3=childhand.obtainMessage();
 		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
@@ -330,7 +296,33 @@ public class EVServerService extends Service {
 						break;
 					case EVServerhttp.SETHUODAOSTATUMAIN://子线程接收主线程上报货道信息
 						//修改数据上报状态为已上报
-						updatecolumns(msg.obj.toString());												
+						updatecolumns(msg.obj.toString());
+						//重新更新token的值
+						if(tokenno>=480)
+						{
+							//处理接收到的内容,发送签到命令到子线程中
+							//初始化一:发送签到指令
+				        	childhand=serverhttp.obtainHandler();
+				    		Message childheartmsg4=childhand.obtainMessage();
+				    		childheartmsg4.what=EVServerhttp.SETCHECKCHILD;
+				    		JSONObject ev=null;
+				    		try {
+				    			ev=new JSONObject();
+				    			ev.put("vmc_no", vmc_no);
+				    			ev.put("vmc_auth_code", vmc_auth_code);
+				    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev.toString(),"server.txt");
+				    		} catch (JSONException e) {
+				    			// TODO Auto-generated catch block
+				    			e.printStackTrace();
+				    		}
+				    		childheartmsg4.obj=ev;
+				    		childhand.sendMessage(childheartmsg4);
+				    		tokenno=0;
+						}
+						else
+						{
+							tokenno++;
+						}
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败
@@ -684,7 +676,7 @@ public class EVServerService extends Service {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新交易记录="+orderno
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","上报交易记录="+orderno
 					,"server.txt");
 			orderDAO.update(orderno);
 		}		  	
@@ -728,7 +720,7 @@ public class EVServerService extends Service {
 	  			lastedittimes[x]= tb_inaccount.getLasttime();
 	  			isdisables[x]= "0";
 	  			isupload[x] = String.valueOf(tb_inaccount.getIsupload());
-	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","上传货道pathID="+pathIDs[x]+"cabinetNumber="+cabinetNumbers[x]+"pathName="+pathNames[x]+"productID="
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","需传货道pathID="+pathIDs[x]+"cabinetNumber="+cabinetNumbers[x]+"pathName="+pathNames[x]+"productID="
 	  					+productIDs[x]+"productNum="+productNums[x]+"pathCount="+pathCounts[x]+"pathStatus="+pathStatuss[x]+"pathRemaining="+pathRemainings[x]+"lastedittime="+getStrtime(lastedittimes[x])+
 	  					"isdisable="+isdisables[x]+"isupload="+isupload[x],"server.txt");			
 		    	JSONObject object=new JSONObject();
@@ -765,7 +757,7 @@ public class EVServerService extends Service {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道信息成功="+json.toString(),"server.txt");
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道成功="+json.toString(),"server.txt");
 		for(int i=0;i<json.length();i++)
 		{
 			JSONObject object2=null;
@@ -781,7 +773,7 @@ public class EVServerService extends Service {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道信息cabinetNumber="+cabinetNumber
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","上报货道cabinetNumber="+cabinetNumber
 					+"pathName="+pathName,"server.txt");
 			columnDAO.updatecol(cabinetNumber,pathName);
 		}		  	

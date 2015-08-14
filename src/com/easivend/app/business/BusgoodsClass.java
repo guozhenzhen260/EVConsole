@@ -12,6 +12,7 @@ import com.example.evconsole.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class BusgoodsClass extends Activity
 {
+	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static BusgoodsClass BusgoodsClassAct=null;
 	GridView gvbusgoodsclass=null;
 	ImageButton imgbtnbusgoodsclassback=null;
@@ -68,6 +70,16 @@ public class BusgoodsClass extends Activity
 		    	finish();
 		    }
 		});
+	    //5分钟钟之后退出页面
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {	
+            	finish();  
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);
 	}
 	
 }

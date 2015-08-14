@@ -10,8 +10,7 @@ public class WeiConfig
 	public static String weikey = "";
 	
 	public static String weisubmch_id="";//分账账号
-	//是否使用分账模式,0是不分账,0.99是指99%钱打到分账号上,1%打到主账号上,
-	//最大值是1，代表所有钱都打到分账号上
+	//是否使用分账模式,0是不分账,1是分账
 	public static float isweisub=0;
 	
 	public static String getWeisubmch_id() {

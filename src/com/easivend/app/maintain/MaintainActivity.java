@@ -53,6 +53,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.R.string;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -78,7 +79,10 @@ public class MaintainActivity extends Activity
 {
 	TextView txtcom=null,txtbentcom=null;
 	private GridView gvInfo;// 创建GridView对象
-	private ProgressBar barmaintain=null;
+	//跳转页面对话框
+	private ProgressDialog barmaintain= null;
+	//进度对话框
+	ProgressDialog dialog= null;
 	// 定义字符串数组，存储系统功能
     private String[] titles = new String[] { "商品管理", "货道管理", "参数配置", "订单信息", "操作日志", "本机配置", "交易页面", "退出" };
     // 定义int数组，存储功能对应的图标
@@ -129,8 +133,9 @@ public class MaintainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maintain);	
 		//注册串口监听器
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());			
-			
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());
+		dialog= ProgressDialog.show(MaintainActivity.this,"同步服务器","请稍候...");
+				
 		//==========
 		//Dog服务相关
 		//==========
@@ -193,7 +198,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 3*1000, 20*1000);       // timeTask 
+	    }, 3*1000, 3*60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
@@ -243,7 +248,6 @@ public class MaintainActivity extends Activity
 		//================
 		//九宫格相关
 		//================		
-		barmaintain= (ProgressBar) findViewById(R.id.barmaintain);
 		gvInfo = (GridView) findViewById(R.id.gvInfo);// 获取布局文件中的gvInfo组件
         PictureAdapter adapter = new PictureAdapter(titles, images, this);// 创建pictureAdapter对象
         gvInfo.setAdapter(adapter);// 为GridView设置数据源
@@ -253,17 +257,17 @@ public class MaintainActivity extends Activity
                 Intent intent = null;// 创建Intent对象
                 switch (arg2) {
                 case 0:
-                	barmaintain.setVisibility(View.VISIBLE);                	
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开商品管理","请稍候...");
                 	intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);// 打开GoodsManager
                     break;
                 case 1:
-                	barmaintain.setVisibility(View.VISIBLE); 
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开货道管理","请稍候...");
                     intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用HuodaoTest窗口初始化Intent
                     startActivityForResult(intent,REQUEST_CODE);// 打开HuodaoTest
                     break;
                 case 2:
-                	barmaintain.setVisibility(View.VISIBLE);
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开参数管理","请稍候...");
                 	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
                     startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
                     break;    
@@ -381,7 +385,7 @@ public class MaintainActivity extends Activity
 		{
 			if(resultCode==MaintainActivity.RESULT_CANCELED)
 			{				
-				barmaintain.setVisibility(View.GONE);
+				barmaintain.dismiss();
 			}	
 			else if(resultCode==MaintainActivity.RESULT_OK)
 			{				
@@ -458,10 +462,15 @@ public class MaintainActivity extends Activity
 			{
 			case EVServerhttp.SETMAIN:
 				Log.i("EV_JNI","activity=签到成功");
-				issuc=true;
+				issuc=true;	
+				dialog.dismiss();
+				//签到完成，自动开启售货程序
+				Intent intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+				startActivity(intbus);// 打开Accountflag
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
 				Log.i("EV_JNI","activity=签到失败");
+				dialog.dismiss();
 				//issuc=false;
 	    		break;	
 			}	
@@ -478,6 +487,11 @@ public class MaintainActivity extends Activity
 		if(bentopen>0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
 		EVprotocolAPI.vmcEVStop();//关闭监听
+		if(bound == true)
+		{
+            unbindService(conn);
+            bound = false;
+		}
 		//=============
 		//Server服务相关
 		//=============

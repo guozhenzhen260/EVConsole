@@ -3,6 +3,7 @@ package com.easivend.app.business;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.easivend.app.maintain.GoodsProSet;
@@ -14,6 +15,8 @@ import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.JNIInterface;
+import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_product;
 import com.example.evconsole.R;
 
@@ -100,6 +103,8 @@ public class Business extends Activity
 //    	linearParams.weight= screenHeight;
 //    	videoView.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
 //    	ivads.setLayoutParams(linearParams);
+		//注册串口监听器
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());	
     	
 		listFiles(); 
 		startVideo();		
@@ -208,6 +213,35 @@ public class Business extends Activity
 		btnadscuxiao = (ImageButton) findViewById(R.id.btnadscuxiao);
 		btnadsbuysale = (ImageButton) findViewById(R.id.btnadsbuysale);
 		btnadsquhuo = (ImageButton) findViewById(R.id.btnadsquhuo);
+	}
+	
+	//创建一个专门处理单击接口的子类
+	private class jniInterfaceImp implements JNIInterface
+	{
+		@Override
+		public void jniCallback(Map<String, Object> allSet) {
+			// TODO Auto-generated method stub
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到","log.txt");	
+			Map<String, Object> Set= allSet;
+			int jnirst=(Integer) Set.get("EV_TYPE");
+			//txtcom.setText(String.valueOf(jnirst));
+			switch (jnirst)
+			{
+				//现金设备状态查询
+				case EVprotocolAPI.EV_MDB_HEART://心跳查询
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
+					int bill_err=((Integer)Set.get("bill_err")==0)?0:2;
+					int coin_err=((Integer)Set.get("coin_err")==0)?0:2;
+					//上报给服务器
+					Intent intent=new Intent();
+    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
+    				intent.putExtra("bill_err", bill_err);
+    				intent.putExtra("coin_err", coin_err);
+    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+    				sendBroadcast(intent); 
+					break; 	
+			}
+		}
 	}
 	
 	 /* 播放列表 */  

@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 public class BusgoodsSelect extends Activity 
 {
+	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static BusgoodsSelect BusgoodsSelectAct=null;
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
@@ -166,6 +168,16 @@ public class BusgoodsSelect extends Activity
 		    	finish();
 		    }
 		});
+		//5分钟钟之后退出页面
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {	
+            	finish();
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);
 	}
 	
 	private void sendzhifu()

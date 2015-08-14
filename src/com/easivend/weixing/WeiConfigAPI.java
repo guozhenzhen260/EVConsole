@@ -141,6 +141,13 @@ public class WeiConfigAPI
 		Map<String, String> sPara = new HashMap<String, String>();
 		 sPara.put("appid",WeiConfig.getWeiappid());//appid
 		 sPara.put("mch_id",WeiConfig.getWeimch_id());//mch_id
+		 //添加分账账号
+		 if(WeiConfig.getIsweisub()>0)
+		 {
+			 sPara.put("sub_mch_id",WeiConfig.getWeisubmch_id());//mch_id
+		 }
+		 sPara.put("device_info",ToolClass.getVmc_no());//设备号
+		 sPara.put("fee_type","CNY");//货币类型
 		 sPara.put("nonce_str","960f228109051b9969f76c82bde183ac");//随机字符串
 		 sPara.put("body","二维码交易");//交易描述
 		 sPara.put("out_trade_no", list.get("out_trade_no"));//订单编号

@@ -18,6 +18,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -33,6 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Busgoods extends Activity 
 {
+	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static Busgoods BusgoodsAct=null;
 	// 定义商品列表
 	Vmc_ProductAdapter productAdapter=null;
@@ -134,6 +136,18 @@ public class Busgoods extends Activity
             	startActivity(intent);// 打开Accountflag
             }
         });
+		//5分钟钟之后退出页面
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {	
+            	if(BusgoodsClass.BusgoodsClassAct!=null)
+					BusgoodsClass.BusgoodsClassAct.finish(); 
+				finish(); 
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);
 	}
 
 }

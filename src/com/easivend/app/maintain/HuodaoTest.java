@@ -30,6 +30,7 @@ import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
@@ -302,6 +303,19 @@ public class HuodaoTest extends TabActivity
 						status=(Integer)allSet.get("result");//结果
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货柜操作结果"+"device=["+device+"],opt=["+opt+"],status=["+status+"]","log.txt");	
 						txthuorst.setText("device=["+device+"],opt=["+opt+"],status=["+status+"]");						
+						break;	
+					//现金设备状态查询
+					case EVprotocolAPI.EV_MDB_HEART://心跳查询
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
+						int bill_err=((Integer)Set.get("bill_err")==0)?0:2;
+						int coin_err=((Integer)Set.get("coin_err")==0)?0:2;
+						//上报给服务器
+						Intent intent=new Intent();
+	    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
+	    				intent.putExtra("bill_err", bill_err);
+	    				intent.putExtra("coin_err", coin_err);
+	    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+	    				sendBroadcast(intent); 
 						break;	
 				}
 			}
@@ -1044,7 +1058,7 @@ public class HuodaoTest extends TabActivity
 		        alert.show();//显示对话框
 	}
 	
-	//布满本柜货道
+	//补满本柜货道
 	private void cabinetbuhuo()
 	{
 		//创建警告对话框

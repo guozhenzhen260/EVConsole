@@ -111,7 +111,9 @@ public class DogService extends Service {
 	        	else
 	        	{
 	        		ToolClass.Log(ToolClass.INFO,"EV_DOG","unopen","dog.txt");
-				}	
+				}
+	        	
+	        	//整理日志文件用
 	        	ToolClass.Log(ToolClass.INFO,"EV_DOG","logno="+logno[0],"dog.txt");
 	        	if(logno[0]<300)
 	        	{
