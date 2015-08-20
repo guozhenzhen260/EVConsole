@@ -199,7 +199,7 @@ public class EVServerhttp implements Runnable {
 					//添加params
 					List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 					params2.add(new BasicNameValuePair("Token", Tok));
-					params2.add(new BasicNameValuePair("LastPollTime", getLasttime()));
+					params2.add(new BasicNameValuePair("LastPollTime", ToolClass.getLasttime()));
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params2.toString(),"server.txt");
 					try {
 						httppost2.setEntity(new UrlEncodedFormEntity(params2, "utf-8")); //设置编码方式
@@ -259,6 +259,7 @@ public class EVServerhttp implements Runnable {
 				case SETCLASSCHILD://获取商品分类
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类","server.txt");
 					String target3 = httpStr+"/api/productClass";	//要提交的目标地址
+					String LAST_EDIT_TIME3=msg.obj.toString();
 					
 					HttpClient httpclient3 = new DefaultHttpClient();	//创建HttpClient对象
 					HttpPost httppost3 = new HttpPost(target3);	//创建HttpPost对象
@@ -274,7 +275,7 @@ public class EVServerhttp implements Runnable {
 					//添加params
 					List<NameValuePair> params3 = new ArrayList<NameValuePair>();
 					params3.add(new BasicNameValuePair("Token", Tok));
-					params3.add(new BasicNameValuePair("LastPollTime", getLasttime()));
+					params3.add(new BasicNameValuePair("LAST_EDIT_TIME", LAST_EDIT_TIME3));
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params3.toString(),"server.txt");
 					try {
 						httppost3.setEntity(new UrlEncodedFormEntity(params3, "utf-8")); //设置编码方式
@@ -321,6 +322,7 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品信息","server.txt");
 					boolean isshp=false;
 					String target4 = httpStr+"/api/productData";	//要提交的目标地址
+					String LAST_EDIT_TIME4=msg.obj.toString();
 					
 					HttpClient httpclient4 = new DefaultHttpClient();	//创建HttpClient对象
 					HttpPost httppost4 = new HttpPost(target4);	//创建HttpPost对象
@@ -339,7 +341,7 @@ public class EVServerhttp implements Runnable {
 					params4.add(new BasicNameValuePair("VMC_NO", vmc_no));
 					params4.add(new BasicNameValuePair("PAGE_INDEX", ""));
 					params4.add(new BasicNameValuePair("PAGE_SIZE", ""));
-					params4.add(new BasicNameValuePair("LAST_EDIT_TIME", ""));
+					params4.add(new BasicNameValuePair("LAST_EDIT_TIME", LAST_EDIT_TIME4));
 					params4.add(new BasicNameValuePair("PRODUCT_NO", ""));
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params4.toString(),"server.txt");
 					try {
@@ -406,6 +408,7 @@ public class EVServerhttp implements Runnable {
 				case SETHUODAOCHILD://获取货道信息
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取货道信息","server.txt");
 					String target5 = httpStr+"/api/vmcPathConfigDownload";	//要提交的目标地址
+					String LAST_EDIT_TIME5=msg.obj.toString();
 					
 					HttpClient httpclient5 = new DefaultHttpClient();	//创建HttpClient对象
 					HttpPost httppost5 = new HttpPost(target5);	//创建HttpPost对象
@@ -422,7 +425,7 @@ public class EVServerhttp implements Runnable {
 					List<NameValuePair> params5 = new ArrayList<NameValuePair>();
 					params5.add(new BasicNameValuePair("Token", Tok));
 					params5.add(new BasicNameValuePair("VMC_NO", vmc_no));
-					params5.add(new BasicNameValuePair("LAST_EDIT_TIME", ""));
+					params5.add(new BasicNameValuePair("LAST_EDIT_TIME", LAST_EDIT_TIME5));
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params5.toString(),"server.txt");
 					try {
 						httppost5.setEntity(new UrlEncodedFormEntity(params5, "utf-8")); //设置编码方式
@@ -576,7 +579,7 @@ public class EVServerhttp implements Runnable {
 						mainhand.sendMessage(tomain); // 发送消息		
 					}
 					break;
-				case SETHUODAOSTATUCHILD://子线程接收主线程货道状态上报消息	
+				case SETHUODAOSTATUCHILD://货道状态上报消息	
 //					String CABINET_NO=null;
 //	    			String PATH_NO=null;
 //	    			String PATH_STATUS=null;
@@ -775,16 +778,7 @@ public class EVServerhttp implements Runnable {
 		};
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop
 	}
-	
-	private String getLasttime()
-	{
-		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd"); //精确到毫秒 
-		SimpleDateFormat tempTime = new SimpleDateFormat("HH:mm:ss"); //精确到毫秒 
-        String datetime = tempDate.format(new java.util.Date()).toString()+"T"
-        		+tempTime.format(new java.util.Date()).toString(); 
-		return datetime;
-	}
-	
+		
 	//更新商品图片信息
 	private String updateproductImg(String classrst) throws JSONException
 	{

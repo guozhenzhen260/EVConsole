@@ -15,11 +15,13 @@ import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.http.EVServerhttp;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +37,8 @@ import android.widget.TextView;
 public class BusZhiAmount  extends Activity
 {
 	private final int SPLASH_DISPLAY_LENGHT = 1000; // 延迟1秒
+	//进度对话框
+	ProgressDialog dialog= null;
 	public static BusZhiAmount BusZhiAmountAct=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
 	TextView txtbuszhiamountcount=null,txtbuszhiamountAmount=null,txtbuszhiamountbillAmount=null,txtbuszhiamounttime=null,
@@ -47,6 +51,7 @@ public class BusZhiAmount  extends Activity
 	private int queryLen = 0; 
     private TextView txtView; 
     Timer timer = new Timer();
+    private int iszhienable=0;//1发送打开指令,0还没发送打开指令
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -140,16 +145,22 @@ public class BusZhiAmount  extends Activity
 			int jnirst=(Integer)Set.get("EV_TYPE");
 			switch (jnirst)
 			{
-				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息							
+				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
+					iszhienable=1;
+					EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 					break;
 				case EVprotocolAPI.EV_MDB_B_INFO:	
 					break;
 				case EVprotocolAPI.EV_MDB_C_INFO:
 					break;	
 				case EVprotocolAPI.EV_MDB_HEART://心跳查询
-					String bill_enable=((Integer)Set.get("bill_enable")==1)?"":"纸币器不可用";
-					String coin_enable=((Integer)Set.get("coin_enable")==1)?"":"硬币器不可用";
-					String hopperString=null;
+					String bill_enable="";
+					String coin_enable="";
+					String hopperString="";
+					if(((Integer)Set.get("bill_enable")==0)||((Integer)Set.get("bill_err")>0))
+						bill_enable="[纸币器]无法使用";
+					if(((Integer)Set.get("coin_enable")==0)||((Integer)Set.get("coin_err")>0))
+						coin_enable="[硬币器]无法使用";					
 					if((Integer)Set.get("hopper1")>0)
 						hopperString="[找零器]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"));
 				  	txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable+hopperString);
@@ -192,7 +203,8 @@ public class BusZhiAmount  extends Activity
 			    	}
 			    	OrderDetail.addLog(BusZhiAmount.this);
 					//关闭纸币硬币器
-		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);			  	    	
+		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
+		  	    	dialog.dismiss();
 		  	    	finish();
 					break; 	
 			}				
@@ -216,12 +228,15 @@ public class BusZhiAmount  extends Activity
                         finishActivity();
                     } 
                     //发送查询交易指令
-                    queryLen++;
-                    if(queryLen>=2)
+                    if(iszhienable==1)
                     {
-                    	queryLen=0;
-                    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-                    }                    
+	                    queryLen++;
+	                    if(queryLen>=2)
+	                    {
+	                    	queryLen=0;
+	                    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+	                    }
+                    }
                 } 
             }); 
         } 
@@ -273,12 +288,13 @@ public class BusZhiAmount  extends Activity
   				{  					
 			    	OrderDetail.addLog(BusZhiAmount.this);
 					//关闭纸币硬币器
-		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);			  	    	
+		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
 		  	    	finish();
   				}
   				//退币
   				else 
   				{
+  					dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
   					EVprotocolAPI.setCallBack(new jniInterfaceImp());
   					//退币
   	  	  	    	EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);

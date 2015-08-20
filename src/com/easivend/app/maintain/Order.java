@@ -563,4 +563,12 @@ public class Order extends TabActivity
 		}
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<amount="+Amountmax+",count="+Countmax,"log.txt");
 	}
+	
+	@Override
+	protected void onDestroy() {
+    	//ÍË³öÊ±£¬·µ»Øintent
+        Intent intent=new Intent();
+        setResult(MaintainActivity.RESULT_CANCELED,intent);
+		super.onDestroy();		
+	}
 }

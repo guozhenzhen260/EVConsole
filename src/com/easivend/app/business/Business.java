@@ -48,6 +48,7 @@ import android.widget.VideoView;
 
 public class Business extends Activity
 {
+	final static int REQUEST_CODE=1;  
 	TextView txtadsTip=null;
 	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
@@ -200,13 +201,13 @@ public class Business extends Activity
 		    	if(count>0)
 		    	{
 			    	intent = new Intent(Business.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
-	                startActivity(intent);// 打开Accountflag
+			    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 		    	}
 		    	else
 		    	{
 		    		intent = new Intent(Business.this, Busgoods.class);// 使用Accountflag窗口初始化Intent
                 	intent.putExtra("proclassID", "");
-                	startActivity(intent);// 打开Accountflag
+                	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 		    	}
 		    }
 		});
@@ -221,7 +222,7 @@ public class Business extends Activity
 		@Override
 		public void jniCallback(Map<String, Object> allSet) {
 			// TODO Auto-generated method stub
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<main监听到","log.txt");	
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<business监听到","log.txt");	
 			Map<String, Object> Set= allSet;
 			int jnirst=(Integer) Set.get("EV_TYPE");
 			//txtcom.setText(String.valueOf(jnirst));
@@ -461,7 +462,7 @@ public class Business extends Activity
 //            	OrderDetail.setColumnID(huoID);
 //            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
 //            	OrderDetail.setShouldNo(1);
-	        	startActivity(intent);// 打开Accountflag
+	        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 		    }
 		    else
 		    {
@@ -476,4 +477,18 @@ public class Business extends Activity
 		    
 		}
     }
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{		
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
+		//注册串口监听器
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());	
+	}
+    @Override
+	protected void onDestroy() {
+    	//退出时，返回intent
+        Intent intent=new Intent();
+        setResult(MaintainActivity.RESULT_CANCELED,intent);
+		super.onDestroy();		
+	}
 }

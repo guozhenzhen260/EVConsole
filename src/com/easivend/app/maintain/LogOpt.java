@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -291,5 +292,13 @@ public class LogOpt extends Activity {
 		{
 			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+    	//退出时，返回intent
+        Intent intent=new Intent();
+        setResult(MaintainActivity.RESULT_CANCELED,intent);
+		super.onDestroy();		
 	}
 }

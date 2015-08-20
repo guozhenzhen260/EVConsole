@@ -415,8 +415,24 @@ public class vmc_columnDAO
   	{       
           db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
           // 执行删除商品表
-          db.execSQL("update vmc_column set pathRemain=(pathRemain-1) where cabID=? and columnID=?", 
-          		new Object[] { cabID,columnID});        
+          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0 where cabID=? and columnID=?", 
+          		new Object[] { cabID,columnID});    
+          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
+          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中
+          //遍历所有的收入信息
+          if (cursor.moveToNext()) 
+          {
+        	  int pathRemain=cursor.getInt(cursor.getColumnIndex("pathRemain"));
+        	  if(pathRemain==0)
+        	  {
+        		  db.execSQL("update vmc_column set columnStatus=3 where cabID=? and columnID=?", 
+        	          		new Object[] { cabID,columnID}); 
+        	  }
+          }
+          if(!cursor.isClosed()) 
+   		 {  
+        	cursor.close();  
+   		 } 
           db.close(); 
   	}
 	

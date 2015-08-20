@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import com.easivend.app.maintain.GoodsManager;
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
@@ -16,11 +17,13 @@ import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
+import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -34,7 +37,9 @@ import android.widget.SimpleAdapter;
 
 public class BusHuo extends Activity 
 {
-	private final int SPLASH_DISPLAY_LENGHT = 10000; // 延迟10秒	
+	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟2秒	
+	//进度对话框
+	ProgressDialog dialog= null;
 	private String proID = null;
 	private String productID = null;
 	private String proType = null;
@@ -91,6 +96,7 @@ public class BusHuo extends Activity
 					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
 						status=(Integer)allSet.get("result");//出货结果
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
+						dialog.dismiss();
 						//1.更新出货结果
 						//扣除存货余量
 						chuhuoupdate(cabinetvar,huodaoNo);
@@ -343,26 +349,36 @@ public class BusHuo extends Activity
 			cabinetTypevar=Integer.parseInt(alllist);
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt"); 
 		}
-				
-		//格子柜
-		if(cabinetTypevar==5)
+		
+		dialog= ProgressDialog.show(BusHuo.this,"正在出货中","请稍候...");
+		new Handler().postDelayed(new Runnable() 
 		{
-			EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huodaoNo);							
-		}
-		//普通柜
-		else 
-		{
-//			rst=EVprotocolAPI.trade(cabinetvar,huodaoNo,typevar,
-//		    			ToolClass.MoneySend(sales));
-//			if(rst==0)//出货发送失败
-//			{
-//				huorst=0;
-//			}
-//			else if(rst==1)//出货发送成功
-//			{
-//				huorst=1;
-//			}
-		}		
+            @Override
+            public void run() 
+            {	   
+            	//格子柜
+        		if(cabinetTypevar==5)
+        		{
+        			EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huodaoNo);							
+        			
+        		}
+        		//普通柜
+        		else 
+        		{
+//        			rst=EVprotocolAPI.trade(cabinetvar,huodaoNo,typevar,
+//        		    			ToolClass.MoneySend(sales));
+//        			if(rst==0)//出货发送失败
+//        			{
+//        				huorst=0;
+//        			}
+//        			else if(rst==1)//出货发送成功
+//        			{
+//        				huorst=1;
+//        			}
+        		}
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);
 	}
 	//修改存货数量
 	private void chuhuoupdate(int cabinetvar,int huodaoNo)
@@ -379,7 +395,7 @@ public class BusHuo extends Activity
         	huo=String.valueOf(huodaoNo);
         }	
         //扣除存货余量
-		columnDAO.update(cab,huo);
+		columnDAO.update(cab,huo);		
 	}
 	
 	//记录日志出货结果type=1出货成功，0出货失败

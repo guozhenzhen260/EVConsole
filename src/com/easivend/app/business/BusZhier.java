@@ -14,11 +14,13 @@ import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.http.EVServerhttp;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,7 +36,9 @@ import android.widget.TextView;
 
 public class BusZhier extends Activity
 {
-	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
+	private final int SPLASH_DISPLAY_LENGHT = 1500; // 延迟1.5秒
+	//进度对话框
+	ProgressDialog dialog= null;
 	public static BusZhier BusZhierAct=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
 	TextView txtbuszhiercount=null,txtbuszhiamerount=null,txtbuszhierrst=null,txtbuszhiertime=null;
@@ -130,6 +134,7 @@ public class BusZhier extends Activity
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
 						txtbuszhierrst.setText("交易结果:退款成功");
+						dialog.dismiss();
 						finish();
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
@@ -348,17 +353,18 @@ public class BusZhier extends Activity
 				if(status==1)
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款","log.txt");
-					OrderDetail.addLog(BusZhier.this);
+					OrderDetail.addLog(BusZhier.this);					
 					finish();
 				}
 				//出货失败,退钱
 				else
 				{	
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
+					dialog= ProgressDialog.show(BusZhier.this,"正在退款中","请稍候...");
 					payoutzhier();//退款操作
 					OrderDetail.setRealStatus(1);//记录退币成功
 					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusZhier.this);
+					OrderDetail.addLog(BusZhier.this);					
 				}				
 			}			
 		}

@@ -1077,6 +1077,14 @@ public class HuodaoTest extends TabActivity
 	    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoTest.this);
 				            columnDAO.buhuoCab(String.valueOf(cabinetsetvar));
 				            showhuodao();
+				            //=============
+			    			//Server服务相关
+			    			//=============
+			    			//7.发送指令广播给EVServerService
+			    			Intent intent2=new Intent();
+		    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUCHILD);
+		    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+		    				sendBroadcast(intent2);
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	
 	    				}

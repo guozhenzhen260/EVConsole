@@ -198,7 +198,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 3*1000, 3*60*1000);       // timeTask 
+	    }, 3*1000, 2*60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
@@ -272,20 +272,24 @@ public class MaintainActivity extends Activity
                     startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
                     break;    
                 case 3:
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开订单日志查询","请稍候...");
                 	intent = new Intent(MaintainActivity.this, Order.class);// 使用Accountflag窗口初始化Intent
-                    startActivity(intent);// 打开Accountflag
+                	startActivityForResult(intent,REQUEST_CODE);
                     break;                
                 case 4:
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开操作日志查询","请稍候...");
                 	intent = new Intent(MaintainActivity.this, LogOpt.class);// 使用Accountflag窗口初始化Intent
-                    startActivity(intent);// 打开Accountflag
+                	startActivityForResult(intent,REQUEST_CODE);
                     break;
                 case 5:
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开本机配置","请稍候...");
                 	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 6:
+                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
                     intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
-                    startActivity(intent);// 打开Accountflag
+                    startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 7:
                     finish();// 关闭当前Activity
@@ -465,8 +469,9 @@ public class MaintainActivity extends Activity
 				issuc=true;	
 				dialog.dismiss();
 				//签到完成，自动开启售货程序
+				barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
 				Intent intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
-				startActivity(intbus);// 打开Accountflag
+				startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
 				Log.i("EV_JNI","activity=签到失败");

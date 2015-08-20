@@ -50,11 +50,11 @@ public class vmc_orderDAO
  				"insert into vmc_order_pay" +
  				"(" +
  				"ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
- 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime" +
+ 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime,isupload" +
  				") " +
  				"values" +
  				"(" +
- 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime'))" +
+ 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime')),0" +
  				")",
  		        new Object[] { tb_vmc_order_pay.getOrdereID(), tb_vmc_order_pay.getPayType(),tb_vmc_order_pay.getPayStatus(), tb_vmc_order_pay.getRealStatus(),
  						tb_vmc_order_pay.getSmallNote(), tb_vmc_order_pay.getSmallConi(),tb_vmc_order_pay.getSmallAmount(), tb_vmc_order_pay.getSmallCard(),

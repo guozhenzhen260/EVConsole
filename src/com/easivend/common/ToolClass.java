@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1061,5 +1062,33 @@ public class ToolClass
 			res="通讯故障";
 		}
 		return res;
+	}
+	
+	//为上传给server使用，将当前时间转换为给server上报的时间
+	public static String getLasttime()
+	{
+		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd"); //精确到毫秒 
+		SimpleDateFormat tempTime = new SimpleDateFormat("HH:mm:ss"); //精确到毫秒 
+        String datetime = tempDate.format(new java.util.Date()).toString()+"T"
+        		+tempTime.format(new java.util.Date()).toString(); 
+		return datetime;
+	}
+	
+	//为上传给server使用，传入一个时间，转换为给server上报的时间
+	public static String getStrtime(String orderTime)
+	{
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date =null;
+		try {
+			date = df.parse(orderTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd"); //精确到毫秒 
+		SimpleDateFormat tempTime = new SimpleDateFormat("HH:mm:ss"); //精确到毫秒 
+        String datetime = tempDate.format(date).toString()+"T"
+        		+tempTime.format(date).toString(); 
+		return datetime;
 	}
 }

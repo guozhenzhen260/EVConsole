@@ -63,6 +63,8 @@ public class EVServerService extends Service {
     EVServerhttp serverhttp=null;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
+    private String LAST_EDIT_TIME="";
+    private boolean ischeck=false;//true签到成功,false开始签到流程
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -106,6 +108,7 @@ public class EVServerService extends Service {
 	    		}
 	    		childmsg.obj=ev;
 	    		childhand.sendMessage(childmsg);
+	    		ischeck=false;
 	    		break;
     		//设备状态上报	
 			case EVServerhttp.SETDEVSTATUCHILD:
@@ -130,6 +133,22 @@ public class EVServerService extends Service {
 	    		childmsg3.obj=ev3;
 	    		childhand.sendMessage(childmsg3);
     			break;	
+    		//发送交易记录命令到子线程中
+			case EVServerhttp.SETRECORDCHILD://子线程接收主线程消息获取心跳信息
+				childhand=serverhttp.obtainHandler();
+        		Message childheartmsg2=childhand.obtainMessage();
+        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
+        		childheartmsg2.obj=grid();
+        		childhand.sendMessage(childheartmsg2);						
+				break;	
+    		//发送货道上传命令到子线程中	
+			case EVServerhttp.SETHUODAOSTATUCHILD:				
+				childhand=serverhttp.obtainHandler();
+        		Message childheartmsg3=childhand.obtainMessage();
+        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+        		childheartmsg3.obj=columngrid();
+        		childhand.sendMessage(childheartmsg3);
+				break;	
 			}			
 		}
 
@@ -179,6 +198,7 @@ public class EVServerService extends Service {
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg=childhand.obtainMessage();
 		        		childmsg.what=EVServerhttp.SETCLASSCHILD;
+		        		childmsg.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childmsg);
 						break;
 					case EVServerhttp.SETERRFAILMAIN://子线程接收主线程消息签到失败
@@ -206,6 +226,7 @@ public class EVServerService extends Service {
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg2=childhand.obtainMessage();
 		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
+		        		childmsg2.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childmsg2);
 						break;
 					//获取商品信息	
@@ -225,6 +246,7 @@ public class EVServerService extends Service {
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg3=childhand.obtainMessage();
 		        		childmsg3.what=EVServerhttp.SETHUODAOCHILD;
+		        		childmsg3.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childmsg3);
 						break;	
 					//获取货道信息	
@@ -242,11 +264,14 @@ public class EVServerService extends Service {
 						}
 						//初始化五
 						//返回给activity广播,初始化完成
-						intent=new Intent();
-						intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
-						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-						sendBroadcast(intent);
-						
+						if(ischeck==false)
+						{
+							intent=new Intent();
+							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
+							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+							sendBroadcast(intent);
+							ischeck=true;
+						}
 						break;
 					//获取设备信息	
 					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息获取设备信息失败
@@ -267,7 +292,7 @@ public class EVServerService extends Service {
 						break;
 					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
-						vmc_orderDAO orderDAO = new vmc_orderDAO(EVServerService.this);
+						//vmc_orderDAO orderDAO = new vmc_orderDAO(EVServerService.this);
 						//同步三、发送交易记录命令到子线程中
 		            	childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg2=childhand.obtainMessage();
@@ -280,7 +305,7 @@ public class EVServerService extends Service {
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录失败","server.txt");
 						break;
 					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
-						//修改数据上报状态为已上报
+						//修改交易数据上报状态为已上报
 						updategrid(msg.obj.toString());
 						
 						//同步四、发送货道上传命令到子线程中
@@ -323,6 +348,13 @@ public class EVServerService extends Service {
 						{
 							tokenno++;
 						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service LAST_EDIT_TIME="+LAST_EDIT_TIME,"server.txt");
+						//同步五、下载当前时间以后有更新的商品分类，商品，以及货道
+						childhand=serverhttp.obtainHandler();
+		        		Message childheartmsg4=childhand.obtainMessage();
+		        		childheartmsg4.what=EVServerhttp.SETCLASSCHILD;
+		        		childheartmsg4.obj=LAST_EDIT_TIME;
+		        		childhand.sendMessage(childheartmsg4);		        		
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败
@@ -377,7 +409,12 @@ public class EVServerService extends Service {
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","2更新商品"+i+"txt=product_NO="+object2.getString("product_NO")
 					+"product_Name="+object2.getString("product_Name")+"product_Class_NO="+product_Class_NO
-					+"AttImg="+object2.getString("AttImg"),"server.txt");										
+					+"AttImg="+object2.getString("AttImg"),"server.txt");	
+			//用于签到完成后，更新商品信息时间段
+			if(ischeck==true)
+			{
+				LAST_EDIT_TIME=ToolClass.getLasttime();
+			}
 			// 创建InaccountDAO对象
 			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
             //创建Tb_inaccount对象
@@ -610,12 +647,12 @@ public class EVServerService extends Service {
 		    	RefundAmount=realAmountvalue[x]+realCardvalue[x];
 		    	//ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售payStatus="+payStatusvalue[x]+"payType="+payTypevalue[x],"server.txt");
 				
-		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
+		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+ToolClass.getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
 				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"productNo="+productID[x]+"quantity="+1+
 				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
 		    	JSONObject object=new JSONObject();
 		    	object.put("orderNo", ordereID[x]);
-		    	object.put("orderTime", getStrtime(payTime[x]));
+		    	object.put("orderTime", ToolClass.getStrtime(payTime[x]));
 		    	object.put("orderStatus", orderStatus);
 		    	object.put("payStatus", payStatue);
 		    	object.put("payType", payTyp);
@@ -634,22 +671,7 @@ public class EVServerService extends Service {
 		}
 	    return array;
 	}
-	private String getStrtime(String orderTime)
-	{
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date =null;
-		try {
-			date = df.parse(orderTime);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd"); //精确到毫秒 
-		SimpleDateFormat tempTime = new SimpleDateFormat("HH:mm:ss"); //精确到毫秒 
-        String datetime = tempDate.format(date).toString()+"T"
-        		+tempTime.format(date).toString(); 
-		return datetime;
-	}
+	
 	
 	//修改数据上报状态为已上报
 	private void updategrid(String str)
@@ -721,7 +743,7 @@ public class EVServerService extends Service {
 	  			isdisables[x]= "0";
 	  			isupload[x] = String.valueOf(tb_inaccount.getIsupload());
 	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","需传货道pathID="+pathIDs[x]+"cabinetNumber="+cabinetNumbers[x]+"pathName="+pathNames[x]+"productID="
-	  					+productIDs[x]+"productNum="+productNums[x]+"pathCount="+pathCounts[x]+"pathStatus="+pathStatuss[x]+"pathRemaining="+pathRemainings[x]+"lastedittime="+getStrtime(lastedittimes[x])+
+	  					+productIDs[x]+"productNum="+productNums[x]+"pathCount="+pathCounts[x]+"pathStatus="+pathStatuss[x]+"pathRemaining="+pathRemainings[x]+"lastedittime="+ToolClass.getStrtime(lastedittimes[x])+
 	  					"isdisable="+isdisables[x]+"isupload="+isupload[x],"server.txt");			
 		    	JSONObject object=new JSONObject();
 		    	object.put("pathID", pathIDs[x]);
@@ -732,7 +754,7 @@ public class EVServerService extends Service {
 		    	object.put("pathCount", pathCounts[x]);
 		    	object.put("pathStatus", pathStatuss[x]);
 		    	object.put("pathRemaining", pathRemainings[x]);
-		    	object.put("lastedittime", getStrtime(lastedittimes[x]));		    	
+		    	object.put("lastedittime", ToolClass.getStrtime(lastedittimes[x]));		    	
 		    	object.put("isdisable", isdisables[x]);
 		    	object.put("isupload", isupload[x]);
 		    	array.put(object);
@@ -775,6 +797,11 @@ public class EVServerService extends Service {
 			}
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","上报货道cabinetNumber="+cabinetNumber
 					+"pathName="+pathName,"server.txt");
+			//用于签到完成后，更新商品信息时间段
+			if(ischeck==true)
+			{
+				LAST_EDIT_TIME=ToolClass.getLasttime();
+			}
 			columnDAO.updatecol(cabinetNumber,pathName);
 		}		  	
 	}

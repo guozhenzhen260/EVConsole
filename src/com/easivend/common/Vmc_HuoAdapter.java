@@ -70,8 +70,10 @@ public class Vmc_HuoAdapter
 	    	    	{
 		    	    	// 获取所有收入信息，并存储到List泛型集合中
 		    		    Tb_vmc_product tb_product = productDAO.find(huoproID[m]);
-		    		    proImage[m] = tb_product.getAttBatch1().toString();
+		    		    if(tb_product!=null)
+		    		    	proImage[m] = tb_product.getAttBatch1().toString();
 	    	    	}
+	    	    	break;
     	    	}
     	   }
            m++;// 标识加1

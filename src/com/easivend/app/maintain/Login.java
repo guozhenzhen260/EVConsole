@@ -126,4 +126,12 @@ public class Login extends Activity
         });
 	}
 	
+	@Override
+	protected void onDestroy() {
+    	//ÍË³öÊ±£¬·µ»Øintent
+        Intent intent=new Intent();
+        setResult(MaintainActivity.RESULT_CANCELED,intent);
+		super.onDestroy();		
+	}
+	
 }
