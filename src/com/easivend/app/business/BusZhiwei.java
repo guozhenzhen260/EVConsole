@@ -134,6 +134,8 @@ public class BusZhiwei extends Activity
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
 						txtbuszhiweirst.setText("交易结果:撤销成功");
+						timer.cancel(); 
+						finish();
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						txtbuszhiweirst.setText("交易结果:交易成功");
@@ -213,6 +215,26 @@ public class BusZhiwei extends Activity
 		childmsg.obj=ev;
 		childhand.sendMessage(childmsg);
 	}
+	//撤销交易
+	private void deletezhiwei()
+	{
+		// 将信息发送到子线程中
+		childhand=weixinghttp.obtainHandler();
+		Message childmsg=childhand.obtainMessage();
+		childmsg.what=Weixinghttp.SETDELETECHILD;
+		JSONObject ev=null;
+		try {
+			ev=new JSONObject();
+			ev.put("out_trade_no", out_trade_no);		
+			//ev.put("out_trade_no", "000120150301092857698");	
+			Log.i("EV_JNI","Send0.1="+ev.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		childmsg.obj=ev;
+		childhand.sendMessage(childmsg);
+	}
 	
 	//调用倒计时定时器
 	TimerTask task = new TimerTask() { 
@@ -257,9 +279,14 @@ public class BusZhiwei extends Activity
     };
 	//结束界面
 	private void finishActivity()
-	{		
-		timer.cancel(); 
-		finish();		
+	{	
+		if(iszhiwei==1)
+			deletezhiwei();
+		else 
+		{
+			timer.cancel(); 
+			finish();	
+		}
 	}
 	
 	//跳到出货页面

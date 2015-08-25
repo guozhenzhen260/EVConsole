@@ -14,8 +14,8 @@
     <ImageView
         android:id="@+id/proImage"
         android:layout_toRightOf="@+id/viewleft"
-        android:layout_width="205dp"
-        android:layout_height="205dp"
+        android:layout_width="305dp"
+        android:layout_height="305dp"
         android:layout_gravity="center"
         android:padding="4dp"
         android:scaleType="fitXY" />

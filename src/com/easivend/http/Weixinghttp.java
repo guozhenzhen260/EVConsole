@@ -13,7 +13,10 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipayConfigAPI;
+import com.easivend.alipay.HttpRequester;
+import com.easivend.alipay.HttpRespons;
 import com.easivend.common.ToolClass;
 import com.easivend.weixing.WeiConfigAPI;
 
@@ -179,14 +182,19 @@ public class Weixinghttp implements Runnable
 				        		   {
 				        			   tomain.what=SETQUERYMAIN;
 									   tomain.obj=map4.get("trade_state");
-				        		   }
-				        		   //通过支付宝提供的订单直接生成二维码
+				        		   }				        		   
+				        		   //支付成功
 				        		   else if(map4.get("trade_state").equals("SUCCESS"))
 				        		   {
 						        	   tomain.what=SETQUERYMAINSUCC;
 									   tomain.obj=map4.get("trade_state");
 				        		   }
-					        	   
+				        		   //其他情况
+				        		   else 
+				        		   {
+				        			   tomain.what=SETQUERYMAIN;
+									   tomain.obj=map4.get("trade_state");
+				        		   }
 					           }
 				           }
 				           Log.i("EV_JNI","rec3="+tomain.obj);	
@@ -227,29 +235,29 @@ public class Weixinghttp implements Runnable
 				            //4.解包返回的信息
 				            InputStream is = new ByteArrayInputStream(content3.getBytes());// 获取返回数据
 					           
-				           Map<String, String> map2=WeiConfigAPI.PendWeiPayout(is);
-					       Log.i("EV_JNI","rec2="+map2.toString());
+				           Map<String, String> map6=WeiConfigAPI.PendWeiPayout(is);
+					       Log.i("EV_JNI","rec2="+map6.toString());
 					       //向主线程返回信息
 					        Message tomain=mainhand.obtainMessage();
 					      //协议失败
-				           if(map2.get("return_code").equals("FAIL"))
+				           if(map6.get("return_code").equals("FAIL"))
 				           {
 				        	   tomain.what=SETFAILPAYOUTPROCHILD;
-							   tomain.obj=map2.get("return_msg");
+							   tomain.obj=map6.get("return_msg");
 				           }
 				           else
 				           {
 				        	   //业务处理失败
-				        	   if(map2.get("result_code").equals("FAIL"))
+				        	   if(map6.get("result_code").equals("FAIL"))
 					           {
 					        	   tomain.what=SETFAILPAYOUTBUSCHILD;
-								   tomain.obj=map2.get("err_code")+map2.get("err_code_des");
+								   tomain.obj=map6.get("err_code")+map6.get("err_code_des");
 					           }
 				        	   //通过支付宝提供的订单直接生成二维码
-				        	   else if(map2.get("result_code").equals("SUCCESS"))
+				        	   else if(map6.get("result_code").equals("SUCCESS"))
 					           {
 					        	   tomain.what=SETPAYOUTMAIN;
-								   tomain.obj=map2.get("code_url");
+								   tomain.obj=map6.get("code_url");
 					           }
 				           }
 				           Log.i("EV_JNI","rec3="+tomain.obj);	
@@ -260,6 +268,65 @@ public class Weixinghttp implements Runnable
 				            System.out.println(e);
 				        } 
 						
+					break;
+					case SETDELETECHILD://子线程接收主线程消息
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]"+msg.obj.toString(),"log.txt");
+						Map<String, String> sPara4 = new HashMap<String, String>();
+						//1.添加订单信息
+						JSONObject ev4=null;
+						try {
+							ev4 = new JSONObject(msg.obj.toString());							
+							sPara4.put("out_trade_no", ev4.getString("out_trade_no"));//订单编号
+									
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}					
+					    Log.i("EV_JNI","Send0.2="+sPara4.toString());
+					    //2.生成请求消息
+						Map<String, String> map7 = WeiConfigAPI.PostWeiDelete(sPara4);
+						//3.发送订单信息
+						String url4 = "https://api.mch.weixin.qq.com/pay/closeorder";			            
+						String content4= WeiConfigAPI.sendPost(url4, map7);
+						try {
+				            //4.解包返回的信息
+				            InputStream is = new ByteArrayInputStream(content4.getBytes());// 获取返回数据
+					           
+				           Map<String, String> map8=WeiConfigAPI.PendWeiDelete(is);
+					       Log.i("EV_JNI","rec2="+map8.toString());
+					       //向主线程返回信息
+					        Message tomain=mainhand.obtainMessage();
+					      //协议失败
+				           if(map8.get("return_code").equals("FAIL"))
+				           {
+				        	   tomain.what=SETFAILDELETEPROCHILD;
+							   tomain.obj=map8.get("return_msg");
+				           }
+				           else
+				           {
+				        	   //业务处理失败
+				        	   if(map8.get("result_code").equals("FAIL"))
+					           {
+					        	   tomain.what=SETFAILDELETEBUSCHILD;
+								   tomain.obj=map8.get("err_code")+map8.get("err_code_des");
+					           }
+				        	   //交易成功状态
+				        	   else if(map8.get("result_code").equals("SUCCESS"))
+					           {
+				        		  //正在等待支付
+				        		   tomain.what=SETDELETEMAIN;
+								   tomain.obj=map8.get("trade_state");
+					        	   
+					           }
+				           }
+				           Log.i("EV_JNI","rec3="+tomain.obj);	
+					       mainhand.sendMessage(tomain); // 发送消息	
+				           
+				        } catch (Exception e) {
+				            // TODO Auto-generated catch block
+				            System.out.println(e);
+				        }
+							
 					break;
 				}
 			}

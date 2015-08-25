@@ -52,6 +52,8 @@ public class BusZhiAmount  extends Activity
     private TextView txtView; 
     Timer timer = new Timer();
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令
+    private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
+    private int dispenser=0;//0无,1hopper,2mdb
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -146,27 +148,59 @@ public class BusZhiAmount  extends Activity
 			switch (jnirst)
 			{
 				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
-					iszhienable=1;
-					EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+					EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());					
 					break;
 				case EVprotocolAPI.EV_MDB_B_INFO:	
 					break;
 				case EVprotocolAPI.EV_MDB_C_INFO:
+					dispenser=(Integer)Set.get("acceptor");
+					EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 					break;	
 				case EVprotocolAPI.EV_MDB_HEART://心跳查询
+					iszhienable=1;					
 					String bill_enable="";
 					String coin_enable="";
 					String hopperString="";
-					if(((Integer)Set.get("bill_enable")==0)||((Integer)Set.get("bill_err")>0))
+					int bill_err=ToolClass.getvmcStatus(Set,1);
+					int coin_err=ToolClass.getvmcStatus(Set,2);
+					int hopper1=ToolClass.getvmcStatus(Set,3);
+					if(bill_err>0)
 						bill_enable="[纸币器]无法使用";
-					if(((Integer)Set.get("coin_enable")==0)||((Integer)Set.get("coin_err")>0))
+					if(coin_err>0)
 						coin_enable="[硬币器]无法使用";					
-					if((Integer)Set.get("hopper1")>0)
-						hopperString="[找零器]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"));
+					if(hopper1>0)
+						hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
 				  	txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable+hopperString);
 				  	billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
 				  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));
 				  	money=billmoney+coinmoney;
+				  	//如果缺币,就把纸币硬币器关闭
+				  	if(dispenser==1)//hopper
+				  	{
+				  		if(hopper1>0)//hopper缺币
+				  		{
+					  		if(isempcoin==false)//第一次关闭纸币硬币器
+					  		{
+					  			//关闭纸币硬币器
+					  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
+					  			isempcoin=true;
+					  		}
+				  		}
+				  	}
+				  	else if(dispenser==2)//mdb
+				  	{
+				  		//当前存币金额小于5元
+				  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
+				  		{
+				  			if(isempcoin==false)//第一次关闭纸币硬币器
+					  		{
+					  			//关闭纸币硬币器
+					  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
+					  			isempcoin=true;
+					  		}
+				  		}
+				  	}
+				  	
 				  	if(money>0)
 				  	{
 				  		iszhiamount=1;

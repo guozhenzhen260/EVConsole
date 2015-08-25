@@ -128,12 +128,36 @@ public class WeixingTest extends Activity
 		    	// 将信息发送到子线程中
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
-				childmsg.what=Zhifubaohttp.SETQUERYCHILD;
+				childmsg.what=Weixinghttp.SETQUERYCHILD;
 				JSONObject ev=null;
 				try {
 					ev=new JSONObject();
 					ev.put("out_trade_no", out_trade_no);		
 					//ev.put("out_trade_no", "000120150301113215800");	
+					Log.i("EV_JNI","Send0.1="+ev.toString());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				childmsg.obj=ev;
+				childhand.sendMessage(childmsg);
+		    }
+		});
+		//撤销交易
+		btnweixingtestdelete = (Button)findViewById(R.id.btnweixingtestdelete);	
+		btnweixingtestdelete.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	barweixingtest.setVisibility(View.VISIBLE);
+		    	// 将信息发送到子线程中
+		    	childhand=weixinghttp.obtainHandler();
+				Message childmsg=childhand.obtainMessage();
+				childmsg.what=Weixinghttp.SETDELETECHILD;
+				JSONObject ev=null;
+				try {
+					ev=new JSONObject();
+					ev.put("out_trade_no", out_trade_no);		
+					//ev.put("out_trade_no", "000120150301092857698");	
 					Log.i("EV_JNI","Send0.1="+ev.toString());
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -152,7 +176,7 @@ public class WeixingTest extends Activity
 		    	// 将信息发送到子线程中
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
-				childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
+				childmsg.what=Weixinghttp.SETPAYOUTCHILD;
 				JSONObject ev=null;
 				try {
 					ev=new JSONObject();

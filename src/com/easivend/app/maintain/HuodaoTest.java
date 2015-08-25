@@ -307,8 +307,8 @@ public class HuodaoTest extends TabActivity
 					//现金设备状态查询
 					case EVprotocolAPI.EV_MDB_HEART://心跳查询
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-						int bill_err=((Integer)Set.get("bill_err")==0)?0:2;
-						int coin_err=((Integer)Set.get("coin_err")==0)?0:2;
+						int bill_err=ToolClass.getvmcStatus(Set,1);
+						int coin_err=ToolClass.getvmcStatus(Set,2);
 						//上报给服务器
 						Intent intent=new Intent();
 	    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);

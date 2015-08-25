@@ -87,6 +87,11 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         {
             viewHolder = (ProViewHolder) arg1.getTag();// 设置提示
         }
+                
+        viewHolder.proID.setText(pictures.get(arg0).getProID());// 设置图像ID
+        viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
+        viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
+        viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置现价
         if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
         {
         	viewHolder.count.setText("剩余数量:"+pictures.get(arg0).getProcount());// 设置剩余数量
@@ -94,12 +99,11 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         else
         {
         	viewHolder.count.setText("剩余数量:已售罄");// 设置剩余数量
-        	viewHolder.count.setTextColor(android.graphics.Color.RED);
+        	viewHolder.proID.setTextColor(android.graphics.Color.GRAY);
+        	viewHolder.count.setTextColor(android.graphics.Color.GRAY);
+        	viewHolder.promarket.setTextColor(android.graphics.Color.GRAY);
+        	viewHolder.prosales.setTextColor(android.graphics.Color.GRAY);
         }
-        viewHolder.proID.setText(pictures.get(arg0).getProID());// 设置图像ID
-        viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
-        viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
-        viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置现价
         /*为什么图片一定要转化为 Bitmap格式的！！ */
         Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
         viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值

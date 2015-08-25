@@ -104,7 +104,7 @@ public class MaintainActivity extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
 	//Server服务相关
 	EVServerReceiver receiver;
-	boolean issuc=false;//是否签到成功	
+	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	//绑定的接口
 	private ServiceConnection conn=new ServiceConnection()
 	{
@@ -175,7 +175,7 @@ public class MaintainActivity extends Activity
 	            runOnUiThread(new Runnable() {      // UI thread 
 	                @Override 
 	                public void run() { 
-	                	if(issuc==false)
+	                	if(issuc==1)
 	                	{
 		                	Intent intent=new Intent();
 		    				intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
@@ -190,7 +190,7 @@ public class MaintainActivity extends Activity
 		    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
 		    				sendBroadcast(intent);  
 	                	}
-	                	else 
+	                	else if(issuc==2) 
 	                	{
 	                		//先查询设备信息，再上报给服务器
 	                		EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
@@ -198,7 +198,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 3*1000, 2*60*1000);       // timeTask 
+	    }, 10*1000, 2*60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
@@ -363,12 +363,17 @@ public class MaintainActivity extends Activity
 			        	//2.获取所有货道号
 			    	    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
 			        }
+			        else
+			        {
+						issuc=1;//可以开始签到操作
+					}
 					break;	
 				//现金设备状态查询
 				case EVprotocolAPI.EV_MDB_HEART://心跳查询
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-					int bill_err=((Integer)Set.get("bill_err")==0)?0:2;
-					int coin_err=((Integer)Set.get("coin_err")==0)?0:2;
+					
+					int bill_err=ToolClass.getvmcStatus(Set,1);
+					int coin_err=ToolClass.getvmcStatus(Set,2);
 					//上报给服务器
 					Intent intent=new Intent();
     				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
@@ -466,7 +471,7 @@ public class MaintainActivity extends Activity
 			{
 			case EVServerhttp.SETMAIN:
 				Log.i("EV_JNI","activity=签到成功");
-				issuc=true;	
+				issuc=2;	
 				dialog.dismiss();
 				//签到完成，自动开启售货程序
 				barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
@@ -476,7 +481,7 @@ public class MaintainActivity extends Activity
 			case EVServerhttp.SETFAILMAIN:
 				Log.i("EV_JNI","activity=签到失败");
 				dialog.dismiss();
-				//issuc=false;
+				//issuc=1;
 	    		break;	
 			}	
 		}

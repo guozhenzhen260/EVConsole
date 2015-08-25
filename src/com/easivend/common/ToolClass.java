@@ -1091,4 +1091,175 @@ public class ToolClass
         		+tempTime.format(date).toString(); 
 		return datetime;
 	}
+	
+	//获取设备状态并上传给服务器
+	//dev设备：1纸币器,2硬币器,3hopper1,4hopper2,5hopper3,6hopper4,7hopper5,8hopper6,9hopper7,10hopper8
+	//返回：2故障，0正常
+	public static int getvmcStatus(Map<String, Object> Set,int dev)
+	{
+		//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态="+rst,"log.txt");	
+		int rst=0;
+		switch (dev) 
+		{
+			//纸币器
+			case 1:
+				int bill_err=(Integer)Set.get("bill_err");
+				int bill_enable=(Integer)Set.get("bill_enable");
+				if(bill_err>0)
+				{
+					rst=2;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//硬币器	
+			case 2:
+				int coin_err=(Integer)Set.get("coin_err");
+				int coin_enable=(Integer)Set.get("coin_enable");
+				if(coin_err>0)
+				{
+					rst=2;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper1	
+			case 3:
+				int hopper1=(Integer)Set.get("hopper1");
+				if((hopper1==3)||(hopper1==2))
+				{
+					rst=2;
+				}
+				else if(hopper1==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper2	
+			case 4:
+				int hopper2=(Integer)Set.get("hopper2");
+				if((hopper2==3)||(hopper2==2))
+				{
+					rst=2;
+				}
+				else if(hopper2==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper3	
+			case 5:
+				int hopper3=(Integer)Set.get("hopper3");
+				if((hopper3==3)||(hopper3==2))
+				{
+					rst=2;
+				}
+				else if(hopper3==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper4		
+			case 6:
+				int hopper4=(Integer)Set.get("hopper4");
+				if((hopper4==3)||(hopper4==2))
+				{
+					rst=2;
+				}
+				else if(hopper4==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper5	
+			case 7:
+				int hopper5=(Integer)Set.get("hopper5");
+				if((hopper5==3)||(hopper5==2))
+				{
+					rst=2;
+				}
+				else if(hopper5==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper6
+			case 8:
+				int hopper6=(Integer)Set.get("hopper6");
+				if((hopper6==3)||(hopper6==2))
+				{
+					rst=2;
+				}
+				else if(hopper6==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper7
+			case 9:
+				int hopper7=(Integer)Set.get("hopper7");
+				if((hopper7==3)||(hopper7==2))
+				{
+					rst=2;
+				}
+				else if(hopper7==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;
+			//hopper8
+			case 10:
+				int hopper8=(Integer)Set.get("hopper8");
+				if((hopper8==3)||(hopper8==2))
+				{
+					rst=2;
+				}
+				else if(hopper8==1)
+				{
+					rst=1;
+				}
+				else
+				{
+					rst=0;
+				}
+				break;	
+			default:
+				break;
+		}		
+		return rst;
+	}
+	
+	
 }

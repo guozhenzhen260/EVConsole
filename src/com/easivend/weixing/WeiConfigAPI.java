@@ -144,7 +144,7 @@ public class WeiConfigAPI
 		 //添加分账账号
 		 if(WeiConfig.getIsweisub()>0)
 		 {
-			 sPara.put("sub_mch_id",WeiConfig.getWeisubmch_id());//mch_id
+			 sPara.put("sub_mch_id",WeiConfig.getWeisubmch_id());//sub_mch_id
 		 }
 		 sPara.put("device_info",ToolClass.getVmc_no());//设备号
 		 sPara.put("fee_type","CNY");//货币类型
@@ -239,6 +239,11 @@ public class WeiConfigAPI
 		Map<String, String> sPara = new HashMap<String, String>();
 		 sPara.put("appid",WeiConfig.getWeiappid());//appid
 		 sPara.put("mch_id",WeiConfig.getWeimch_id());//mch_id
+		 //添加分账账号
+		 if(WeiConfig.getIsweisub()>0)
+		 {
+			 sPara.put("sub_mch_id",WeiConfig.getWeisubmch_id());//sub_mch_id
+		 }
 		 sPara.put("nonce_str","960f228109051b9969f76c82bde183ac");//随机字符串
 		 sPara.put("out_trade_no", list.get("out_trade_no"));//订单编号
 		 String key=WeiConfig.getWeikey();
@@ -354,6 +359,75 @@ public class WeiConfigAPI
 					{
 						list.put("err_code_des", parser.nextText());
                     }														
+                }
+                eventType = parser.next();
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+            System.out.println(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println(e);
+        }
+        return list;
+    }
+    
+    //生成撤销消息
+    public static Map<String, String> PostWeiDelete(Map<String, String> list) 
+    {
+    	//往微信服务器发送交易信息
+		Map<String, String> sPara = new HashMap<String, String>();
+		 sPara.put("appid",WeiConfig.getWeiappid());//appid
+		 sPara.put("mch_id",WeiConfig.getWeimch_id());//mch_id
+		 //添加分账账号
+		 if(WeiConfig.getIsweisub()>0)
+		 {
+			 sPara.put("sub_mch_id",WeiConfig.getWeisubmch_id());//sub_mch_id
+		 }
+		 sPara.put("nonce_str","960f228109051b9969f76c82bde183ac");//随机字符串
+		 sPara.put("out_trade_no", list.get("out_trade_no"));//订单编号
+		 String key=WeiConfig.getWeikey();
+		 String sign=WeixingSubmit.buildRequestPara(sPara,key);
+		 sPara.put("sign",sign);
+		 Log.i("EV_JNI","Send1="+sPara);
+    	return sPara;
+    }
+    
+    //解包撤销请求的返回消息
+    public static Map<String, String> PendWeiDelete(InputStream is)
+    {
+    	Map<String, String>list=new HashMap<String, String>();
+    	
+    	XmlPullParser parser = Xml.newPullParser();
+        try {
+            //parser.setInput(new ByteArrayInputStream(string.substring(1)
+            //        .getBytes("UTF-8")), "UTF-8");
+            parser.setInput(is, "UTF-8");
+            int eventType = parser.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT)
+			{
+                if (eventType == XmlPullParser.START_TAG) 
+				{
+                    if ("return_code".equals(parser.getName())) 
+					{
+                    	list.put("return_code", parser.nextText());
+                    } 
+					else if ("return_msg".equals(parser.getName())) 
+					{
+						list.put("return_msg", parser.nextText());
+                    } 
+					else if ("result_code".equals(parser.getName())) 
+					{
+						list.put("result_code", parser.nextText());
+                    }
+					else if ("err_code".equals(parser.getName())) 
+					{
+						list.put("err_code", parser.nextText());
+                    }
+					else if ("err_code_des".equals(parser.getName())) 
+					{
+						list.put("err_code_des", parser.nextText());
+                    }															
                 }
                 eventType = parser.next();
             }

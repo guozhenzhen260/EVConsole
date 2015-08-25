@@ -192,6 +192,14 @@ public class EVServerService extends Service {
 				switch (msg.what)
 				{
 					//签到
+					case EVServerhttp.SETERRFAILMAIN://子线程接收主线程消息签到失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						sendBroadcast(intent);	
+						break;					
 					case EVServerhttp.SETMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
 						//初始化二:获取商品分类信息
@@ -200,15 +208,7 @@ public class EVServerService extends Service {
 		        		childmsg.what=EVServerhttp.SETCLASSCHILD;
 		        		childmsg.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childmsg);
-						break;
-					case EVServerhttp.SETERRFAILMAIN://子线程接收主线程消息签到失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到失败，原因="+msg.obj.toString(),"server.txt");
-						//返回给activity广播
-						intent=new Intent();
-						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
-						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-						sendBroadcast(intent);	
-						break;
+						break;					
 					//获取商品分类信息	
 					case EVServerhttp.SETERRFAILCLASSMAIN://子线程接收主线程消息获取商品分类信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
@@ -262,38 +262,19 @@ public class EVServerService extends Service {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//初始化五
-						//返回给activity广播,初始化完成
-						if(ischeck==false)
-						{
-							intent=new Intent();
-							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
-							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-							sendBroadcast(intent);
-							ischeck=true;
-						}
-						break;
-					//获取设备信息	
-					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息获取设备信息失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
-						break;
-					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
-						//同步二、发送心跳命令到子线程中
+						//初始化五、发送心跳命令到子线程中
 		            	childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg=childhand.obtainMessage();
 		        		childheartmsg.what=EVServerhttp.SETHEARTCHILD;
-		        		childhand.sendMessage(childheartmsg);
-						
-						break;
+		        		childhand.sendMessage(childheartmsg);						
+						break;					
 					//获取心跳信息	
 					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息失败，原因="+msg.obj.toString(),"server.txt");
 						break;
 					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
-						//vmc_orderDAO orderDAO = new vmc_orderDAO(EVServerService.this);
-						//同步三、发送交易记录命令到子线程中
+						//初始化六、发送交易记录命令到子线程中
 		            	childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg2=childhand.obtainMessage();
 		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
@@ -308,7 +289,7 @@ public class EVServerService extends Service {
 						//修改交易数据上报状态为已上报
 						updategrid(msg.obj.toString());
 						
-						//同步四、发送货道上传命令到子线程中
+						//初始化七、发送货道上传命令到子线程中
 						childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg3=childhand.obtainMessage();
 		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
@@ -326,8 +307,7 @@ public class EVServerService extends Service {
 						if(tokenno>=480)
 						{
 							//处理接收到的内容,发送签到命令到子线程中
-							//初始化一:发送签到指令
-				        	childhand=serverhttp.obtainHandler();
+							childhand=serverhttp.obtainHandler();
 				    		Message childheartmsg4=childhand.obtainMessage();
 				    		childheartmsg4.what=EVServerhttp.SETCHECKCHILD;
 				    		JSONObject ev=null;
@@ -348,13 +328,32 @@ public class EVServerService extends Service {
 						{
 							tokenno++;
 						}
+						//初始化八、返回给activity广播,初始化完成
+						if(ischeck==false)
+						{
+							intent=new Intent();
+							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
+							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+							sendBroadcast(intent);
+							ischeck=true;
+							LAST_EDIT_TIME=ToolClass.getLasttime();
+						}
+							        		
+						break;
+					//上传设备信息	
+					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service LAST_EDIT_TIME="+LAST_EDIT_TIME,"server.txt");
-						//同步五、下载当前时间以后有更新的商品分类，商品，以及货道
+						//同步二、下载当前时间以后有更新的商品分类，商品，以及货道，同时上报各个状态
 						childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg4=childhand.obtainMessage();
 		        		childheartmsg4.what=EVServerhttp.SETCLASSCHILD;
 		        		childheartmsg4.obj=LAST_EDIT_TIME;
-		        		childhand.sendMessage(childheartmsg4);		        		
+		        		childhand.sendMessage(childheartmsg4);	
+						
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败
