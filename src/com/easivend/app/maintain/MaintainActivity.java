@@ -60,6 +60,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -198,7 +200,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 10*1000, 2*60*1000);       // timeTask 
+	    }, 7*1000, 2*60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
@@ -244,7 +246,8 @@ public class MaintainActivity extends Activity
 			}
 		}
 				
-		
+		Bitmap mark = BitmapFactory.decodeResource(this.getResources(), R.drawable.ysq);  
+		ToolClass.setMark(mark);
 		//================
 		//九宫格相关
 		//================		

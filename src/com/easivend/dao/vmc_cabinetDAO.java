@@ -67,4 +67,18 @@ public class vmc_cabinetDAO
           
           db.close(); 
   	}
+  	
+    //删除该柜
+  	public void deteleall() 
+  	{       
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+          // 执行删除表
+          db.execSQL("delete from vmc_class"); 
+          db.execSQL("delete from vmc_classproduct"); 
+          db.execSQL("delete from vmc_product"); 
+          db.execSQL("delete from vmc_cabinet"); 
+          db.execSQL("delete from vmc_column");    
+          
+          db.close(); 
+  	}
 }

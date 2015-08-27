@@ -21,6 +21,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +37,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
 
     private LayoutInflater inflater;// 创建LayoutInflater对象
     private List<ProPicture> pictures;// 创建List泛型集合
+    
 
     // 为类创建构造函数
     public ProPictureAdapter(String[] proID, String[] promarket,String[] prosales,String[] proImage,String[] procount, Context context) {
@@ -95,6 +99,9 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
         {
         	viewHolder.count.setText("剩余数量:"+pictures.get(arg0).getProcount());// 设置剩余数量
+        	/*为什么图片一定要转化为 Bitmap格式的！！ */
+            Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+            viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
         }
         else
         {
@@ -103,10 +110,18 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         	viewHolder.count.setTextColor(android.graphics.Color.GRAY);
         	viewHolder.promarket.setTextColor(android.graphics.Color.GRAY);
         	viewHolder.prosales.setTextColor(android.graphics.Color.GRAY);
+        	/*原图片加载已售完水印 */
+            Bitmap photo = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+            Bitmap mark=ToolClass.getMark();
+            Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
+            Canvas canvas = new Canvas(photoMark);  
+            canvas.drawBitmap(photo, 0, 0, null);  
+            canvas.drawBitmap(mark, photo.getWidth() - mark.getWidth(), photo.getHeight() - mark.getHeight(), null);  
+            canvas.save(Canvas.ALL_SAVE_FLAG);  
+            canvas.restore();
+            viewHolder.image.setImageBitmap(photoMark);// 设置图像的二进制值
         }
-        /*为什么图片一定要转化为 Bitmap格式的！！ */
-        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-        viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
+        
         return arg1;// 返回图像标识
     }
 }

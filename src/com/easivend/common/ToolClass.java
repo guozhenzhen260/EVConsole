@@ -78,7 +78,16 @@ public class ToolClass
 	public final static int ERROR=4;
 	private static int bentcom_id=-1,com_id=-1;
 	public static String vmc_no="";
+	public static Bitmap mark=null;//ÊÛÍêÍ¼Æ¬
 	
+	public static Bitmap getMark() {
+		return mark;
+	}
+
+	public static void setMark(Bitmap mark) {
+		ToolClass.mark = mark;
+	}
+
 	public static String getVmc_no() {
 		return vmc_no;
 	}

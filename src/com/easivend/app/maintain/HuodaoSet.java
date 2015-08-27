@@ -350,16 +350,21 @@ public class HuodaoSet extends Activity
 		vmc_productDAO productDAO = new vmc_productDAO(HuodaoSet.this);// 创建InaccountDAO对象
 	    // 获取所有收入信息，并存储到List泛型集合中
 	    Tb_vmc_product tb_inaccount = productDAO.find(productID);
-	    imgDir=tb_inaccount.getAttBatch1().toString();
-	    /*为什么图片一定要转化为 Bitmap格式的！！ */
-        Bitmap bitmap = ToolClass.getLoacalBitmap(imgDir); //从本地取图片(在cdcard中获取)  //
-        ivhuoProID.setImageBitmap(bitmap);// 设置图像的二进制值
-                
-		txthuoProID.setText(tb_inaccount.getProductID().toString());
-		txthuoProName.setText(tb_inaccount.getProductName().toString());
-		txthuomarketPrice.setText(String.valueOf(tb_inaccount.getMarketPrice()));
-		txthuosalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
-		txthuoshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));		
+	    if(tb_inaccount!=null)
+	    {
+		    if(tb_inaccount.getAttBatch1().toString()!=null)
+		    {
+			    imgDir=tb_inaccount.getAttBatch1().toString();
+			    /*为什么图片一定要转化为 Bitmap格式的！！ */
+		        Bitmap bitmap = ToolClass.getLoacalBitmap(imgDir); //从本地取图片(在cdcard中获取)  //
+		        ivhuoProID.setImageBitmap(bitmap);// 设置图像的二进制值
+		    }        
+			txthuoProID.setText(tb_inaccount.getProductID().toString());
+			txthuoProName.setText(tb_inaccount.getProductName().toString());
+			txthuomarketPrice.setText(String.valueOf(tb_inaccount.getMarketPrice()));
+			txthuosalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
+			txthuoshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));	
+	    }
 	}
 	//更新货道信息
 	private void updatehuodaostatus()

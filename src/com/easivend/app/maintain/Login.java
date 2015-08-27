@@ -22,10 +22,15 @@ import java.util.Map;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.Business;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_cabinetDAO;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.weixing.WeiConfigAPI;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -40,7 +45,7 @@ public class Login extends Activity
 {
 	private EditText txtlogin,txtbent,txtserver,txtip;// 创建EditText对象
 	private TextView tvip=null;
-    private Button btnlogin, btnclose,btnGaoji;// 创建两个Button对象
+    private Button btnlogin, btnclose,btnGaoji,btnDel;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
     String bentcom =null;
@@ -57,8 +62,10 @@ public class Login extends Activity
         txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
         txtip = (EditText) findViewById(R.id.txtip);// 获取服务端ip地址文本框
         tvip = (TextView) findViewById(R.id.tvip);
+        btnDel = (Button) findViewById(R.id.btnDel);// 获取清除全部商品货道信息
         tvip.setVisibility(View.GONE);
         txtip.setVisibility(View.GONE);
+        btnDel.setVisibility(View.GONE);
         Map<String, String> list=ToolClass.ReadConfigFile();
         if(list!=null)
         {
@@ -116,12 +123,51 @@ public class Login extends Activity
                 {
                 	tvip.setVisibility(View.VISIBLE);
                     txtip.setVisibility(View.VISIBLE);
+                    btnDel.setVisibility(View.VISIBLE);
                 }
                 else
                 {
                 	tvip.setVisibility(View.GONE);
                     txtip.setVisibility(View.GONE);
+                    btnDel.setVisibility(View.GONE);
 				}
+            }
+        });
+        btnDel.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
+            @Override
+            public void onClick(View arg0) {
+            	//创建警告对话框
+            	Dialog alert=new AlertDialog.Builder(Login.this)
+            		.setTitle("对话框")//标题
+            		.setMessage("您确定要删除全部商品货道信息吗？")//表示对话框中得内容
+            		.setIcon(R.drawable.ic_launcher)//设置logo
+            		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+            			{				
+        	    				@Override
+        	    				public void onClick(DialogInterface dialog, int which) 
+        	    				{
+        	    					// TODO Auto-generated method stub	
+        	    					// 创建InaccountDAO对象
+        	    					vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(Login.this);
+        				            cabinetDAO.deteleall();// 删除
+        				            ToolClass.addOptLog(Login.this,2,"删除全部商品货道信息");
+        	    					// 弹出信息提示
+        				            Toast.makeText(Login.this, "删除成功！", Toast.LENGTH_SHORT).show();						            
+        				            finish();
+        	    				}
+            		      }
+            			)		    		        
+        		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+        		        	{			
+        						@Override
+        						public void onClick(DialogInterface dialog, int which) 
+        						{
+        							// TODO Auto-generated method stub				
+        						}
+        		        	}
+        		        )
+        		        .create();//创建一个对话框
+        		        alert.show();//显示对话框
             }
         });
 	}
