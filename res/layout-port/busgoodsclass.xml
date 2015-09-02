@@ -28,4 +28,5 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:src="@drawable/busfinish" /> 
+
 </RelativeLayout>

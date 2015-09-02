@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >    
+    android:layout_height="match_parent" >
     <ImageView  
 	        android:id="@+id/ivbusgoodselProduct"  
 	        android:layout_width="wrap_content"   
@@ -124,14 +124,13 @@
    	    android:id = "@+id/ivbuszhiselamount"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_below="@+id/busgoodselAmount"	
+		android:layout_toRightOf="@+id/txtbusgoodselName"	
 		android:src="@drawable/amount"			
    	/> 
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselzhier"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_below="@+id/busgoodselAmount"	
 		android:layout_toRightOf="@+id/ivbuszhiselamount"
 		android:src="@drawable/zhier"			
    	/> 
@@ -139,16 +138,10 @@
    	    android:id = "@+id/ivbuszhiselweixing"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_below="@+id/busgoodselAmount"	
-		android:layout_toRightOf="@+id/ivbuszhiselzhier"
+		android:layout_below="@+id/ivbuszhiselzhier"	
+		android:layout_toRightOf="@+id/txtbusgoodselName"
 		android:src="@drawable/weixing"			
-   	/> 	
-	<ImageView 
-   	    android:layout_width="980dp"
-		android:layout_height="88dp"	
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentBottom="true"
-		android:src="@drawable/ditu"/> 
+   	/> 		
 	<ImageButton
         android:id="@+id/imgbtnbusgoodselback"
         android:layout_alignParentBottom="true"
@@ -156,4 +149,5 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:src="@drawable/busfinish" />
+
 </RelativeLayout>

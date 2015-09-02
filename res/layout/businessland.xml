@@ -29,7 +29,7 @@
 	    <ImageButton
 	        android:id="@+id/btnadsclass"
 	        android:layout_width="380dp"
-	        android:layout_height="110dp"
+	        android:layout_height="140dp"
 	        android:layout_toRightOf="@+id/txtadsTip" 
 	        android:textColor="#8C6931"
 	        android:src="@drawable/shpfl"
