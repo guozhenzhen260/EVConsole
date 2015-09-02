@@ -2,17 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <ImageView 
-   	    android:id = "@+id/ivbuszhierjsqd"
-   	    android:layout_width="match_parent"
-		android:layout_height="wrap_content"	
-		android:src="@drawable/jsqd"			
-   	/>
-	<TextView
+    <TextView
         android:id="@+id/txtbuszhiercount"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhierjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="integer"
@@ -48,35 +41,21 @@
         android:textStyle="bold"        
         android:textColor="#FF0000" 
         android:text="交易结果:" />
-	<ImageView 
-   	    android:id = "@+id/ivbuszhierzflc"
-   	    android:layout_width="match_parent"
-		android:layout_height="wrap_content"	
-		android:layout_alignParentLeft="true"
-		android:layout_below="@+id/txtbuszhierrst"
-		android:src="@drawable/zflcfang"			
-   	/>
 	<TextView
         android:id="@+id/txtbuszhiertime"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhierzflc"
+        android:layout_below="@+id/txtbuszhierrst"
         android:textSize="40sp"
         android:textStyle="bold"        
         android:textColor="#FF0000" 
         android:text="时间:" />
 	<ImageView 
-   	    android:id = "@+id/ivbuszhierbill"
-   	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"	
-		android:layout_below="@+id/txtbuszhiertime"	
-		android:src="@drawable/buszhiera"			
-   	/>
-	<ImageView 
    	    android:id = "@+id/ivbuszhierb"
    	    android:layout_width="329dp"
 		android:layout_height="329dp"	
-		android:layout_below="@+id/ivbuszhierbill"	
+		android:layout_toRightOf="@+id/txtbuszhiamerount"
+		android:layout_below="@+id/txtbuszhierrst"	
 		android:src="@drawable/buszhierb"			
    	/>
 	<ImageView
@@ -84,7 +63,7 @@
 	    android:layout_width="329dp"
         android:layout_height="329dp"
         android:layout_toRightOf="@+id/ivbuszhierb"
-        android:layout_below="@+id/ivbuszhierbill"	
+        android:layout_below="@+id/txtbuszhierrst"	
         android:src="@drawable/wutupian"
         />
 	<ImageButton
@@ -100,4 +79,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qtzffang" />
+
 </RelativeLayout>
