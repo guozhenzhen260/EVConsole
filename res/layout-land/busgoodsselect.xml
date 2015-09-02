@@ -120,28 +120,31 @@
 		        android:background="#B8B8B8" 
 		        android:visibility="visible" />						
 	</RelativeLayout>
-	<ImageView 
-   	    android:id = "@+id/ivbuszhiselamount"
-   	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"	
-		android:layout_toRightOf="@+id/txtbusgoodselName"	
-		android:src="@drawable/amount"			
-   	/> 
+	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselzhier"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_toRightOf="@+id/ivbuszhiselamount"
+		android:layout_below="@+id/txtbusgoodselDes"
+		android:layout_toRightOf="@+id/ivbusgoodselProduct"
 		android:src="@drawable/zhier"			
    	/> 
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselweixing"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_below="@+id/ivbuszhiselzhier"	
-		android:layout_toRightOf="@+id/txtbusgoodselName"
+		android:layout_below="@+id/txtbusgoodselDes"	
+		android:layout_toRightOf="@+id/ivbuszhiselzhier"
 		android:src="@drawable/weixing"			
-   	/> 		
+   	/> 	
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselamount"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/ivbuszhiselweixing"
+		android:layout_toRightOf="@+id/ivbusgoodselProduct"	
+		android:src="@drawable/amount"			
+   	/> 	
 	<ImageButton
         android:id="@+id/imgbtnbusgoodselback"
         android:layout_alignParentBottom="true"

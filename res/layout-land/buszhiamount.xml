@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >     
-	<ImageView 
-   	    android:id = "@+id/ivbuszhiamountjsqd"
-   	    android:layout_width="match_parent"
-		android:layout_height="wrap_content"	
-		android:src="@drawable/jsqd"			
-   	/>
-	<TextView
+    android:layout_height="match_parent" >
+    <TextView
         android:id="@+id/txtbuszhiamountcount"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhiamountjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="integer"
@@ -59,36 +51,28 @@
         android:textStyle="bold"
         android:numeric="decimal"
         android:textColor="#FF0000" 
-        android:text="0" />
-	<ImageView 
-   	    android:id = "@+id/ivbuszhiamountzflc"
-   	    android:layout_width="match_parent"
-		android:layout_height="wrap_content"	
-		android:layout_alignParentLeft="true"
-		android:layout_below="@+id/txtbuszhiamountbillAmount"
-		android:src="@drawable/zflcfang"			
-   	/> 
+        android:text="0" />	
    	<TextView
         android:id="@+id/txtbuszhiamounttime"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhiamountzflc"
+        android:layout_below="@+id/txtbuszhiamountbillAmount"
         android:textSize="40sp"
         android:textStyle="bold"        
         android:textColor="#FF0000" 
         android:text="时间:" />	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiamountbill"
-   	    android:layout_width="match_parent"
-		android:layout_height="wrap_content"	
-		android:layout_below="@+id/txtbuszhiamounttime"	
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/txtbuszhiamountAmount"		
 		android:src="@drawable/billonlyfang"			
    	/>
    	<TextView
         android:id="@+id/txtbuszhiamounttsxx"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhiamountbill"
+        android:layout_below="@+id/txtbuszhiamounttime"
         android:textSize="40sp"
         android:textStyle="bold"
         android:textColor="#FF0000" 
@@ -102,9 +86,9 @@
         android:src="@drawable/qxzffang" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqtzf"
-        android:layout_below="@+id/txtbuszhiamounttsxx"
-        android:layout_toRightOf="@+id/imgbtnbuszhiamountqxzf"
+        android:layout_below="@+id/imgbtnbuszhiamountqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qtzffang" />
+
 </RelativeLayout>
