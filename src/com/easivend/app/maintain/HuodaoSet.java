@@ -55,6 +55,8 @@ public class HuodaoSet extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.huoset);// 设置布局文件
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
     	final String date=df.format(new Date());
 		ivhuoProID = (ImageView) findViewById(R.id.ivhuoProID);

@@ -79,7 +79,16 @@ public class ToolClass
 	private static int bentcom_id=-1,com_id=-1;
 	public static String vmc_no="";
 	public static Bitmap mark=null;//售完图片
+	public static int orientation=0;//使用横屏还是竖屏模式
 	
+	public static int getOrientation() {
+		return orientation;
+	}
+
+	public static void setOrientation(int orientation) {
+		ToolClass.orientation = orientation;
+	}
+
 	public static Bitmap getMark() {
 		return mark;
 	}

@@ -200,6 +200,7 @@ public class EVServerhttp implements Runnable {
 					List<NameValuePair> params2 = new ArrayList<NameValuePair>();
 					params2.add(new BasicNameValuePair("Token", Tok));
 					params2.add(new BasicNameValuePair("LastPollTime", ToolClass.getLasttime()));
+					//params2.add(new BasicNameValuePair("LastPollTime", "2015-08-31T10:45:19"));
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params2.toString(),"server.txt");
 					try {
 						httppost2.setEntity(new UrlEncodedFormEntity(params2, "utf-8")); //…Ë÷√±‡¬Î∑Ω Ω

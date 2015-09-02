@@ -60,6 +60,8 @@ public class LogOpt extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.log);	
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		df = new SimpleDateFormat("yyyy");//设置日期格式
     	date=df.format(new Date()); 
     	mYear=Integer.parseInt(date);

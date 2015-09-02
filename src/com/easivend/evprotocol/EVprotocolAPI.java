@@ -123,6 +123,15 @@ public class EVprotocolAPI
 									allSet.put("port_id", ev_head.getInt("port_id"));
 									callBack.jniCallback(allSet);
 						    	}
+						    	else
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_REGISTER);
+									allSet.put("port_com", ev_head.getString("port"));
+									allSet.put("port_id", ev_head.getInt("port_id"));
+									callBack.jniCallback(allSet);
+						    	}
 						    	break;
 						    	
 						    //快递柜设备	
@@ -170,7 +179,21 @@ public class EVprotocolAPI
 								}
 								else
 								{
-									
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_BENTO_CHECK);
+									allSet.put("cool", 0);
+									allSet.put("hot", 0);
+									allSet.put("light", 0);
+//									JSONArray arr=ev_head.getJSONArray("column");//返回json数组
+//									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道2:"+arr.toString());
+//									for(int i=0;i<arr.length();i++)
+//									{
+//										JSONObject object2=arr.getJSONObject(i);
+//										allSet.put(String.valueOf(object2.getInt("no")), object2.getInt("state"));								
+//									}
+									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道3:"+allSet.toString());
+									callBack.jniCallback(allSet);
 								}
 						    	break;
 						    case EV_BENTO_LIGHT://快递柜照明

@@ -95,6 +95,9 @@ public class ParamManager extends TabActivity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.parammanage);		
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
+		
 		this.mytabhost = super.getTabHost();//取得TabHost对象
         LayoutInflater.from(this).inflate(R.layout.parammanage, this.mytabhost.getTabContentView(),true);
         //增加Tab的组件

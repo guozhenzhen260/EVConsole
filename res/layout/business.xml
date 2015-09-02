@@ -59,11 +59,11 @@
 			android:layout_below="@+id/btnadsbuysale"
 			android:src="@drawable/spgh"			
 	   	/> 
-	   	<TextView
+	   	<EditText
 	        android:id="@+id/txtadsTip"
 	        android:layout_width="357dp"
 	        android:layout_height="wrap_content"
-	        android:text=""	        
+	        android:hint="请填写货道号"     
 	        android:textSize="40sp"
         	android:textStyle="bold"
         	android:textColor="#FF0000" 

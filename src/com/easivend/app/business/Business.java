@@ -28,6 +28,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.text.StaticLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -37,6 +38,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -49,7 +51,7 @@ import android.widget.VideoView;
 public class Business extends Activity
 {
 	final static int REQUEST_CODE=1;  
-	TextView txtadsTip=null;
+	EditText txtadsTip=null;
 	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
 	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null,btnads0=null;	
@@ -84,7 +86,9 @@ public class Business extends Activity
         // 全屏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(R.layout.business);
+		setContentView(R.layout.business);		
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		videoView=(VideoView)findViewById(R.id.video);
 		ivads=(ImageView)findViewById(R.id.ivads);
 //		//动态设置控件高度
@@ -112,7 +116,18 @@ public class Business extends Activity
 		//=======
 		//操作模块
 		//=======
-		txtadsTip = (TextView) findViewById(R.id.txtadsTip);	
+		txtadsTip = (EditText) findViewById(R.id.txtadsTip);
+		txtadsTip.setFocusable(false);//不让该edittext获得焦点
+		txtadsTip.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				// 关闭软键盘，这样当点击该edittext的时候，不会弹出系统自带的输入法
+				txtadsTip.setInputType(InputType.TYPE_NULL);
+				return false;
+			}
+		});
 		btnads1 = (ImageButton) findViewById(R.id.btnads1);		
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override

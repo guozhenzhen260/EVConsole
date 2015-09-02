@@ -51,6 +51,8 @@ public class GoodsProSet extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.goodsset);// 设置布局文件
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
     	final String date=df.format(new Date());
 		ivProduct = (ImageView) findViewById(R.id.ivProduct);

@@ -56,6 +56,8 @@ public class Login extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);// 设置布局文件
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框

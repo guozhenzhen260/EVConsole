@@ -147,6 +147,8 @@ public class HuodaoTest extends TabActivity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.huodao);// 设置布局文件
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		this.mytabhost = super.getTabHost();//取得TabHost对象
         LayoutInflater.from(this).inflate(R.layout.huodao, this.mytabhost.getTabContentView(),true);
         //增加Tab的组件

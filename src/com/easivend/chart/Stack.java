@@ -29,6 +29,8 @@ public class Stack extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
 //		String a=bundle.getString("title");

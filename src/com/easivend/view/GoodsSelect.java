@@ -43,7 +43,9 @@ public class GoodsSelect extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.goodsselect);// 设置布局文件		
+		setContentView(R.layout.goodsselect);// 设置布局文件	
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		this.gvselectProduct=(GridView) findViewById(R.id.gvselectProduct); 		
 		
 		// 商品表中的所有商品信息补充到商品数据结构数组中

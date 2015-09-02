@@ -10,6 +10,8 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
+import com.easivend.common.ToolClass;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -28,6 +30,8 @@ public class Line extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
 		title=bundle.getString("title");

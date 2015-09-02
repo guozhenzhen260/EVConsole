@@ -40,6 +40,7 @@ import com.easivend.view.EVServerService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.Business;
+import com.easivend.app.business.BusinessLand;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.SerializableMap;
@@ -60,9 +61,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -134,6 +137,19 @@ public class MaintainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maintain);	
+		//取得屏幕的长和宽，进行比较设置横竖屏的变量
+		Display display = getWindowManager().getDefaultDisplay();  
+		 int width = display.getWidth();  
+		int height = display.getHeight();  
+		if (width > height) {  
+			ToolClass.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//设为横屏
+		} else { 
+			ToolClass.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//设为竖屏
+			//ToolClass.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//设为横屏
+		}
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
+		
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
 		dialog= ProgressDialog.show(MaintainActivity.this,"同步服务器","请稍候...");
@@ -291,7 +307,17 @@ public class MaintainActivity extends Activity
                     break;
                 case 6:
                 	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
-                    intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+    				//横屏
+    				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+    				{
+    					intent = new Intent(MaintainActivity.this, BusinessLand.class);// 使用Accountflag窗口初始化Intent
+    					//intent = new Intent(MaintainActivity.this, Business.class);
+    				}
+    				//竖屏
+    				else
+    				{
+    					intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+    				}                	
                     startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 7:
@@ -319,19 +345,32 @@ public class MaintainActivity extends Activity
 					if(Set.get("port_com").equals(com))
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金模块连接完成","log.txt");	
-						txtcom.setText(com+"[现金模块]连接完成");		
 						ToolClass.setCom_id((Integer)Set.get("port_id"));
+						if((Integer)Set.get("port_id")>=0)
+						{
+							txtcom.setText(com+"[现金模块]连接完成");
+						}
+						else
+						{
+							txtcom.setText(bentcom+"[现金模块]连接失败");
+							issuc=1;//可以开始签到操作
+						}
 					}
 					//格子柜初始化完成
 					else if(Set.get("port_com").equals(bentcom))
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜连接完成","log.txt");	
-						txtbentcom.setText(bentcom+"[格子柜]连接完成");		
 						ToolClass.setBentcom_id((Integer)Set.get("port_id"));
 						//初始化货道信息
 						if((Integer)Set.get("port_id")>=0)
 						{
+							txtbentcom.setText(bentcom+"[格子柜]连接完成");	
 							getcolumnstat();
+						}
+						else
+						{
+							txtbentcom.setText(bentcom+"[格子柜]连接失败");
+							issuc=1;//可以开始签到操作
 						}
 					}
 					break;
@@ -400,7 +439,8 @@ public class MaintainActivity extends Activity
 				barmaintain.dismiss();
 			}	
 			else if(resultCode==MaintainActivity.RESULT_OK)
-			{				
+			{	
+				barmaintain.dismiss();
 				//从配置文件获取数据
 				Map<String, String> list=ToolClass.ReadConfigFile();
 				if(list!=null)
@@ -437,8 +477,15 @@ public class MaintainActivity extends Activity
 		    huom++;// 标识加1
 	    }
 	    huom=0;
-	    //2.获取所有货道号
-	    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
+	    if(listinfos.size()>0)
+	    {
+		    //2.获取所有货道号
+		    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
+	    }
+	    else 
+	    {
+	    	issuc=1;//可以开始签到操作
+		}
 	}
 	
 	//获取本柜所有货道号
@@ -478,7 +525,17 @@ public class MaintainActivity extends Activity
 				dialog.dismiss();
 				//签到完成，自动开启售货程序
 				barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
-				Intent intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+				Intent intbus;
+				//横屏
+				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+				{
+					intbus = new Intent(MaintainActivity.this, BusinessLand.class);// 使用Accountflag窗口初始化Intent
+				}
+				//竖屏
+				else
+				{
+					intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+				}
 				startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
 	    		break;
 			case EVServerhttp.SETFAILMAIN:

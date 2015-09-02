@@ -40,6 +40,8 @@ public class WeixingTest extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.weixingtest);	
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
 		mainhand=new Handler()
 		{
 
