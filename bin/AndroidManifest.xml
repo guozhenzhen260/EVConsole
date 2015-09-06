@@ -16,6 +16,7 @@
         <activity
             android:name="com.easivend.app.maintain.MaintainActivity"
             android:label="@string/app_name" 
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation">
             <intent-filter>
@@ -27,84 +28,98 @@
         <activity
             android:name="com.easivend.app.maintain.Login"
             android:label="@string/app_name" 
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="com.easivend.app.maintain.AddInaccount"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.HuodaoTest"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.GoodsManager"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="com.easivend.app.maintain.GoodsProSet"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.ParamManager"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.ZhifubaoTest"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.WeixingTest"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.HuodaoSet"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.view.GoodsSelect"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.maintain.Order"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.chart.Stack"
             android:label="@string/app_name" 
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="com.easivend.chart.Line"
-            android:label="@string/app_name" 
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan" 
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="com.easivend.app.maintain.LogOpt"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
@@ -113,49 +128,65 @@
         <activity
             android:name="com.easivend.app.business.Business"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.BusinessLand"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.BusgoodsClass"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.Busgoods"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.BusgoodsSelect"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
         </activity>        
         <activity
             android:name="com.easivend.app.business.BusZhiAmount"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.BusZhier"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.BusZhiwei"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name="com.easivend.app.business.BusHuo"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <receiver android:name="com.easivend.view.BootBroadcastReceiver">
 	        <intent-filter>
