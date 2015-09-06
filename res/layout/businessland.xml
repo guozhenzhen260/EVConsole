@@ -29,103 +29,103 @@
 	    <ImageButton
 	        android:id="@+id/btnadsclass"
 	        android:layout_width="380dp"
-	        android:layout_height="200dp"
+	        android:layout_height="180dp"
 	        android:layout_toRightOf="@+id/txtadsTip" 
 	        android:textColor="#8C6931"
 	        android:src="@drawable/shpfl"
 	        android:textSize="40dp"/>
 	    <ImageButton
 	        android:id="@+id/btnads1"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_below="@+id/btnadsclass"	       
 	        android:textColor="#8C6931"
-	        android:src="@drawable/one" />   
+	        android:src="@drawable/oneland" />   
 	    <ImageButton
 	        android:id="@+id/btnads2"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads1" 
 	        android:layout_below="@+id/btnadsclass"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/two" />
+	        android:src="@drawable/twoland" />
 	    <ImageButton
 	        android:id="@+id/btnads3"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads2" 
 	        android:layout_below="@+id/btnadsclass"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/three" />  
+	        android:src="@drawable/threeland" />  
 	   <ImageButton
 	        android:id="@+id/btnads4"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_below="@+id/btnads1"	       
 	        android:textColor="#8C6931"
-	        android:src="@drawable/four" />   
+	        android:src="@drawable/fourland" />   
 	   <ImageButton
 	        android:id="@+id/btnads5"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads4" 
 	        android:layout_below="@+id/btnads2"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/five" />
+	        android:src="@drawable/fiveland" />
 	   <ImageButton
 	        android:id="@+id/btnads6"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads5" 
 	        android:layout_below="@+id/btnads3"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/six" />
+	        android:src="@drawable/sixland" />
 	   <ImageButton
 	        android:id="@+id/btnads7"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_below="@+id/btnads4"	       
 	        android:textColor="#8C6931"
-	        android:src="@drawable/seven" />   
+	        android:src="@drawable/sevenland" />   
 	   <ImageButton
 	        android:id="@+id/btnads8"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads7" 
 	        android:layout_below="@+id/btnads5"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/eight" />
+	        android:src="@drawable/eightland" />
 	   <ImageButton
 	        android:id="@+id/btnads9"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads8" 
 	        android:layout_below="@+id/btnads6"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/nine" />  
+	        android:src="@drawable/nineland" />  
 	   <ImageButton
 	        android:id="@+id/btnadscancel"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_below="@+id/btnads7"	       
 	        android:textColor="#8C6931"
-	        android:src="@drawable/tuige" />   
+	        android:src="@drawable/tuigeland" />   
 	   <ImageButton
 	        android:id="@+id/btnads0"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnadscancel" 
 	        android:layout_below="@+id/btnads8"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/zero" />
+	        android:src="@drawable/zeroland" />
 	   <ImageButton
 	        android:id="@+id/btnadsenter"
-	        android:layout_width="341dp"
+	        android:layout_width="310dp"
 	        android:layout_height="90dp"
 	        android:layout_toRightOf="@+id/btnads0" 
 	        android:layout_below="@+id/btnads9"
 	        android:textColor="#8C6931"
-	        android:src="@drawable/enter" />
+	        android:src="@drawable/enterland" />
 	</RelativeLayout>    
 
 </LinearLayout>
