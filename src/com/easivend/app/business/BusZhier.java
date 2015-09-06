@@ -167,7 +167,7 @@ public class BusZhier extends Activity
 		zhifubaohttp=new Zhifubaohttp(mainhand);
 		thread=new Thread(zhifubaohttp,"Zhifubaohttp Thread");
 		thread.start();
-		//延时3s
+		//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
             @Override
@@ -284,7 +284,7 @@ public class BusZhier extends Activity
                     if(iszhier==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=5)
+	                    if(queryLen>=1)
 	                    {
 	                    	queryLen=0;
 	                    	queryzhier();
@@ -294,7 +294,7 @@ public class BusZhier extends Activity
                     else if(iszhier==0)
                     {
 	                    queryLen++;
-	                    if(queryLen>=5)
+	                    if(queryLen>=10)
 	                    {
 	                    	queryLen=0;
 	                    	//发送订单

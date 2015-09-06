@@ -110,6 +110,7 @@ public class MaintainActivity extends Activity
 	//Server服务相关
 	EVServerReceiver receiver;
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
+	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
 	//绑定的接口
 	private ServiceConnection conn=new ServiceConnection()
 	{
@@ -523,20 +524,24 @@ public class MaintainActivity extends Activity
 				Log.i("EV_JNI","activity=签到成功");
 				issuc=2;	
 				dialog.dismiss();
-				//签到完成，自动开启售货程序
-				barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
-				Intent intbus;
-				//横屏
-				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+				if(issale==false)
 				{
-					intbus = new Intent(MaintainActivity.this, BusinessLand.class);// 使用Accountflag窗口初始化Intent
+					issale=true;
+					//签到完成，自动开启售货程序
+					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
+					Intent intbus;
+					//横屏
+					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+					{
+						intbus = new Intent(MaintainActivity.this, BusinessLand.class);// 使用Accountflag窗口初始化Intent
+					}
+					//竖屏
+					else
+					{
+						intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+					}
+					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
 				}
-				//竖屏
-				else
-				{
-					intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
-				}
-				startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
 				Log.i("EV_JNI","activity=签到失败");

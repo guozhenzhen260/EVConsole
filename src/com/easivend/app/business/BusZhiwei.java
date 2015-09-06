@@ -162,7 +162,7 @@ public class BusZhiwei extends Activity
 		weixinghttp=new Weixinghttp(mainhand);
 		thread=new Thread(weixinghttp,"Weixinghttp Thread");
 		thread.start();
-		//延时3s
+		//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
             @Override
@@ -256,7 +256,7 @@ public class BusZhiwei extends Activity
                     if(iszhiwei==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=5)
+	                    if(queryLen>=1)
 	                    {
 	                    	queryLen=0;
 	                    	queryzhiwei();
@@ -266,7 +266,7 @@ public class BusZhiwei extends Activity
                     else if(iszhiwei==0)
                     {
 	                    queryLen++;
-	                    if(queryLen>=5)
+	                    if(queryLen>=10)
 	                    {
 	                    	queryLen=0;
 	                    	//发送订单
