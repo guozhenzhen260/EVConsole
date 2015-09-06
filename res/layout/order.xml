@@ -383,13 +383,14 @@
 				        android:text="" /> 
 			     <Button
 			             android:id="@+id/btnordergridquery"	
-			             android:layout_below="@+id/edtordergridstart"			             
+			             android:layout_below="@+id/txtproductName"	
+			             android:layout_toRightOf="@+id/edtordergridend"			             
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"            
 			             android:text="查询记录" />
 			     <Button
 			             android:id="@+id/btnordergriddel"	
-			             android:layout_below="@+id/edtordergridstart"	
+			             android:layout_below="@+id/txtproductName"	
 			             android:layout_toRightOf="@+id/btnordergridquery"		             
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"           
@@ -427,7 +428,8 @@
 			             android:text="生成折线图" />
 		         <Button
 			             android:id="@+id/btnordergridexit"
-			             android:layout_below="@+id/btnordergridStack"	
+			             android:layout_below="@+id/btnordergridquery"	
+			             android:layout_toRightOf="@+id/btnordergridLine"
 			             android:layout_width="100dp"
 						 android:layout_height="70dp"
 			             android:text="退出" />

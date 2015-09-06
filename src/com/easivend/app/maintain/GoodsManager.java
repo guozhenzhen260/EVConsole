@@ -11,6 +11,8 @@ import java.util.Map;
 
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
+import com.easivend.app.business.Business;
+import com.easivend.app.business.BusinessLand;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ShowSortAdapter;
 import com.easivend.common.ToolClass;
@@ -30,6 +32,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rasterizer;
@@ -402,12 +405,29 @@ public class GoodsManager extends TabActivity
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
 				+"],["+screenHeight+"]","log.txt");	
 		
-    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
-    	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
-    	gvProduct.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
-    	LinearLayout.LayoutParams linearParams2 = (LinearLayout.LayoutParams) lvinfo.getLayoutParams(); // 取控件mGrid当前的布局参数
-    	linearParams2.height =  screenHeight-700;// 当控件的高强制设成75象素
-    	lvinfo.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+        //横屏
+		if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+		{
+			//商品的高
+			LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
+	    	linearParams.height =  screenHeight-252;// 当控件的高强制设成75象素
+	    	gvProduct.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	    	//商品分类的高
+	    	LinearLayout.LayoutParams linearParams2 = (LinearLayout.LayoutParams) lvinfo.getLayoutParams(); // 取控件mGrid当前的布局参数
+	    	linearParams2.height =  screenHeight-700;// 当控件的高强制设成75象素
+	    	lvinfo.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+		}
+		//竖屏
+		else
+		{
+			LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvProduct.getLayoutParams(); // 取控件mGrid当前的布局参数
+	    	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
+	    	gvProduct.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	    	LinearLayout.LayoutParams linearParams2 = (LinearLayout.LayoutParams) lvinfo.getLayoutParams(); // 取控件mGrid当前的布局参数
+	    	linearParams2.height =  screenHeight-700;// 当控件的高强制设成75象素
+	    	lvinfo.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+		}
+		
 	}
 	//===============
 	//商品分类设置页面

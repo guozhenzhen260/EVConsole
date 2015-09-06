@@ -50,6 +50,7 @@ import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -420,10 +421,21 @@ public class HuodaoTest extends TabActivity
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
 				+"],["+screenHeight+"]","log.txt");	
-		
-    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvhuodao.getLayoutParams(); // 取控件mGrid当前的布局参数
-    	linearParams.height =  screenHeight-500;// 当控件的高强制设成75象素
-    	gvhuodao.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	  //横屏
+	  if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+	  {
+		  LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvhuodao.getLayoutParams(); // 取控件mGrid当前的布局参数
+		  linearParams.height =  screenHeight-252;// 当控件的高强制设成75象素
+		  gvhuodao.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	  }
+	  //竖屏
+	  else
+	  {
+		  LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) gvhuodao.getLayoutParams(); // 取控件mGrid当前的布局参数
+		  linearParams.height =  screenHeight-500;// 当控件的高强制设成75象素
+		  gvhuodao.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	  }
+    	
   	   
     	//===============
     	//出货测试页面

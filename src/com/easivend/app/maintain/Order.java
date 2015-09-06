@@ -32,6 +32,7 @@ import android.app.TabActivity;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -328,10 +329,21 @@ public class Order extends TabActivity
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
 				+"],["+screenHeight+"]","log.txt");	
-		
-    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvorder.getLayoutParams(); // 取控件mGrid当前的布局参数
+      //横屏
+  	  if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+  	  {
+  		LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvorder.getLayoutParams(); // 取控件mGrid当前的布局参数
+    	linearParams.height =  screenHeight-400;// 当控件的高强制设成75象素
+    	lvorder.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+  	  }
+  	  //竖屏
+  	  else
+  	  {
+  		LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvorder.getLayoutParams(); // 取控件mGrid当前的布局参数
     	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
     	lvorder.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+  	  }
+    	
 	}
 	//===============
 	//报表查询页面

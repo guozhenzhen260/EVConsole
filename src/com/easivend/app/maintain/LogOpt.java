@@ -24,6 +24,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -127,10 +128,21 @@ public class LogOpt extends Activity {
         int screenHeight = dm.heightPixels;      
         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<屏幕"+screenWidth
 				+"],["+screenHeight+"]","log.txt");	
-		
-    	LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvlog.getLayoutParams(); // 取控件mGrid当前的布局参数
-    	linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
-    	lvlog.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	  //横屏
+	  if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+	  {
+		  LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvlog.getLayoutParams(); // 取控件mGrid当前的布局参数
+	      linearParams.height =  screenHeight-252;// 当控件的高强制设成75象素
+	      lvlog.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	  }
+	  //竖屏
+	  else
+	  {
+		  LinearLayout.LayoutParams linearParams = (LinearLayout.LayoutParams) lvlog.getLayoutParams(); // 取控件mGrid当前的布局参数
+	      linearParams.height =  screenHeight-700;// 当控件的高强制设成75象素
+	      lvlog.setLayoutParams(linearParams); // 使设置好的布局参数应用到控件mGrid2
+	  }
+    	
 	}
 	@Override
     protected Dialog onCreateDialog(int id) {// 重写onCreateDialog方法	

@@ -99,248 +99,258 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="match_parent"
 		    android:orientation="vertical" >
-		    <TableLayout 
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
+			<ScrollView 
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent"
 			    android:orientation="vertical" >
-			    <TableRow > 
-			        <TextView
-			            android:minWidth="160px"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:layout_gravity="center"
-			            android:gravity="center_horizontal"
-			            android:text="出货测试"
-			            android:textSize="45sp"
-			            android:textStyle="bold" />
-			    </TableRow>			
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView 
-				            android:minWidth="160px"
-				            android:textSize="40sp"
-						    android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="货柜:"/>
-				        <Spinner
-				            android:id="@+id/spinhuotestCab"
-				            android:layout_width="wrap_content" 
-					        android:layout_height="wrap_content"
-					        android:text="" />
-			        </LinearLayout>
-			         
-			    </TableRow>  
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView 
-				            android:minWidth="160px"
-				            android:textSize="40sp"
-						    android:id="@+id/txtcolumn"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-							android:text="货号:"/>
-				        
-				         <EditText
-				            android:id="@+id/edtcolumn"
-				            android:textSize="40sp"
-					        android:minWidth="150px"
-							android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:layout_weight="1"
-					        android:numeric="integer"
-					        android:text="11" />
-			         </LinearLayout>
-			    </TableRow>  	
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView
-				            android:minWidth="160px"
-				            android:textSize="40sp"
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:text="出货结果:"/>
-				        <TextView
-				            android:minWidth="160px"
-				            android:textSize="40sp"
-				            android:id="@+id/txthuotestrst"
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:text=""/>
-			        </LinearLayout>
-			    </TableRow> 
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView
-				            android:minWidth="160px"
-				            android:textSize="40sp"
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:text="返回信息:"/>
-				        <TextView
-				            android:minWidth="160px"
-				            android:textSize="40sp"
-				            android:id="@+id/txthuorst"
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:text=""/>
-			        </LinearLayout>
-			    </TableRow>
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView 		    
-				            android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:textSize="40sp"
-							android:text="照明:"/>
-				        <TextView 		    
-				            android:id="@+id/txtlight"
-				            android:textSize="40sp"
-				            android:textColor="#FF0000" 
-				            android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							/>
-				        <Switch   
-					       android:layout_marginTop="20dip"  
-					       android:id="@+id/switchlight"  
-					       android:layout_width="wrap_content"  
-					       android:layout_height="wrap_content" 
-					       android:textOn="开"  
-					       android:textOff="关"  							           
-					       android:layout_gravity="center_horizontal"/>
-				    </LinearLayout> 
-			    </TableRow> 
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView 		    
-				            android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:textSize="40sp"
-							android:text="制冷:"/>
-				        <TextView 		    
-				            android:id="@+id/txtcold"
-				            android:textSize="40sp"
-				            android:textColor="#FF0000" 
-				            android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							/>
-				        <Switch   
-					       android:layout_marginTop="20dip"  
-					       android:id="@+id/switcold"  
-					       android:layout_width="wrap_content"  
-					       android:layout_height="wrap_content"  
-					       android:textOn="开"  
-					       android:textOff="关"  							           
-					       android:layout_gravity="center_horizontal"/>
-				    </LinearLayout> 
-			    </TableRow> 
-			    <View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <TextView 		    
-				            android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:textSize="40sp"
-							android:text="加热:"/>
-				        <TextView 		    
-				            android:id="@+id/txthot"
-				            android:textColor="#FF0000" 
-				            android:textSize="40sp"
-				            android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							/>
-				        <Switch   
-					       android:layout_marginTop="20dip"  
-					       android:id="@+id/switchhot"  
-					       android:layout_width="wrap_content"  
-					       android:layout_height="wrap_content"  
-					       android:textSize="40sp"
-					       android:textOn="开"  
-					       android:textOff="关"  							           
-					       android:layout_gravity="center_horizontal"/>
-				    </LinearLayout> 
-			    </TableRow> 
-				<View                              
-			        android:layout_height="2px"
-			        android:background="#FF909090"
-			    /> 
-			    <TableRow > 
-			        <LinearLayout 
-				        android:layout_width="match_parent"
-					    android:layout_height="match_parent"	
-					    android:orientation="horizontal" >
-				        <Button
-				             android:id="@+id/btnhuochu"
-				             android:layout_width="100dp"
-				             android:layout_height="70dp"             
-				             android:text="出货" />
-				        <Button
-				             android:id="@+id/btnhuocancel"
-				             android:layout_width="100dp"
-				             android:layout_height="70dp"            
-				             android:text="重置" />
-				         <Button
-				             android:id="@+id/btnhuochuall"
-				             android:layout_width="100dp"
-				             android:layout_height="70dp"             
-				             android:text="全部出货" />
-				         <Button
-				             android:id="@+id/btnhuoexit"
-				             android:layout_width="100dp"
-				             android:layout_height="70dp"
-				             android:text="退出" />
-			         </LinearLayout>
-			    </TableRow>			        
-			</TableLayout>			
+			    <LinearLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent"		
+				    android:orientation="vertical" >
+				    <TableLayout 
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:orientation="vertical" >
+					    <TableRow > 
+					        <TextView
+					            android:minWidth="160px"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:layout_gravity="center"
+					            android:gravity="center_horizontal"
+					            android:text="出货测试"
+					            android:textSize="45sp"
+					            android:textStyle="bold" />
+					    </TableRow>			
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView 
+						            android:minWidth="160px"
+						            android:textSize="40sp"
+								    android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_weight="1"
+									android:text="货柜:"/>
+						        <Spinner
+						            android:id="@+id/spinhuotestCab"
+						            android:layout_width="wrap_content" 
+							        android:layout_height="wrap_content"
+							        android:text="" />
+					        </LinearLayout>
+					         
+					    </TableRow>  
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView 
+						            android:minWidth="160px"
+						            android:textSize="40sp"
+								    android:id="@+id/txtcolumn"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_weight="1"
+									android:text="货号:"/>
+						        
+						         <EditText
+						            android:id="@+id/edtcolumn"
+						            android:textSize="40sp"
+							        android:minWidth="150px"
+									android:layout_width="wrap_content"
+							        android:layout_height="wrap_content"
+							        android:layout_weight="1"
+							        android:numeric="integer"
+							        android:text="11" />
+					         </LinearLayout>
+					    </TableRow>  	
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView
+						            android:minWidth="160px"
+						            android:textSize="40sp"
+						            android:layout_width="wrap_content"
+						            android:layout_height="wrap_content"
+						            android:text="出货结果:"/>
+						        <TextView
+						            android:minWidth="160px"
+						            android:textSize="40sp"
+						            android:id="@+id/txthuotestrst"
+						            android:layout_width="wrap_content"
+						            android:layout_height="wrap_content"
+						            android:text=""/>
+					        </LinearLayout>
+					    </TableRow> 
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView
+						            android:minWidth="160px"
+						            android:textSize="40sp"
+						            android:layout_width="wrap_content"
+						            android:layout_height="wrap_content"
+						            android:text="返回信息:"/>
+						        <TextView
+						            android:minWidth="160px"
+						            android:textSize="40sp"
+						            android:id="@+id/txthuorst"
+						            android:layout_width="wrap_content"
+						            android:layout_height="wrap_content"
+						            android:text=""/>
+					        </LinearLayout>
+					    </TableRow>
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView 		    
+						            android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textSize="40sp"
+									android:text="照明:"/>
+						        <TextView 		    
+						            android:id="@+id/txtlight"
+						            android:textSize="40sp"
+						            android:textColor="#FF0000" 
+						            android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									/>
+						        <Switch   
+							       android:layout_marginTop="20dip"  
+							       android:id="@+id/switchlight"  
+							       android:layout_width="wrap_content"  
+							       android:layout_height="wrap_content" 
+							       android:textOn="开"  
+							       android:textOff="关"  							           
+							       android:layout_gravity="center_horizontal"/>
+						    </LinearLayout> 
+					    </TableRow> 
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView 		    
+						            android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textSize="40sp"
+									android:text="制冷:"/>
+						        <TextView 		    
+						            android:id="@+id/txtcold"
+						            android:textSize="40sp"
+						            android:textColor="#FF0000" 
+						            android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									/>
+						        <Switch   
+							       android:layout_marginTop="20dip"  
+							       android:id="@+id/switcold"  
+							       android:layout_width="wrap_content"  
+							       android:layout_height="wrap_content"  
+							       android:textOn="开"  
+							       android:textOff="关"  							           
+							       android:layout_gravity="center_horizontal"/>
+						    </LinearLayout> 
+					    </TableRow> 
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <TextView 		    
+						            android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textSize="40sp"
+									android:text="加热:"/>
+						        <TextView 		    
+						            android:id="@+id/txthot"
+						            android:textColor="#FF0000" 
+						            android:textSize="40sp"
+						            android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									/>
+						        <Switch   
+							       android:layout_marginTop="20dip"  
+							       android:id="@+id/switchhot"  
+							       android:layout_width="wrap_content"  
+							       android:layout_height="wrap_content"  
+							       android:textSize="40sp"
+							       android:textOn="开"  
+							       android:textOff="关"  							           
+							       android:layout_gravity="center_horizontal"/>
+						    </LinearLayout> 
+					    </TableRow> 
+						<View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+						        android:layout_width="match_parent"
+							    android:layout_height="match_parent"	
+							    android:orientation="horizontal" >
+						        <Button
+						             android:id="@+id/btnhuochu"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"             
+						             android:text="出货" />
+						        <Button
+						             android:id="@+id/btnhuocancel"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"            
+						             android:text="重置" />
+						         <Button
+						             android:id="@+id/btnhuochuall"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"             
+						             android:text="全部出货" />
+						         <Button
+						             android:id="@+id/btnhuoexit"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"
+						             android:text="退出" />
+					         </LinearLayout>
+					    </TableRow>			        
+					</TableLayout>	
+				</LinearLayout>	
+			</ScrollView>			
 		</LinearLayout>
 	</RelativeLayout>
 	<RelativeLayout 

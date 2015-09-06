@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <RelativeLayout 
+        android:id="@+id/tab_class"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"	
+	    android:layout_alignParentTop="true"	
+	    android:orientation="vertical" >
+    	
+	    	<LinearLayout 
+				    android:layout_width="match_parent"
+				    android:layout_height="match_parent"
+				    android:orientation="vertical" >
+				    <LinearLayout 
+				        android:layout_width="fill_parent" 
+				        android:layout_height="wrap_content" 
+				        android:orientation="horizontal" > 
+					    <TextView 
+				            android:layout_width="230dip" 
+				            android:layout_height="30dp" 
+				            android:text="类别编号" 
+				            android:textSize="20sp" /> 
+				   
+				        <TextView 
+				            android:id="@+id/job" 
+				            android:layout_width="230dip" 
+				            android:layout_height="30dp" 
+				            android:text="类别名称" 
+				            android:textSize="20sp" />	
+			        </LinearLayout>    
+				    <ListView
+			            android:id="@+id/lvclass"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:scrollbarAlwaysDrawVerticalTrack="true" />
+					<TableLayout 
+						android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:orientation="vertical" >
+						<View                              
+					        android:layout_height="20px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow 
+					        android:layout_width="wrap_content"
+				            android:layout_height="wrap_content">  
+				            <LinearLayout 
+				                android:layout_width="wrap_content"
+				            	android:layout_height="wrap_content"> 
+				            	<TextView 	
+				            	    android:minWidth="160px"	
+				            	    android:textSize="40sp"  
+				            	    android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textColor="#FF0000"  
+									android:text="*商品类别编号:"/>
+						        
+						         <EditText
+						            android:id="@+id/edtclassid"
+						            android:textSize="40sp"
+							        android:minWidth="150px"
+							        android:layout_width="wrap_content" 
+							        android:layout_height="wrap_content"
+							        android:text="" />
+				            </LinearLayout>	        
+					    </TableRow>  
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow > 
+					        <LinearLayout 
+				                android:layout_width="wrap_content"
+				            	android:layout_height="wrap_content"> 
+				            	<TextView 	
+				            	    android:minWidth="160px"	   
+				            	    android:textSize="40sp" 
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:textColor="#FF0000"  
+									android:text="*类别名称:"/>
+						        
+						         <EditText
+						            android:id="@+id/edtclassname"
+						            android:textSize="40sp"
+							        android:minWidth="150px"
+							        android:layout_width="wrap_content" 
+							        android:layout_height="wrap_content"
+							        android:text="" />
+						        <ImageView
+								    android:id="@+id/imgclassname"
+								    android:layout_width="105dp"
+							        android:layout_height="105dp"
+							        android:src="@drawable/wutupian"
+							        /> 
+							    <Button
+						             android:id="@+id/btnclassname"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"             
+						             android:text="选择图片" />    
+				            </LinearLayout>	        
+					    </TableRow>  
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    />
+					    <TableRow >  
+				            <LinearLayout 
+				                android:layout_width="wrap_content"
+				            	android:layout_height="wrap_content"> 
+				            	<Button
+						             android:id="@+id/btnclassadd"
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"             
+						             android:text="添加" />	
+						        <Button
+						             android:id="@+id/btnclassupdate"
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"
+						             android:text="修改" />  
+						        <Button
+						             android:id="@+id/btnclassdel"
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"
+						             android:text="删除" /> 
+						        <Button
+						             android:id="@+id/btnclassexit"
+						             android:layout_width="150dp"
+						             android:layout_height="70dp"
+						             android:text="退出" />            					         
+				            </LinearLayout>	  	         
+					    </TableRow>					    
+					</TableLayout>
+			</LinearLayout>
+		
+	</RelativeLayout>
+	
+	    
+	    
+	    
+	<RelativeLayout 
+        android:id="@+id/tab_product"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"	
+	    android:layout_alignParentTop="true"	
+	    android:orientation="vertical" >
+			
+				<LinearLayout 
+				    android:layout_width="match_parent"
+				    android:layout_height="match_parent"
+				    android:orientation="vertical" >	
+			         <GridView 
+						    android:id="@+id/gvProduct"
+						    android:layout_width="wrap_content"
+						    android:layout_height="wrap_content"
+						    android:horizontalSpacing="10dp"
+						    android:verticalSpacing="10dp"
+						    android:columnWidth="305dp"
+						    android:gravity="center"						    
+						    android:numColumns="auto_fit"
+						    android:stretchMode="spacingWidthUniform"
+						    android:fastScrollEnabled="true"
+						     />
+					         
+					
+					<RelativeLayout 
+				         android:layout_width="wrap_content"
+					     android:layout_height="wrap_content"						       
+					     >
+					     <TextView 		 
+			            	    android:id="@+id/txtproid" 
+			            	    android:textSize="40sp"
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content" 
+								android:text="商品编号:"/>
+					     <TextView 		 
+			            	    android:id="@+id/txtproidValue" 
+			            	    android:textSize="40sp"
+			            	    android:layout_toRightOf="@+id/txtproid"
+			            	    android:textColor="#FF0000" 	
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content"/>
+					     <TextView 		 
+			            	    android:id="@+id/txtproname" 
+			            	    android:textSize="40sp"
+			            	    android:layout_below="@+id/txtproid"	
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content" 
+								android:text="商品名称:"/>
+					     <TextView 		 
+			            	    android:id="@+id/txtpronameValue" 
+			            	    android:textSize="40sp"
+			            	    android:layout_below="@+id/txtproid"
+			            	    android:layout_toRightOf="@+id/txtproname"	
+			            	    android:textColor="#FF0000" 
+			            	    android:layout_width="wrap_content"						
+								android:layout_height="wrap_content"/>			         
+				         <Button
+					             android:id="@+id/btnproadd"
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"  
+					             android:layout_below="@+id/txtproname"           
+					             android:text="添加" />
+				         <Button
+					             android:id="@+id/btnproupdate"
+					             android:layout_below="@+id/txtproname"  
+					             android:layout_toRightOf="@+id/btnproadd"
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"
+					             android:text="修改" />
+				         <Button
+					             android:id="@+id/btnprodel"
+					             android:layout_below="@+id/txtproname"  
+					             android:layout_toRightOf="@+id/btnproupdate"
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"
+					             android:text="删除" />
+				         <Button
+					             android:id="@+id/btnproexit"
+					             android:layout_below="@+id/txtproname"  
+					             android:layout_toRightOf="@+id/btnprodel"
+					             android:layout_width="150dp"
+					             android:layout_height="70dp"
+					             android:text="退出" />				         
+					</RelativeLayout>					
+				</LinearLayout>	
+				
+	</RelativeLayout>
+
+</LinearLayout>
