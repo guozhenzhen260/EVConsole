@@ -151,6 +151,7 @@ public class MaintainActivity extends Activity
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
 		
+		
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
 		dialog= ProgressDialog.show(MaintainActivity.this,"同步服务器","请稍候...");
@@ -262,7 +263,9 @@ public class MaintainActivity extends Activity
 				txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
 			}
 		}
-				
+		//加载微信证书
+		ToolClass.setWeiCertFile();
+		//加载售罄水印图片		
 		Bitmap mark = BitmapFactory.decodeResource(this.getResources(), R.drawable.ysq);  
 		ToolClass.setMark(mark);
 		//================

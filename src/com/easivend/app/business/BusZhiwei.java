@@ -131,6 +131,8 @@ public class BusZhiwei extends Activity
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
 						txtbuszhiweirst.setText("交易结果:退款成功");
+						dialog.dismiss();
+						finish();
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
 						txtbuszhiweirst.setText("交易结果:撤销成功");
@@ -207,6 +209,28 @@ public class BusZhiwei extends Activity
 			ev=new JSONObject();
 			ev.put("out_trade_no", out_trade_no);		
 			//ev.put("out_trade_no", "000120150301113215800");	
+			Log.i("EV_JNI","Send0.1="+ev.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		childmsg.obj=ev;
+		childhand.sendMessage(childmsg);
+	}
+	//退款交易
+	private void payoutzhiwei()
+	{
+		// 将信息发送到子线程中
+    	childhand=weixinghttp.obtainHandler();
+		Message childmsg=childhand.obtainMessage();
+		childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
+		JSONObject ev=null;
+		try {
+			ev=new JSONObject();
+			ev.put("out_trade_no", out_trade_no);		
+			ev.put("total_fee", String.valueOf(amount));
+			ev.put("refund_fee", String.valueOf(amount));
+			ev.put("out_refund_no", ToolClass.out_trade_no(BusZhiwei.this));
 			Log.i("EV_JNI","Send0.1="+ev.toString());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -318,7 +342,7 @@ public class BusZhiwei extends Activity
 			if(resultCode==BusZhiwei.RESULT_CANCELED)
 			{
 				Bundle bundle=data.getExtras();
-  				int status=bundle.getInt("status");//出货结果1成功,0失败
+  				int status=bundle.getInt("status");//出货结果1成功,0失败  				
   				//1.
   				//出货成功,结束交易
 				if(status==1)
@@ -333,10 +357,10 @@ public class BusZhiwei extends Activity
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
 					dialog= ProgressDialog.show(BusZhiwei.this,"正在退款中","请稍候...");
 					////退款
-					OrderDetail.setRealStatus(3);//记录退币失败
-					OrderDetail.addLog(BusZhiwei.this);	
-					dialog.dismiss();
-					finish();
+					payoutzhiwei();
+					OrderDetail.setRealStatus(1);//记录退币成功
+					OrderDetail.setRealCard(amount);//记录退币金额
+					OrderDetail.addLog(BusZhiwei.this);						
 				}
 			}			
 		}

@@ -53,19 +53,19 @@ public class WeixingTest extends Activity
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
 						imgweixingtest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtweixingtest.setText("交易结果:"+msg.obj.toString());
+						txtweixingtest.setText("微信交易结果:"+msg.obj.toString());
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
-						txtweixingtest.setText("交易结果:"+msg.obj.toString());
+						txtweixingtest.setText("微信交易结果:"+msg.obj.toString());
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
-						txtweixingtest.setText("交易结果:退款成功");
+						txtweixingtest.setText("微信交易结果:退款成功");
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
-						txtweixingtest.setText("交易结果:撤销成功");
+						txtweixingtest.setText("微信交易结果:撤销成功");
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息	
-						txtweixingtest.setText("交易结果:交易成功");
+						txtweixingtest.setText("微信交易结果:交易成功");
 						break;		
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
@@ -76,7 +76,7 @@ public class WeixingTest extends Activity
 					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
-						txtweixingtest.setText("交易结果:"+msg.obj.toString());
+						txtweixingtest.setText("微信交易结果:"+msg.obj.toString());
 						break;		
 				}				
 			}

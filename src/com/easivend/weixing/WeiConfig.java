@@ -12,7 +12,16 @@ public class WeiConfig
 	public static String weisubmch_id="";//分账账号
 	//是否使用分账模式,0是不分账,1是分账
 	public static float isweisub=0;
+	public static String weicert_pwd="";//证书密码
 	
+	public static String getWeicert_pwd() {
+		return weicert_pwd;
+	}
+
+	public static void setWeicert_pwd(String weicert_pwd) {
+		WeiConfig.weicert_pwd = weicert_pwd;
+	}
+
 	public static String getWeisubmch_id() {
 		return weisubmch_id;
 	}

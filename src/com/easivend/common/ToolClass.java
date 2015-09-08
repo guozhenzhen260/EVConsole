@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -36,6 +37,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+
+import org.apache.http.conn.ssl.SSLContexts;
 import org.json.JSONObject;
 
 import com.easivend.app.business.BusZhiAmount;
@@ -46,6 +51,7 @@ import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_order_product;
 import com.easivend.model.Tb_vmc_system_parameter;
+import com.easivend.weixing.WeiConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -80,7 +86,16 @@ public class ToolClass
 	public static String vmc_no="";
 	public static Bitmap mark=null;//售完图片
 	public static int orientation=0;//使用横屏还是竖屏模式
+	public static SSLSocketFactory ssl=null;
 	
+	public static SSLSocketFactory getSsl() {
+		return ssl;
+	}
+
+	public static void setSsl(SSLSocketFactory ssl) {
+		ToolClass.ssl = ssl;
+	}
+
 	public static int getOrientation() {
 		return orientation;
 	}
@@ -705,6 +720,64 @@ public class ToolClass
         } catch (Exception e) {
             e.printStackTrace();
         }        
+    }
+    
+    /**
+     * 加载微信证书文件
+     */
+    public static void setWeiCertFile() 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"cert";
+    	final String NOSDCARD_DIR=File.separator+"cert";
+    	File fileName=null;
+    	String  sDir =null,str=null,mch_id=null;
+    	
+    	//mch_id=WeiConfig.getWeimch_id();    	
+    	mch_id=WeiConfig.getWeicert_pwd();
+        try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	 
+        	 
+        	  fileName=new File(sDir+File.separator+"apiclient_cert.p12");
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+        		//指定读取证书格式为PKCS12
+    	    	KeyStore keyStore = KeyStore.getInstance("PKCS12");
+    	    	//读取本机存放的PKCS12证书文件
+    	    	FileInputStream instream = new FileInputStream(sDir+File.separator+"apiclient_cert.p12");
+    	    	try 
+    	    	{
+    	    		//指定PKCS12的密码(商户ID)
+    	    		keyStore.load(instream, mch_id.toCharArray());
+	    		} 
+    	    	finally 
+    	    	{
+    	    		instream.close();
+	    		}	
+    	    	SSLContext sslcontext = SSLContexts.custom()
+    	        		.loadKeyMaterial(keyStore, mch_id.toCharArray()).build();
+    	    	ToolClass.ssl=sslcontext.getSocketFactory(); 
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<havessl,mch_id="+mch_id,"log.txt");
+        	  }
+        	  else 
+        	  {
+        		  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<nossl","log.txt");
+			  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
     
     //保存操作日志

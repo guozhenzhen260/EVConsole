@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -51,6 +53,9 @@ public class WeiConfigAPI
     	WeiConfig.setIsweisub(Float.parseFloat(str));
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isweisub="+WeiConfig.getIsweisub(),"log.txt");
     	
+    	str=list.get("weicert_pwd");
+    	WeiConfig.setWeicert_pwd(str);
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicert_pwd="+WeiConfig.getWeicert_pwd(),"log.txt");
     }
   //发送信息
     public static String sendPost(String urlString,Map<String, String> list) 
@@ -91,7 +96,11 @@ public class WeiConfigAPI
             URL url = new URL(urlString);
             
             
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection  conn = (HttpsURLConnection) url.openConnection();
+    		if(ToolClass.getSsl()!=null)
+    		{
+    			conn.setSSLSocketFactory(ToolClass.getSsl());
+    		}
             conn.setConnectTimeout(5000);
             conn.setDoOutput(true);// 允许输出
             conn.setDoInput(true);
@@ -311,11 +320,18 @@ public class WeiConfigAPI
 		Map<String, String> sPara = new HashMap<String, String>();
 		 sPara.put("appid",WeiConfig.getWeiappid());//appid
 		 sPara.put("mch_id",WeiConfig.getWeimch_id());//mch_id
+		//添加分账账号
+		 if(WeiConfig.getIsweisub()>0)
+		 {
+			 sPara.put("sub_mch_id",WeiConfig.getWeisubmch_id());//sub_mch_id
+		 }
+		 sPara.put("device_info",ToolClass.getVmc_no());//设备号
 		 sPara.put("nonce_str","960f228109051b9969f76c82bde183ac");//随机字符串
 		 sPara.put("out_trade_no", list.get("out_trade_no"));//订单编号
 		 sPara.put("out_refund_no", list.get("out_refund_no"));//退款单编号
 		 sPara.put("total_fee",list.get("total_fee"));//订单总金额，单位为分，不能带小数点	
 		 sPara.put("refund_fee",list.get("refund_fee"));//退款金额
+		 sPara.put("refund_fee_type","CNY");//货币类型
 		 sPara.put("op_user_id", WeiConfig.getWeimch_id());//商户号		 
 		 String key=WeiConfig.getWeikey();
 		 String sign=WeixingSubmit.buildRequestPara(sPara,key);
@@ -358,7 +374,11 @@ public class WeiConfigAPI
 					else if ("err_code_des".equals(parser.getName())) 
 					{
 						list.put("err_code_des", parser.nextText());
-                    }														
+                    }	
+					else if ("trade_state".equals(parser.getName())) 
+					{
+						list.put("trade_state", parser.nextText());
+                    }
                 }
                 eventType = parser.next();
             }

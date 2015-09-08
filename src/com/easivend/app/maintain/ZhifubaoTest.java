@@ -52,19 +52,19 @@ public class ZhifubaoTest extends Activity
 				{
 					case Zhifubaohttp.SETMAIN://子线程接收主线程消息
 						imgzhifubaotest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtzhifubaotest.setText("交易结果:"+msg.obj.toString());
+						txtzhifubaotest.setText("支付宝交易结果:"+msg.obj.toString());
 						break;
 					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
-						txtzhifubaotest.setText("交易结果:"+msg.obj.toString());
+						txtzhifubaotest.setText("支付宝交易结果:"+msg.obj.toString());
 						break;	
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
-						txtzhifubaotest.setText("交易结果:退款成功");
+						txtzhifubaotest.setText("支付宝交易结果:退款成功");
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
-						txtzhifubaotest.setText("交易结果:撤销成功");
+						txtzhifubaotest.setText("支付宝交易结果:撤销成功");
 						break;
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
-						txtzhifubaotest.setText("交易结果:交易成功");
+						txtzhifubaotest.setText("支付宝交易结果:交易成功");
 						break;	
 					case Zhifubaohttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Zhifubaohttp.SETFAILBUSCHILD://子线程接收主线程消息	
@@ -75,7 +75,7 @@ public class ZhifubaoTest extends Activity
 					case Zhifubaohttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
-						txtzhifubaotest.setText("交易结果:"+msg.obj.toString());
+						txtzhifubaotest.setText("支付宝交易结果:"+msg.obj.toString());
 						break;	
 				}				
 			}

@@ -257,7 +257,7 @@ public class Weixinghttp implements Runnable
 				        	   else if(map6.get("result_code").equals("SUCCESS"))
 					           {
 					        	   tomain.what=SETPAYOUTMAIN;
-								   tomain.obj=map6.get("code_url");
+								   tomain.obj=map6.get("trade_state");
 					           }
 				           }
 				           Log.i("EV_JNI","rec3="+tomain.obj);	
