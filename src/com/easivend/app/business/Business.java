@@ -264,7 +264,7 @@ public class Business extends Activity
     private void listFiles() 
     {  
     	//遍历这个文件夹里的所有文件
-		File file = new File("/sdcard/ads/");
+		File file = new File(ToolClass.ReadAdsFile());
 		File[] files = file.listFiles();
 		if (files.length > 0) 
 		{  

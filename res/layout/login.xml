@@ -17,6 +17,8 @@
         android:id="@+id/txtLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="40sp"
+		android:textStyle="bold"	
         android:layout_below="@id/tvLogin"        
         />
 	<TextView
@@ -33,7 +35,9 @@
     <EditText
         android:id="@+id/txtbent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"        
+        android:layout_height="wrap_content"  
+        android:textSize="40sp"
+		android:textStyle="bold"      
         android:layout_below="@id/tvbent"        
         />
     <TextView
@@ -50,7 +54,9 @@
     <EditText
         android:id="@+id/txtserver"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"        
+        android:layout_height="wrap_content"   
+        android:textSize="40sp"
+		android:textStyle="bold"     
         android:layout_below="@id/tvserver"        
         />
     <TextView
@@ -106,7 +112,9 @@
     <EditText
         android:id="@+id/txtip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"        
+        android:layout_height="wrap_content" 
+        android:textSize="40sp"
+		android:textStyle="bold"       
         android:layout_below="@id/tvip"        
         />   
     <Button

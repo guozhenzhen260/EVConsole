@@ -82,12 +82,22 @@ public class ToolClass
 	public final static int INFO=2;
 	public final static int WARN=3;
 	public final static int ERROR=4;
+	public static String EV_DIR=null;
 	private static int bentcom_id=-1,com_id=-1;
 	public static String vmc_no="";
 	public static Bitmap mark=null;//售完图片
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;
 	
+	
+	public static String getEV_DIR() {
+		return EV_DIR;
+	}
+
+	public static void setEV_DIR(String eV_DIR) {
+		EV_DIR = eV_DIR;
+	}
+
 	public static SSLSocketFactory getSsl() {
 		return ssl;
 	}
@@ -152,6 +162,35 @@ public class ToolClass
 		return list;
 	}
 	
+	/**
+     * 设置根目录文件
+     */
+    public static void SetDir() 
+    {
+    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"ev";
+    	final String NOSDCARD_DIR=File.separator+"ev";
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, String> list=null;
+    	    	
+        try {
+        	  //首先判断sdcard是否插入
+        	  String status = Environment.getExternalStorageState();
+        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
+        	  {
+        		 sDir = SDCARD_DIR;;
+        	  } 
+        	  else
+        	  {
+        		  sDir = NOSDCARD_DIR;
+        	  }
+        	  ToolClass.setEV_DIR(sDir); 
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
 	//Log方法，用于打印log，和在文本文件中打印操作日志
 	public static void Log(int info,String tag,String str,String filename)
 	{
@@ -188,8 +227,6 @@ public class ToolClass
      */
     public static void AppendLogFile(String content,String filename) 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"logs";
-    	final String NOSDCARD_DIR=File.separator+"logs";
     	String  sDir =null;
     	File fileName=null;
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
@@ -198,16 +235,8 @@ public class ToolClass
         String cont=datetime+content+"\n";
     	
         try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+        	 sDir = ToolClass.getEV_DIR()+File.separator+"logs";
+        	
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -236,8 +265,6 @@ public class ToolClass
      */
     public static void optLogFile() 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"logs";
-    	final String NOSDCARD_DIR=File.separator+"logs";
     	String  sDir =null;
     	File fileName=null;
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
@@ -246,16 +273,8 @@ public class ToolClass
         
     	
         try {
-        	  //1.首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"logs";
+        	  
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -445,22 +464,11 @@ public class ToolClass
      */
     public static boolean isImgFile(String filename) 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"productImage";
-    	final String NOSDCARD_DIR=File.separator+"productImage";
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"productImage";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -485,23 +493,12 @@ public class ToolClass
             
     //将Bitmap图片保存在本地
     public static boolean  saveBitmaptofile(Bitmap bmp,String filename)
-    {  
-    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"productImage";
-    	final String NOSDCARD_DIR=File.separator+"productImage";
+    {      	
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"productImage";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -533,21 +530,10 @@ public class ToolClass
      */
     public static String getImgFile(String filename) 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"productImage";
-    	final String NOSDCARD_DIR=File.separator+"productImage";
     	String  sDir =null;
     	String fileName=null;
     	try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+    		  sDir = ToolClass.getEV_DIR()+File.separator+"productImage";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -564,35 +550,32 @@ public class ToolClass
     }
     
     /**
+     * 读取广告文件
+     */
+    public static String ReadAdsFile() 
+    {
+    	String  sDir =null;
+    	sDir = ToolClass.getEV_DIR()+File.separator+"ads"+File.separator;
+    	return sDir;
+    }
+    
+    /**
      * 读取配置文件
      */
     public static Map<String, String> ReadConfigFile() 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard";
-    	final String NOSDCARD_DIR=File.separator;
     	File fileName=null;
     	String  sDir =null,str=null;
     	Map<String, String> list=null;
     	    	
         try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
-        	 
-        	 
-        	  fileName=new File(sDir+File.separator+"easivendconfig.txt");
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
+        	  fileName=new File(sDir);
         	  //如果存在，才读文件
         	  if(fileName.exists())
         	  {
 	    	  	 //打开文件
-	    		  FileInputStream input = new FileInputStream(sDir+File.separator+"easivendconfig.txt");
+	    		  FileInputStream input = new FileInputStream(sDir);
 	    		 //输出信息
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
@@ -620,26 +603,14 @@ public class ToolClass
      */
     public static void WriteConfigFile(String com,String bentcom,String server,String isallopen) 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard";
-    	final String NOSDCARD_DIR=File.separator;
     	File fileName=null;
     	String  sDir =null,str=null;
     	
     	    	
         try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
         	 
-        	 
-        	  fileName=new File(sDir+File.separator+"easivendconfig.txt");
+        	  fileName=new File(sDir);
         	  //如果不存在，则创建文件
           	  if(!fileName.exists())
           	  {  
@@ -648,7 +619,7 @@ public class ToolClass
         	  
           	  //1.将数据从文件中读入
     	  	  //打开文件
-    		  FileInputStream input = new FileInputStream(sDir+File.separator+"easivendconfig.txt");
+    		  FileInputStream input = new FileInputStream(sDir);
     		  //输出信息
   	          Scanner scan=new Scanner(input);
   	          while(scan.hasNext())
@@ -727,34 +698,22 @@ public class ToolClass
      */
     public static void setWeiCertFile() 
     {
-    	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"cert";
-    	final String NOSDCARD_DIR=File.separator+"cert";
     	File fileName=null;
     	String  sDir =null,str=null,mch_id=null;
     	
-    	//mch_id=WeiConfig.getWeimch_id();    	
     	mch_id=WeiConfig.getWeicert_pwd();
         try {
-        	  //首先判断sdcard是否插入
-        	  String status = Environment.getExternalStorageState();
-        	  if (status.equals(Environment.MEDIA_MOUNTED)) 
-        	  {
-        		 sDir = SDCARD_DIR;;
-        	  } 
-        	  else
-        	  {
-        		  sDir = NOSDCARD_DIR;
-        	  }
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"cert"+File.separator+"apiclient_cert.p12";
         	 
         	 
-        	  fileName=new File(sDir+File.separator+"apiclient_cert.p12");
+        	  fileName=new File(sDir);
         	  //如果存在，才读文件
         	  if(fileName.exists())
         	  {
         		//指定读取证书格式为PKCS12
     	    	KeyStore keyStore = KeyStore.getInstance("PKCS12");
     	    	//读取本机存放的PKCS12证书文件
-    	    	FileInputStream instream = new FileInputStream(sDir+File.separator+"apiclient_cert.p12");
+    	    	FileInputStream instream = new FileInputStream(sDir);
     	    	try 
     	    	{
     	    		//指定PKCS12的密码(商户ID)

@@ -140,7 +140,7 @@ public class MaintainActivity extends Activity
 		setContentView(R.layout.maintain);	
 		//取得屏幕的长和宽，进行比较设置横竖屏的变量
 		Display display = getWindowManager().getDefaultDisplay();  
-		 int width = display.getWidth();  
+		int width = display.getWidth();  
 		int height = display.getHeight();  
 		if (width > height) {  
 			ToolClass.setOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//设为横屏
@@ -225,7 +225,7 @@ public class MaintainActivity extends Activity
 		//================
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
-		
+		ToolClass.SetDir();
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)

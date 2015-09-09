@@ -113,6 +113,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         	/*原图片加载已售完水印 */
             Bitmap photo = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
             Bitmap mark=ToolClass.getMark();
+            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+pictures.get(arg0).getProID()+"overproImage="+pictures.get(arg0).getProImage(),"log.txt");
             Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
             Canvas canvas = new Canvas(photoMark);  
             canvas.drawBitmap(photo, 0, 0, null);  
