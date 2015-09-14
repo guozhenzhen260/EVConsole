@@ -320,7 +320,7 @@ public class Vmc_OrderAdapter
 		eDayStr=((eDay<10)?("0"+String.valueOf(eDay)):String.valueOf(eDay));
 		// 创建InaccountDAO对象
 		vmc_orderDAO orderDAO = new vmc_orderDAO(context);
-		vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
+		//vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
 		String start=mYearStr+"-"+mMonthStr+"-"+mDayStr;
 		String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;			
 		orderDAO.detele(start,end);						

@@ -105,6 +105,18 @@ public class vmc_orderDAO
  		}  
         db.close();
     }
+	//删除所有的数据
+	public void deteleall() 
+	{   
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        // 执行删除订单详细信息表	
+ 		db.execSQL(
+ 				"delete from vmc_order_product");
+ 		// 执行添加订单支付表	
+ 		db.execSQL(
+ 				"delete from vmc_order_pay"); 
+        db.close();
+    }
 	//查找所有的订单支付数据
 	public List<Tb_vmc_order_pay> getScrollPay() 
 	{   

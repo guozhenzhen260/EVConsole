@@ -102,6 +102,11 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
 	        if(bitmap!=null)
 	        	viewHolder.huoImage.setImageBitmap(bitmap);// 设置图像的二进制值
         }
+        else
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无图片pro="+pictures.get(arg0).getHuoID()+","+pictures.get(arg0).getProImage(),"log.txt");
+        	viewHolder.huoImage.setImageResource(R.drawable.wutupian);
+		}
         return arg1;// 返回图像标识
     }
 }

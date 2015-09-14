@@ -474,7 +474,9 @@ public class Order extends TabActivity
 	}
 	//删除查询报表
 	private void delgrid()
-	{		
+	{	
+		//vmc_orderDAO orderDAO = new vmc_orderDAO(Order.this);
+		//orderDAO.deteleall();
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
 				(!edtordergridstart.getText().toString().isEmpty())

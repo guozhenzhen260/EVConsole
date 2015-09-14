@@ -54,6 +54,7 @@ public class BusZhiAmount  extends Activity
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
     private int dispenser=0;//0无,1hopper,2mdb
+    private boolean ischuhuo=false;//true已经出货过了，可以上报日志
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -236,7 +237,14 @@ public class BusZhiAmount  extends Activity
 			    		OrderDetail.setRealStatus(3);//退款失败
 			    		OrderDetail.setDebtAmount(money-RealAmount);//欠款金额
 			    	}
-			    	OrderDetail.addLog(BusZhiAmount.this);
+			    	if(ischuhuo==true)
+			    	{
+			    		OrderDetail.addLog(BusZhiAmount.this);
+			    	}
+			    	else
+			    	{
+			    		OrderDetail.cleardata();
+					}
 					//关闭纸币硬币器
 		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
 		  	    	dialog.dismiss();
@@ -279,6 +287,7 @@ public class BusZhiAmount  extends Activity
     //出货界面
     private void tochuhuo()
     {        
+    	ischuhuo=true;
     	Intent intent = null;// 创建Intent对象                
     	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
 //    	intent.putExtra("out_trade_no", out_trade_no);
