@@ -34,6 +34,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class BusHuo extends Activity 
 {
@@ -48,11 +49,7 @@ public class BusHuo extends Activity
     private float prosales = 0;
     private int count = 0;
     private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
-    private String data[][]=null;
-    private ListView lvbushuo = null;
-    //定义显示的内容包装
-    private List<Map<String,String>> listMap = new ArrayList<Map<String,String>>();
-    private SimpleAdapter simpleada = null;//进行数据的转换操作
+    private TextView txtbushuoname = null;
     private ImageView ivbushuoquhuo=null;
     private int tempx=0;
     private String draw=null,info=null;
@@ -103,18 +100,17 @@ public class BusHuo extends Activity
 						//出货成功
 						if(status==1)
 						{
-							data[tempx][0]=String.valueOf(R.drawable.yes);
-							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
+							txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
+							txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 							chuhuoLog(1);//记录日志
 						}
 						else
 						{
-							data[tempx][0]=String.valueOf(R.drawable.no);
-							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
+							txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
+							txtbushuoname.setTextColor(android.graphics.Color.RED);
 							chuhuoLog(0);//记录日志
 						}
-						updateListview();
-						
+												
 						//3.退回找零页面
 						ivbushuoquhuo.setVisibility(View.VISIBLE);
 			 	    	new Handler().postDelayed(new Runnable() 
@@ -275,22 +271,13 @@ public class BusHuo extends Activity
 		prosales=OrderDetail.getShouldPay();//商品单价
 		count=OrderDetail.getShouldNo();//数量
 		zhifutype=OrderDetail.getPayType();
-		
+		txtbushuoname=(TextView)findViewById(R.id.txtbushuoname);
 		
   	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
-		this.data=new String[count][2];
-		draw=String.valueOf(R.drawable.shuaxin);
-		info=proID+"["+prosales+"]"+"->等待出货";
-		for(int x=0;x<count;x++)
-		{
-			data[x][0]=draw;
-			data[x][1]=info;
-		}
-		this.lvbushuo =(ListView) super.findViewById(R.id.lvbushuo);		
-		updateListview();
+  	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
 		this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);
 		ivbushuoquhuo.setVisibility(View.GONE);
 		
@@ -299,26 +286,7 @@ public class BusHuo extends Activity
 		//****
 		chuhuoopt(tempx);
 	}
-	
-	//加载出货信息到列表中
-	private void updateListview()
-	{
-		int x=0;
-		this.listMap.clear();
-		for(x=0;x<count;x++)
-		{
-		  	Map<String,String> map = new HashMap<String,String>();//定义Map集合，保存每一行数据
-		   	map.put("ivbushuostatus", data[x][0]);//产品名称
-	    	map.put("txtbushuoname", data[x][1]);//产品状态
-	    	this.listMap.add(map);//保存数据行
-		}
-		//将这个构架加载到data_list中
-		this.simpleada = new SimpleAdapter(this,this.listMap,R.layout.bushuolist,
-		    		new String[]{"ivbushuostatus","txtbushuoname"},//Map中的key名称
-		    		new int[]{R.id.ivbushuostatus,R.id.txtbushuoname});
-		this.lvbushuo.setAdapter(this.simpleada);
-	}
-	
+			
 	//出货,返回值0失败,1出货指令成功，等待返回结果,2出货完成
 	private void chuhuoopt(int huox)
 	{
@@ -326,8 +294,7 @@ public class BusHuo extends Activity
 		int rst=0;
 		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
  	    columnDAO = new vmc_columnDAO(this);
-		data[huox][1]=proID+"["+prosales+"]"+"->正在出货,请稍候...";
-		updateListview();
+ 	    txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");
 		//1.计算出出货货道
 		//按商品id出货
 		if(proType.equals("1")==true)

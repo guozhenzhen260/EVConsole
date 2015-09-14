@@ -204,6 +204,7 @@ public class BusZhiAmount  extends Activity
 				  	if(money>0)
 				  	{
 				  		iszhiamount=1;
+				  		recLen = 180;
 				  		txtbuszhiamountbillAmount.setText(String.valueOf(money));
 				  		OrderDetail.setSmallNote(billmoney);
 				  		OrderDetail.setSmallConi(coinmoney);
@@ -342,6 +343,7 @@ public class BusZhiAmount  extends Activity
   		timer.cancel(); 
   		if(iszhiamount==1)
   		{
+  			dialog= ProgressDialog.show(BusZhiAmount.this,"’˝‘⁄ÕÀ±“÷–","«Î…‘∫Ú...");
   			OrderDetail.setPayStatus(2);//÷ß∏∂ ß∞‹
   			//ÕÀ±“
   	    	EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);

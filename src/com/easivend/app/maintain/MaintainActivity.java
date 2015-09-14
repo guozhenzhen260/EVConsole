@@ -35,7 +35,6 @@ import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.view.DogService;
-import com.easivend.view.DogService.LocalBinder;
 import com.easivend.view.EVServerService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
@@ -103,36 +102,13 @@ public class MaintainActivity extends Activity
     private int huom = 0;// 定义一个开始标识
     Map<String,Integer> huoSet=new HashMap<String,Integer>();
     //Dog服务相关
-    DogService localService;
-	boolean bound=false;
-	int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
-	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
+    int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
+	private final int SPLASH_DISPLAY_LENGHT = 5000; // 延迟5秒
 	//Server服务相关
 	EVServerReceiver receiver;
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
-	//绑定的接口
-	private ServiceConnection conn=new ServiceConnection()
-	{
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			//Log.i("currenttime","service onBindSUC="+service.getInterfaceDescriptor());
-			LocalBinder binder=(LocalBinder) service;
-			localService = binder.getService();
-			bound=true;
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
-			//Log.i("currenttime","service onBindFail");
-			bound=false;
-		}
-
-		
-		
-	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -159,22 +135,25 @@ public class MaintainActivity extends Activity
 		//==========
 		//Dog服务相关
 		//==========
-		//延时3s
+		//启动服务
+		startService(new Intent(this,DogService.class));
+		//延时5s
 	    new Handler().postDelayed(new Runnable() 
 		{
             @Override
             public void run() 
             {      
-        		localService.setAllopen(isallopen);
+            	//发送指令广播给DogService
+        		Intent intent=new Intent();
+        		intent.putExtra("isallopen", isallopen);
+        		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
+        		sendBroadcast(intent); 
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
-		//启动服务
-		startService(new Intent(this,DogService.class));
-		//绑定服务
-		Intent intent=new Intent(this,DogService.class);
-		bindService(intent, conn, Context.BIND_AUTO_CREATE);
-		bound=true;
+		
+		
+		
 		//=============
 		//Server服务相关
 		//=============
@@ -225,7 +204,7 @@ public class MaintainActivity extends Activity
 		//================
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
-		ToolClass.SetDir();
+		ToolClass.SetDir();		
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
@@ -237,7 +216,7 @@ public class MaintainActivity extends Activity
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
 	        if(list.containsKey("isallopen"))
 	        {
-	        	isallopen=Integer.parseInt(list.get("isallopen"));	        	
+	        	isallopen=Integer.parseInt(list.get("isallopen"));		        	
 	        }
 			txtcom.setText(com+"现金模块正在准备连接");	
 			EVprotocolAPI.vmcEVStart();//开启监听
@@ -267,7 +246,7 @@ public class MaintainActivity extends Activity
 		ToolClass.setWeiCertFile();
 		//加载售罄水印图片		
 		Bitmap mark = BitmapFactory.decodeResource(this.getResources(), R.drawable.ysq);  
-		ToolClass.setMark(mark);
+		ToolClass.setMark(mark);		
 		//================
 		//九宫格相关
 		//================		
@@ -452,7 +431,11 @@ public class MaintainActivity extends Activity
 			        if(list.containsKey("isallopen"))
 			        {
 			        	isallopen=Integer.parseInt(list.get("isallopen"));	
-			        	localService.setAllopen(isallopen);
+			        	//发送指令广播给DogService
+		        		Intent intent=new Intent();
+		        		intent.putExtra("isallopen", isallopen);
+		        		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
+		        		sendBroadcast(intent);
 			        }
 				}
 			}
@@ -510,7 +493,7 @@ public class MaintainActivity extends Activity
 		
 	//=============
 	//Server服务相关
-	//=============
+	//=============	
 	//2.创建EVServerReceiver的接收器广播，用来接收服务器同步的内容
 	public class EVServerReceiver extends BroadcastReceiver 
 	{
@@ -564,12 +547,7 @@ public class MaintainActivity extends Activity
 			EVprotocolAPI.EV_portRelease(ToolClass.getCom_id());
 		if(bentopen>0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
-		EVprotocolAPI.vmcEVStop();//关闭监听
-		if(bound == true)
-		{
-            unbindService(conn);
-            bound = false;
-		}
+		EVprotocolAPI.vmcEVStop();//关闭监听		
 		//=============
 		//Server服务相关
 		//=============

@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -122,6 +123,7 @@ public class Busgoods extends Activity
 				finish();
 		    }
 		});
+		
 		gvbusgoodsProduct.setOnItemClickListener(new OnItemClickListener() {// 为GridView设置项单击事件
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {

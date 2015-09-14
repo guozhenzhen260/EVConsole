@@ -53,9 +53,9 @@ public class WeiConfigAPI
     	WeiConfig.setIsweisub(Float.parseFloat(str));
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isweisub="+WeiConfig.getIsweisub(),"log.txt");
     	
-    	str=list.get("weicert_pwd");
-    	WeiConfig.setWeicert_pwd(str);
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicert_pwd="+WeiConfig.getWeicert_pwd(),"log.txt");
+//    	str=list.get("weicert_pwd");
+//    	WeiConfig.setWeicert_pwd(str);
+//    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicert_pwd="+WeiConfig.getWeicert_pwd(),"log.txt");
     }
   //发送信息
     public static String sendPost(String urlString,Map<String, String> list) 
@@ -146,6 +146,7 @@ public class WeiConfigAPI
     //生成支付请求消息
     public static Map<String, String> PostWeiBuy(Map<String, String> list) 
     {
+    	ToolClass.CheckAliWeiFile();
     	//往微信服务器发送交易信息
 		Map<String, String> sPara = new HashMap<String, String>();
 		 sPara.put("appid",WeiConfig.getWeiappid());//appid

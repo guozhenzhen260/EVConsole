@@ -12,12 +12,12 @@ public class AlipayConfig {
 	
 	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
-	public static String partner = "";
-	public static String seller_email="";
+	public static String partner = null;
+	public static String seller_email=null;
 	// 商户的私钥
-	public static String key = "";
+	public static String key = null;
 	
-	public static String subpartner = "";//分账账号
+	public static String subpartner = null;//分账账号
 	//是否使用分账模式,0是不分账,0.99是指99%钱打到分账号上,1%打到主账号上,
 	//最大值是1，代表所有钱都打到分账号上
 	public static float isalisub = 0;

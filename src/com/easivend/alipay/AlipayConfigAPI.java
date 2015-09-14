@@ -51,6 +51,7 @@ public class AlipayConfigAPI {
     //生成支付请求消息
     public static Map<String, String> PostAliBuy(Map<String, String> list) 
     {
+    	ToolClass.CheckAliWeiFile();
     	//往支付宝服务器发送交易信息
 		Map<String, String> sPara = new HashMap<String, String>();
 		 sPara.put("service","alipay.acquire.precreate");//接口名称

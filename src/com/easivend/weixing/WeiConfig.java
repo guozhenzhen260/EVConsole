@@ -4,23 +4,23 @@ public class WeiConfig
 {
 	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
-	public static String weiappid = "";
-	public static String weimch_id="";
+	public static String weiappid = null;
+	public static String weimch_id=null;
 	// 商户的私钥
-	public static String weikey = "";
+	public static String weikey = null;
 	
-	public static String weisubmch_id="";//分账账号
+	public static String weisubmch_id=null;//分账账号
 	//是否使用分账模式,0是不分账,1是分账
 	public static float isweisub=0;
-	public static String weicert_pwd="";//证书密码
+	//public static String weicert_pwd="";//证书密码
 	
-	public static String getWeicert_pwd() {
-		return weicert_pwd;
-	}
-
-	public static void setWeicert_pwd(String weicert_pwd) {
-		WeiConfig.weicert_pwd = weicert_pwd;
-	}
+//	public static String getWeicert_pwd() {
+//		return weicert_pwd;
+//	}
+//
+//	public static void setWeicert_pwd(String weicert_pwd) {
+//		WeiConfig.weicert_pwd = weicert_pwd;
+//	}
 
 	public static String getWeisubmch_id() {
 		return weisubmch_id;

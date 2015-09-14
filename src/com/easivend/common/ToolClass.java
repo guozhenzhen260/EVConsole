@@ -43,15 +43,19 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.json.JSONObject;
 
+import com.easivend.alipay.AlipayConfig;
+import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusZhiAmount;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_order_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.weixing.WeiConfig;
+import com.easivend.weixing.WeiConfigAPI;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -560,6 +564,30 @@ public class ToolClass
     }
     
     /**
+     * 检测后，如果没有导入成功支付宝或者微信的账号信息，重新导入一次
+     */
+    public static void CheckAliWeiFile()
+    {
+    	if(
+    	  (AlipayConfig.getPartner()==null)||(AlipayConfig.getSeller_email()==null)
+    	  ||(AlipayConfig.getKey()==null)
+    	  ||(WeiConfig.getWeiappid()==null)||(WeiConfig.getWeimch_id()==null)
+    	  ||(WeiConfig.getWeikey()==null)
+    	  )
+    	{
+	    	//从配置文件获取数据
+			Map<String, String> list=ReadConfigFile();
+			if(list!=null)
+			{
+		        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
+		        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
+			}
+			//加载微信证书
+			setWeiCertFile();
+    	}
+    }
+    
+    /**
      * 读取配置文件
      */
     public static Map<String, String> ReadConfigFile() 
@@ -701,7 +729,7 @@ public class ToolClass
     	File fileName=null;
     	String  sDir =null,str=null,mch_id=null;
     	
-    	mch_id=WeiConfig.getWeicert_pwd();
+    	mch_id=WeiConfig.getWeimch_id();
         try {
         	  sDir = ToolClass.getEV_DIR()+File.separator+"cert"+File.separator+"apiclient_cert.p12";
         	 

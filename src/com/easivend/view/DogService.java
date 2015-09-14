@@ -19,34 +19,51 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.http.EVServerhttp;
+import com.easivend.view.EVServerService.ActivityReceiver;
 
 import android.app.ActivityManager;
 import android.app.Service;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 
 public class DogService extends Service {
 
 	Timer timer;
-	private final IBinder binder=new LocalBinder();
 	private int allopen=1;//1表示一直打开应用,0表示关闭后不打开应用
-	public class LocalBinder extends Binder
-	{
-		public DogService getService()
-		{
-			return DogService.this;
-		}
-	}
+	ActivityReceiver receiver;
+	
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
-		return binder;
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","dog bind","dog.txt");
+		return null;
+	}
+	//8.创建activity的接收器广播，用来接收内容
+	public class ActivityReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			setAllopen(bundle.getInt("isallopen"));	
+		}
+
 	}
 			
 	public int getAllopen() {
@@ -62,6 +79,20 @@ public class DogService extends Service {
 		super.onCreate();
 		timer = new Timer(true);
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog create","dog.txt");
+		//9.注册接收器
+		receiver=new ActivityReceiver();
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("android.intent.action.dogserversend");
+		this.registerReceiver(receiver,filter);	
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub		
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","dog destroy","dog.txt");
+		//解除注册接收器
+		this.unregisterReceiver(receiver);
+		super.onDestroy();
 	}
 
 	@Override
