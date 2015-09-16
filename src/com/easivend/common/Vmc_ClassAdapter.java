@@ -46,6 +46,10 @@ public class Vmc_ClassAdapter
 	    // 遍历List泛型集合
 	    for (Tb_vmc_class tb_inaccount : listinfos) 
 	    {
+	    	strInfos[m] = "0";
+	        proclassID[m] = "0";
+	        proclassName[m] = "0";
+	        proImage[m]="0";
 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
 	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
 	        proclassID[m] = tb_inaccount.getClassID();
@@ -77,6 +81,10 @@ public class Vmc_ClassAdapter
 	    // 遍历List泛型集合
 	    for (Tb_vmc_class tb_inaccount : listinfos) 
 	    {
+	    	strInfos[m] = "0";
+	        proclassID[m] = "0";
+	        proclassName[m] = "0";
+	        proImage[m]="0";
 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
 	        strInfos[m] = tb_inaccount.getClassID() + "<---|--->" + tb_inaccount.getClassName();
 	        proclassID[m] = tb_inaccount.getClassID();

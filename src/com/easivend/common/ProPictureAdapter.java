@@ -96,32 +96,42 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
         viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
         viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置现价
-        if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","商品:"+pictures.get(arg0).getProID()+"Img2="+pictures.get(arg0).getProImage(),"log.txt");
+        if((pictures.get(arg0).getProImage()!=null)&&(pictures.get(arg0).getProImage().equals("0")!=true)&&(pictures.get(arg0).getProImage().equals("")!=true))
         {
-        	viewHolder.count.setText("剩余数量:"+pictures.get(arg0).getProcount());// 设置剩余数量
-        	/*为什么图片一定要转化为 Bitmap格式的！！ */
-            Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-            viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<图片pro="+pictures.get(arg0).getProID()+","+pictures.get(arg0).getProImage(),"log.txt");
+	        if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
+	        {
+	        	viewHolder.count.setText("剩余数量:"+pictures.get(arg0).getProcount());// 设置剩余数量
+	        	/*为什么图片一定要转化为 Bitmap格式的！！ */
+	            Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+	            viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值
+	        }
+	        else
+	        {
+	        	viewHolder.count.setText("剩余数量:已售罄");// 设置剩余数量
+	        	viewHolder.proID.setTextColor(android.graphics.Color.GRAY);
+	        	viewHolder.count.setTextColor(android.graphics.Color.GRAY);
+	        	viewHolder.promarket.setTextColor(android.graphics.Color.GRAY);
+	        	viewHolder.prosales.setTextColor(android.graphics.Color.GRAY);
+	        	/*原图片加载已售完水印 */
+	            Bitmap photo = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+	            Bitmap mark=ToolClass.getMark();
+	            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+pictures.get(arg0).getProID()+"overproImage="+pictures.get(arg0).getProImage(),"log.txt");
+	            Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
+	            Canvas canvas = new Canvas(photoMark);  
+	            canvas.drawBitmap(photo, 0, 0, null);  
+	            canvas.drawBitmap(mark, photo.getWidth() - mark.getWidth(), photo.getHeight() - mark.getHeight(), null);  
+	            canvas.save(Canvas.ALL_SAVE_FLAG);  
+	            canvas.restore();
+	            viewHolder.image.setImageBitmap(photoMark);// 设置图像的二进制值
+	        }
         }
         else
         {
-        	viewHolder.count.setText("剩余数量:已售罄");// 设置剩余数量
-        	viewHolder.proID.setTextColor(android.graphics.Color.GRAY);
-        	viewHolder.count.setTextColor(android.graphics.Color.GRAY);
-        	viewHolder.promarket.setTextColor(android.graphics.Color.GRAY);
-        	viewHolder.prosales.setTextColor(android.graphics.Color.GRAY);
-        	/*原图片加载已售完水印 */
-            Bitmap photo = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-            Bitmap mark=ToolClass.getMark();
-            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+pictures.get(arg0).getProID()+"overproImage="+pictures.get(arg0).getProImage(),"log.txt");
-            Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
-            Canvas canvas = new Canvas(photoMark);  
-            canvas.drawBitmap(photo, 0, 0, null);  
-            canvas.drawBitmap(mark, photo.getWidth() - mark.getWidth(), photo.getHeight() - mark.getHeight(), null);  
-            canvas.save(Canvas.ALL_SAVE_FLAG);  
-            canvas.restore();
-            viewHolder.image.setImageBitmap(photoMark);// 设置图像的二进制值
-        }
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无图片pro="+pictures.get(arg0).getProID()+","+pictures.get(arg0).getProImage(),"log.txt");
+        	viewHolder.image.setImageResource(R.drawable.wutupian);
+		}
         
         return arg1;// 返回图像标识
     }

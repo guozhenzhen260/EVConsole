@@ -530,8 +530,9 @@ public class MaintainActivity extends Activity
 				}
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
-				Log.i("EV_JNI","activity=«©µΩ ß∞‹");
-				dialog.dismiss();
+				Log.i("EV_JNI","activity= ß∞‹£¨Õ¯¬Áπ ’œ");
+				if(dialog.isShowing())
+					dialog.dismiss();
 				//issuc=1;
 	    		break;	
 			}	

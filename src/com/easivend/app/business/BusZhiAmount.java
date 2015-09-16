@@ -149,7 +149,9 @@ public class BusZhiAmount  extends Activity
 			switch (jnirst)
 			{
 				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
-					EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());					
+					//第一次打开才发送coninfo，以后就不再操作这个了
+					if(iszhienable==0)
+						EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());					
 					break;
 				case EVprotocolAPI.EV_MDB_B_INFO:	
 					break;
