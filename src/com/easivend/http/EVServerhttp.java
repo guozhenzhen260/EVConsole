@@ -898,7 +898,8 @@ public class EVServerhttp implements Runnable {
 		String orderTime="";
 		int orderStatus=0;
 		String productName="";
-		int RefundAmount=0;
+		String RefundAmount="";
+		int Status=0;
 		try {
 			jsonObject = new JSONObject(classrst); 
 			productNo=jsonObject.getString("productNo");
@@ -912,9 +913,10 @@ public class EVServerhttp implements Runnable {
 			orderTime=jsonObject.getString("orderTime");
 			orderStatus=jsonObject.getInt("orderStatus");
 			productName=jsonObject.getString("productName");
-			RefundAmount=jsonObject.getInt("RefundAmount");
+			RefundAmount=jsonObject.getString("RefundAmount");
+			Status=jsonObject.getInt("Status");
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
-				+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"productNo="+productNo+"quantity="+quantity+
+				+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
 				"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName,"server.txt");			
 			    	
 		} catch (JSONException e1) {
@@ -953,12 +955,12 @@ public class EVServerhttp implements Runnable {
 			order.put("shouldPay", 2);
 			order.put("integre", 3);
 			order.put("sendStatus", 2);
-			Log.i("EV_JNI","order="+order.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","order="+order.toString(),"server.txt");
 			
 			JSONObject orderpay=new JSONObject();
 			orderpay.put("payID", 120);
 			orderpay.put("orderID", 121);
-			orderpay.put("payStatus", payStatus);//0未付款,1正在付款,2付款完成,3付款失败
+			orderpay.put("payStatus", payStatus);//0未付款,1正在付款,2付款完成,3付款失败，4付款取消，5支付过程事件--仅银联支付)
 			orderpay.put("payType", payType);//0现金,1支付宝声波,2银联,3支付宝二维码,4微信
 			orderpay.put("shouldPay", shouldPay);//交易金额,如2.5元
 			orderpay.put("realPay", 2);
@@ -971,7 +973,7 @@ public class EVServerhttp implements Runnable {
 			orderpay.put("integre", 0);
 			orderpay.put("payDesc", "test");
 			orderpay.put("payTime", orderTime);	//支付时间
-			Log.i("EV_JNI","orderpay="+orderpay.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderpay="+orderpay.toString(),"server.txt");
 			
 			JSONObject orderrefund=new JSONObject();
 			orderrefund.put("RefundId", 122);
@@ -983,8 +985,8 @@ public class EVServerhttp implements Runnable {
 			orderrefund.put("ResultCode", "test");
 			orderrefund.put("TradeNo", "test");
 			orderrefund.put("Description", "test");
-			orderrefund.put("Status", 1);
-			Log.i("EV_JNI","orderrefund="+orderrefund.toString());
+			orderrefund.put("Status", Status);//0：未退款；1：正在退款；2：退款成功；3：退款失败'
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderrefund="+orderrefund.toString(),"server.txt");
 			
 			JSONObject orderproduct=new JSONObject();
 			orderproduct.put("opID", 123);
@@ -1003,7 +1005,7 @@ public class EVServerhttp implements Runnable {
 			orderproduct.put("firstpurchaseprice", 1);
 			JSONArray orderpro=new JSONArray();
 			orderpro.put(orderproduct);
-			Log.i("EV_JNI","orderproduct="+orderpro.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderproduct="+orderpro.toString(),"server.txt");
 			
 			
 			
@@ -1014,13 +1016,13 @@ public class EVServerhttp implements Runnable {
 			trans.put("OrderRefund", orderrefund);			
 			JSONArray TRANSACTION=new JSONArray();
 			TRANSACTION.put(trans);
-			Log.i("EV_JNI","TRANSACTION="+TRANSACTION.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","TRANSACTION="+TRANSACTION.toString(),"server.txt");
 			param=new JSONObject();
 			param.put("VMC_NO", vmc_no);
 			param.put("TOTAL",1);
 			param.put("ACTUAL_TOTAL",1);
 			param.put("TRANSACTION", TRANSACTION);
-			Log.i("EV_JNI","param="+param.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","param="+param.toString(),"server.txt");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1035,16 +1037,16 @@ public class EVServerhttp implements Runnable {
 //				parammap.put("ACTUAL_TOTAL",1);
 //				Oreder_Product_Pay orederProductPayList=new Oreder_Product_Pay();
 //				parammap.put("TRANSACTION",orederProductPayList);
-//				Log.i("EV_JNI",parammap.toString());
+//				ToolClass.Log(ToolClass.INFO,"EV_SERVER",,parammap.toString());
 //				//将map类集转为json格式
 //				Gson gson=new Gson();
 //				String param=gson.toJson(parammap);		
-//				Log.i("EV_JNI",param.toString());
+//				ToolClass.Log(ToolClass.INFO,"EV_SERVER",,param.toString());
 		//添加params
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("Token", Tok));
 		params.add(new BasicNameValuePair("param", param.toString()));
-		Log.i("EV_JNI","Records="+params.toString());
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Records="+params.toString(),"server.txt");
 		try{
 			httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
 			HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求
@@ -1130,11 +1132,11 @@ public class EVServerhttp implements Runnable {
 			trans.put("isdisable", isdisable);
 			JSONArray PATHLIST=new JSONArray();
 			PATHLIST.put(trans);
-			Log.i("EV_JNI","PATHLIST="+PATHLIST.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","PATHLIST="+PATHLIST.toString(),"server.txt");
 			param=new JSONObject();
 			param.put("VMC_NO", vmc_no);
 			param.put("PATHLIST", PATHLIST);
-			Log.i("EV_JNI","param="+param.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","param="+param.toString(),"server.txt");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1155,16 +1157,16 @@ public class EVServerhttp implements Runnable {
 //					parammap.put("ACTUAL_TOTAL",1);
 //					Oreder_Product_Pay orederProductPayList=new Oreder_Product_Pay();
 //					parammap.put("TRANSACTION",orederProductPayList);
-//					Log.i("EV_JNI",parammap.toString());
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",,parammap.toString());
 //					//将map类集转为json格式
 //					Gson gson=new Gson();
 //					String param=gson.toJson(parammap);		
-//					Log.i("EV_JNI",param.toString());
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",,param.toString());
 		//添加params
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("Token", Tok));
 		params.add(new BasicNameValuePair("param", param.toString()));
-		Log.i("EV_JNI","columns="+params.toString());
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","columns="+params.toString(),"server.txt");
 		try{
 			httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
 			HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求

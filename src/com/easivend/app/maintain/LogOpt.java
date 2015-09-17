@@ -26,7 +26,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -78,6 +80,17 @@ public class LogOpt extends Activity {
     	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+y+"-"+m+"-"+d);   
     	lvlog = (ListView) findViewById(R.id.lvlog);
     	edtloggridstart = (EditText) findViewById(R.id.edtloggridstart);// 获取时间文本框
+    	edtloggridstart.setFocusable(false);//不让该edittext获得焦点
+    	edtloggridstart.setOnTouchListener(new View.OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						// 关闭软键盘，这样当点击该edittext的时候，不会弹出系统自带的输入法
+						edtloggridstart.setInputType(InputType.TYPE_NULL);
+						return false;
+					}
+				});
     	edtloggridstart.setOnClickListener(new OnClickListener() {// 为时间文本框设置单击监听事件
             @Override
             public void onClick(View arg0) {
@@ -86,6 +99,17 @@ public class LogOpt extends Activity {
             }
         });
     	edtloggridend = (EditText) findViewById(R.id.edtloggridend);// 获取时间文本框
+    	edtloggridend.setFocusable(false);//不让该edittext获得焦点
+    	edtloggridend.setOnTouchListener(new View.OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						// 关闭软键盘，这样当点击该edittext的时候，不会弹出系统自带的输入法
+						edtloggridend.setInputType(InputType.TYPE_NULL);
+						return false;
+					}
+				});
     	edtloggridend.setOnClickListener(new OnClickListener() {// 为时间文本框设置单击监听事件
             @Override
             public void onClick(View arg0) {

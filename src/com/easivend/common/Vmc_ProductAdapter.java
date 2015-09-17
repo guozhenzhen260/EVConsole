@@ -86,6 +86,7 @@ public class Vmc_ProductAdapter
 	    		vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象
     		    // 获取所有收入信息，并存储到List泛型集合中
     		    procount[m] = String.valueOf(columnDAO.getproductCount(productID[m]));
+	    		
 	    	}
 	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID[m]+" marketPrice="
  					+promarket[m]+" salesPrice="+prosales[m]+" attBatch1="

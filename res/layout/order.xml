@@ -360,7 +360,8 @@
 				        android:layout_height="wrap_content"
 				        android:textSize="40sp"
 			            android:textStyle="bold"
-			            android:numeric="integer"		        
+			            android:numeric="integer"	
+			            android:hint="请点击输入"	        
 				        android:text="" />  
 			     <TextView 		 
 	            	    android:id="@+id/txtordergridend" 
@@ -379,7 +380,8 @@
 				        android:layout_height="wrap_content"
 				        android:textSize="40sp"
 			            android:textStyle="bold"
-			            android:numeric="integer"		        
+			            android:numeric="integer"
+			            android:hint="请点击输入"		        
 				        android:text="" /> 
 			     <Button
 			             android:id="@+id/btnordergridquery"	

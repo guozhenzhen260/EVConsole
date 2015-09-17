@@ -35,9 +35,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -214,6 +216,17 @@ public class Order extends TabActivity
             }
         });
     	edtordergridstart = (EditText) findViewById(R.id.edtordergridstart);// 获取时间文本框
+    	edtordergridstart.setFocusable(false);//不让该edittext获得焦点
+    	edtordergridstart.setOnTouchListener(new View.OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						// 关闭软键盘，这样当点击该edittext的时候，不会弹出系统自带的输入法
+						edtordergridstart.setInputType(InputType.TYPE_NULL);
+						return false;
+					}
+				});
     	edtordergridstart.setOnClickListener(new OnClickListener() {// 为时间文本框设置单击监听事件
             @Override
             public void onClick(View arg0) {
@@ -222,6 +235,17 @@ public class Order extends TabActivity
             }
         });
     	edtordergridend = (EditText) findViewById(R.id.edtordergridend);// 获取时间文本框
+    	edtordergridend.setFocusable(false);//不让该edittext获得焦点
+    	edtordergridend.setOnTouchListener(new View.OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						// TODO Auto-generated method stub
+						// 关闭软键盘，这样当点击该edittext的时候，不会弹出系统自带的输入法
+						edtordergridend.setInputType(InputType.TYPE_NULL);
+						return false;
+					}
+				});
     	edtordergridend.setOnClickListener(new OnClickListener() {// 为时间文本框设置单击监听事件
             @Override
             public void onClick(View arg0) {

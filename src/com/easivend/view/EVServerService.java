@@ -598,8 +598,9 @@ public class EVServerService extends Service {
 	    int orderStatus=0;//1未支付,2出货成功,3出货未完成
 	    int payStatue=0;//0未付款,1正在付款,2付款完成,3付款失败
 	    int payTyp=0;//0现金,1支付宝声波,2银联,3支付宝二维码,4微信
-	    double RefundAmount=0;//退款金额
 	    int actualQuantity=0;//实际出货,1成功,0失败
+	    String RefundAmount="";//找零金额
+	    int Status=0;//0：未退款；1：正在退款；2：退款成功；3：退款失败'
 	    try {
 	    	for(int x=0;x<vmc_OrderAdapter.getCount();x++)	
 			{
@@ -643,11 +644,24 @@ public class EVServerService extends Service {
 				{
 					payTyp=4;
 				}
-		    	RefundAmount=realAmountvalue[x]+realCardvalue[x];
+		    	
+		    	if(RealStatusvalue[x]==0)
+		    	{
+		    		Status=0;
+		    	}
+		    	else if(RealStatusvalue[x]==1)
+		    	{
+		    		Status=2;
+		    	}
+		    	else if(RealStatusvalue[x]==2||RealStatusvalue[x]==3)
+		    	{
+		    		Status=3;
+		    	}
+		    	RefundAmount=String.valueOf(realAmountvalue[x]+realCardvalue[x]);
 		    	//ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售payStatus="+payStatusvalue[x]+"payType="+payTypevalue[x],"server.txt");
 				
 		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+ToolClass.getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
-				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"productNo="+productID[x]+"quantity="+1+
+				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productID[x]+"quantity="+1+
 				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
 		    	JSONObject object=new JSONObject();
 		    	object.put("orderNo", ordereID[x]);
@@ -657,6 +671,7 @@ public class EVServerService extends Service {
 		    	object.put("payType", payTyp);
 		    	object.put("shouldPay", shouldPay[x]);
 		    	object.put("RefundAmount", RefundAmount);
+		    	object.put("Status", Status);
 		    	object.put("productNo", productID[x]);		    	
 		    	object.put("quantity", 1);
 		    	object.put("actualQuantity", actualQuantity);

@@ -369,6 +369,8 @@ public class BusHuo extends Activity
 	private void chuhuoLog(int type)
 	{
 		OrderDetail.setYujiHuo(1);
+		OrderDetail.setCabID(String.valueOf(cabinetvar));
+		OrderDetail.setColumnID(String.valueOf(huodaoNo));
 		if(type==1)//出货成功
 		{
 			OrderDetail.setPayStatus(0);
