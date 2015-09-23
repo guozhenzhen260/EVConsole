@@ -103,6 +103,10 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
 	        if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
 	        {
 	        	viewHolder.count.setText("剩余数量:"+pictures.get(arg0).getProcount());// 设置剩余数量
+	        	viewHolder.proID.setTextColor(android.graphics.Color.BLACK);
+	        	viewHolder.count.setTextColor(android.graphics.Color.BLACK);
+	        	viewHolder.promarket.setTextColor(android.graphics.Color.BLACK);
+	        	viewHolder.prosales.setTextColor(android.graphics.Color.BLACK);
 	        	/*为什么图片一定要转化为 Bitmap格式的！！ */
 	            Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
 	            viewHolder.image.setImageBitmap(bitmap);// 设置图像的二进制值

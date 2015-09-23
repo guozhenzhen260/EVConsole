@@ -197,7 +197,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 7*1000, 2*60*1000);       // timeTask 
+	    }, 10*1000, 10*60*1000);       // timeTask 
 		
 		//================
 		//串口配置和注册相关
