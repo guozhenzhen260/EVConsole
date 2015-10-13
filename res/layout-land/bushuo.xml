@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-     <TextView 
+    <TextView 
          android:id="@+id/txtbushuoname" 
          android:textSize="80sp" 
          android:gravity="center" 
@@ -14,7 +14,7 @@
    	    android:id = "@+id/ivbushuoquhuo"
    	    android:layout_width="match_parent"
 		android:layout_height="match_parent"	
-		android:layout_below="@+id/lvbushuo"
-		android:src="@drawable/quhuo"			
-   	/> 
+		android:layout_below="@+id/lvbushuo"			
+   	/>
+
 </RelativeLayout>

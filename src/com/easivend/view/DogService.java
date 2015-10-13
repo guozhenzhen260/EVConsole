@@ -28,6 +28,7 @@ import com.easivend.common.ToolClass;
 import com.easivend.http.EVServerhttp;
 import com.easivend.view.EVServerService.ActivityReceiver;
 
+import android.R.integer;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -45,6 +46,7 @@ public class DogService extends Service {
 
 	Timer timer;
 	private int allopen=1;//1表示一直打开应用,0表示关闭后不打开应用
+	private int logno=0;//表示计数
 	ActivityReceiver receiver;
 	
 	@Override
@@ -98,7 +100,6 @@ public class DogService extends Service {
 	@Override
 	@Deprecated
 	public void onStart(Intent intent, int startId) {
-		final int logno[]=new int[]{0};
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog start","dog.txt");
@@ -145,14 +146,14 @@ public class DogService extends Service {
 				}
 	        	
 	        	//整理日志文件用
-	        	ToolClass.Log(ToolClass.INFO,"EV_DOG","logno="+logno[0],"dog.txt");
-	        	if(logno[0]<300)
+	        	ToolClass.Log(ToolClass.INFO,"EV_DOG","logno["+Thread.currentThread().getId()+"]="+logno,"dog.txt");
+	        	if(logno<5760)
 	        	{
-	        		logno[0]++;
+	        		logno++;
 	        	}
 	        	else 
 	        	{
-	        		logno[0]=0;
+	        		logno=0;
 	        		ToolClass.optLogFile(); 
 				}	        	
 	        } 

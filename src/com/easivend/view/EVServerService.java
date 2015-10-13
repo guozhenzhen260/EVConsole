@@ -304,7 +304,7 @@ public class EVServerService extends Service {
 						//修改数据上报状态为已上报
 						updatecolumns(msg.obj.toString());
 						//重新更新token的值
-						if(tokenno>=480)
+						if(tokenno>=80)
 						{
 							//处理接收到的内容,发送签到命令到子线程中
 							childhand=serverhttp.obtainHandler();

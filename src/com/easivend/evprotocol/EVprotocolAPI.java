@@ -608,7 +608,7 @@ public class EVprotocolAPI
 	*********************************************************************************************************/
 	public static int EV_portRegister(String portName)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIbenopen>>]"+portName,"log.txt");		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIRegister>>]"+portName,"log.txt");		
 		return EVprotocol.EV_portRegister(portName);		
 	}
 	

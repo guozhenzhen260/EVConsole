@@ -3,134 +3,144 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <TextView
-        android:id="@+id/tvVersion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:text="版本号：3.00"
-        android:textColor="#8C6931"
-        android:textSize="25dp" />
-    <TextView
-        android:id="@+id/tvLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:layout_below="@id/tvVersion"   
-        android:text="请输入主串口号："
-        android:textColor="#8C6931"
-        android:textSize="25dp" />
-
-    <EditText
-        android:id="@+id/txtLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="40sp"
-		android:textStyle="bold"	
-        android:layout_below="@id/tvLogin"        
-        />
-	<TextView
-        android:id="@+id/tvbent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtLogin"   
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:text="请输入格子柜串口号："
-        android:textColor="#8C6931"
-        android:textSize="25dp" />
-
-    <EditText
-        android:id="@+id/txtbent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"  
-        android:textSize="40sp"
-		android:textStyle="bold"      
-        android:layout_below="@id/tvbent"        
-        />
-    <TextView
-        android:id="@+id/tvserver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtbent"   
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:text="请输入服务端地址："
-        android:textColor="#8C6931"
-        android:textSize="25dp" />
-
-    <EditText
-        android:id="@+id/txtserver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"   
-        android:textSize="40sp"
-		android:textStyle="bold"     
-        android:layout_below="@id/tvserver"        
-        />
-    <TextView
-        android:id="@+id/tvallopen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtserver" 
-        android:text="一直保持应用开启"
-        android:textColor="#8C6931"
-        android:textSize="25dp" />
-    <Switch   
-       android:id="@+id/switchallopen"  
-       android:layout_width="wrap_content"  
-       android:layout_height="wrap_content"  
-       android:textOn="打开"  
-       android:textOff="关闭" 
-       android:layout_below="@id/txtserver" 
-       android:layout_toRightOf="@+id/tvallopen"/> 
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="100dp"
-		android:layout_height="70dp" 
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/tvallopen"
-        android:layout_marginLeft="10dp"
-        android:text="退出" />
-
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="100dp"
-		android:layout_height="70dp" 
-        android:layout_below="@id/tvallopen"
-        android:layout_toLeftOf="@id/btnClose"
-        android:text="修改" />
-    <Button
-        android:id="@+id/btnGaoji"
-        android:layout_width="100dp"
-		android:layout_height="70dp" 
-        android:layout_below="@id/tvallopen"
-        android:layout_toLeftOf="@id/btnLogin"
-        android:text="高级设置" /> 
-     <TextView
-        android:id="@+id/tvip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnGaoji"   
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:text="请输入服务端绝对地址："
-        android:textColor="#8C6931"
-        android:textSize="25dp" />
-
-    <EditText
-        android:id="@+id/txtip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:textSize="40sp"
-		android:textStyle="bold"       
-        android:layout_below="@id/tvip"        
-        />   
-    <Button
-        android:id="@+id/btnDel"
-        android:layout_width="150dp"
-		android:layout_height="100dp" 
-        android:layout_below="@id/txtip"
-        android:text="清除商品信息" />      
+    <ScrollView 
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical" >
+		    <RelativeLayout 
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent"
+			    android:orientation="vertical" >
+			    <TextView
+			        android:id="@+id/tvVersion"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="版本号：3.00"
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			    <TextView
+			        android:id="@+id/tvLogin"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:layout_below="@id/tvVersion"   
+			        android:text="请输入主串口号："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtLogin"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:textSize="40sp"
+					android:textStyle="bold"	
+			        android:layout_below="@id/tvLogin"        
+			        />
+				<TextView
+			        android:id="@+id/tvbent"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtLogin"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入格子柜串口号："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtbent"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"  
+			        android:textSize="40sp"
+					android:textStyle="bold"      
+			        android:layout_below="@id/tvbent"        
+			        />
+			    <TextView
+			        android:id="@+id/tvserver"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtbent"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入服务端地址："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtserver"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"   
+			        android:textSize="40sp"
+					android:textStyle="bold"     
+			        android:layout_below="@id/tvserver"        
+			        />
+			    <TextView
+			        android:id="@+id/tvallopen"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtserver" 
+			        android:text="一直保持应用开启"
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			    <Switch   
+			       android:id="@+id/switchallopen"  
+			       android:layout_width="wrap_content"  
+			       android:layout_height="wrap_content"  
+			       android:textOn="打开"  
+			       android:textOff="关闭" 
+			       android:layout_below="@id/txtserver" 
+			       android:layout_toRightOf="@+id/tvallopen"/> 
+			    <Button
+			        android:id="@+id/btnClose"
+			        android:layout_width="100dp"
+					android:layout_height="70dp" 
+			        android:layout_alignParentRight="true"
+			        android:layout_below="@id/tvallopen"
+			        android:layout_marginLeft="10dp"
+			        android:text="退出" />
+			
+			    <Button
+			        android:id="@+id/btnLogin"
+			        android:layout_width="100dp"
+					android:layout_height="70dp" 
+			        android:layout_below="@id/tvallopen"
+			        android:layout_toLeftOf="@id/btnClose"
+			        android:text="修改" />
+			    <Button
+			        android:id="@+id/btnGaoji"
+			        android:layout_width="100dp"
+					android:layout_height="70dp" 
+			        android:layout_below="@id/tvallopen"
+			        android:layout_toLeftOf="@id/btnLogin"
+			        android:text="高级设置" /> 
+			     <TextView
+			        android:id="@+id/tvip"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/btnGaoji"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入服务端绝对地址："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtip"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content" 
+			        android:textSize="40sp"
+					android:textStyle="bold"       
+			        android:layout_below="@id/tvip"        
+			        />   
+			    <Button
+			        android:id="@+id/btnDel"
+			        android:layout_width="150dp"
+					android:layout_height="100dp" 
+			        android:layout_below="@id/txtip"
+			        android:text="清除商品信息" />   
+        </RelativeLayout>
+	</ScrollView>
 </RelativeLayout>

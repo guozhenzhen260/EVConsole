@@ -763,6 +763,7 @@ public class ToolClass
         	             
         } catch (Exception e) {
             e.printStackTrace();
+            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<sslerror","log.txt");
         }
         
     }

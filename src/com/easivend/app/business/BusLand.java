@@ -1,0 +1,259 @@
+package com.easivend.app.business;
+
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.common.ToolClass;
+import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.JNIInterface;
+import com.easivend.fragment.BusinesslandFragment;
+import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
+import com.easivend.fragment.MoviewlandFragment;
+import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
+import com.easivend.http.EVServerhttp;
+import com.example.evconsole.R;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+
+public class BusLand extends Activity implements MovieFragInteraction,BusFragInteraction{	
+    private MoviewlandFragment moviewlandFragment;
+    private BusinesslandFragment businesslandFragment;
+    Timer timer = new Timer(true);
+    private final int SPLASH_DISPLAY_LENGHT = 5*60; // 延迟5分钟	
+    private int recLen = SPLASH_DISPLAY_LENGHT; 
+    private boolean isbus=false;//true表示在交易页面，false在广告页面
+    //交易页面
+    Intent intent=null;
+    final static int REQUEST_CODE=1; 
+    
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		// 无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.busland);		
+		//设置横屏还是竖屏的布局策略
+		this.setRequestedOrientation(ToolClass.getOrientation());
+		//初始化默认fragment
+		initView();
+		//注册串口监听器
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());
+		timer.schedule(new TimerTask() { 
+	        @Override 
+	        public void run() { 
+	        	  if(isbus)
+	        	  {
+		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
+		        	  recLen--; 		    	      
+		        	  if(recLen <= 0)
+		              { 
+		                  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recclose=businesslandFragment","log.txt");
+			    	      switchMovie();
+		              }	
+	        	  }
+	        } 
+	    }, 1000, 1000);       // timeTask  
+	}
+	
+	//初始化默认fragment
+	public void initView() {        
+        // 设置默认的Fragment
+        setDefaultFragment();
+    }
+	
+	// 设置默认的Fragment
+	@SuppressLint("NewApi")
+    private void setDefaultFragment() {
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        moviewlandFragment = new MoviewlandFragment();
+        transaction.replace(R.id.id_content, moviewlandFragment);
+        transaction.commit();
+    }
+
+	//步骤三、实现Movie接口,跳转到Business中
+	@Override
+	public void switchBusiness() {
+		// TODO Auto-generated method stub
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=switchBusiness","log.txt");
+	    FragmentManager fm = getFragmentManager();
+	    // 开启Fragment事务
+	    FragmentTransaction transaction = fm.beginTransaction();
+	    if (businesslandFragment == null) 
+	    {
+	       	businesslandFragment = new BusinesslandFragment();
+	    }
+	    //步骤五、传递这个数据给businesslandFragment
+	    //....本流程不用传递数据
+	    
+	    transaction.replace(R.id.id_content, businesslandFragment);
+	    // transaction.addToBackStack();
+	    // 事务提交
+	    transaction.commit();
+	    isbus=true;
+	    recLen=SPLASH_DISPLAY_LENGHT;
+	}
+	
+	//步骤三、实现Business接口,关闭本activity界面
+	@Override
+	public void finishBusiness() {
+		// TODO Auto-generated method stub
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=finishBusiness","log.txt");
+		finish();
+	}
+	//步骤三、实现Business接口,暂停倒计时定时器
+	//buslevel级别1到商品类别，2到商品导购页面，3到商品详细页面
+	@Override
+	public void gotoBusiness(int buslevel,Map<String, String>str) {
+		// TODO Auto-generated method stub
+		isbus=false;//暂停倒计时定时器
+		switch(buslevel)
+		{
+			case 1:
+				intent = new Intent(BusLand.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
+		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+				break;
+			case 2:
+				intent = new Intent(BusLand.this, Busgoods.class);// 使用Accountflag窗口初始化Intent
+            	intent.putExtra("proclassID", "");
+            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+				break;
+			case 3:
+				intent = new Intent(BusLand.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
+	        	intent.putExtra("proID", str.get("proID"));
+	        	intent.putExtra("productID", str.get("productID"));
+	        	intent.putExtra("proImage", str.get("proImage"));
+	        	intent.putExtra("prosales", str.get("prosales"));
+	        	intent.putExtra("procount", str.get("procount"));
+	        	intent.putExtra("proType", str.get("proType"));//1代表通过商品ID出货,2代表通过货道出货
+	        	intent.putExtra("cabID", str.get("cabID"));//出货柜号,proType=1时无效
+	        	intent.putExtra("huoID", str.get("huoID"));//出货货道号,proType=1时无效
+
+
+//	        	OrderDetail.setProID(proID);
+//            	OrderDetail.setProductID(productID);
+//            	OrderDetail.setProType("2");
+//            	OrderDetail.setCabID(cabID);
+//            	OrderDetail.setColumnID(huoID);
+//            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
+//            	OrderDetail.setShouldNo(1);
+	        	
+	        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+				break;
+		}
+	}
+	
+	
+	public void switchMovie() {
+		// TODO Auto-generated method stub
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=switchMovie","log.txt");
+	    FragmentManager fm = getFragmentManager();
+	    // 开启Fragment事务
+	    FragmentTransaction transaction = fm.beginTransaction();
+	    if (moviewlandFragment == null) 
+	    {
+        	moviewlandFragment = new MoviewlandFragment();
+        }
+	    //步骤五、传递这个数据给businesslandFragment
+	    //....本流程不用传递数据
+	    
+        // 使用当前Fragment的布局替代id_content的控件
+        transaction.replace(R.id.id_content, moviewlandFragment);	    
+	    // transaction.addToBackStack();
+	    // 事务提交
+	    transaction.commit();
+	    isbus=false;
+	}
+//	// 切换Fragment
+//	@SuppressLint("NewApi")
+//    public void setonClick(View v) {
+//        FragmentManager fm = getFragmentManager();
+//        // 开启Fragment事务
+//        FragmentTransaction transaction = fm.beginTransaction();
+//        switch (v.getId()) {
+//        case R.id.btnweixin:
+//            if (moviewlandFragment == null) {
+//            	moviewlandFragment = new MoviewlandFragment();
+//            }
+//            // 使用当前Fragment的布局替代id_content的控件
+//            transaction.replace(R.id.id_content, moviewlandFragment);
+//            break;
+//        case R.id.btnfriend:
+//            if (businesslandFragment == null) {
+//            	businesslandFragment = new BusinesslandFragment();
+//            }
+//            transaction.replace(R.id.id_content, businesslandFragment);
+//            break;
+//        }
+//        // transaction.addToBackStack();
+//        // 事务提交
+//        transaction.commit();
+//    }
+			
+	//创建一个专门处理单击接口的子类
+	private class jniInterfaceImp implements JNIInterface
+	{
+		@Override
+		public void jniCallback(Map<String, Object> allSet) {
+			// TODO Auto-generated method stub
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<business监听到","log.txt");	
+			Map<String, Object> Set= allSet;
+			int jnirst=(Integer) Set.get("EV_TYPE");
+			//txtcom.setText(String.valueOf(jnirst));
+			switch (jnirst)
+			{
+				//现金设备状态查询
+				case EVprotocolAPI.EV_MDB_HEART://心跳查询
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
+					int bill_err=ToolClass.getvmcStatus(Set,1);
+					int coin_err=ToolClass.getvmcStatus(Set,2);
+					//上报给服务器
+					Intent intent=new Intent();
+    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
+    				intent.putExtra("bill_err", bill_err);
+    				intent.putExtra("coin_err", coin_err);
+    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+    				sendBroadcast(intent); 
+					break; 	
+			}
+		}
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{		
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
+		//注册串口监听器
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());
+		//恢复倒计时定时器
+		isbus=true;
+	    recLen=SPLASH_DISPLAY_LENGHT;
+	}
+	@Override
+	protected void onDestroy() {
+    	//退出时，返回intent
+        Intent intent=new Intent();
+        setResult(MaintainActivity.RESULT_CANCELED,intent);
+		super.onDestroy();		
+	}
+
+	
+
+	
+
+	
+}

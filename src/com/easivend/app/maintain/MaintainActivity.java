@@ -38,8 +38,8 @@ import com.easivend.view.DogService;
 import com.easivend.view.EVServerService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
+import com.easivend.app.business.BusLand;
 import com.easivend.app.business.Business;
-import com.easivend.app.business.BusinessLand;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.SerializableMap;
@@ -63,6 +63,7 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -108,6 +109,8 @@ public class MaintainActivity extends Activity
 	EVServerReceiver receiver;
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
+	Map<String, String> vmcmap;
+	Timer timer = new Timer();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -165,8 +168,7 @@ public class MaintainActivity extends Activity
 		filter.addAction("android.intent.action.vmserverrec");
 		this.registerReceiver(receiver,filter);
 		//7.发送指令广播给EVServerService
-		final Map<String, String> vmcmap = ToolClass.getvmc_no(MaintainActivity.this);
-		Timer timer = new Timer();
+		vmcmap = ToolClass.getvmc_no(MaintainActivity.this);		
 		timer.schedule(new TimerTask() { 
 	        @Override 
 	        public void run() { 
@@ -174,22 +176,7 @@ public class MaintainActivity extends Activity
 	            runOnUiThread(new Runnable() {      // UI thread 
 	                @Override 
 	                public void run() { 
-	                	if(issuc==1)
-	                	{
-		                	Intent intent=new Intent();
-		    				intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
-		    				intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
-		    				intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
-		    				//传递数据
-                            final SerializableMap myMap=new SerializableMap();
-                            myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
-                            Bundle bundle=new Bundle();
-                            bundle.putSerializable("huoSet", myMap);
-                            intent.putExtras(bundle);
-		    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-		    				sendBroadcast(intent);  
-	                	}
-	                	else if(issuc==2) 
+	                	if(issuc==2) 
 	                	{
 	                		//先查询设备信息，再上报给服务器
 	                		EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
@@ -197,7 +184,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 10*1000, 10*60*1000);       // timeTask 
+	    }, 5*1000, 30*1000);       // timeTask 10*60
 		
 		//================
 		//串口配置和注册相关
@@ -211,37 +198,63 @@ public class MaintainActivity extends Activity
 		{
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
-	        server = list.get("server");
+	        server = list.get("server");//设置服务器路径
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
-	        if(list.containsKey("isallopen"))
+	        if(list.containsKey("isallopen"))//设置是否一直打开程序
 	        {
 	        	isallopen=Integer.parseInt(list.get("isallopen"));		        	
 	        }
-			txtcom.setText(com+"现金模块正在准备连接");	
-			EVprotocolAPI.vmcEVStart();//开启监听
-			//打开主柜串口		
-			comopen = EVprotocolAPI.EV_portRegister(com);
-			if(comopen == 1)
+			
+	        //串口设置
+	        EVprotocolAPI.vmcEVStart();//开启监听
+	        //现金模块
+			if(com.equals("")==true)
 			{
-				txtcom.setText(com+"[现金模块]串口正在准备连接");			
+				txtcom.setText(com+"[现金模块]串口未开启");		
+			}
+			else 
+			{
+				//打开主柜串口		
+				comopen = EVprotocolAPI.EV_portRegister(com);
+				if(comopen == 1)
+				{
+					txtcom.setText(com+"[现金模块]串口正在准备连接");			
+				}
+				else
+				{
+					txtcom.setText(com+"[现金模块]串口打开失败");
+				}	
+			}
+			//格子柜
+			if(bentcom.equals("")==true)
+			{
+				txtbentcom.setText(bentcom+"[格子柜]串口未开启");		
 			}
 			else
 			{
-				txtcom.setText(com+"[现金模块]串口打开失败");
-			}			
-			txtbentcom.setText(bentcom+"[格子柜]正在准备连接");	
-			//打开格子柜
-			bentopen = EVprotocolAPI.EV_portRegister(bentcom);
-			if(bentopen == 1)
-			{
-				txtbentcom.setText(bentcom+"[格子柜]串口正在准备连接");			
+				//打开格子柜
+				bentopen = EVprotocolAPI.EV_portRegister(bentcom);
+				if(bentopen == 1)
+				{
+					txtbentcom.setText(bentcom+"[格子柜]串口正在准备连接");			
+				}
+				else
+				{
+					txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
+				}
 			}
-			else
+			
+			if((comopen!=1)&&(bentopen!=1))
 			{
-				txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
-			}
+				dialog.dismiss();
+			}	
 		}
+		else
+		{
+			dialog.dismiss();
+		}
+		
 		//加载微信证书
 		ToolClass.setWeiCertFile();
 		//加载售罄水印图片		
@@ -293,7 +306,7 @@ public class MaintainActivity extends Activity
     				//横屏
     				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
     				{
-    					intent = new Intent(MaintainActivity.this, BusinessLand.class);// 使用Accountflag窗口初始化Intent
+    					intent = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
     					//intent = new Intent(MaintainActivity.this, Business.class);
     				}
     				//竖屏
@@ -335,8 +348,12 @@ public class MaintainActivity extends Activity
 						}
 						else
 						{
-							txtcom.setText(bentcom+"[现金模块]连接失败");
-							issuc=1;//可以开始签到操作
+							txtcom.setText(bentcom+"[现金模块]连接失败");							
+						}
+						//可以开始签到操作
+						if(bentopen != 1)
+						{
+							onInit();
 						}
 					}
 					//格子柜初始化完成
@@ -353,7 +370,11 @@ public class MaintainActivity extends Activity
 						else
 						{
 							txtbentcom.setText(bentcom+"[格子柜]连接失败");
-							issuc=1;//可以开始签到操作
+							//可以开始签到操作
+							if(comopen != 1)
+							{
+								onInit();
+							}
 						}
 					}
 					break;
@@ -390,7 +411,8 @@ public class MaintainActivity extends Activity
 			        }
 			        else
 			        {
-						issuc=1;//可以开始签到操作
+						//可以开始签到操作
+			        	onInit();
 					}
 					break;	
 				//现金设备状态查询
@@ -409,6 +431,22 @@ public class MaintainActivity extends Activity
 					break; 	
 			}
 		}
+	}
+	
+	private void onInit()
+	{
+    	Intent intent=new Intent();
+		intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
+		intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
+		intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+		//传递数据
+        final SerializableMap myMap=new SerializableMap();
+        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("huoSet", myMap);
+        intent.putExtras(bundle);
+		intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+		sendBroadcast(intent);  
 	}
 	
 	@Override
@@ -471,7 +509,8 @@ public class MaintainActivity extends Activity
 	    }
 	    else 
 	    {
-	    	issuc=1;//可以开始签到操作
+	    	//可以开始签到操作
+	    	onInit();
 		}
 	}
 	
@@ -519,7 +558,7 @@ public class MaintainActivity extends Activity
 					//横屏
 					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 					{
-						intbus = new Intent(MaintainActivity.this, BusinessLand.class);// 使用Accountflag窗口初始化Intent
+						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
 					}
 					//竖屏
 					else
@@ -533,7 +572,6 @@ public class MaintainActivity extends Activity
 				Log.i("EV_JNI","activity=失败，网络故障");
 				if(dialog.isShowing())
 					dialog.dismiss();
-				//issuc=1;
 	    		break;	
 			}	
 		}
@@ -549,6 +587,7 @@ public class MaintainActivity extends Activity
 		if(bentopen>0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
 		EVprotocolAPI.vmcEVStop();//关闭监听		
+		timer.cancel(); //关闭定时器
 		//=============
 		//Server服务相关
 		//=============

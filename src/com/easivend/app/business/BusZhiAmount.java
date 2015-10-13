@@ -267,6 +267,7 @@ public class BusZhiAmount  extends Activity
                 public void run() { 
                     recLen--; 
                     txtbuszhiamounttime.setText("µ¹¼ÆÊ±:"+recLen); 
+                    //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
                     if(recLen <= 0)
                     { 
                         timer.cancel(); 

@@ -12,7 +12,6 @@ import java.util.Map;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.app.business.Business;
-import com.easivend.app.business.BusinessLand;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ShowSortAdapter;
 import com.easivend.common.ToolClass;

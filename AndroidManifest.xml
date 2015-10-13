@@ -131,9 +131,9 @@
             android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
-        </activity>
+        </activity>        
         <activity
-            android:name="com.easivend.app.business.BusinessLand"
+            android:name="com.easivend.app.business.BusLand"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >    
+    android:orientation="vertical" >
     <RelativeLayout 
 	    android:layout_width="fill_parent"
 	    android:layout_margin="10px" 
@@ -18,13 +18,13 @@
 		    android:text="货道号：" />
 	    <EditText
 	        android:id="@+id/txtadsTip"
-	        android:layout_width="450px"
-  			android:textSize="30px" 
+	        android:layout_width="wrap_content"
+  			android:textSize="60sp" 
   			android:layout_below="@+id/txtads"
   			android:layout_height="wrap_content" 
   			android:textStyle="bold"
         	android:textColor="#FF0000"  
-  			android:hint="请直接填写需要出货的货道号"        
+  			android:hint="请输入出货货道号"        
 	        />
 	    <ImageButton
 	        android:id="@+id/btnadsclass"
