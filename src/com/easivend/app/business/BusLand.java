@@ -29,7 +29,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     private MoviewlandFragment moviewlandFragment;
     private BusinesslandFragment businesslandFragment;
     Timer timer = new Timer(true);
-    private final int SPLASH_DISPLAY_LENGHT = 5*60; // 延迟5分钟	
+    private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=false;//true表示在交易页面，false在广告页面
     //交易页面
@@ -57,11 +57,11 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	        public void run() { 
 	        	  if(isbus)
 	        	  {
-		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
+		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 		    	      
-		        	  if(recLen <= 0)
+		        	  if(recLen == 0)
 		              { 
-		                  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recclose=businesslandFragment","log.txt");
+		                  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recclose=movielandFragment","log.txt");
 			    	      switchMovie();
 		              }	
 	        	  }
@@ -116,12 +116,13 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=finishBusiness","log.txt");
 		finish();
 	}
-	//步骤三、实现Business接口,暂停倒计时定时器
+	//步骤三、实现Business接口,暂停倒计时定时器并且转到商品购物页面
 	//buslevel级别1到商品类别，2到商品导购页面，3到商品详细页面
 	@Override
 	public void gotoBusiness(int buslevel,Map<String, String>str) {
 		// TODO Auto-generated method stub
-		isbus=false;//暂停倒计时定时器
+		isbus=false;
+		//switchMovie();
 		switch(buslevel)
 		{
 			case 1:
@@ -158,7 +159,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		}
 	}
 	
-	
+	//返回到广告页面
 	public void switchMovie() {
 		// TODO Auto-generated method stub
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=switchMovie","log.txt");
@@ -178,6 +179,20 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	    // 事务提交
 	    transaction.commit();
 	    isbus=false;
+	}
+	
+	//步骤三、实现Business接口,暂停定时器
+	@Override
+	public void stoptimer() {
+		// TODO Auto-generated method stub
+		isbus=false;
+	}
+	//步骤三、实现Business接口,重新打开定时器
+	@Override
+	public void restarttimer() {
+		// TODO Auto-generated method stub
+		isbus=true;
+	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 //	// 切换Fragment
 //	@SuppressLint("NewApi")
@@ -240,16 +255,20 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
 		//恢复倒计时定时器
-		isbus=true;
-	    recLen=SPLASH_DISPLAY_LENGHT;
+		//isbus=true;
+	    //recLen=SPLASH_DISPLAY_LENGHT;
+		switchMovie();
 	}
 	@Override
 	protected void onDestroy() {
+		timer.cancel(); 
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);
 		super.onDestroy();		
 	}
+
+	
 
 	
 

@@ -55,6 +55,10 @@ public class BusinesslandFragment extends Fragment
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
+	//定时器清除调出密码框的功能
+	Timer timer = new Timer(true);
+//    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60延迟5分钟	
+//    private int recLen = SPLASH_DISPLAY_LENGHT; 
 	//发送出货指令
     private String proID = null;
 	private String productID = null;
@@ -100,7 +104,9 @@ public class BusinesslandFragment extends Fragment
          * @param str
          */
         void finishBusiness();//关闭activity页面
-        void gotoBusiness(int buslevel,Map<String, String>str);  //暂停倒计时定时器，并且跳转到商品页面
+        void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面     
+        void stoptimer();//关闭定时器
+        void restarttimer();//重新打开定时器
     }
     @Override
     public void onDetach() {
@@ -113,7 +119,17 @@ public class BusinesslandFragment extends Fragment
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_businessland, container, false);  
-		context=this.getActivity();//获取activity的context		
+		context=this.getActivity();//获取activity的context	
+		//定时器返回广告页面
+		timer.schedule(new TimerTask() { 
+	        @Override 
+	        public void run() { 	        	  
+        		  if(pwdcount > 0)
+	              { 
+        			  pwdcount--;
+	              }		        	  
+	        } 
+	    }, 1000, 5000);       // timeTask  
 		//=======
 		//操作模块
 		//=======
@@ -332,7 +348,7 @@ public class BusinesslandFragment extends Fragment
     {
     	pwdcount++;
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwdcount="+pwdcount,"log.txt");
-    	if(pwdcount>=10)
+    	if(pwdcount>=30)
     	{
     		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwdinfo","log.txt");
     		pwdcount=0;
@@ -344,7 +360,7 @@ public class BusinesslandFragment extends Fragment
     private void passdialog()
     {
     	View myview=null;  
-    	
+    	listterner.stoptimer();//关闭定时器
 		// TODO Auto-generated method stub
 		LayoutInflater factory = LayoutInflater.from(context);
 		myview=factory.inflate(R.layout.selectinteger, null);
@@ -390,6 +406,10 @@ public class BusinesslandFragment extends Fragment
 		    		//步骤二、fragment向activity发送回调信息
 		        	listterner.finishBusiness();
 		    	}
+		    	else
+		    	{
+		    		listterner.restarttimer();//重新打开定时器
+				}
 			}
 		})
 		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
@@ -397,7 +417,8 @@ public class BusinesslandFragment extends Fragment
 			@Override
 			public void onClick(DialogInterface dialog, int which) 
 			{
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub	
+				listterner.restarttimer();//重新打开定时器
 			}
     	})
 		.setView(myview)//这里将对话框布局文件加入到对话框中

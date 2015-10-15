@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.view.MyVideoView;
 import  com.example.evconsole.R;
 import android.app.Activity;
 import android.app.Fragment;
@@ -24,11 +25,12 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 public class MoviewlandFragment extends Fragment {
 	//VideoView
-	private VideoView videoView=null;
+	private MyVideoView videoView=null;
 	private File filev;
 	private int curIndex = 0,isClick=0;//  
     Random r=new Random(); 
@@ -88,7 +90,7 @@ public class MoviewlandFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_movieland, container, false);  
 		context=this.getActivity();//»ñÈ¡activityµÄcontext
-		videoView=(VideoView)view.findViewById(R.id.video);
+		videoView=(MyVideoView)view.findViewById(R.id.video);	
 		ivads=(ImageView)view.findViewById(R.id.ivads);
 		ivads.setOnClickListener(new OnClickListener() {
 			

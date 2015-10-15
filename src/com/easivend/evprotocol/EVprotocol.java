@@ -736,7 +736,7 @@ public class EVprotocol {
 					req_handle();
 					//System.out.printf("EV_Thread:runing...\n");
 				try {
-					Thread.sleep(50);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

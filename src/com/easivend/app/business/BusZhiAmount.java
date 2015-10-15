@@ -36,7 +36,7 @@ import android.widget.TextView;
 
 public class BusZhiAmount  extends Activity
 {
-	private final int SPLASH_DISPLAY_LENGHT = 1000; // 延迟1秒
+	private final int SPLASH_DISPLAY_LENGHT = 1500; // 延迟1.5秒
 	//进度对话框
 	ProgressDialog dialog= null;
 	public static BusZhiAmount BusZhiAmountAct=null;
@@ -138,7 +138,7 @@ public class BusZhiAmount  extends Activity
 	//创建一个专门处理单击接口的子类
 	private class jniInterfaceImp implements JNIInterface
 	{
-
+		int con=0;
 		@Override
 		public void jniCallback(Map<String, Object> allSet) {
 			float payin_amount=0,reamin_amount=0,payout_amount=0;
@@ -149,9 +149,19 @@ public class BusZhiAmount  extends Activity
 			switch (jnirst)
 			{
 				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
-					//第一次打开才发送coninfo，以后就不再操作这个了
-					if(iszhienable==0)
-						EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());					
+					//打开失败,等待重新打开
+					if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
+					{
+						txtbuszhiamounttsxx.setText("提示信息：重试"+con);
+						con++;
+					}
+					//打开成功
+					else
+					{
+						//第一次打开才发送coninfo，以后就不再操作这个了
+						if(iszhienable==0)
+							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+					}										
 					break;
 				case EVprotocolAPI.EV_MDB_B_INFO:	
 					break;
@@ -277,10 +287,20 @@ public class BusZhiAmount  extends Activity
                     if(iszhienable==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=2)
+	                    if(queryLen>=1)
 	                    {
 	                    	queryLen=0;
 	                    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+	                    }
+                    }
+                    //发送打开纸币硬币器指令
+                    else if(iszhienable==0)
+                    {
+                    	queryLen++;
+	                    if(queryLen>=10)
+	                    {
+	                    	queryLen=0;
+	                    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
 	                    }
                     }
                 } 
