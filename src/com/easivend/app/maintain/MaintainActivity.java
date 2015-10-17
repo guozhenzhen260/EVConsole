@@ -39,7 +39,7 @@ import com.easivend.view.EVServerService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusLand;
-import com.easivend.app.business.Business;
+import com.easivend.app.business.BusPort;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.SerializableMap;
@@ -307,12 +307,11 @@ public class MaintainActivity extends Activity
     				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
     				{
     					intent = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-    					//intent = new Intent(MaintainActivity.this, Business.class);
     				}
     				//竖屏
     				else
     				{
-    					intent = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+    					intent = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
     				}                	
                     startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
@@ -563,7 +562,7 @@ public class MaintainActivity extends Activity
 					//竖屏
 					else
 					{
-						intbus = new Intent(MaintainActivity.this, Business.class);// 使用Accountflag窗口初始化Intent
+						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
 					}
 					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
 				}

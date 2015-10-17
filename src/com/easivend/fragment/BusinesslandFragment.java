@@ -85,7 +85,7 @@ public class BusinesslandFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if(activity instanceof MovieFragInteraction)
+        if(activity instanceof BusFragInteraction)
         {
             listterner = (BusFragInteraction)activity;
         }
@@ -126,10 +126,10 @@ public class BusinesslandFragment extends Fragment
 	        public void run() { 	        	  
         		  if(pwdcount > 0)
 	              { 
-        			  pwdcount--;
+        			  pwdcount=0;
 	              }		        	  
 	        } 
-	    }, 1000, 5000);       // timeTask  
+	    }, 1000, 10000);       // timeTask  
 		//=======
 		//²Ù×÷Ä£¿é
 		//=======
@@ -348,7 +348,7 @@ public class BusinesslandFragment extends Fragment
     {
     	pwdcount++;
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwdcount="+pwdcount,"log.txt");
-    	if(pwdcount>=30)
+    	if(pwdcount>=10)
     	{
     		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwdinfo","log.txt");
     		pwdcount=0;

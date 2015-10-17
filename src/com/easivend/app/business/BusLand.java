@@ -31,7 +31,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     Timer timer = new Timer(true);
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
-    private boolean isbus=false;//true表示在交易页面，false在广告页面
+    private boolean isbus=true;//true表示在广告页面，false在其他页面
     //交易页面
     Intent intent=null;
     final static int REQUEST_CODE=1; 
@@ -55,7 +55,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		timer.schedule(new TimerTask() { 
 	        @Override 
 	        public void run() { 
-	        	  if(isbus)
+	        	  if(isbus==false)
 	        	  {
 		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 		    	      
@@ -105,7 +105,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	    // transaction.addToBackStack();
 	    // 事务提交
 	    transaction.commit();
-	    isbus=true;
+	    isbus=false;
 	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 	
@@ -121,7 +121,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	public void gotoBusiness(int buslevel,Map<String, String>str) {
 		// TODO Auto-generated method stub
-		isbus=false;
+		isbus=true;
+	    recLen=SPLASH_DISPLAY_LENGHT;
 		//switchMovie();
 		switch(buslevel)
 		{
@@ -178,20 +179,22 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	    // transaction.addToBackStack();
 	    // 事务提交
 	    transaction.commit();
-	    isbus=false;
+	    recLen=SPLASH_DISPLAY_LENGHT;
+	    isbus=true;
 	}
 	
 	//步骤三、实现Business接口,暂停定时器
 	@Override
 	public void stoptimer() {
 		// TODO Auto-generated method stub
-		isbus=false;
+		isbus=true;
+	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 	//步骤三、实现Business接口,重新打开定时器
 	@Override
 	public void restarttimer() {
 		// TODO Auto-generated method stub
-		isbus=true;
+		isbus=false;
 	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 //	// 切换Fragment
