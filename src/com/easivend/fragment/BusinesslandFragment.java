@@ -56,7 +56,7 @@ public class BusinesslandFragment extends Fragment
 	private static int count=0;
 	private static String huo="";
 	//定时器清除调出密码框的功能
-	Timer timer = new Timer(true);
+	//Timer timer = new Timer(true);
 //    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60延迟5分钟	
 //    private int recLen = SPLASH_DISPLAY_LENGHT; 
 	//发送出货指令
@@ -69,7 +69,7 @@ public class BusinesslandFragment extends Fragment
     private Context context;
     //密码框
     private static int pwdcount=0;
-    
+    private static boolean pwdMode=false;//true维护模式设置
     //=========================
     //fragment与activity回调相关
     //=========================
@@ -121,15 +121,15 @@ public class BusinesslandFragment extends Fragment
 		View view = inflater.inflate(R.layout.fragment_businessland, container, false);  
 		context=this.getActivity();//获取activity的context	
 		//定时器返回广告页面
-		timer.schedule(new TimerTask() { 
-	        @Override 
-	        public void run() { 	        	  
-        		  if(pwdcount > 0)
-	              { 
-        			  pwdcount=0;
-	              }		        	  
-	        } 
-	    }, 1000, 10000);       // timeTask  
+//		timer.schedule(new TimerTask() { 
+//	        @Override 
+//	        public void run() { 	        	  
+//        		  if(pwdcount > 0)
+//	              { 
+//        			  pwdcount=0;
+//	              }		        	  
+//	        } 
+//	    }, 1000, 10000);       // timeTask  
 		//=======
 		//操作模块
 		//=======
@@ -149,70 +149,141 @@ public class BusinesslandFragment extends Fragment
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("1",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("1");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("1",1);
+				}
+		    	
 		    }
 		});
 		btnads2 = (ImageButton) view.findViewById(R.id.btnads2);
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("2",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("2");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("2",1);
+		    	}
 		    }
 		});
 		btnads3 = (ImageButton) view.findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("3",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("3");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("3",1);
+		    	}
 		    }
 		});
 		btnads4 = (ImageButton) view.findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("4",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("4");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("4",1);
+		    	}
 		    }
 		});
 		btnads5 = (ImageButton) view.findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("5",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("5");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("5",1);
+		    	}
 		    }
 		});
 		btnads6 = (ImageButton) view.findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("6",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("6");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("6",1);
+		    	}
 		    }
 		});
 		btnads7 = (ImageButton) view.findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("7",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("7");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("7",1);
+		    	}
 		    }
 		});
 		btnads8 = (ImageButton) view.findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("8",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("8");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("8",1);
+		    	}
 		    }
 		});
 		btnads9 = (ImageButton) view.findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("9",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("9");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("9",1);
+		    	}
 		    }
 		});
 		btnads0 = (ImageButton) view.findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	chuhuo("0",1);
+		    	if(pwdMode)
+		    	{
+		    		IsAdminSet("0");
+		    	}
+		    	else
+		    	{
+		    		chuhuo("0",1);
+		    	}
 		    }
 		});
 		btnadscancel = (ImageButton) view.findViewById(R.id.btnadscancel);
@@ -226,7 +297,11 @@ public class BusinesslandFragment extends Fragment
 		btnadsenter.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	passwd();
+		    	if(count==0)
+		    	{
+			    	pwdMode=!pwdMode;
+			    	pwdcount=0;
+		    	}
 		    }
 		});
 		btnadsclass = (ImageButton) view.findViewById(R.id.btnadsclass);
@@ -344,17 +419,58 @@ public class BusinesslandFragment extends Fragment
     } 
     
     //调出密码框
-    private void passwd()
+    private void IsAdminSet(String NowKey)
     {
-    	pwdcount++;
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwdcount="+pwdcount,"log.txt");
-    	if(pwdcount>=10)
-    	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwdinfo","log.txt");
+    	if((NowKey.equals("8"))&&(pwdcount==0))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		}
+    	else if((NowKey.equals("3"))&&(pwdcount==1))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		} 
+    	else if((NowKey.equals("7"))&&(pwdcount==2))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		}
+    	else if((NowKey.equals("1"))&&(pwdcount==3))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		}
+    	else if((NowKey.equals("8"))&&(pwdcount==4))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		}
+    	else if((NowKey.equals("5"))&&(pwdcount==5))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		}
+    	else if((NowKey.equals("5"))&&(pwdcount==6))
+		{
+    		pwdcount++;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+		}
+    	else if((NowKey.equals("7"))&&(pwdcount==7))
+		{
     		pwdcount=0;
-    		passdialog();
-    	}
+    		pwdMode=false;
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
+			passdialog();
+		}
+    	else 
+    	{
+    		pwdMode=!pwdMode;
+    		pwdcount=0;
+		}
     }
+    
+    
     
     //密码框
     private void passdialog()
@@ -368,7 +484,7 @@ public class BusinesslandFragment extends Fragment
 		
 		Dialog dialog = new AlertDialog.Builder(context)
 		.setTitle("设置")
-		.setPositiveButton("保存", new DialogInterface.OnClickListener() 	
+		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
 				
 			@Override

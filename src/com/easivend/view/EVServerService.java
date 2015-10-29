@@ -410,10 +410,10 @@ public class EVServerService extends Service {
 					+"product_Name="+object2.getString("product_Name")+"product_Class_NO="+product_Class_NO
 					+"AttImg="+object2.getString("AttImg"),"server.txt");	
 			//用于签到完成后，更新商品信息时间段
-			if(ischeck==true)
-			{
-				LAST_EDIT_TIME=ToolClass.getLasttime();
-			}
+//			if(ischeck==true)
+//			{
+//				LAST_EDIT_TIME=ToolClass.getLasttime();
+//			}
 			// 创建InaccountDAO对象
 			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
             //创建Tb_inaccount对象

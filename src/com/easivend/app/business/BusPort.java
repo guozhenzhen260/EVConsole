@@ -17,6 +17,8 @@ import com.easivend.fragment.BusgoodsselectFragment.BusgoodsselectFragInteractio
 import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinessportFragment;
 import com.easivend.fragment.BusinessportFragment.BusportFragInteraction;
+import com.easivend.fragment.BuszhiamountFragment;
+import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
@@ -28,6 +30,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -39,12 +42,15 @@ BusgoodsclassFragInteraction,
 //busgoods页面接口
 BusgoodsFragInteraction,
 //Busgoodsselect页面接口
-BusgoodsselectFragInteraction
+BusgoodsselectFragInteraction,
+//Buszhiamount页面接口
+BuszhiamountFragInteraction
 {
 	private BusinessportFragment businessportFragment;
 	private BusgoodsclassFragment busgoodsclassFragment;
 	private BusgoodsFragment busgoodsFragment;
 	private BusgoodsselectFragment busgoodsselectFragment;
+	private BuszhiamountFragment buszhiamountFragment;
 	//交易页面
     Intent intent=null;
     final static int REQUEST_CODE=1; 
@@ -52,11 +58,43 @@ BusgoodsselectFragInteraction
     public static final int BUSGOODSCLASS=2;//商品类别页面
 	public static final int BUSGOODS=3;//商品导购页面
 	public static final int BUSGOODSSELECT=4;//商品详细页面
+	public static final int BUSZHIAMOUNT=5;//现金支付页面
+	public static final int BUSZHIER=6;//支付宝支付页面
+	public static final int BUSZHIWEI=7;//微信支付页面
 	Timer timer = new Timer(true);
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
     
+    //=========================
+    //activity与fragment回调相关
+    //=========================
+    /**
+     * 用来与其他fragment交互的
+     */
+    private BusPortFragInteraction listterner;
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//
+//        if(activity instanceof BuszhiamountFragInteraction)
+//        {
+//            listterner = (BuszhiamountFragInteraction)activity;
+//        }
+//        else{
+//            throw new IllegalArgumentException("activity must implements BuszhiamountFragInteraction");
+//        }
+//
+//    }
+    public interface BusPortFragInteraction
+    {
+        /**
+         * Activity 向Fragment传递指令，这个方法可以根据需求来定义
+         * @param str
+         */
+        //现金页面
+        void BusportTsxx();      //提示信息
+    }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -169,15 +207,27 @@ BusgoodsselectFragInteraction
 	//=======================
 	//步骤三、实现Busgoodsselect接口,转到商品详细页面
 	@Override
-	public void BusgoodsselectSwitch(Map<String, String> str) {
+	public void BusgoodsselectSwitch(int buslevel) {
 		// TODO Auto-generated method stub
-		
+		viewSwitch(buslevel, null);
 	}
 	//步骤三、实现Busgoodsselect接口,转到首页面
 	@Override
 	public void BusgoodsselectFinish() {
 		// TODO Auto-generated method stub
 		viewSwitch(BUSPORT, null);
+	}
+	
+	//=======================
+	//实现Buszhiamount页面相关接口
+	//=======================
+	//步骤三、实现Buszhiamount接口,转到首页面
+	@Override
+	public void BuszhiamountFinish() {
+		// TODO Auto-generated method stub
+		//关闭纸币硬币器
+	    EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
+	    viewSwitch(BUSPORT, null);
 	}
 	
 	
@@ -264,6 +314,33 @@ BusgoodsselectFragInteraction
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsselectFragment);
 				break;
+			case BUSZHIAMOUNT://现金支付
+				isbus=false;
+				//打开纸币硬币器
+            	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
+            	//切换页面
+				if (buszhiamountFragment == null) {
+					buszhiamountFragment = new BuszhiamountFragment();
+	            }
+	            // 使用当前Fragment的布局替代id_content的控件
+	            transaction.replace(R.id.id_content, buszhiamountFragment);
+				break;	
+			case BUSZHIER://支付宝支付
+				isbus=false;
+				if (busgoodsclassFragment == null) {
+					busgoodsclassFragment = new BusgoodsclassFragment();
+	            }
+	            // 使用当前Fragment的布局替代id_content的控件
+	            transaction.replace(R.id.id_content, busgoodsclassFragment);
+				break;
+			case BUSZHIWEI://微信支付
+				isbus=false;
+				if (busgoodsclassFragment == null) {
+					busgoodsclassFragment = new BusgoodsclassFragment();
+	            }
+	            // 使用当前Fragment的布局替代id_content的控件
+	            transaction.replace(R.id.id_content, busgoodsclassFragment);
+				break;	
 		}
 		// transaction.addToBackStack();
         // 事务提交
@@ -274,6 +351,7 @@ BusgoodsselectFragInteraction
 	//创建一个专门处理单击接口的子类
 	private class jniInterfaceImp implements JNIInterface
 	{
+		int con=0;
 		@Override
 		public void jniCallback(Map<String, Object> allSet) {
 			// TODO Auto-generated method stub
@@ -283,6 +361,21 @@ BusgoodsselectFragInteraction
 			//txtcom.setText(String.valueOf(jnirst));
 			switch (jnirst)
 			{
+				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
+					//打开失败,等待重新打开
+					if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
+					{
+						//txtbuszhiamounttsxx.setText("提示信息：重试"+con);
+						con++;
+					}
+					//打开成功
+					else
+					{
+//						//第一次打开才发送coninfo，以后就不再操作这个了
+//						if(iszhienable==0)
+//							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+					}										
+					break;
 				//现金设备状态查询
 				case EVprotocolAPI.EV_MDB_HEART://心跳查询
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
@@ -313,6 +406,8 @@ BusgoodsselectFragInteraction
         setResult(MaintainActivity.RESULT_CANCELED,intent);
 		super.onDestroy();		
 	}
+
+	
 
 	
 

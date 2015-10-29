@@ -2,6 +2,7 @@ package com.easivend.fragment;
 
 import java.util.Map;
 
+import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusZhiAmount;
 import com.easivend.app.business.BusZhier;
 import com.easivend.app.business.BusZhiwei;
@@ -76,7 +77,7 @@ public class BusgoodsselectFragment extends Fragment
          * Fragment 向Activity传递指令，这个方法可以根据需求来定义
          * @param str
          */
-        void BusgoodsselectSwitch(Map<String, String> str);//切换到BusZhixx页面
+        void BusgoodsselectSwitch(int buslevel);//切换到BusZhixx页面
         void BusgoodsselectFinish();      //切换到business页面
     }
     @Override
@@ -134,9 +135,10 @@ public class BusgoodsselectFragment extends Fragment
 		    	if(Integer.parseInt(procount)>0)
 		    	{
 			    	sendzhifu();
-			    	Intent intent = null;// 创建Intent对象                
-	            	intent = new Intent(context, BusZhiAmount.class);// 使用Accountflag窗口初始化Intent
-	            	startActivity(intent);// 打开Accountflag
+//			    	Intent intent = null;// 创建Intent对象                
+//	            	intent = new Intent(context, BusZhiAmount.class);// 使用Accountflag窗口初始化Intent
+//	            	startActivity(intent);// 打开Accountflag
+			    	listterner.BusgoodsselectSwitch(BusPort.BUSZHIAMOUNT);
 		    	}
 		    }
 		});
@@ -147,9 +149,10 @@ public class BusgoodsselectFragment extends Fragment
 		    	if(Integer.parseInt(procount)>0)
 		    	{
 			    	sendzhifu();
-			    	Intent intent = null;// 创建Intent对象                
-	            	intent = new Intent(context, BusZhier.class);// 使用Accountflag窗口初始化Intent
-	            	startActivity(intent);// 打开Accountflag
+//			    	Intent intent = null;// 创建Intent对象                
+//	            	intent = new Intent(context, BusZhier.class);// 使用Accountflag窗口初始化Intent
+//	            	startActivity(intent);// 打开Accountflag
+			    	listterner.BusgoodsselectSwitch(BusPort.BUSZHIER);
 		    	}
 		    }
 		});
@@ -160,9 +163,10 @@ public class BusgoodsselectFragment extends Fragment
 		    	if(Integer.parseInt(procount)>0)
 		    	{
 			    	sendzhifu();
-			    	Intent intent = null;// 创建Intent对象                
-	            	intent = new Intent(context, BusZhiwei.class);// 使用Accountflag窗口初始化Intent
-	            	startActivity(intent);// 打开Accountflag
+//			    	Intent intent = null;// 创建Intent对象                
+//	            	intent = new Intent(context, BusZhiwei.class);// 使用Accountflag窗口初始化Intent
+//	            	startActivity(intent);// 打开Accountflag
+			    	listterner.BusgoodsselectSwitch(BusPort.BUSZHIWEI);
 		    	}
 		    }
 		});

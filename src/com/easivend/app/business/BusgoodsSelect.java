@@ -25,8 +25,7 @@ public class BusgoodsSelect extends Activity
 	public static BusgoodsSelect BusgoodsSelectAct=null;
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
-	TextView txtbusgoodselName=null,txtbusgoodselName2=null,txtbusgoodselPrice=null,txtbusgoodselAmount=null;
-	ImageButton imgbtnbusgoodselcancel=null;
+	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -68,18 +67,13 @@ public class BusgoodsSelect extends Activity
         ivbusgoodselProduct.setImageBitmap(bitmap);// 设置图像的二进制值
 		txtbusgoodselName = (TextView) findViewById(R.id.txtbusgoodselName);
 		txtbusgoodselName.setText(proID);
-		txtbusgoodselName2 = (TextView) findViewById(R.id.txtbusgoodselName2);
-		txtbusgoodselName2.setText("商品:"+proID);
-		txtbusgoodselPrice = (TextView) findViewById(R.id.txtbusgoodselPrice);
 		txtbusgoodselAmount = (TextView) findViewById(R.id.txtbusgoodselAmount);
 		if(Integer.parseInt(procount)>0)
 		{
-			txtbusgoodselPrice.setText(prosales);			
 			txtbusgoodselAmount.setText(prosales);
 		}
 		else
 		{
-			txtbusgoodselPrice.setText("已售罄");			
 			txtbusgoodselAmount.setText("已售罄");
 		}	
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
@@ -160,14 +154,7 @@ public class BusgoodsSelect extends Activity
 		    public void onClick(View arg0) {
 		    	finish();
 		    }
-		});
-		this.imgbtnbusgoodselcancel=(ImageButton)findViewById(R.id.imgbtnbusgoodselcancel);
-		imgbtnbusgoodselcancel.setOnClickListener(new OnClickListener() {
-		    @Override
-		    public void onClick(View arg0) {
-		    	finish();
-		    }
-		});
+		});		
 		//5分钟钟之后退出页面
 	    new Handler().postDelayed(new Runnable() 
 		{
