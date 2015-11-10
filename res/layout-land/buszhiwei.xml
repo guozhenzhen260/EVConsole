@@ -57,7 +57,7 @@
 		android:layout_height="329dp"	
 		android:layout_toRightOf="@+id/txtbuszhiweirount"
 		android:layout_below="@+id/txtbuszhiweirst"	
-		android:src="@drawable/buszhierb"				
+		android:src="@drawable/weixing"				
    	/>
 	<ImageView
 	    android:id="@+id/ivbuszhiwei"

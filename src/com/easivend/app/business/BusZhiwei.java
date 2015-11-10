@@ -61,6 +61,7 @@ public class BusZhiwei extends Activity
     private String out_trade_no=null;
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
+    private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -117,6 +118,7 @@ public class BusZhiwei extends Activity
 			@Override
 			public void handleMessage(Message msg) {
 				//barweixingtest.setVisibility(View.GONE);
+				ercheck=false;
 				// TODO Auto-generated method stub				
 				switch (msg.what)
 				{
@@ -178,86 +180,98 @@ public class BusZhiwei extends Activity
 	}
 	//发送订单
 	private void sendzhiwei()
-	{				
-    	// 将信息发送到子线程中
-    	childhand=weixinghttp.obtainHandler();
-		Message childmsg=childhand.obtainMessage();
-		childmsg.what=Weixinghttp.SETCHILD;
-		JSONObject ev=null;
-		try {
-			ev=new JSONObject();
-			out_trade_no=ToolClass.out_trade_no(BusZhiwei.this);
-	        ev.put("out_trade_no", out_trade_no);
-			ev.put("total_fee", String.valueOf(amount));
-			Log.i("EV_JNI","Send0.1="+ev.toString());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		childmsg.obj=ev;
-		childhand.sendMessage(childmsg);
+	{	
+		if(ercheckopt())
+  		{
+	    	// 将信息发送到子线程中
+	    	childhand=weixinghttp.obtainHandler();
+			Message childmsg=childhand.obtainMessage();
+			childmsg.what=Weixinghttp.SETCHILD;
+			JSONObject ev=null;
+			try {
+				ev=new JSONObject();
+				out_trade_no=ToolClass.out_trade_no(BusZhiwei.this);
+		        ev.put("out_trade_no", out_trade_no);
+				ev.put("total_fee", String.valueOf(amount));
+				Log.i("EV_JNI","Send0.1="+ev.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			childmsg.obj=ev;
+			childhand.sendMessage(childmsg);
+  		}
 	}
 	//查询交易
 	private void queryzhiwei()
 	{
-		// 将信息发送到子线程中
-    	childhand=weixinghttp.obtainHandler();
-		Message childmsg=childhand.obtainMessage();
-		childmsg.what=Zhifubaohttp.SETQUERYCHILD;
-		JSONObject ev=null;
-		try {
-			ev=new JSONObject();
-			ev.put("out_trade_no", out_trade_no);		
-			//ev.put("out_trade_no", "000120150301113215800");	
-			Log.i("EV_JNI","Send0.1="+ev.toString());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		childmsg.obj=ev;
-		childhand.sendMessage(childmsg);
+		if(ercheckopt())
+  		{
+			// 将信息发送到子线程中
+	    	childhand=weixinghttp.obtainHandler();
+			Message childmsg=childhand.obtainMessage();
+			childmsg.what=Zhifubaohttp.SETQUERYCHILD;
+			JSONObject ev=null;
+			try {
+				ev=new JSONObject();
+				ev.put("out_trade_no", out_trade_no);		
+				//ev.put("out_trade_no", "000120150301113215800");	
+				Log.i("EV_JNI","Send0.1="+ev.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			childmsg.obj=ev;
+			childhand.sendMessage(childmsg);
+  		}
 	}
 	//退款交易
 	private void payoutzhiwei()
 	{
-		// 将信息发送到子线程中
-    	childhand=weixinghttp.obtainHandler();
-		Message childmsg=childhand.obtainMessage();
-		childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
-		JSONObject ev=null;
-		try {
-			ev=new JSONObject();
-			ev.put("out_trade_no", out_trade_no);		
-			ev.put("total_fee", String.valueOf(amount));
-			ev.put("refund_fee", String.valueOf(amount));
-			ev.put("out_refund_no", ToolClass.out_trade_no(BusZhiwei.this));
-			Log.i("EV_JNI","Send0.1="+ev.toString());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		childmsg.obj=ev;
-		childhand.sendMessage(childmsg);
+		if(ercheckopt())
+  		{
+			// 将信息发送到子线程中
+	    	childhand=weixinghttp.obtainHandler();
+			Message childmsg=childhand.obtainMessage();
+			childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
+			JSONObject ev=null;
+			try {
+				ev=new JSONObject();
+				ev.put("out_trade_no", out_trade_no);		
+				ev.put("total_fee", String.valueOf(amount));
+				ev.put("refund_fee", String.valueOf(amount));
+				ev.put("out_refund_no", ToolClass.out_trade_no(BusZhiwei.this));
+				Log.i("EV_JNI","Send0.1="+ev.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			childmsg.obj=ev;
+			childhand.sendMessage(childmsg);
+  		}
 	}
 	//撤销交易
 	private void deletezhiwei()
 	{
-		// 将信息发送到子线程中
-		childhand=weixinghttp.obtainHandler();
-		Message childmsg=childhand.obtainMessage();
-		childmsg.what=Weixinghttp.SETDELETECHILD;
-		JSONObject ev=null;
-		try {
-			ev=new JSONObject();
-			ev.put("out_trade_no", out_trade_no);		
-			//ev.put("out_trade_no", "000120150301092857698");	
-			Log.i("EV_JNI","Send0.1="+ev.toString());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		childmsg.obj=ev;
-		childhand.sendMessage(childmsg);
+		if(ercheckopt())
+  		{
+			// 将信息发送到子线程中
+			childhand=weixinghttp.obtainHandler();
+			Message childmsg=childhand.obtainMessage();
+			childmsg.what=Weixinghttp.SETDELETECHILD;
+			JSONObject ev=null;
+			try {
+				ev=new JSONObject();
+				ev.put("out_trade_no", out_trade_no);		
+				//ev.put("out_trade_no", "000120150301092857698");	
+				Log.i("EV_JNI","Send0.1="+ev.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			childmsg.obj=ev;
+			childhand.sendMessage(childmsg);
+  		}
 	}
 	
 	//调用倒计时定时器
@@ -333,7 +347,21 @@ public class BusZhiwei extends Activity
     	OrderDetail.setSmallCard(amount);
     	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
 	}
-	
+	//判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作
+  	private boolean ercheckopt()
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
+  		if(ercheck==false)
+  		{
+  			ercheck=true;
+  			return true;
+  		}
+  		else
+  		{
+  			return false;
+		}
+  	}
+    //接收BusHuo返回信息
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub

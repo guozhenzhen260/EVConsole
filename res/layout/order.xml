@@ -389,14 +389,13 @@
 					        android:text="" /> 
 				     <Button
 				             android:id="@+id/btnordergridquery"	
-				             android:layout_below="@+id/txtproductName"	
-				             android:layout_toRightOf="@+id/edtordergridend"			             
+				             android:layout_below="@+id/edtordergridend"	
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"            
 				             android:text="查询记录" />
 				     <Button
 				             android:id="@+id/btnordergriddel"	
-				             android:layout_below="@+id/txtproductName"	
+				             android:layout_below="@+id/edtordergridend"	
 				             android:layout_toRightOf="@+id/btnordergridquery"		             
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"           

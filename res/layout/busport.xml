@@ -6,7 +6,7 @@
         android:id="@+id/id_fragment_movieland"  
         android:name="com.easivend.fragment.MoviewlandFragment"  
         android:layout_width="fill_parent"  
-        android:layout_height="936dp" />
+        android:layout_height="624dp" />
 	<FrameLayout
         android:id="@+id/id_content"
         android:layout_width="fill_parent"

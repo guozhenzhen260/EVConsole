@@ -226,6 +226,7 @@ public class EVprotocolAPI
 									//往接口回调信息
 									allSet.clear();
 									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("opt", ev_head.getInt("opt"));
 									allSet.put("bill_result", ev_head.getInt("bill_result"));
 									allSet.put("coin_result", ev_head.getInt("coin_result"));
 									callBack.jniCallback(allSet);
@@ -235,6 +236,7 @@ public class EVprotocolAPI
 						    		//往接口回调信息
 									allSet.clear();
 									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("opt", ev_head.getInt("opt"));
 						    		allSet.put("bill_result", 0);
 									allSet.put("coin_result", 0);
 									callBack.jniCallback(allSet);

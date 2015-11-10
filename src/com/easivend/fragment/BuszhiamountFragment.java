@@ -2,10 +2,13 @@ package com.easivend.fragment;
 
 import java.util.Timer;
 
+import com.easivend.app.business.BusPort;
+import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.app.business.BusZhiAmount;
 import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.evprotocol.JNIInterface;
 import com.easivend.fragment.BusgoodsselectFragment.BusgoodsselectFragInteraction;
 import com.example.evconsole.R;
 
@@ -23,24 +26,10 @@ import android.widget.TextView;
 
 public class BuszhiamountFragment extends Fragment 
 {
-	private final int SPLASH_DISPLAY_LENGHT = 1500; // 延迟1.5秒
-	//进度对话框
-	ProgressDialog dialog= null;
-	private final static int REQUEST_CODE=1;//声明请求标识
 	TextView txtbuszhiamountcount=null,txtbuszhiamountAmount=null,txtbuszhiamountbillAmount=null,txtbuszhiamounttime=null,
 			txtbuszhiamounttsxx=null;
 	ImageButton imgbtnbuszhiamountqxzf=null,imgbtnbuszhiamountqtzf=null;
-	float amount=0;//商品需要支付金额
-	float billmoney=0,coinmoney=0,money=0;//投币金额
-	float RealNote=0,RealCoin=0,RealAmount=0;//退币金额
-	private int recLen = 180; 
-	private int queryLen = 0; 
-    private TextView txtView; 
-    Timer timer = new Timer();
-    private int iszhienable=0;//1发送打开指令,0还没发送打开指令
-    private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
-    private int dispenser=0;//0无,1hopper,2mdb
-    private boolean ischuhuo=false;//true已经出货过了，可以上报日志
+	float amount=0;//商品需要支付金额	 
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -48,11 +37,9 @@ public class BuszhiamountFragment extends Fragment
 //	private String huoID = null;
 //    private String prosales = null;
 //    private String count = null;
-//    private String reamin_amount = null;
-    private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+//    private String reamin_amount = null;    
 //    private String id="";
-    private String out_trade_no=null;
-    private int iszhiamount=0;//1成功投入钱,0没有成功投入钱
+    private String out_trade_no=null;    
 	private Context context;
 	//=========================
     //fragment与activity回调相关
@@ -103,10 +90,7 @@ public class BuszhiamountFragment extends Fragment
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_buszhiamount, container, false);  
 		context=this.getActivity();//获取activity的context
-		out_trade_no=ToolClass.out_trade_no(context);
-		amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
-		OrderDetail.setOrdereID(out_trade_no);
-    	OrderDetail.setPayType(Integer.parseInt(zhifutype));
+		amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();		
 		txtbuszhiamountcount= (TextView) view.findViewById(R.id.txtbuszhiamountcount);
 		txtbuszhiamountcount.setText(String.valueOf(OrderDetail.getShouldNo()));
 		txtbuszhiamountAmount= (TextView) view.findViewById(R.id.txtbuszhiamountAmount);
@@ -121,6 +105,47 @@ public class BuszhiamountFragment extends Fragment
 		    	listterner.BuszhiamountFinish();//步骤二、fragment向activity发送回调信息
 		    }
 		});
+		/**
+	     * 用来与其他fragment交互的,
+	     * 步骤五、当Fragment被加载到activity的时候，注册回调信息
+	     * @param activity
+	     */
+		BusPort.setCallBack(new buportInterfaceImp());
 		return view;
 	}
+	
+	private class buportInterfaceImp implements BusPortFragInteraction//加载接口
+	{
+		/**
+	     * 用来与其他fragment交互的,
+	     * 步骤三、实现BusPortFragInteraction接口
+	     * @param activity
+	     */
+		@Override
+		public void BusportTsxx(String str) {
+			// TODO Auto-generated method stub
+			txtbuszhiamounttsxx.setText(str);
+		}
+
+		@Override
+		public void BusportTbje(String str) {
+			// TODO Auto-generated method stub
+			txtbuszhiamountbillAmount.setText(str);
+		}
+
+		@Override
+		public void BusportChjg(int sta) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void BusportSend(String str) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+		
 }
+
+

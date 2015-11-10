@@ -32,8 +32,7 @@ public class BusgoodsselectFragment extends Fragment
 {
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
-	TextView txtbusgoodselName=null,txtbusgoodselName2=null,txtbusgoodselPrice=null,txtbusgoodselAmount=null;
-	ImageButton imgbtnbusgoodselcancel=null;
+	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -114,18 +113,13 @@ public class BusgoodsselectFragment extends Fragment
         ivbusgoodselProduct.setImageBitmap(bitmap);// 设置图像的二进制值
 		txtbusgoodselName = (TextView) view.findViewById(R.id.txtbusgoodselName);
 		txtbusgoodselName.setText(proID);
-		txtbusgoodselName2 = (TextView) view.findViewById(R.id.txtbusgoodselName2);
-		txtbusgoodselName2.setText("商品:"+proID);
-		txtbusgoodselPrice = (TextView) view.findViewById(R.id.txtbusgoodselPrice);
 		txtbusgoodselAmount = (TextView) view.findViewById(R.id.txtbusgoodselAmount);
 		if(Integer.parseInt(procount)>0)
 		{
-			txtbusgoodselPrice.setText(prosales);			
 			txtbusgoodselAmount.setText(prosales);
 		}
 		else
 		{
-			txtbusgoodselPrice.setText("已售罄");			
 			txtbusgoodselAmount.setText("已售罄");
 		}	
 		ivbuszhiselamount = (ImageView) view.findViewById(R.id.ivbuszhiselamount);
@@ -205,13 +199,6 @@ public class BusgoodsselectFragment extends Fragment
     	}		
 		imgbtnbusgoodselback=(ImageButton)view.findViewById(R.id.imgbtnbusgoodselback);
 		imgbtnbusgoodselback.setOnClickListener(new OnClickListener() {
-		    @Override
-		    public void onClick(View arg0) {
-		    	listterner.BusgoodsselectFinish();//步骤二、fragment向activity发送回调信息
-		    }
-		});
-		this.imgbtnbusgoodselcancel=(ImageButton)view.findViewById(R.id.imgbtnbusgoodselcancel);
-		imgbtnbusgoodselcancel.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	listterner.BusgoodsselectFinish();//步骤二、fragment向activity发送回调信息

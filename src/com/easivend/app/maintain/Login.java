@@ -23,6 +23,7 @@ import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_orderDAO;
 import com.easivend.weixing.WeiConfigAPI;
 import com.example.evconsole.R;
 
@@ -151,6 +152,9 @@ public class Login extends Activity
         	    					// 创建InaccountDAO对象
         	    					vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(Login.this);
         				            cabinetDAO.deteleall();// 删除
+        				            //删除交易记录
+        				            vmc_orderDAO orderDAO = new vmc_orderDAO(Login.this);
+        				            orderDAO.deteleall();
         				            ToolClass.addOptLog(Login.this,2,"删除全部商品货道信息");
         	    					// 弹出信息提示
         				            Toast.makeText(Login.this, "删除成功！", Toast.LENGTH_SHORT).show();						            
