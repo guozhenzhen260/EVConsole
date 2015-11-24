@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.easivend.common.ToolClass;
+
 
 
 
@@ -60,6 +62,9 @@ public class EVprotocol {
 	private static final int EV_BENTO_LIGHT = 13;	//快递柜照明
 	private static final int EV_BENTO_COOL 	= 14;	//快递柜制冷
 	private static final int EV_BENTO_HOT 	= 15;	//快递柜加热
+	//=====================快递柜类型==============================================================================
+	private static final int EV_COLUMN_OPEN  = 16;	//货道出货
+	private static final int EV_COLUMN_CHECK = 17;	//货道查询
 	
 	//=====================MDB现金模组类型==============================================================================
 	private static final int EV_MDB_INIT 	= 21;	//MDB设备初始化
@@ -82,6 +87,7 @@ public class EVprotocol {
 		public int type;
 		public String portName;
 		public int fd;
+		public int columntype;
 		public int addr;
 		public int box;
 		public int opt;
@@ -213,6 +219,31 @@ public class EVprotocol {
 		req.fd = port_id;
 		req.addr = addr;
 		req.opt = opt;
+		return pushReq(req);
+	}
+	
+	//普通柜子
+	/*********************************************************************************************************
+	** Function name	:		trade
+	** Descriptions		:		普通柜出货接口  [异步]
+	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
+	*							"EV_type"= EV_COLUMN_OPEN = 16; 表弹簧出货结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 	表示处理结果	
+	*********************************************************************************************************/
+	public  static int EV_trade(int port_id,int columntype,int addr,int box)
+	{
+		RequestObject req = new RequestObject();
+		req.type = EV_COLUMN_OPEN;
+		req.fd = port_id;
+		req.columntype = columntype;
+		req.addr = addr;
+		req.box = box;
 		return pushReq(req);
 	}
 	
@@ -679,6 +710,10 @@ public class EVprotocol {
 			case EV_BENTO_LIGHT:
 				rptJson = EVBentoLight(req.fd, req.addr,req.opt);
 				break;
+			case EV_COLUMN_OPEN:				
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","[DRVcolumn>>]port="+req.fd+"columntype="+req.columntype+"["+req.addr+req.box+"]","log.txt");
+				rptJson = EVtrade(req.fd, req.columntype,req.addr,req.box);
+				break;	
 			case EV_MDB_INIT:
 				rptJson = EVmdbInit(req.fd, req.bill,req.coin);
 				break;
@@ -832,6 +867,22 @@ public class EVprotocol {
 	*							"result": 表示处理结果	1:成功   0:失败
 	*********************************************************************************************************/
 	public  native static String EVBentoLight(int port_id,int addr,int opt);
+	
+	
+	/*********************************************************************************************************
+	** Function name	:		trade
+	** Descriptions		:		普通柜出货接口  [异步]
+	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
+	*							"EV_type"= EV_COLUMN_OPEN = 16; 表弹簧出货结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 	表示处理结果	
+	*********************************************************************************************************/
+	public  native static String EVtrade(int port_id,int columntype,int addr,int box);
 	
 	
 	/*********************************************************************************************************

@@ -22,7 +22,12 @@
 	        android:id="@+id/txtbentcom"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="格子柜串口未配置" />   		 
+	        android:text="格子柜串口未配置" /> 
+	    <TextView
+	        android:id="@+id/txtcolumncom"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="主柜串口未配置" />      		 
    	</LinearLayout>
 	<GridView 
 	    android:id="@+id/gvInfo"

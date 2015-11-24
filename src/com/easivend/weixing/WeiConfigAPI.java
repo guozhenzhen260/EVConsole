@@ -101,9 +101,10 @@ public class WeiConfigAPI
     		{
     			conn.setSSLSocketFactory(ToolClass.getSsl());
     		}
-            conn.setConnectTimeout(5000);
+            conn.setConnectTimeout(9000);//设置连接主机超时（单位：毫秒）
+            conn.setReadTimeout(3000);//设置从主机读取数据超时（单位：毫秒）
             conn.setDoOutput(true);// 允许输出
-            conn.setDoInput(true);
+            conn.setDoInput(true);// 允许输入
             conn.setUseCaches(false);// 不使用缓存
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接

@@ -712,19 +712,41 @@ public class EVprotocolAPI
 	}
 	
 	/*********************************************************************************************************
-	** Function name:     	trade
-	** Descriptions:	    VMC出货接口  
-	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回出货的结果进行解析
-	**						回调JSON包 格式 
-	** input parameters:    cabinet:柜号  column:货道号   type:支付方式  type= 0 :现金  type = 1  非现金    
-	**					    cost:扣款金额(单位:分 ;如果type=1则该值必须为0)
-	** output parameters:   无
-	** Returned value:      1请求发送成功   0:请求发送失败  
+	** Function name	:		trade
+	** Descriptions		:		普通柜出货接口  [异步]
+	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
+	*							"EV_type"= EV_COLUMN_OPEN = 16; 表弹簧出货结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 	表示处理结果	
 	*********************************************************************************************************/
-	public static int trade(int cabinet,int column,int type,long cost)
+	public static int trade(int port_id,int columntype,int addr,int box)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIhuo>>]"+cost,"log.txt");
-		//return ev.trade(cabinet,column,type,(int)cost);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcolumn>>]port="+port_id+"columntype="+columntype+"["+addr+box+"]","log.txt");
+		return EVprotocol.EV_trade(port_id,columntype,addr,box);	
+	}
+	
+	/*********************************************************************************************************
+	** Function name	:		setcolumn
+	** Descriptions		:		普通柜出货接口  [异步]
+	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
+	*							"EV_type"= EV_COLUMN_OPEN = 16; 表弹簧出货结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 	表示处理结果	
+	*********************************************************************************************************/
+	public static int setcolumn(int port_id,int columntype,int addr,int box)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcolumn>>]port="+port_id+"columntype="+columntype+"["+addr+box+"]","log.txt");
+		//return EVprotocol.EV_trade(port_id,columntype,addr,box);
 		return 0;
 	}
 	

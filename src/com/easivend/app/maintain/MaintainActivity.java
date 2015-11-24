@@ -82,7 +82,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MaintainActivity extends Activity
 {
-	TextView txtcom=null,txtbentcom=null;
+	TextView txtcom=null,txtbentcom=null,txtcolumncom=null;
 	private GridView gvInfo;// 创建GridView对象
 	//跳转页面对话框
 	private ProgressDialog barmaintain= null;
@@ -94,8 +94,8 @@ public class MaintainActivity extends Activity
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
-    int comopen=0,bentopen=0;//1串口已经打开，0串口没有打开    
-    String com=null,bentcom=null,server="";
+    int comopen=0,bentopen=0,columnopen=0;//1串口正在打开，0串口没有打开,-1打开设备返回失败,2串口打开设备完成    
+    String com=null,bentcom=null,columncom=null,server="";
     final static int REQUEST_CODE=1;   
     //获取货柜信息
     private String[] cabinetID = null;//用来分离出货柜编号
@@ -191,6 +191,7 @@ public class MaintainActivity extends Activity
 		//================
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
+		txtcolumncom=(TextView)super.findViewById(R.id.txtcolumncom);
 		ToolClass.SetDir();		
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
@@ -198,6 +199,7 @@ public class MaintainActivity extends Activity
 		{
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
+	        columncom = list.get("columncom");
 	        server = list.get("server");//设置服务器路径
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
@@ -244,8 +246,26 @@ public class MaintainActivity extends Activity
 					txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
 				}
 			}
+			//主柜
+			if(columncom.equals("")==true)
+			{
+				txtcolumncom.setText(columncom+"[主柜]串口未开启");		
+			}
+			else
+			{
+				//打开格子柜
+				columnopen = EVprotocolAPI.EV_portRegister(columncom);
+				if(columnopen == 1)
+				{
+					txtcolumncom.setText(columncom+"[主柜]串口正在准备连接");			
+				}
+				else
+				{
+					txtcolumncom.setText(columncom+"[主柜]串口打开失败");
+				}
+			}
 			
-			if((comopen!=1)&&(bentopen!=1))
+			if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1))
 			{
 				dialog.dismiss();
 			}	
@@ -344,16 +364,13 @@ public class MaintainActivity extends Activity
 						if((Integer)Set.get("port_id")>=0)
 						{
 							txtcom.setText(com+"[现金模块]连接完成");
+							comopen=2;
 						}
 						else
 						{
-							txtcom.setText(bentcom+"[现金模块]连接失败");							
-						}
-						//可以开始签到操作
-						if(bentopen != 1)
-						{
-							onInit();
-						}
+							txtcom.setText(bentcom+"[现金模块]连接失败");	
+							comopen=-1;
+						}				
 					}
 					//格子柜初始化完成
 					else if(Set.get("port_com").equals(bentcom))
@@ -369,13 +386,29 @@ public class MaintainActivity extends Activity
 						else
 						{
 							txtbentcom.setText(bentcom+"[格子柜]连接失败");
-							//可以开始签到操作
-							if(comopen != 1)
-							{
-								onInit();
-							}
+							bentopen=-1;														
 						}
 					}
+					//主柜初始化完成
+					else if(Set.get("port_com").equals(columncom))
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜连接完成","log.txt");	
+						ToolClass.setColumncom_id((Integer)Set.get("port_id"));
+						//初始化货道信息
+						if((Integer)Set.get("port_id")>=0)
+						{
+							txtbentcom.setText(bentcom+"[主柜]连接完成");	
+							//getcolumnstat();
+							columnopen=2;
+						}
+						else
+						{
+							txtcolumncom.setText(columncom+"[主柜]连接失败");
+							columnopen=-1;							
+						}
+					}
+					//判断条件后，可以开始签到操作							
+					onInit();
 					break;
 				//格子柜查询	
 				case EVprotocolAPI.EV_BENTO_CHECK:
@@ -410,6 +443,7 @@ public class MaintainActivity extends Activity
 			        }
 			        else
 			        {
+			        	bentopen=2;
 						//可以开始签到操作
 			        	onInit();
 					}
@@ -433,19 +467,22 @@ public class MaintainActivity extends Activity
 	}
 	
 	private void onInit()
-	{
-    	Intent intent=new Intent();
-		intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
-		intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
-		intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
-		//传递数据
-        final SerializableMap myMap=new SerializableMap();
-        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("huoSet", myMap);
-        intent.putExtras(bundle);
-		intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-		sendBroadcast(intent);  
+	{		
+		if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1)) 
+		{
+	    	Intent intent=new Intent();
+			intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
+			intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
+			intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+			//传递数据
+	        final SerializableMap myMap=new SerializableMap();
+	        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
+	        Bundle bundle=new Bundle();
+	        bundle.putSerializable("huoSet", myMap);
+	        intent.putExtras(bundle);
+			intent.setAction("android.intent.action.vmserversend");//action与接收器相同
+			sendBroadcast(intent);  
+		}
 	}
 	
 	@Override
@@ -508,6 +545,8 @@ public class MaintainActivity extends Activity
 	    }
 	    else 
 	    {
+	    	bentopen=-1;
+	    	columnopen=-1;
 	    	//可以开始签到操作
 	    	onInit();
 		}
@@ -581,10 +620,12 @@ public class MaintainActivity extends Activity
 	protected void onDestroy() {
 		EVprotocolAPI.vmcEVStop();//关闭监听
 		//关闭串口
-		if(comopen>0)	
+		if(comopen!=0)	
 			EVprotocolAPI.EV_portRelease(ToolClass.getCom_id());
-		if(bentopen>0)
+		if(bentopen!=0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
+		if(columnopen!=0)
+			EVprotocolAPI.EV_portRelease(ToolClass.getColumncom_id());
 		EVprotocolAPI.vmcEVStop();//关闭监听		
 		timer.cancel(); //关闭定时器
 		//=============

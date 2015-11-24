@@ -41,7 +41,8 @@ public class BusZhiwei extends Activity
 	TextView txtbuszhiweicount=null,txtbuszhiweirount=null,txtbuszhiweirst=null,txtbuszhiweitime=null;
 	ImageButton imgbtnbuszhiweiqxzf=null,imgbtnbuszhiweiqtzf=null;
 	ImageView ivbuszhiwei=null;
-	private int recLen = 180; 
+	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60延迟5分钟
+	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
     private TextView txtView; 
     Timer timer = new Timer(); 
@@ -288,13 +289,13 @@ public class BusZhiwei extends Activity
                     if(recLen <= 0)
                     { 
                         timer.cancel(); 
-                        finishActivity();
+                        timeoutfinishActivity();
                     } 
                     //发送查询交易指令
                     if(iszhiwei==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=1)
+	                    if(queryLen>=4)
 	                    {
 	                    	queryLen=0;
 	                    	queryzhiwei();
@@ -324,6 +325,18 @@ public class BusZhiwei extends Activity
 		{
 			timer.cancel(); 
 			finish();	
+		}
+	}
+	//用于超时的结束界面
+	private void timeoutfinishActivity()
+	{
+		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
+		if((iszhiwei==1)&&(ercheck==false))
+			deletezhiwei();
+		else 
+		{
+			timer.cancel(); 
+			finish();
 		}
 	}
 	

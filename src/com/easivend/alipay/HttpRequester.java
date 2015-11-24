@@ -134,9 +134,11 @@ public class HttpRequester {
         urlConnection = (HttpURLConnection) url.openConnection();  
    
         urlConnection.setRequestMethod(method);  
-        urlConnection.setDoOutput(true);  
-        urlConnection.setDoInput(true);  
-        urlConnection.setUseCaches(false);  
+        urlConnection.setConnectTimeout(9000);//设置连接主机超时（单位：毫秒）
+        urlConnection.setReadTimeout(3000);//设置从主机读取数据超时（单位：毫秒）
+        urlConnection.setDoOutput(true);  // 允许输出
+        urlConnection.setDoInput(true);  // 允许输入
+        urlConnection.setUseCaches(false);// 不使用缓存  
    
         if (propertys != null)  
             for (String key : propertys.keySet()) {  

@@ -87,7 +87,7 @@ public class ToolClass
 	public final static int WARN=3;
 	public final static int ERROR=4;
 	public static String EV_DIR=null;
-	private static int bentcom_id=-1,com_id=-1;
+	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;
 	public static String vmc_no="";
 	public static Bitmap mark=null;//售完图片
 	public static int orientation=0;//使用横屏还是竖屏模式
@@ -140,6 +140,14 @@ public class ToolClass
 
 	public static void setBentcom_id(int bentcom_id) {
 		ToolClass.bentcom_id = bentcom_id;
+	}
+	
+	public static int getColumncom_id() {
+		return columncom_id;
+	}
+
+	public static void setColumncom_id(int columncom_id) {
+		ToolClass.columncom_id = columncom_id;
 	}
 
 	public static int getCom_id() {
@@ -629,7 +637,7 @@ public class ToolClass
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom,String server,String isallopen) 
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String server,String isallopen) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -673,6 +681,7 @@ public class ToolClass
 		            if(
 		            		(me.getKey().equals("com")!=true)
 		            	  &&(me.getKey().equals("bentcom")!=true)
+		            	  &&(me.getKey().equals("columncom")!=true)
 		            	  &&(me.getKey().equals("isallopen")!=true)
 		            	  &&(me.getKey().equals("server")!=true)
 		              )
@@ -681,6 +690,7 @@ public class ToolClass
 		        } 	
 		        list2.put("com", com);
 		        list2.put("bentcom", bentcom);
+		        list2.put("columncom", columncom);
 		        list2.put("isallopen", isallopen);
 		        list2.put("server", server);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
@@ -698,6 +708,7 @@ public class ToolClass
   	        	JSONObject jsonObject = new JSONObject();
   	        	jsonObject.put("com", com);
   	        	jsonObject.put("bentcom", bentcom);
+  	        	jsonObject.put("columncom", columncom);
   	        	jsonObject.put("isallopen", isallopen);
   	        	jsonObject.put("server", server);
   	        	String mapstrString=jsonObject.toString();

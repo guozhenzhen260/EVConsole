@@ -124,8 +124,7 @@ BushuoFragInteraction
     private Handler weixingmainhand=null,weixingchildhand=null;   
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
-    //private boolean weixingquery=false;//true正在查询中，请稍后。false没有查询，可以退出页面
-	//=================
+    //=================
 	//==出货页面相关
 	//=================
 	private int status=0;//出货结果	
@@ -220,14 +219,14 @@ BushuoFragInteraction
 			        	  //=================
 				          else if(gotoswitch==BUSZHIER)
 				          {
-				        	  BuszhierFinish();
+				        	  timeoutBuszhierFinish();
 				          }
 				          //=================
 			        	  //==微信支付页面相关
 			        	  //=================
 				          else if(gotoswitch==BUSZHIWEI)
 				          {
-				        	  BuszhiweiFinish();
+				        	  timeoutBuszhiweiFinish();
 				          }
 				          else
 				          {
@@ -272,7 +271,7 @@ BushuoFragInteraction
 	                    if(iszhier==1)
 	                    {
 		                    queryLen++;
-		                    if(queryLen>=1)
+		                    if(queryLen>=4)
 		                    {
 		                    	queryLen=0;
 		                    	queryzhier();
@@ -300,7 +299,7 @@ BushuoFragInteraction
 	                    if(iszhiwei==1)
 	                    {
 		                    queryLen++;
-		                    if(queryLen>=1)
+		                    if(queryLen>=4)
 		                    {
 		                    	queryLen=0;
 		                    	queryzhiwei();
@@ -568,6 +567,18 @@ BushuoFragInteraction
 	    	viewSwitch(BUSPORT, null);
 		}
 	}
+    //用于超时的结束界面
+  	private void timeoutBuszhierFinish()
+  	{
+  		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
+  		if((iszhier==1)&&(ercheck==false))
+  			deletezhier();
+  		else 
+  		{
+	    	clearamount();
+	    	viewSwitch(BUSPORT, null);
+		}
+  	}
     
     //发送订单
   	private void sendzhier()
@@ -679,6 +690,18 @@ BushuoFragInteraction
 	    	viewSwitch(BUSPORT, null);
 		}
 	}
+    //用于超时的结束界面
+  	private void timeoutBuszhiweiFinish()
+  	{
+  		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
+  		if((iszhiwei==1)&&(ercheck==false))
+  			deletezhiwei();
+  		else 
+		{
+	    	clearamount();
+	    	viewSwitch(BUSPORT, null);
+		}
+  	}
     //发送订单
   	private void sendzhiwei()
   	{	

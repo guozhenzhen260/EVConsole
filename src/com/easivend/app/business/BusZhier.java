@@ -44,7 +44,8 @@ public class BusZhier extends Activity
 	TextView txtbuszhiercount=null,txtbuszhiamerount=null,txtbuszhierrst=null,txtbuszhiertime=null;
 	ImageButton imgbtnbuszhierqxzf=null,imgbtnbuszhierqtzf=null;
 	ImageView ivbuszhier=null;
-	private int recLen = 180; 
+	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60延迟5分钟
+	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
     private TextView txtView; 
     Timer timer = new Timer(); 
@@ -290,7 +291,7 @@ public class BusZhier extends Activity
                     if(recLen <= 0)
                     { 
                         timer.cancel(); 
-                        finishActivity();
+                        timeoutfinishActivity();
                     } 
                     
                     
@@ -298,7 +299,7 @@ public class BusZhier extends Activity
                     if(iszhier==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=1)
+	                    if(queryLen>=4)
 	                    {
 	                    	queryLen=0;
 	                    	queryzhier();
@@ -322,7 +323,20 @@ public class BusZhier extends Activity
 	//结束界面
 	private void finishActivity()
 	{
+		//如果需要撤销，必须作撤销操作
 		if(iszhier==1)
+			deletezhier();
+		else 
+		{
+			timer.cancel(); 
+			finish();
+		}
+	}
+	//用于超时的结束界面
+	private void timeoutfinishActivity()
+	{
+		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
+		if((iszhier==1)&&(ercheck==false))
 			deletezhier();
 		else 
 		{

@@ -43,12 +43,13 @@ import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin,txtbent,txtserver,txtip;// 创建EditText对象
+	private EditText txtlogin,txtbent,txtcolumn,txtserver,txtip;// 创建EditText对象
 	private TextView tvip=null;
     private Button btnlogin, btnclose,btnGaoji,btnDel;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
     String bentcom =null;
+    String columncom =null;
     String server =null,sercom=null,serip=null;
     int isallopen=0;
 	@Override
@@ -61,6 +62,7 @@ public class Login extends Activity
 		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框
+        txtcolumn = (EditText) findViewById(R.id.txtcolumn);// 获取串口号文本框
         txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
         txtip = (EditText) findViewById(R.id.txtip);// 获取服务端ip地址文本框
         tvip = (TextView) findViewById(R.id.tvip);
@@ -73,6 +75,7 @@ public class Login extends Activity
         {
 	        com = list.get("com");
 	        bentcom = list.get("bentcom");
+	        columncom = list.get("columncom");
 	        if(list.containsKey("server"))
 	        {
 	        	server = list.get("server");
@@ -86,6 +89,7 @@ public class Login extends Activity
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
+        txtcolumn.setText(columncom);
         txtserver.setText(sercom);
         txtip.setText(serip);
         switchallopen.setChecked((isallopen==1)?true:false);
@@ -104,11 +108,12 @@ public class Login extends Activity
             {
             	com = txtlogin.getText().toString();
     	        bentcom = txtbent.getText().toString(); 
+    	        columncom = txtcolumn.getText().toString(); 
     	        isallopen= (switchallopen.isChecked()==true)?1:0;
     	        serip = txtip.getText().toString();
     	        sercom = txtserver.getText().toString(); 
     	        server=serip+sercom;
-            	ToolClass.WriteConfigFile(com, bentcom,server,String.valueOf(isallopen));            	
+            	ToolClass.WriteConfigFile(com, bentcom,columncom,server,String.valueOf(isallopen));            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();

@@ -138,8 +138,9 @@ public class HuodaoTest extends TabActivity
 			btnhuoset71=null,btnhuoset72=null,btnhuoset73=null,btnhuoset74=null,btnhuoset75=null,
 			btnhuoset76=null,btnhuoset77=null,btnhuoset78=null,btnhuoset79=null,btnhuoset710=null,
 			btnhuoset81=null,btnhuoset82=null,btnhuoset83=null,btnhuoset84=null,btnhuoset85=null,
-			btnhuoset86=null,btnhuoset87=null,btnhuoset88=null,btnhuoset89=null,btnhuoset810=null;
-	private Button btnhuosetsethuo=null,btnhuosetclose=null;							
+			btnhuoset86=null,btnhuoset87=null,btnhuoset88=null,btnhuoset89=null,btnhuoset810=null,
+			btnhuosetgoc=null;
+	private Button btnhuosetsethuo=null,btnhuosetautohuo=null,btnhuosetclose=null;							
 			
 	private Handler myhHandler=null;
 	//EVprotocolAPI ev=null;
@@ -700,6 +701,7 @@ public class HuodaoTest extends TabActivity
 		btnhuoset88 = (Switch) findViewById(R.id.btnhuoset88);
 		btnhuoset89 = (Switch) findViewById(R.id.btnhuoset89);
 		btnhuoset810 = (Switch) findViewById(R.id.btnhuoset810);
+		btnhuosetgoc = (Switch) findViewById(R.id.btnhuosetgoc);
 		
 		btnhuosetc1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -717,6 +719,7 @@ public class HuodaoTest extends TabActivity
 				btnhuoset18.setChecked(isChecked);
 				btnhuoset19.setChecked(isChecked);
 				btnhuoset110.setChecked(isChecked);
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,34);				
 			} 
         });
 		btnhuosetc2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -866,6 +869,21 @@ public class HuodaoTest extends TabActivity
 				
 			}
 		});
+		btnhuosetsethuo = (Button) findViewById(R.id.btnhuosetsethuo);
+		btnhuosetsethuo.setOnClickListener(new OnClickListener() {
+				    @Override
+				    public void onClick(View arg0) {
+				    	EVprotocolAPI.setcolumn(ToolClass.getColumncom_id(),1,1,34);
+				    }
+				});
+		btnhuosetclose = (Button) findViewById(R.id.btnhuosetclose);
+		btnhuosetclose.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+				    @Override
+				    public void onClick(View arg0) {
+				    	timer.cancel();
+				    	finish();
+				    }
+				});
 	}
 	//===============
 	//货道设置页面

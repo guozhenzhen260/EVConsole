@@ -23,6 +23,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,6 +130,8 @@ public class EVServerhttp implements Runnable {
 					//设备签到
 					String target = httpStr+"/api/vmcCheckin";	//要提交的目标地址
 					HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap = new TreeMap<String,Object>() ;
@@ -193,6 +196,8 @@ public class EVServerhttp implements Runnable {
 					String target2 = httpStr+"/api/vmcPoll";	//要提交的目标地址
 					
 					HttpClient httpclient2 = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient2.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient2.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost2 = new HttpPost(target2);	//创建HttpPost对象
 					//添加到类集中，其中key,value类型为String
 //					Map<String,Object> parammap = new TreeMap<String,Object>() ;
@@ -273,6 +278,8 @@ public class EVServerhttp implements Runnable {
 					String LAST_EDIT_TIME3=msg.obj.toString();
 					
 					HttpClient httpclient3 = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient3.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient3.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost3 = new HttpPost(target3);	//创建HttpPost对象
 					//添加到类集中，其中key,value类型为String
 //					Map<String,Object> parammap = new TreeMap<String,Object>() ;
@@ -337,6 +344,8 @@ public class EVServerhttp implements Runnable {
 					String LAST_EDIT_TIME4=msg.obj.toString();
 					
 					HttpClient httpclient4 = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient4.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient4.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost4 = new HttpPost(target4);	//创建HttpPost对象
 					//添加到类集中，其中key,value类型为String
 //					Map<String,Object> parammap = new TreeMap<String,Object>() ;
@@ -424,6 +433,8 @@ public class EVServerhttp implements Runnable {
 					String LAST_EDIT_TIME5=msg.obj.toString();
 					
 					HttpClient httpclient5 = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient5.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient5.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost5 = new HttpPost(target5);	//创建HttpPost对象
 					//添加到类集中，其中key,value类型为String
 //					Map<String,Object> parammap = new TreeMap<String,Object>() ;
@@ -501,6 +512,8 @@ public class EVServerhttp implements Runnable {
 					//设备状态上报
 					String target7 = httpStr+"/api/vmcStatus";	//要提交的目标地址
 					HttpClient httpclient7 = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient7.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient7.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost7 = new HttpPost(target7);	//创建HttpPost对象
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap7 = new TreeMap<String,Object>() ;
@@ -752,6 +765,8 @@ public class EVServerhttp implements Runnable {
 					//设备签到
 					String target11 = httpStr+"/api/vmcCheckin";	//要提交的目标地址
 					HttpClient httpclient11 = new DefaultHttpClient();	//创建HttpClient对象
+					httpclient11.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+					httpclient11.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 					HttpPost httppost11 = new HttpPost(target11);	//创建HttpPost对象
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap11 = new TreeMap<String,Object>() ;
@@ -828,6 +843,8 @@ public class EVServerhttp implements Runnable {
 			//第一步.获取商品图片名字
 			String target6 = httpStr+"/api/productImage";	//要提交的目标地址
 			HttpClient httpclient6 = new DefaultHttpClient();	//创建HttpClient对象
+			httpclient6.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+			httpclient6.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 			HttpPost httppost6 = new HttpPost(target6);	//创建HttpPost对象
 			JSONObject json=new JSONObject();
 			try {
@@ -1065,6 +1082,8 @@ public class EVServerhttp implements Runnable {
 		}
 		
 		HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
+		httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+		httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 		HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
 //				//添加到类集中，其中key,value类型为String
 //				Map<String,Object> parammap = new TreeMap<String,Object>() ;
@@ -1190,6 +1209,8 @@ public class EVServerhttp implements Runnable {
 //		}
 			
 		HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
+		httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+		httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
 		HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
 //					//添加到类集中，其中key,value类型为String
 //					Map<String,Object> parammap = new TreeMap<String,Object>() ;

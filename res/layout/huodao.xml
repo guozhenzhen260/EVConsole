@@ -362,902 +362,927 @@
 	    <RelativeLayout 
 		    android:layout_width="match_parent"
 		    android:layout_height="match_parent">
-			<Switch			     
-	             android:id="@+id/btnhuosetc1"	
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:textOn="[层-1]:打开"  
-		         android:textOff="[层-1]:关闭"  							           
-		         android:layout_gravity="center_horizontal" />	
-		    <Switch
-	             android:id="@+id/btnhuoset11"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_toRightOf="@+id/btnhuosetc1"
-	             android:textOn="[1层1]:打开"  
-		         android:textOff="[1层1]:关闭"            
-	             android:layout_gravity="center_horizontal" />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset12"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_toRightOf="@+id/btnhuoset11" 
-	             android:layout_gravity="center_horizontal" 
-	             android:textOn="[1层2]:打开"  
-		         android:textOff="[1层2]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset13"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_toRightOf="@+id/btnhuoset12"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[1层3]:打开"  
-		         android:textOff="[1层3]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset14"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_toRightOf="@+id/btnhuoset13" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[1层4]:打开"  
-		         android:textOff="[1层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset15"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset11"
-	             android:layout_toRightOf="@+id/btnhuosetc1" 
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[1层5]:打开"  
-		         android:textOff="[1层5]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset16"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset11"
-	             android:layout_toRightOf="@+id/btnhuoset15" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[1层6]:打开"  
-		         android:textOff="[1层6]:关闭"  />	
-	        <Switch
-	             android:id="@+id/btnhuoset17"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset11"
-	             android:layout_toRightOf="@+id/btnhuoset16"  
-	             android:layout_gravity="center_horizontal"           
-	             android:textOn="[1层7]:打开"  
-		         android:textOff="[1层7]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset18"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset11"
-	             android:layout_toRightOf="@+id/btnhuoset17"
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[1层8]:打开"  
-		         android:textOff="[1层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset19"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset15"
-	             android:layout_toRightOf="@+id/btnhuosetc1" 
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[1层9]:打开"  
-		         android:textOff="[1层9]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset110"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset15"
-	             android:layout_toRightOf="@+id/btnhuoset19" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[1层10]:打开"  
-		         android:textOff="[1层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc2"	
-	             android:layout_below="@+id/btnhuoset19"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[层-2]:打开"  
-		         android:textOff="[层-2]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuoset21"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset19"
-	             android:layout_toRightOf="@+id/btnhuosetc2"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[2层1]:打开"  
-		         android:textOff="[2层1]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset22"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset19"
-	             android:layout_toRightOf="@+id/btnhuoset21"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[2层2]:打开"  
-		         android:textOff="[2层2]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset23"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset19"
-	             android:layout_toRightOf="@+id/btnhuoset22"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[2层3]:打开"  
-		         android:textOff="[2层3]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset24"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset19"
-	             android:layout_toRightOf="@+id/btnhuoset23" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[2层4]:打开"  
-		         android:textOff="[2层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset25"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset21"
-	             android:layout_toRightOf="@+id/btnhuosetc2" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[2层5]:打开"  
-		         android:textOff="[2层5]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset26"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset21"
-	             android:layout_toRightOf="@+id/btnhuoset25" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[2层6]:打开"  
-		         android:textOff="[2层6]:关闭" />	
-	        <Switch
-	             android:id="@+id/btnhuoset27"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset21"
-	             android:layout_toRightOf="@+id/btnhuoset26"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[2层7]:打开"  
-		         android:textOff="[2层7]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset28"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset21"
-	             android:layout_toRightOf="@+id/btnhuoset27" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[2层8]:打开"  
-		         android:textOff="[2层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset29"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset25"
-	             android:layout_toRightOf="@+id/btnhuosetc2" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[2层9]:打开"  
-		         android:textOff="[2层9]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset210"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset25"
-	             android:layout_toRightOf="@+id/btnhuoset29" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[2层10]:打开"  
-		         android:textOff="[2层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc3"	
-	             android:layout_below="@+id/btnhuoset29"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[层-3]:打开"  
-		         android:textOff="[层-3]:关闭" />
-		    <Switch
-	             android:id="@+id/btnhuoset31"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset29"
-	             android:layout_toRightOf="@+id/btnhuosetc3" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[3层1]:打开"  
-		         android:textOff="[3层1]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset32"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset29"
-	             android:layout_toRightOf="@+id/btnhuoset31"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[3层2]:打开"  
-		         android:textOff="[3层2]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset33"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset29"
-	             android:layout_toRightOf="@+id/btnhuoset32" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[3层3]:打开"  
-		         android:textOff="[3层3]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset34"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset29"
-	             android:layout_toRightOf="@+id/btnhuoset33" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[3层4]:打开"  
-		         android:textOff="[3层4]:关闭" />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset35"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset31"
-	             android:layout_toRightOf="@+id/btnhuosetc3" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[3层5]:打开"  
-		         android:textOff="[3层5]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset36"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset31"
-	             android:layout_toRightOf="@+id/btnhuoset35"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[3层6]:打开"  
-		         android:textOff="[3层6]:关闭"  />	
-	        <Switch
-	             android:id="@+id/btnhuoset37"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset31"
-	             android:layout_toRightOf="@+id/btnhuoset36" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[3层7]:打开"  
-		         android:textOff="[3层7]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset38"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset31"
-	             android:layout_toRightOf="@+id/btnhuoset37" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[3层8]:打开"  
-		         android:textOff="[3层8]:关闭" />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset39"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset35"
-	             android:layout_toRightOf="@+id/btnhuosetc3"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[3层9]:打开"  
-		         android:textOff="[3层9]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset310"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset35"
-	             android:layout_toRightOf="@+id/btnhuoset39" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[3层10]:打开"  
-		         android:textOff="[3层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc4"	
-	             android:layout_below="@+id/btnhuoset39"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[层-4]:打开"  
-		         android:textOff="[层-4]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuoset41"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset39"	
-	             android:layout_toRightOf="@+id/btnhuosetc4"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[4层1]:打开"  
-		         android:textOff="[4层1]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset42"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset39"	
-	             android:layout_toRightOf="@+id/btnhuoset41" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[4层2]:打开"  
-		         android:textOff="[4层2]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset43"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset39"	
-	             android:layout_toRightOf="@+id/btnhuoset42" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[4层3]:打开"  
-		         android:textOff="[4层3]:关闭" /> 
-	        <Switch
-	             android:id="@+id/btnhuoset44"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset39"	
-	             android:layout_toRightOf="@+id/btnhuoset43" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[4层4]:打开"  
-		         android:textOff="[4层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset45"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset41"	
-	             android:layout_toRightOf="@+id/btnhuosetc4"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[4层5]:打开"  
-		         android:textOff="[4层5]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset46"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset41"
-	             android:layout_toRightOf="@+id/btnhuoset45"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[4层6]:打开"  
-		         android:textOff="[4层6]:关闭" />	
-	        <Switch
-	             android:id="@+id/btnhuoset47"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset41"
-	             android:layout_toRightOf="@+id/btnhuoset46" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[4层7]:打开"  
-		         android:textOff="[4层7]:关闭" /> 
-	        <Switch
-	             android:id="@+id/btnhuoset48"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset41"
-	             android:layout_toRightOf="@+id/btnhuoset47"  
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[4层8]:打开"  
-		         android:textOff="[4层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset49"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset45"
-	             android:layout_toRightOf="@+id/btnhuosetc4"  
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[4层9]:打开"  
-		         android:textOff="[4层9]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset410"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset45"
-	             android:layout_toRightOf="@+id/btnhuoset49"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[4层10]:打开"  
-		         android:textOff="[4层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc5"	
-	             android:layout_below="@+id/btnhuoset49"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[层-5]:打开"  
-		         android:textOff="[层-5]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuoset51"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset49"
-	             android:layout_toRightOf="@+id/btnhuosetc5" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[5层1]:打开"  
-		         android:textOff="[5层1]:关闭" />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset52"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset49"
-	             android:layout_toRightOf="@+id/btnhuoset51" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[5层2]:打开"  
-		         android:textOff="[5层2]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset53"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset49"
-	             android:layout_toRightOf="@+id/btnhuoset52" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[5层3]:打开"  
-		         android:textOff="[5层3]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset54"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset49"
-	             android:layout_toRightOf="@+id/btnhuoset53" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[5层4]:打开"  
-		         android:textOff="[5层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset55"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset51"
-	             android:layout_toRightOf="@+id/btnhuosetc5"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[5层5]:打开"  
-		         android:textOff="[5层5]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset56"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset51"
-	             android:layout_toRightOf="@+id/btnhuoset55" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[5层6]:打开"  
-		         android:textOff="[5层6]:关闭" />	
-	        <Switch
-	             android:id="@+id/btnhuoset57"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset51"
-	             android:layout_toRightOf="@+id/btnhuoset56"  
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[5层7]:打开"  
-		         android:textOff="[5层7]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset58"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset51"
-	             android:layout_toRightOf="@+id/btnhuoset57"  
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[5层8]:打开"  
-		         android:textOff="[5层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset59"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset55"
-	             android:layout_toRightOf="@+id/btnhuosetc5" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[5层9]:打开"  
-		         android:textOff="[5层9]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset510"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset55"
-	             android:layout_toRightOf="@+id/btnhuoset59" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[5层10]:打开"  
-		         android:textOff="[5层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc6"	
-	             android:layout_below="@+id/btnhuoset59"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[层-6]:打开"  
-		         android:textOff="[层-6]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuoset61"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset59"
-	             android:layout_toRightOf="@+id/btnhuosetc6" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[6层1]:打开"  
-		         android:textOff="[6层1]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset62"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset59"
-	             android:layout_toRightOf="@+id/btnhuoset61" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[6层2]:打开"  
-		         android:textOff="[6层2]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset63"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset59"
-	             android:layout_toRightOf="@+id/btnhuoset62" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[6层3]:打开"  
-		         android:textOff="[6层3]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset64"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset59"
-	             android:layout_toRightOf="@+id/btnhuoset63"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[6层4]:打开"  
-		         android:textOff="[6层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset65"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset61"
-	             android:layout_toRightOf="@+id/btnhuosetc6"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[6层5]:打开"  
-		         android:textOff="[6层5]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset66"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset61"
-	             android:layout_toRightOf="@+id/btnhuoset65"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[6层6]:打开"  
-		         android:textOff="[6层6]:关闭"  />	
-	        <Switch
-	             android:id="@+id/btnhuoset67"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset61"
-	             android:layout_toRightOf="@+id/btnhuoset66" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[6层7]:打开"  
-		         android:textOff="[6层7]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset68"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset61"
-	             android:layout_toRightOf="@+id/btnhuoset67" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[6层8]:打开"  
-		         android:textOff="[6层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset69"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset65"
-	             android:layout_toRightOf="@+id/btnhuosetc6" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[6层9]:打开"  
-		         android:textOff="[6层9]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset610"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset65"
-	             android:layout_toRightOf="@+id/btnhuoset69" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[6层10]:打开"  
-		         android:textOff="[6层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc7"	
-	             android:layout_below="@+id/btnhuoset69"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[层-7]:打开"  
-		         android:textOff="[层-7]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuoset71"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset69"
-	             android:layout_toRightOf="@+id/btnhuosetc7" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[7层1]:打开"  
-		         android:textOff="[7层1]:关闭" />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset72"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset69"
-	             android:layout_toRightOf="@+id/btnhuoset71" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[7层2]:打开"  
-		         android:textOff="[7层2]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset73"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset69"
-	             android:layout_toRightOf="@+id/btnhuoset72"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[7层3]:打开"  
-		         android:textOff="[7层3]:关闭" /> 
-	        <Switch
-	             android:id="@+id/btnhuoset74"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset69"
-	             android:layout_toRightOf="@+id/btnhuoset73" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[7层4]:打开"  
-		         android:textOff="[7层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset75"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset71"
-	             android:layout_toRightOf="@+id/btnhuosetc7" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[7层5]:打开"  
-		         android:textOff="[7层5]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset76"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset71"
-	             android:layout_toRightOf="@+id/btnhuoset75" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[7层6]:打开"  
-		         android:textOff="[7层6]:关闭" />	
-	        <Switch
-	             android:id="@+id/btnhuoset77"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset71"
-	             android:layout_toRightOf="@+id/btnhuoset76" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[7层7]:打开"  
-		         android:textOff="[7层7]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset78"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset71"
-	             android:layout_toRightOf="@+id/btnhuoset77" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[7层8]:打开"  
-		         android:textOff="[7层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset79"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset75"
-	             android:layout_toRightOf="@+id/btnhuosetc7"  
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[7层9]:打开"  
-		         android:textOff="[7层9]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset710"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset75"
-	             android:layout_toRightOf="@+id/btnhuoset79" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[7层10]:打开"  
-		         android:textOff="[7层10]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuosetc8"	
-	             android:layout_below="@+id/btnhuoset79"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[层-8]:打开"  
-		         android:textOff="[层-8]:关闭"  />
-		    <Switch
-	             android:id="@+id/btnhuoset81"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset79"
-	             android:layout_toRightOf="@+id/btnhuosetc8"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[8层1]:打开"  
-		         android:textOff="[8层1]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset82"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset79"
-	             android:layout_toRightOf="@+id/btnhuoset81"
-	             android:layout_gravity="center_horizontal"               
-	             android:textOn="[8层2]:打开"  
-		         android:textOff="[8层2]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset83"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset79"
-	             android:layout_toRightOf="@+id/btnhuoset82" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[8层3]:打开"  
-		         android:textOff="[8层3]:关闭"  /> 
-	        <Switch
-	             android:id="@+id/btnhuoset84"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset79"
-	             android:layout_toRightOf="@+id/btnhuoset83"  
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[8层4]:打开"  
-		         android:textOff="[8层4]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset85"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset81"
-	             android:layout_toRightOf="@+id/btnhuosetc8" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[8层5]:打开"  
-		         android:textOff="[8层5]:关闭" /> 
-		    <Switch
-	             android:id="@+id/btnhuoset86"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset81"
-	             android:layout_toRightOf="@+id/btnhuoset85" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[8层6]:打开"  
-		         android:textOff="[8层6]:关闭"  />	
-	        <Switch
-	             android:id="@+id/btnhuoset87"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset81"
-	             android:layout_toRightOf="@+id/btnhuoset86"  
-	             android:layout_gravity="center_horizontal"            
-	             android:textOn="[8层7]:打开"  
-		         android:textOff="[8层7]:关闭" /> 
-	        <Switch
-	             android:id="@+id/btnhuoset88"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset81"
-	             android:layout_toRightOf="@+id/btnhuoset87" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[8层8]:打开"  
-		         android:textOff="[8层8]:关闭"  />         	         
-	        <Switch
-	             android:id="@+id/btnhuoset89"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset85"
-	             android:layout_toRightOf="@+id/btnhuosetc8" 
-	             android:layout_gravity="center_horizontal"             
-	             android:textOn="[8层9]:打开"  
-		         android:textOff="[8层9]:关闭"  /> 
-		    <Switch
-	             android:id="@+id/btnhuoset810"			             
-	             android:layout_marginTop="20dip"  		             
-	             android:layout_width="wrap_content"  
-				 android:layout_height="wrap_content"
-	             android:layout_below="@+id/btnhuoset85"
-	             android:layout_toRightOf="@+id/btnhuoset89" 
-	             android:layout_gravity="center_horizontal"              
-	             android:textOn="[8层10]:打开"  
-		         android:textOff="[8层10]:关闭"  />
-		    <TextView 
-		        android:id="@+id/txthuosetCab"
-	            android:minWidth="160px"
-	            android:textSize="40sp"
-	            android:layout_below="@+id/btnhuoset89"
-			    android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:text="货柜:"/>
-	        <Spinner
-	            android:id="@+id/spinhuopeiCab"
-	            android:layout_below="@+id/btnhuoset89"
-	            android:layout_toRightOf="@+id/txthuosetCab"
-	            android:layout_width="wrap_content" 
-		        android:layout_height="wrap_content"
-		        android:text="" />
-	        <Button
-	             android:id="@+id/btnhuosetsethuo"			             
-	             android:layout_width="150dp"
-	             android:layout_height="100dp"
-	             android:layout_below="@+id/txthuosetCab"              
-	             android:text="配置货道" />
-	        <Button
-	             android:id="@+id/btnhuosetclose"			             
-	             android:layout_width="150dp"
-	             android:layout_height="100dp"
-	             android:layout_toRightOf="@+id/btnhuosetsethuo"
-	             android:layout_below="@+id/txthuosetCab"              
-	             android:text="关闭" />
+			<ScrollView 
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent"
+			    android:orientation="vertical" >
+			    <RelativeLayout 
+			        android:layout_width="match_parent"
+				    android:layout_height="match_parent" >
+					<Switch			     
+			             android:id="@+id/btnhuosetc1"	
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:textOn="层1:开"  
+				         android:textOff="层1:关"  							           
+				         android:layout_gravity="center_horizontal" />	
+				    <Switch
+			             android:id="@+id/btnhuoset11"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_toRightOf="@+id/btnhuosetc1"
+			             android:textOn="1层1:开"  
+				         android:textOff="1层1:关"            
+			             android:layout_gravity="center_horizontal" />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset12"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_toRightOf="@+id/btnhuoset11" 
+			             android:layout_gravity="center_horizontal" 
+			             android:textOn="1层2:开"  
+				         android:textOff="1层2:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset13"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_toRightOf="@+id/btnhuoset12"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="1层3:开"  
+				         android:textOff="1层3:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset14"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_toRightOf="@+id/btnhuoset13" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="1层4:开"  
+				         android:textOff="1层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset15"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset11"
+			             android:layout_toRightOf="@+id/btnhuosetc1" 
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="1层5:开"  
+				         android:textOff="1层5:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset16"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset11"
+			             android:layout_toRightOf="@+id/btnhuoset15" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="1层6:开"  
+				         android:textOff="1层6:关"  />	
+			        <Switch
+			             android:id="@+id/btnhuoset17"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset11"
+			             android:layout_toRightOf="@+id/btnhuoset16"  
+			             android:layout_gravity="center_horizontal"           
+			             android:textOn="1层7:开"  
+				         android:textOff="1层7:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset18"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset11"
+			             android:layout_toRightOf="@+id/btnhuoset17"
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="1层8:开"  
+				         android:textOff="1层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset19"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset15"
+			             android:layout_toRightOf="@+id/btnhuosetc1" 
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="1层9:开"  
+				         android:textOff="1层9:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset110"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset15"
+			             android:layout_toRightOf="@+id/btnhuoset19" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="1层10:开"  
+				         android:textOff="1层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc2"	
+			             android:layout_below="@+id/btnhuoset19"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="层2:开"  
+				         android:textOff="层2:关"  />
+				    <Switch
+			             android:id="@+id/btnhuoset21"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset19"
+			             android:layout_toRightOf="@+id/btnhuosetc2"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="2层1:开"  
+				         android:textOff="2层1:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset22"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset19"
+			             android:layout_toRightOf="@+id/btnhuoset21"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="2层2:开"  
+				         android:textOff="2层2:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset23"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset19"
+			             android:layout_toRightOf="@+id/btnhuoset22"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="2层3:开"  
+				         android:textOff="2层3:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset24"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset19"
+			             android:layout_toRightOf="@+id/btnhuoset23" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="2层4:开"  
+				         android:textOff="2层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset25"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset21"
+			             android:layout_toRightOf="@+id/btnhuosetc2" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="2层5:开"  
+				         android:textOff="2层5:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset26"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset21"
+			             android:layout_toRightOf="@+id/btnhuoset25" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="2层6:开"  
+				         android:textOff="2层6:关" />	
+			        <Switch
+			             android:id="@+id/btnhuoset27"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset21"
+			             android:layout_toRightOf="@+id/btnhuoset26"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="2层7:开"  
+				         android:textOff="2层7:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset28"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset21"
+			             android:layout_toRightOf="@+id/btnhuoset27" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="2层8:开"  
+				         android:textOff="2层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset29"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset25"
+			             android:layout_toRightOf="@+id/btnhuosetc2" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="2层9:开"  
+				         android:textOff="2层9:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset210"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset25"
+			             android:layout_toRightOf="@+id/btnhuoset29" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="2层10:开"  
+				         android:textOff="2层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc3"	
+			             android:layout_below="@+id/btnhuoset29"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="层3:开"  
+				         android:textOff="层3:关" />
+				    <Switch
+			             android:id="@+id/btnhuoset31"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset29"
+			             android:layout_toRightOf="@+id/btnhuosetc3" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="3层1:开"  
+				         android:textOff="3层1:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset32"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset29"
+			             android:layout_toRightOf="@+id/btnhuoset31"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="3层2:开"  
+				         android:textOff="3层2:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset33"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset29"
+			             android:layout_toRightOf="@+id/btnhuoset32" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="3层3:开"  
+				         android:textOff="3层3:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset34"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset29"
+			             android:layout_toRightOf="@+id/btnhuoset33" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="3层4:开"  
+				         android:textOff="3层4:关" />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset35"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset31"
+			             android:layout_toRightOf="@+id/btnhuosetc3" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="3层5:开"  
+				         android:textOff="3层5:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset36"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset31"
+			             android:layout_toRightOf="@+id/btnhuoset35"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="3层6:开"  
+				         android:textOff="3层6:关"  />	
+			        <Switch
+			             android:id="@+id/btnhuoset37"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset31"
+			             android:layout_toRightOf="@+id/btnhuoset36" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="3层7:开"  
+				         android:textOff="3层7:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset38"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset31"
+			             android:layout_toRightOf="@+id/btnhuoset37" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="3层8:开"  
+				         android:textOff="3层8:关" />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset39"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset35"
+			             android:layout_toRightOf="@+id/btnhuosetc3"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="3层9:开"  
+				         android:textOff="3层9:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset310"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset35"
+			             android:layout_toRightOf="@+id/btnhuoset39" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="3层10:开"  
+				         android:textOff="3层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc4"	
+			             android:layout_below="@+id/btnhuoset39"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="层4:开"  
+				         android:textOff="层4:关"  />
+				    <Switch
+			             android:id="@+id/btnhuoset41"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset39"	
+			             android:layout_toRightOf="@+id/btnhuosetc4"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="4层1:开"  
+				         android:textOff="4层1:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset42"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset39"	
+			             android:layout_toRightOf="@+id/btnhuoset41" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="4层2:开"  
+				         android:textOff="4层2:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset43"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset39"	
+			             android:layout_toRightOf="@+id/btnhuoset42" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="4层3:开"  
+				         android:textOff="4层3:关" /> 
+			        <Switch
+			             android:id="@+id/btnhuoset44"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset39"	
+			             android:layout_toRightOf="@+id/btnhuoset43" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="4层4:开"  
+				         android:textOff="4层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset45"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset41"	
+			             android:layout_toRightOf="@+id/btnhuosetc4"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="4层5:开"  
+				         android:textOff="4层5:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset46"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset41"
+			             android:layout_toRightOf="@+id/btnhuoset45"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="4层6:开"  
+				         android:textOff="4层6:关" />	
+			        <Switch
+			             android:id="@+id/btnhuoset47"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset41"
+			             android:layout_toRightOf="@+id/btnhuoset46" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="4层7:开"  
+				         android:textOff="4层7:关" /> 
+			        <Switch
+			             android:id="@+id/btnhuoset48"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset41"
+			             android:layout_toRightOf="@+id/btnhuoset47"  
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="4层8:开"  
+				         android:textOff="4层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset49"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset45"
+			             android:layout_toRightOf="@+id/btnhuosetc4"  
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="4层9:开"  
+				         android:textOff="4层9:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset410"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset45"
+			             android:layout_toRightOf="@+id/btnhuoset49"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="4层10:开"  
+				         android:textOff="4层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc5"	
+			             android:layout_below="@+id/btnhuoset49"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="层5:开"  
+				         android:textOff="层5:关"  />
+				    <Switch
+			             android:id="@+id/btnhuoset51"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset49"
+			             android:layout_toRightOf="@+id/btnhuosetc5" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="5层1:开"  
+				         android:textOff="5层1:关" />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset52"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset49"
+			             android:layout_toRightOf="@+id/btnhuoset51" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="5层2:开"  
+				         android:textOff="5层2:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset53"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset49"
+			             android:layout_toRightOf="@+id/btnhuoset52" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="5层3:开"  
+				         android:textOff="5层3:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset54"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset49"
+			             android:layout_toRightOf="@+id/btnhuoset53" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="5层4:开"  
+				         android:textOff="5层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset55"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset51"
+			             android:layout_toRightOf="@+id/btnhuosetc5"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="5层5:开"  
+				         android:textOff="5层5:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset56"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset51"
+			             android:layout_toRightOf="@+id/btnhuoset55" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="5层6:开"  
+				         android:textOff="5层6:关" />	
+			        <Switch
+			             android:id="@+id/btnhuoset57"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset51"
+			             android:layout_toRightOf="@+id/btnhuoset56"  
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="5层7:开"  
+				         android:textOff="5层7:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset58"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset51"
+			             android:layout_toRightOf="@+id/btnhuoset57"  
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="5层8:开"  
+				         android:textOff="5层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset59"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset55"
+			             android:layout_toRightOf="@+id/btnhuosetc5" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="5层9:开"  
+				         android:textOff="5层9:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset510"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset55"
+			             android:layout_toRightOf="@+id/btnhuoset59" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="5层10:开"  
+				         android:textOff="5层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc6"	
+			             android:layout_below="@+id/btnhuoset59"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="层6:开"  
+				         android:textOff="层6:关"  />
+				    <Switch
+			             android:id="@+id/btnhuoset61"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset59"
+			             android:layout_toRightOf="@+id/btnhuosetc6" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="6层1:开"  
+				         android:textOff="6层1:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset62"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset59"
+			             android:layout_toRightOf="@+id/btnhuoset61" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="6层2:开"  
+				         android:textOff="6层2:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset63"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset59"
+			             android:layout_toRightOf="@+id/btnhuoset62" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="6层3:开"  
+				         android:textOff="6层3:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset64"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset59"
+			             android:layout_toRightOf="@+id/btnhuoset63"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="6层4:开"  
+				         android:textOff="6层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset65"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset61"
+			             android:layout_toRightOf="@+id/btnhuosetc6"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="6层5:开"  
+				         android:textOff="6层5:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset66"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset61"
+			             android:layout_toRightOf="@+id/btnhuoset65"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="6层6:开"  
+				         android:textOff="6层6:关"  />	
+			        <Switch
+			             android:id="@+id/btnhuoset67"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset61"
+			             android:layout_toRightOf="@+id/btnhuoset66" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="6层7:开"  
+				         android:textOff="6层7:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset68"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset61"
+			             android:layout_toRightOf="@+id/btnhuoset67" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="6层8:开"  
+				         android:textOff="6层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset69"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset65"
+			             android:layout_toRightOf="@+id/btnhuosetc6" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="6层9:开"  
+				         android:textOff="6层9:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset610"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset65"
+			             android:layout_toRightOf="@+id/btnhuoset69" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="6层10:开"  
+				         android:textOff="6层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc7"	
+			             android:layout_below="@+id/btnhuoset69"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="层7:开"  
+				         android:textOff="层7:关"  />
+				    <Switch
+			             android:id="@+id/btnhuoset71"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset69"
+			             android:layout_toRightOf="@+id/btnhuosetc7" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="7层1:开"  
+				         android:textOff="7层1:关" />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset72"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset69"
+			             android:layout_toRightOf="@+id/btnhuoset71" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="7层2:开"  
+				         android:textOff="7层2:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset73"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset69"
+			             android:layout_toRightOf="@+id/btnhuoset72"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="7层3:开"  
+				         android:textOff="7层3:关" /> 
+			        <Switch
+			             android:id="@+id/btnhuoset74"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset69"
+			             android:layout_toRightOf="@+id/btnhuoset73" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="7层4:开"  
+				         android:textOff="7层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset75"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset71"
+			             android:layout_toRightOf="@+id/btnhuosetc7" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="7层5:开"  
+				         android:textOff="7层5:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset76"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset71"
+			             android:layout_toRightOf="@+id/btnhuoset75" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="7层6:开"  
+				         android:textOff="7层6:关" />	
+			        <Switch
+			             android:id="@+id/btnhuoset77"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset71"
+			             android:layout_toRightOf="@+id/btnhuoset76" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="7层7:开"  
+				         android:textOff="7层7:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset78"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset71"
+			             android:layout_toRightOf="@+id/btnhuoset77" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="7层8:开"  
+				         android:textOff="7层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset79"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset75"
+			             android:layout_toRightOf="@+id/btnhuosetc7"  
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="7层9:开"  
+				         android:textOff="7层9:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset710"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset75"
+			             android:layout_toRightOf="@+id/btnhuoset79" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="7层10:开"  
+				         android:textOff="7层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetc8"	
+			             android:layout_below="@+id/btnhuoset79"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="层8:开"  
+				         android:textOff="层8:关"  />
+				    <Switch
+			             android:id="@+id/btnhuoset81"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset79"
+			             android:layout_toRightOf="@+id/btnhuosetc8"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="8层1:开"  
+				         android:textOff="8层1:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset82"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset79"
+			             android:layout_toRightOf="@+id/btnhuoset81"
+			             android:layout_gravity="center_horizontal"               
+			             android:textOn="8层2:开"  
+				         android:textOff="8层2:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset83"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset79"
+			             android:layout_toRightOf="@+id/btnhuoset82" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="8层3:开"  
+				         android:textOff="8层3:关"  /> 
+			        <Switch
+			             android:id="@+id/btnhuoset84"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset79"
+			             android:layout_toRightOf="@+id/btnhuoset83"  
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="8层4:开"  
+				         android:textOff="8层4:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset85"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset81"
+			             android:layout_toRightOf="@+id/btnhuosetc8" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="8层5:开"  
+				         android:textOff="8层5:关" /> 
+				    <Switch
+			             android:id="@+id/btnhuoset86"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset81"
+			             android:layout_toRightOf="@+id/btnhuoset85" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="8层6:开"  
+				         android:textOff="8层6:关"  />	
+			        <Switch
+			             android:id="@+id/btnhuoset87"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset81"
+			             android:layout_toRightOf="@+id/btnhuoset86"  
+			             android:layout_gravity="center_horizontal"            
+			             android:textOn="8层7:开"  
+				         android:textOff="8层7:关" /> 
+			        <Switch
+			             android:id="@+id/btnhuoset88"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset81"
+			             android:layout_toRightOf="@+id/btnhuoset87" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="8层8:开"  
+				         android:textOff="8层8:关"  />         	         
+			        <Switch
+			             android:id="@+id/btnhuoset89"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset85"
+			             android:layout_toRightOf="@+id/btnhuosetc8" 
+			             android:layout_gravity="center_horizontal"             
+			             android:textOn="8层9:开"  
+				         android:textOff="8层9:关"  /> 
+				    <Switch
+			             android:id="@+id/btnhuoset810"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset85"
+			             android:layout_toRightOf="@+id/btnhuoset89" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="8层10:开"  
+				         android:textOff="8层10:关"  />
+				    <Switch
+			             android:id="@+id/btnhuosetgoc"			             
+			             android:layout_marginTop="20dip"  		             
+			             android:layout_width="wrap_content"  
+						 android:layout_height="wrap_content"
+			             android:layout_below="@+id/btnhuoset89" 
+			             android:layout_gravity="center_horizontal"              
+			             android:textOn="出货确认模块:开"  
+				         android:textOff="出货确认模块:关"  />
+				    <TextView 
+				        android:id="@+id/txthuosetCab"
+			            android:minWidth="160px"
+			            android:textSize="40sp"
+			            android:layout_below="@+id/btnhuosetgoc"
+					    android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="货柜:"/>
+			        <Spinner
+			            android:id="@+id/spinhuopeiCab"
+			            android:layout_below="@+id/btnhuosetgoc"
+			            android:layout_toRightOf="@+id/txthuosetCab"
+			            android:layout_width="wrap_content" 
+				        android:layout_height="wrap_content"
+				        android:text="" />
+			        <Button
+			             android:id="@+id/btnhuosetsethuo"			             
+			             android:layout_width="150dp"
+			             android:layout_height="100dp"
+			             android:layout_below="@+id/spinhuopeiCab"              
+			             android:text="手动配置" />
+			        <Button
+			             android:id="@+id/btnhuosetautohuo"			             
+			             android:layout_width="150dp"
+			             android:layout_height="100dp"
+			             android:layout_toRightOf="@+id/btnhuosetsethuo"
+			             android:layout_below="@+id/spinhuopeiCab"              
+			             android:text="自动配置" />
+			        <Button
+			             android:id="@+id/btnhuosetclose"			             
+			             android:layout_width="150dp"
+			             android:layout_height="100dp"
+			             android:layout_toRightOf="@+id/btnhuosetautohuo"
+			             android:layout_below="@+id/spinhuopeiCab"              
+			             android:text="关闭" />
+			    </RelativeLayout>    
+			</ScrollView>    
 		</RelativeLayout>
 	</RelativeLayout>	
 </LinearLayout>
