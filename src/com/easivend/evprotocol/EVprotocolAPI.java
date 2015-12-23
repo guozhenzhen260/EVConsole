@@ -66,6 +66,9 @@ public class EVprotocolAPI
 	public static final int EV_BENTO_LIGHT = 13;	//快递柜照明
 	public static final int EV_BENTO_COOL 	= 14;	//快递柜制冷
 	public static final int EV_BENTO_HOT 	= 15;	//快递柜加热
+	//=====================主柜类型==============================================================================
+	public static final int EV_COLUMN_OPEN  = 16;	//货道出货
+	public static final int EV_COLUMN_CHECK = 17;	//货道查询
 	
 	//=====================MDB现金模组类型==============================================================================
 	public static final int EV_MDB_INIT 	= 21;	//MDB设备初始化
@@ -217,6 +220,62 @@ public class EVprotocolAPI
 									allSet.put("result", 0);
 									callBack.jniCallback(allSet);
 						    	}
+						    	break;
+						    //主柜货道设备		
+						    case EV_COLUMN_OPEN:
+						    	if(ev_head.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_COLUMN_OPEN);
+									allSet.put("addr", ev_head.getInt("addr"));//柜子地址
+									allSet.put("box", ev_head.getInt("box"));//格子地址
+									allSet.put("result", ToolClass.colChuhuorst(ev_head.getInt("result")));
+									callBack.jniCallback(allSet);
+						    	}
+						    	else
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_COLUMN_OPEN);
+									allSet.put("addr", 0);//柜子地址
+									allSet.put("box", 0);//格子地址
+									allSet.put("result", ToolClass.colChuhuorst(11));
+									callBack.jniCallback(allSet);
+						    	}
+						    	break;
+						    case EV_COLUMN_CHECK:
+						    	ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道状态上报","log.txt");
+								if(ev_head.getInt("is_success")>0)
+								{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_COLUMN_CHECK);
+									JSONArray arr=ev_head.getJSONArray("column");//返回json数组
+									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道2:"+arr.toString());
+									for(int i=0;i<arr.length();i++)
+									{
+										JSONObject object2=arr.getJSONObject(i);
+										allSet.put(String.valueOf(object2.getInt("no")), object2.getInt("state"));								
+									}
+									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道3:"+allSet.toString());
+									callBack.jniCallback(allSet);
+								}
+								else
+								{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_COLUMN_CHECK);									
+//									JSONArray arr=ev_head.getJSONArray("column");//返回json数组
+//									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道2:"+arr.toString());
+//									for(int i=0;i<arr.length();i++)
+//									{
+//										JSONObject object2=arr.getJSONObject(i);
+//										allSet.put(String.valueOf(object2.getInt("no")), object2.getInt("state"));								
+//									}
+									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道3:"+allSet.toString());
+									callBack.jniCallback(allSet);
+								}
 						    	break;
 						    	
 						    //现金设备	
@@ -697,25 +756,32 @@ public class EVprotocolAPI
 		
 	//普通柜子
 	/*********************************************************************************************************
-	** Function name:     	getColumn
-	** Descriptions:	    VMC获取货道接口
-	**						PC发送该指令后，首先判断返回值为1则请求发送成功。然后通过回调函数返回的结果进行解析
-	** input parameters:    cabinet:1主柜,2副柜
-	** output parameters:   无
-	** Returned value:      1请求发送成功   0:请求发送失败
+	** Function name	:		getColumn
+	** Descriptions		:		普通柜查询接口  [异步]
+	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88,goc=1开启出货确认,0关闭
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"column":[{"state":1,"no":"3"},{"state":1,"no":"2"},{"state":1,"no":"1"},
+	*                                        {"state":1,"no":"8"}],
+	*                                        "EV_type":17,"is_success":1,"addr":1,"port_id":2}
+	*                              }
+	*							"EV_type"= EV_COLUMN_CHECK = 17; 表弹簧查询结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 	表示处理结果	
 	*********************************************************************************************************/
-	public  static int getColumn(int cabinet)
+	public  static int getColumn(int port_id,int columntype,int addr)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIgetColumn>>]"+cabinet,"log.txt");
-		//return ev.getColumn(cabinet);		
-		return 0;
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcolumn>>]port="+port_id+"columntype="+columntype+"["+addr+"]","log.txt");
+		return EVprotocol.EV_getColumn(port_id,columntype,addr);
 	}
 	
 	/*********************************************************************************************************
 	** Function name	:		trade
 	** Descriptions		:		普通柜出货接口  [异步]
 	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
-	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88,goc=1开启出货确认,0关闭
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
 	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
@@ -724,10 +790,10 @@ public class EVprotocolAPI
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result": 	表示处理结果	
 	*********************************************************************************************************/
-	public static int trade(int port_id,int columntype,int addr,int box)
+	public static int trade(int port_id,int columntype,int addr,int box,int goc)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcolumn>>]port="+port_id+"columntype="+columntype+"["+addr+box+"]","log.txt");
-		return EVprotocol.EV_trade(port_id,columntype,addr,box);	
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIcolumn>>]port="+port_id+"goc="+goc+"columntype="+columntype+"["+addr+box+"]","log.txt");
+		return EVprotocol.EV_trade(port_id,columntype,addr,box,goc);	
 	}
 	
 	/*********************************************************************************************************

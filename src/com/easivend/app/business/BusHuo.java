@@ -90,6 +90,7 @@ public class BusHuo extends Activity
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
+					case EVprotocolAPI.EV_COLUMN_OPEN://主柜出货
 					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
 						status=(Integer)allSet.get("result");//出货结果
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
@@ -332,16 +333,7 @@ public class BusHuo extends Activity
         		//普通柜
         		else 
         		{
-//        			rst=EVprotocolAPI.trade(cabinetvar,huodaoNo,typevar,
-//        		    			ToolClass.MoneySend(sales));
-//        			if(rst==0)//出货发送失败
-//        			{
-//        				huorst=0;
-//        			}
-//        			else if(rst==1)//出货发送成功
-//        			{
-//        				huorst=1;
-//        			}
+        			ToolClass.columnChuhuo(huodaoNo);
         		}
             }
 

@@ -19,9 +19,17 @@ import java.util.EventListener;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.easivend.common.ToolClass;
+import com.google.gson.JsonArray;
 
 
 
@@ -62,7 +70,7 @@ public class EVprotocol {
 	private static final int EV_BENTO_LIGHT = 13;	//快递柜照明
 	private static final int EV_BENTO_COOL 	= 14;	//快递柜制冷
 	private static final int EV_BENTO_HOT 	= 15;	//快递柜加热
-	//=====================快递柜类型==============================================================================
+	//=====================主柜类型==============================================================================
 	private static final int EV_COLUMN_OPEN  = 16;	//货道出货
 	private static final int EV_COLUMN_CHECK = 17;	//货道查询
 	
@@ -88,6 +96,7 @@ public class EVprotocol {
 		public String portName;
 		public int fd;
 		public int columntype;
+		public int goc;
 		public int addr;
 		public int box;
 		public int opt;
@@ -224,10 +233,35 @@ public class EVprotocol {
 	
 	//普通柜子
 	/*********************************************************************************************************
+	** Function name	:		getColumn
+	** Descriptions		:		普通柜查询接口  [异步]
+	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88,goc=1开启出货确认,0关闭
+	** output parameters:		无
+	** Returned value	:		1：发送成功  0：发送失败
+	*	返回json包     例如： EV_JSON={"EV_json":{"column":[{"state":1,"no":"3"},{"state":1,"no":"2"},{"state":1,"no":"1"},
+	*                                        {"state":1,"no":"8"}],
+	*                                        "EV_type":17,"is_success":1,"addr":1,"port_id":2}
+	*                              }
+	*							"EV_type"= EV_COLUMN_CHECK = 17; 表弹簧查询结果回应包类型
+	*							"port_id":原样返回,
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 	表示处理结果	
+	*********************************************************************************************************/
+	public  static int EV_getColumn(int port_id,int columntype,int addr)
+	{
+		RequestObject req = new RequestObject();
+		req.type = EV_COLUMN_CHECK;
+		req.fd = port_id;
+		req.columntype = columntype;
+		req.addr = addr;		
+		return pushReq(req);
+	}
+	/*********************************************************************************************************
 	** Function name	:		trade
 	** Descriptions		:		普通柜出货接口  [异步]
 	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
-	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88,goc=1开启出货确认,0关闭
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
 	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
@@ -236,7 +270,7 @@ public class EVprotocol {
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result": 	表示处理结果	
 	*********************************************************************************************************/
-	public  static int EV_trade(int port_id,int columntype,int addr,int box)
+	public  static int EV_trade(int port_id,int columntype,int addr,int box,int goc)
 	{
 		RequestObject req = new RequestObject();
 		req.type = EV_COLUMN_OPEN;
@@ -244,6 +278,7 @@ public class EVprotocol {
 		req.columntype = columntype;
 		req.addr = addr;
 		req.box = box;
+		req.goc = goc;
 		return pushReq(req);
 	}
 	
@@ -711,9 +746,47 @@ public class EVprotocol {
 				rptJson = EVBentoLight(req.fd, req.addr,req.opt);
 				break;
 			case EV_COLUMN_OPEN:				
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","[DRVcolumn>>]port="+req.fd+"columntype="+req.columntype+"["+req.addr+req.box+"]","log.txt");
-				rptJson = EVtrade(req.fd, req.columntype,req.addr,req.box);
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","[DRVcolumn>>]port="+req.fd+"goc="+req.goc+"columntype="+req.columntype+"["+req.addr+req.box+"]","log.txt");
+				rptJson = EVtrade(req.fd, req.columntype,req.addr,req.box,req.goc);
 				break;	
+			case EV_COLUMN_CHECK:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","[DRVcolumn>>]port="+req.fd+"columntype="+req.columntype+"["+req.addr+"]","log.txt");
+				Map<String, Integer> list=ToolClass.ReadColumnFile();				
+				try {
+					JSONObject type=new JSONObject();
+					type.put("EV_type", EV_COLUMN_CHECK);
+					type.put("port_id", req.fd);
+					type.put("addr", req.addr);
+					JSONArray array=new JSONArray();
+					if(list!=null)
+					{
+						type.put("is_success", 1);
+						//输出内容
+						Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+						Iterator<Entry<String, Integer>> iter=allmap.iterator();
+						while(iter.hasNext())
+						{
+							Entry<String, Integer> me=iter.next();
+							JSONObject col=new JSONObject();
+							col.put("no",me.getKey());
+							col.put("state", 1);
+							array.put(col);
+						}
+						type.put("column", array);
+					}
+					else
+					{
+						type.put("is_success", 0);	
+					}
+					type.put("EV_type", EV_COLUMN_CHECK);
+					JSONObject ev=new JSONObject();
+					ev.put("EV_json", type);
+					rptJson = ev.toString();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				break;
 			case EV_MDB_INIT:
 				rptJson = EVmdbInit(req.fd, req.bill,req.coin);
 				break;
@@ -873,7 +946,7 @@ public class EVprotocol {
 	** Function name	:		trade
 	** Descriptions		:		普通柜出货接口  [异步]
 	** input parameters	:       fd:串口编号, columntype:货道类型1弹簧，3升降台+传送带，4升降台+弹簧
-	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88
+	*                          ,addr:柜子地址 01-16,box:开门的格子号 1-88,goc=1开启出货确认,0关闭
 	** output parameters:		无
 	** Returned value	:		1：发送成功  0：发送失败
 	*	返回json包     例如： EV_JSON={"EV_json":{"EV_type":16,"port_id":2,"addr":1,"box":34,"is_success":1,"result":0}}
@@ -882,7 +955,7 @@ public class EVprotocol {
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"result": 	表示处理结果	
 	*********************************************************************************************************/
-	public  native static String EVtrade(int port_id,int columntype,int addr,int box);
+	public  native static String EVtrade(int port_id,int columntype,int addr,int box,int goc);
 	
 	
 	/*********************************************************************************************************

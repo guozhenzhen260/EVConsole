@@ -427,7 +427,9 @@ public class ParamManager extends TabActivity
     			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(devID, devhCode, isNet,isBuhuo, 
     					isbuyCar,isQiangbuy,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer,language,rstTime,rstDay,
     					baozhiProduct,emptyProduct, proSortType,marketAmount,billAmount);
-    			parameterDAO.add(tb_vmc_system_parameter);    			
+    			parameterDAO.add(tb_vmc_system_parameter); 
+    			//加载goc
+    			ToolClass.goc = isbuyCar;
 	        	// 弹出信息提示
 	            Toast.makeText(ParamManager.this, "数据添加成功！", Toast.LENGTH_SHORT).show();	            
 	            

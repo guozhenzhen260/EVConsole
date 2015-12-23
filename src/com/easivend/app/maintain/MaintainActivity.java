@@ -279,7 +279,9 @@ public class MaintainActivity extends Activity
 		ToolClass.setWeiCertFile();
 		//加载售罄水印图片		
 		Bitmap mark = BitmapFactory.decodeResource(this.getResources(), R.drawable.ysq);  
-		ToolClass.setMark(mark);		
+		ToolClass.setMark(mark);
+		//加载goc
+		ToolClass.setGoc(MaintainActivity.this);	
 		//================
 		//九宫格相关
 		//================		
@@ -397,9 +399,17 @@ public class MaintainActivity extends Activity
 						//初始化货道信息
 						if((Integer)Set.get("port_id")>=0)
 						{
-							txtbentcom.setText(bentcom+"[主柜]连接完成");	
-							//getcolumnstat();
-							columnopen=2;
+							txtcolumncom.setText(columncom+"[主柜]连接完成");
+							//有拖格子柜时，由格子柜来初始化货道,没有就用主柜来初始化货道
+							if(bentopen!=1)
+							{
+								getcolumnstat();
+							}
+//							else 
+//							{
+//								columnopen=2;
+//							}
+							
 						}
 						else
 						{
@@ -410,10 +420,10 @@ public class MaintainActivity extends Activity
 					//判断条件后，可以开始签到操作							
 					onInit();
 					break;
-				//格子柜查询	
-				case EVprotocolAPI.EV_BENTO_CHECK:
+				//主柜查询	
+				case EVprotocolAPI.EV_COLUMN_CHECK:	
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<返回货道状态:","log.txt");	
-					String tempno=null;
+					String tempno2=null;
 				
 					//输出内容
 			        Set<Entry<String, Object>> allmap=Set.entrySet();  //实例化
@@ -421,6 +431,44 @@ public class MaintainActivity extends Activity
 			        while(iter.hasNext())
 			        {
 			            Entry<String, Object> me=iter.next();
+			            if(
+			               (me.getKey().equals("EV_TYPE")!=true)
+			            )   
+			            {
+			            	if(Integer.parseInt(me.getKey())<10)
+			    				tempno2="0"+me.getKey();
+			    			else 
+			    				tempno2=me.getKey();
+			            	
+			            	huoSet.put(cabinetID[huom]+tempno2,(Integer)me.getValue());
+			            }
+			        } 
+			        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huoSet.size()+"货道状态:"+huoSet.toString(),"log.txt");	
+			        huom++;
+			        if(huom<cabinetID.length)
+			        {
+			        	//2.获取所有货道号
+			    	    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
+			        }
+			        else
+			        {
+			        	columnopen=2;
+			        	bentopen=2;
+						//可以开始签到操作
+			        	onInit();
+					}
+					break;
+				//格子柜查询	
+				case EVprotocolAPI.EV_BENTO_CHECK:
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<返回货道状态:","log.txt");	
+					String tempno=null;
+				
+					//输出内容
+			        Set<Entry<String, Object>> allmap2=Set.entrySet();  //实例化
+			        Iterator<Entry<String, Object>> iter2=allmap2.iterator();
+			        while(iter2.hasNext())
+			        {
+			            Entry<String, Object> me=iter2.next();
 			            if(
 			               (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
 			               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
@@ -443,6 +491,7 @@ public class MaintainActivity extends Activity
 			        }
 			        else
 			        {
+			        	columnopen=2;
 			        	bentopen=2;
 						//可以开始签到操作
 			        	onInit();
@@ -467,7 +516,8 @@ public class MaintainActivity extends Activity
 	}
 	
 	private void onInit()
-	{		
+	{	
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<comopen="+comopen+"bentopen="+bentopen+"columnopen="+columnopen,"log.txt");	
 		if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1)) 
 		{
 	    	Intent intent=new Intent();
@@ -564,7 +614,8 @@ public class MaintainActivity extends Activity
 		//普通柜
 		else 
 		{
-			EVprotocolAPI.getColumn(cabinetsetvar);
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao普通柜查询","log.txt");
+			EVprotocolAPI.getColumn(ToolClass.getColumncom_id(),1,1);
 		}
 	}
 		

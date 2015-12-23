@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.json.JSONObject;
+
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
@@ -44,9 +46,11 @@ import com.easivend.common.Vmc_ProductAdapter;
 import com.example.evconsole.R;
 
 import android.R.color;
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -138,10 +142,13 @@ public class HuodaoTest extends TabActivity
 			btnhuoset71=null,btnhuoset72=null,btnhuoset73=null,btnhuoset74=null,btnhuoset75=null,
 			btnhuoset76=null,btnhuoset77=null,btnhuoset78=null,btnhuoset79=null,btnhuoset710=null,
 			btnhuoset81=null,btnhuoset82=null,btnhuoset83=null,btnhuoset84=null,btnhuoset85=null,
-			btnhuoset86=null,btnhuoset87=null,btnhuoset88=null,btnhuoset89=null,btnhuoset810=null,
-			btnhuosetgoc=null;
+			btnhuoset86=null,btnhuoset87=null,btnhuoset88=null,btnhuoset89=null,btnhuoset810=null
+			;
 	private Button btnhuosetsethuo=null,btnhuosetautohuo=null,btnhuosetclose=null;							
-			
+	private int autophysic=57;		
+	private boolean autochu=false;//true表示在进行循环自检配置
+	//测试进度对话框
+	ProgressDialog dialog= null;
 	private Handler myhHandler=null;
 	//EVprotocolAPI ev=null;
 	@Override
@@ -180,34 +187,75 @@ public class HuodaoTest extends TabActivity
 				int jnirst=(Integer)Set.get("EV_TYPE");
 				switch (jnirst)
 				{
-					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-//						device=allSet.get("device");//出货柜号
-//						status=allSet.get("status");//出货结果
-//						hdid=allSet.get("hdid");//货道id
-//						hdtype=allSet.get("type");//出货类型
-//						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
-//						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
-//						huodao=allSet.get("huodao");//剩余存货数量
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
-//						
-//						txthuorst.setText("device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");
-//						sethuorst(status);
+					case EVprotocolAPI.EV_COLUMN_OPEN://主柜出货
+						device=(Integer)allSet.get("addr");//出货柜号						
+						hdid=(Integer)allSet.get("box");//货道id
+						status=(Integer)allSet.get("result");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
+						txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
+						//循环继续做货道配置操作
+						if(autochu)
+						{
+							autohuofile(status);
+						}
+						
+						sethuorst(status);
+						//循环继续做出货操作
+						if((huonno>0)&&(huonno<huonum))
+						{							
+							huonno++;
+							//格子柜
+							if(cabinetTypevar!=5)
+							{
+								ToolClass.Log(ToolClass.INFO,"EV_JNI",
+								    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+								    	+" cabType="+String.valueOf(cabinetTypevar)
+								    	+" column="+huonno		    	
+								    	,"log.txt");	 
+								ToolClass.columnChuhuo(huonno);		
+							}
+						}
+						else if(huonno>=huonum)
+						{
+							huonno=0;
+						}
 						break;
-					case EVprotocolAPI.EV_COLUMN_RPT://接收子线程消息
-//						huoSet.clear();
-//						//输出内容
-//				        Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
-//				        Iterator<Entry<String, Integer>> iter=allmap.iterator();
-//				        while(iter.hasNext())
-//				        {
-//				            Entry<String, Integer> me=iter.next();
-//				            if(me.getKey().equals("EV_TYPE")!=true)
-//				            	huoSet.put(me.getKey(), me.getValue());
-//				        } 
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道状态:"+huoSet.toString());	
-//						showhuodao();						
+					case EVprotocolAPI.EV_COLUMN_CHECK://主柜查询	
+						ishuoquery=0;
+						String tempno3=null;
+						huoSet.clear();
+						Map<Integer, Integer> tempSet= new TreeMap<Integer,Integer>();
+						//输出内容
+				        Set<Entry<String, Object>> allmap2=Set.entrySet();  //实例化
+				        Iterator<Entry<String, Object>> iter2=allmap2.iterator();
+				        while(iter2.hasNext())
+				        {
+				            Entry<String, Object> me=iter2.next();
+				            if(
+				               (me.getKey().equals("EV_TYPE")!=true)
+				            )   
+				            {
+				            	tempSet.put(Integer.parseInt(me.getKey()), (Integer)me.getValue());
+				            }
+				        } 
+				        
+				        //输出内容
+				        Set<Entry<Integer, Integer>> allmap3=tempSet.entrySet();  //实例化
+				        Iterator<Entry<Integer, Integer>> iter3=allmap3.iterator();
+				        while(iter3.hasNext())
+				        {
+				            Entry<Integer, Integer> me=iter3.next();
+				            
+			            	if(me.getKey()<10)
+			    				tempno3="0"+me.getKey().toString();
+			    			else 
+			    				tempno3=me.getKey().toString();
+			            	
+			            	huoSet.put(tempno3, (Integer)me.getValue());				            
+				        } 
+				        huonum=huoSet.size();
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
+						showhuodao();
 						break;
 					case EVprotocolAPI.EV_BENTO_CHECK://格子柜查询
 						ishuoquery=0;
@@ -565,8 +613,7 @@ public class HuodaoTest extends TabActivity
 					//普通柜
 					else 
 					{
-						rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-				    			ToolClass.MoneySend(price));	
+						ToolClass.columnChuhuo(Integer.parseInt(edtcolumn.getText().toString()));	
 					}
 			    	   	
 		    	}
@@ -591,8 +638,13 @@ public class HuodaoTest extends TabActivity
 				//普通柜
 				else 
 				{
-//					rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-//			    			ToolClass.MoneySend(price));	
+					huonno=1;
+					ToolClass.Log(ToolClass.INFO,"EV_JNI",
+					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+					    	+" cabType="+String.valueOf(cabinetTypevar)
+					    	+" column="+huonno,"log.txt"		    	
+					    	);	
+					ToolClass.columnChuhuo(huonno);	
 				}
 		    }
 		});
@@ -622,86 +674,806 @@ public class HuodaoTest extends TabActivity
 		btnhuosetc7 = (Switch) findViewById(R.id.btnhuosetc7);
 		btnhuosetc8 = (Switch) findViewById(R.id.btnhuosetc8);		
 		btnhuoset11 = (Switch) findViewById(R.id.btnhuoset11);
+		btnhuoset11.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset12 = (Switch) findViewById(R.id.btnhuoset12);
+		btnhuoset12.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset13 = (Switch) findViewById(R.id.btnhuoset13);
+		btnhuoset13.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset14 = (Switch) findViewById(R.id.btnhuoset14);
+		btnhuoset14.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset15 = (Switch) findViewById(R.id.btnhuoset15);
+		btnhuoset15.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset16 = (Switch) findViewById(R.id.btnhuoset16);
+		btnhuoset16.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset17 = (Switch) findViewById(R.id.btnhuoset17);
+		btnhuoset17.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset18 = (Switch) findViewById(R.id.btnhuoset18);
+		btnhuoset18.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset19 = (Switch) findViewById(R.id.btnhuoset19);
+		btnhuoset19.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset110 = (Switch) findViewById(R.id.btnhuoset110);
+		btnhuoset110.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(1, isChecked);			
+			} 
+        });
 		btnhuoset21 = (Switch) findViewById(R.id.btnhuoset21);
+		btnhuoset21.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset22 = (Switch) findViewById(R.id.btnhuoset22);
+		btnhuoset22.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset23 = (Switch) findViewById(R.id.btnhuoset23);
+		btnhuoset23.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset24 = (Switch) findViewById(R.id.btnhuoset24);
+		btnhuoset24.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset25 = (Switch) findViewById(R.id.btnhuoset25);
+		btnhuoset25.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset26 = (Switch) findViewById(R.id.btnhuoset26);
+		btnhuoset26.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset27 = (Switch) findViewById(R.id.btnhuoset27);
+		btnhuoset27.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset28 = (Switch) findViewById(R.id.btnhuoset28);
+		btnhuoset28.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset29 = (Switch) findViewById(R.id.btnhuoset29);
+		btnhuoset29.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset210 = (Switch) findViewById(R.id.btnhuoset210);
+		btnhuoset210.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(2, isChecked);			
+			} 
+        });
 		btnhuoset31 = (Switch) findViewById(R.id.btnhuoset31);
+		btnhuoset31.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset32 = (Switch) findViewById(R.id.btnhuoset32);
+		btnhuoset32.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset33 = (Switch) findViewById(R.id.btnhuoset33);
+		btnhuoset33.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset34 = (Switch) findViewById(R.id.btnhuoset34);
+		btnhuoset34.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset35 = (Switch) findViewById(R.id.btnhuoset35);
+		btnhuoset35.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset36 = (Switch) findViewById(R.id.btnhuoset36);
+		btnhuoset36.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset37 = (Switch) findViewById(R.id.btnhuoset37);
+		btnhuoset37.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset38 = (Switch) findViewById(R.id.btnhuoset38);
+		btnhuoset38.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset39 = (Switch) findViewById(R.id.btnhuoset39);
+		btnhuoset39.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset310 = (Switch) findViewById(R.id.btnhuoset310);
+		btnhuoset310.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(3, isChecked);			
+			} 
+        });
 		btnhuoset41 = (Switch) findViewById(R.id.btnhuoset41);
+		btnhuoset41.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset42 = (Switch) findViewById(R.id.btnhuoset42);
+		btnhuoset42.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset43 = (Switch) findViewById(R.id.btnhuoset43);
+		btnhuoset43.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset44 = (Switch) findViewById(R.id.btnhuoset44);
+		btnhuoset44.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset45 = (Switch) findViewById(R.id.btnhuoset45);
+		btnhuoset45.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset46 = (Switch) findViewById(R.id.btnhuoset46);
+		btnhuoset46.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset47 = (Switch) findViewById(R.id.btnhuoset47);
+		btnhuoset47.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset48 = (Switch) findViewById(R.id.btnhuoset48);
+		btnhuoset48.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset49 = (Switch) findViewById(R.id.btnhuoset49);
+		btnhuoset49.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset410 = (Switch) findViewById(R.id.btnhuoset410);
+		btnhuoset410.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(4, isChecked);			
+			} 
+        });
 		btnhuoset51 = (Switch) findViewById(R.id.btnhuoset51);
+		btnhuoset51.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset52 = (Switch) findViewById(R.id.btnhuoset52);
+		btnhuoset52.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset53 = (Switch) findViewById(R.id.btnhuoset53);
+		btnhuoset53.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset54 = (Switch) findViewById(R.id.btnhuoset54);
+		btnhuoset54.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset55 = (Switch) findViewById(R.id.btnhuoset55);
+		btnhuoset55.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset56 = (Switch) findViewById(R.id.btnhuoset56);
+		btnhuoset56.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset57 = (Switch) findViewById(R.id.btnhuoset57);
+		btnhuoset57.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset58 = (Switch) findViewById(R.id.btnhuoset58);
+		btnhuoset58.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset59 = (Switch) findViewById(R.id.btnhuoset59);
+		btnhuoset59.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset510 = (Switch) findViewById(R.id.btnhuoset510);
+		btnhuoset510.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(5, isChecked);			
+			} 
+        });
 		btnhuoset61 = (Switch) findViewById(R.id.btnhuoset61);
+		btnhuoset61.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset62 = (Switch) findViewById(R.id.btnhuoset62);
+		btnhuoset62.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset63 = (Switch) findViewById(R.id.btnhuoset63);
+		btnhuoset63.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset64 = (Switch) findViewById(R.id.btnhuoset64);
+		btnhuoset64.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset65 = (Switch) findViewById(R.id.btnhuoset65);
+		btnhuoset65.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset66 = (Switch) findViewById(R.id.btnhuoset66);
+		btnhuoset66.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset67 = (Switch) findViewById(R.id.btnhuoset67);
+		btnhuoset67.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset68 = (Switch) findViewById(R.id.btnhuoset68);
+		btnhuoset68.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset69 = (Switch) findViewById(R.id.btnhuoset69);
+		btnhuoset69.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset610 = (Switch) findViewById(R.id.btnhuoset610);
+		btnhuoset610.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(6, isChecked);			
+			} 
+        });
 		btnhuoset71 = (Switch) findViewById(R.id.btnhuoset71);
+		btnhuoset71.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset72 = (Switch) findViewById(R.id.btnhuoset72);
+		btnhuoset72.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset73 = (Switch) findViewById(R.id.btnhuoset73);
+		btnhuoset73.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset74 = (Switch) findViewById(R.id.btnhuoset74);
+		btnhuoset74.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset75 = (Switch) findViewById(R.id.btnhuoset75);
+		btnhuoset75.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset76 = (Switch) findViewById(R.id.btnhuoset76);
+		btnhuoset76.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset77 = (Switch) findViewById(R.id.btnhuoset77);
+		btnhuoset77.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset78 = (Switch) findViewById(R.id.btnhuoset78);
+		btnhuoset78.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset79 = (Switch) findViewById(R.id.btnhuoset79);
+		btnhuoset79.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset710 = (Switch) findViewById(R.id.btnhuoset710);
+		btnhuoset710.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(7, isChecked);			
+			} 
+        });
 		btnhuoset81 = (Switch) findViewById(R.id.btnhuoset81);
+		btnhuoset81.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset82 = (Switch) findViewById(R.id.btnhuoset82);
+		btnhuoset82.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset83 = (Switch) findViewById(R.id.btnhuoset83);
+		btnhuoset83.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset84 = (Switch) findViewById(R.id.btnhuoset84);
+		btnhuoset84.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset85 = (Switch) findViewById(R.id.btnhuoset85);
+		btnhuoset85.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset86 = (Switch) findViewById(R.id.btnhuoset86);
+		btnhuoset86.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset87 = (Switch) findViewById(R.id.btnhuoset87);
+		btnhuoset87.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset88 = (Switch) findViewById(R.id.btnhuoset88);
+		btnhuoset88.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset89 = (Switch) findViewById(R.id.btnhuoset89);
+		btnhuoset89.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
 		btnhuoset810 = (Switch) findViewById(R.id.btnhuoset810);
-		btnhuosetgoc = (Switch) findViewById(R.id.btnhuosetgoc);
+		btnhuoset810.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				sethuoc(8, isChecked);			
+			} 
+        });
+	
 		
 		btnhuosetc1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -718,8 +1490,7 @@ public class HuodaoTest extends TabActivity
 				btnhuoset17.setChecked(isChecked);
 				btnhuoset18.setChecked(isChecked);
 				btnhuoset19.setChecked(isChecked);
-				btnhuoset110.setChecked(isChecked);
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,34);				
+				btnhuoset110.setChecked(isChecked);							
 			} 
         });
 		btnhuosetc2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -860,6 +1631,10 @@ public class HuodaoTest extends TabActivity
 				{
 					cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
 					cabinetTypepeivar=cabinetType[arg2]; 
+					if(cabinetTypepeivar!=5)
+					{
+						gethuofile();
+					}
 				}				
 			}
 
@@ -873,7 +1648,18 @@ public class HuodaoTest extends TabActivity
 		btnhuosetsethuo.setOnClickListener(new OnClickListener() {
 				    @Override
 				    public void onClick(View arg0) {
-				    	EVprotocolAPI.setcolumn(ToolClass.getColumncom_id(),1,1,34);
+				    	sethuofile();	
+				    	gethuofile();
+				    }
+				});
+		btnhuosetautohuo = (Button) findViewById(R.id.btnhuosetautohuo);
+		btnhuosetautohuo.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+				    @Override
+				    public void onClick(View arg0) {
+				    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<hello","log.txt");	
+				    	dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
+				    	autochu=true;
+				    	EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
 				    }
 				});
 		btnhuosetclose = (Button) findViewById(R.id.btnhuosetclose);
@@ -922,7 +1708,8 @@ public class HuodaoTest extends TabActivity
 		//普通柜
 		else 
 		{
-			EVprotocolAPI.getColumn(cabinetsetvar);
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao普通柜查询","log.txt");
+			EVprotocolAPI.getColumn(ToolClass.getColumncom_id(),1,1);
 		}
 	}
 	//接收GoodsProSet返回信息
@@ -1140,14 +1927,2098 @@ public class HuodaoTest extends TabActivity
 	//===============
 	private void sethuorst(int status)
 	{
-		switch(status)
-		{			
-			case 0:
-				txthuotestrst.setText("出货失败");
-				break;
+		if(status==1)
+		{		
+			txthuotestrst.setText("出货成功");
+		}
+		else 
+		{
+			txthuotestrst.setText("出货失败");
+		}
+	}
+	
+	//===============
+	//货道配置页面
+	//===============
+	//货道使能禁能操作
+	private void sethuoc(int ceng,boolean isChecked)
+	{
+		switch(ceng)
+		{
 			case 1:
-				txthuotestrst.setText("出货成功");
-				break;		
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset11.isChecked()==false)&&
+						(btnhuoset12.isChecked()==false)&&
+						(btnhuoset13.isChecked()==false)&&
+						(btnhuoset14.isChecked()==false)&&
+						(btnhuoset15.isChecked()==false)&&
+						(btnhuoset16.isChecked()==false)&&
+						(btnhuoset17.isChecked()==false)&&
+						(btnhuoset18.isChecked()==false)&&
+						(btnhuoset19.isChecked()==false)&&
+						(btnhuoset110.isChecked()==false)
+					  )
+					{
+						btnhuosetc1.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 2:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset21.isChecked()==false)&&
+						(btnhuoset22.isChecked()==false)&&
+						(btnhuoset23.isChecked()==false)&&
+						(btnhuoset24.isChecked()==false)&&
+						(btnhuoset25.isChecked()==false)&&
+						(btnhuoset26.isChecked()==false)&&
+						(btnhuoset27.isChecked()==false)&&
+						(btnhuoset28.isChecked()==false)&&
+						(btnhuoset29.isChecked()==false)&&
+						(btnhuoset210.isChecked()==false)
+					  )
+					{
+						btnhuosetc2.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 3:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset31.isChecked()==false)&&
+						(btnhuoset32.isChecked()==false)&&
+						(btnhuoset33.isChecked()==false)&&
+						(btnhuoset34.isChecked()==false)&&
+						(btnhuoset35.isChecked()==false)&&
+						(btnhuoset36.isChecked()==false)&&
+						(btnhuoset37.isChecked()==false)&&
+						(btnhuoset38.isChecked()==false)&&
+						(btnhuoset39.isChecked()==false)&&
+						(btnhuoset310.isChecked()==false)
+					  )
+					{
+						btnhuosetc3.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 4:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset41.isChecked()==false)&&
+						(btnhuoset42.isChecked()==false)&&
+						(btnhuoset43.isChecked()==false)&&
+						(btnhuoset44.isChecked()==false)&&
+						(btnhuoset45.isChecked()==false)&&
+						(btnhuoset46.isChecked()==false)&&
+						(btnhuoset47.isChecked()==false)&&
+						(btnhuoset48.isChecked()==false)&&
+						(btnhuoset49.isChecked()==false)&&
+						(btnhuoset410.isChecked()==false)
+					  )
+					{
+						btnhuosetc4.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 5:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset51.isChecked()==false)&&
+						(btnhuoset52.isChecked()==false)&&
+						(btnhuoset53.isChecked()==false)&&
+						(btnhuoset54.isChecked()==false)&&
+						(btnhuoset55.isChecked()==false)&&
+						(btnhuoset56.isChecked()==false)&&
+						(btnhuoset57.isChecked()==false)&&
+						(btnhuoset58.isChecked()==false)&&
+						(btnhuoset59.isChecked()==false)&&
+						(btnhuoset510.isChecked()==false)
+					  )
+					{
+						btnhuosetc5.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 6:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset61.isChecked()==false)&&
+						(btnhuoset62.isChecked()==false)&&
+						(btnhuoset63.isChecked()==false)&&
+						(btnhuoset64.isChecked()==false)&&
+						(btnhuoset65.isChecked()==false)&&
+						(btnhuoset66.isChecked()==false)&&
+						(btnhuoset67.isChecked()==false)&&
+						(btnhuoset68.isChecked()==false)&&
+						(btnhuoset69.isChecked()==false)&&
+						(btnhuoset610.isChecked()==false)
+					  )
+					{
+						btnhuosetc6.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 7:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset71.isChecked()==false)&&
+						(btnhuoset72.isChecked()==false)&&
+						(btnhuoset73.isChecked()==false)&&
+						(btnhuoset74.isChecked()==false)&&
+						(btnhuoset75.isChecked()==false)&&
+						(btnhuoset76.isChecked()==false)&&
+						(btnhuoset77.isChecked()==false)&&
+						(btnhuoset78.isChecked()==false)&&
+						(btnhuoset79.isChecked()==false)&&
+						(btnhuoset710.isChecked()==false)
+					  )
+					{
+						btnhuosetc7.setChecked(isChecked);
+					}	
+				}
+				break;
+			case 8:
+				if(isChecked)
+				{
+					
+				}
+				else
+				{
+					if(
+						(btnhuoset81.isChecked()==false)&&
+						(btnhuoset82.isChecked()==false)&&
+						(btnhuoset83.isChecked()==false)&&
+						(btnhuoset84.isChecked()==false)&&
+						(btnhuoset85.isChecked()==false)&&
+						(btnhuoset86.isChecked()==false)&&
+						(btnhuoset87.isChecked()==false)&&
+						(btnhuoset88.isChecked()==false)&&
+						(btnhuoset89.isChecked()==false)&&
+						(btnhuoset810.isChecked()==false)
+					  )
+					{
+						btnhuosetc8.setChecked(isChecked);
+					}	
+				}
+				break;	
+		}
+	}
+	//自检逻辑货道开关性能,result==0,或者21货道存在，其他值货道不存在
+	private void autohuofile(int result)
+	{
+		switch(autophysic)
+		{
+			//第一层
+			case 57:
+				if((result==1)||(result==4))
+				{
+					btnhuoset11.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset11.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 58:
+				if((result==1)||(result==4))
+				{
+					btnhuoset12.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset12.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 59:
+				if((result==1)||(result==4))
+				{
+					btnhuoset13.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset13.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 60:
+				if((result==1)||(result==4))
+				{
+					btnhuoset14.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset14.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 61:
+				if((result==1)||(result==4))
+				{
+					btnhuoset15.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset15.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 62:
+				if((result==1)||(result==4))
+				{
+					btnhuoset16.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset16.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 63:
+				if((result==1)||(result==4))
+				{
+					btnhuoset17.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset17.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 64:
+				if((result==1)||(result==4))
+				{
+					btnhuoset18.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset18.setChecked(false);	
+				}
+				autophysic=49;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;	
+			//第二层	
+			case 49:
+				if((result==1)||(result==4))
+				{
+					btnhuoset21.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset21.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 50:
+				if((result==1)||(result==4))
+				{
+					btnhuoset22.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset22.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 51:
+				if((result==1)||(result==4))
+				{
+					btnhuoset23.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset23.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 52:
+				if((result==1)||(result==4))
+				{
+					btnhuoset24.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset24.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 53:
+				if((result==1)||(result==4))
+				{
+					btnhuoset25.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset25.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 54:
+				if((result==1)||(result==4))
+				{
+					btnhuoset26.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset26.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 55:
+				if((result==1)||(result==4))
+				{
+					btnhuoset27.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset27.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 56:
+				if((result==1)||(result==4))
+				{
+					btnhuoset28.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset28.setChecked(false);	
+				}
+				autophysic=41;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			//第三层	
+			case 41:
+				if((result==1)||(result==4))
+				{
+					btnhuoset31.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset31.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 42:
+				if((result==1)||(result==4))
+				{
+					btnhuoset32.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset32.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 43:
+				if((result==1)||(result==4))
+				{
+					btnhuoset33.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset33.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 44:
+				if((result==1)||(result==4))
+				{
+					btnhuoset34.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset34.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 45:
+				if((result==1)||(result==4))
+				{
+					btnhuoset35.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset35.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 46:
+				if((result==1)||(result==4))
+				{
+					btnhuoset36.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset36.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 47:
+				if((result==1)||(result==4))
+				{
+					btnhuoset37.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset37.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 48:
+				if((result==1)||(result==4))
+				{
+					btnhuoset38.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset38.setChecked(false);	
+				}
+				autophysic=33;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;	
+			//第四层	
+			case 33:
+				if((result==1)||(result==4))
+				{
+					btnhuoset41.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset41.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 34:
+				if((result==1)||(result==4))
+				{
+					btnhuoset42.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset42.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 35:
+				if((result==1)||(result==4))
+				{
+					btnhuoset43.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset43.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 36:
+				if((result==1)||(result==4))
+				{
+					btnhuoset44.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset44.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 37:
+				if((result==1)||(result==4))
+				{
+					btnhuoset45.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset45.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 38:
+				if((result==1)||(result==4))
+				{
+					btnhuoset46.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset46.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 39:
+				if((result==1)||(result==4))
+				{
+					btnhuoset47.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset47.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 40:
+				if((result==1)||(result==4))
+				{
+					btnhuoset48.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset48.setChecked(false);	
+				}
+				autophysic=25;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			//第五层	
+			case 25:
+				if((result==1)||(result==4))
+				{
+					btnhuoset51.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset51.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 26:
+				if((result==1)||(result==4))
+				{
+					btnhuoset52.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset52.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 27:
+				if((result==1)||(result==4))
+				{
+					btnhuoset53.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset53.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 28:
+				if((result==1)||(result==4))
+				{
+					btnhuoset54.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset54.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 29:
+				if((result==1)||(result==4))
+				{
+					btnhuoset55.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset55.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 30:
+				if((result==1)||(result==4))
+				{
+					btnhuoset56.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset56.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 31:
+				if((result==1)||(result==4))
+				{
+					btnhuoset57.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset57.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 32:
+				if((result==1)||(result==4))
+				{
+					btnhuoset58.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset58.setChecked(false);	
+				}
+				autophysic=17;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;	
+			//第六层	
+			case 17:
+				if((result==1)||(result==4))
+				{
+					btnhuoset61.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset61.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 18:
+				if((result==1)||(result==4))
+				{
+					btnhuoset62.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset62.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 19:
+				if((result==1)||(result==4))
+				{
+					btnhuoset63.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset63.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 20:
+				if((result==1)||(result==4))
+				{
+					btnhuoset64.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset64.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 21:
+				if((result==1)||(result==4))
+				{
+					btnhuoset65.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset65.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 22:
+				if((result==1)||(result==4))
+				{
+					btnhuoset66.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset66.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 23:
+				if((result==1)||(result==4))
+				{
+					btnhuoset67.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset67.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 24:
+				if((result==1)||(result==4))
+				{
+					btnhuoset68.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset68.setChecked(false);	
+				}
+				autophysic=9;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;	
+			//第七层
+			case 9:
+				if((result==1)||(result==4))
+				{
+					btnhuoset71.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset71.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 10:
+				if((result==1)||(result==4))
+				{
+					btnhuoset72.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset72.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 11:
+				if((result==1)||(result==4))
+				{
+					btnhuoset73.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset73.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 12:
+				if((result==1)||(result==4))
+				{
+					btnhuoset74.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset74.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 13:
+				if((result==1)||(result==4))
+				{
+					btnhuoset75.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset75.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 14:
+				if((result==1)||(result==4))
+				{
+					btnhuoset76.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset76.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 15:
+				if((result==1)||(result==4))
+				{
+					btnhuoset77.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset77.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 16:
+				if((result==1)||(result==4))
+				{
+					btnhuoset78.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset78.setChecked(false);	
+				}
+				autophysic=1;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			//第八层
+			case 1:
+				if((result==1)||(result==4))
+				{
+					btnhuoset81.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset81.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 2:
+				if((result==1)||(result==4))
+				{
+					btnhuoset82.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset82.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 3:
+				if((result==1)||(result==4))
+				{
+					btnhuoset83.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset83.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 4:
+				if((result==1)||(result==4))
+				{
+					btnhuoset84.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset84.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 5:
+				if((result==1)||(result==4))
+				{
+					btnhuoset85.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset85.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 6:
+				if((result==1)||(result==4))
+				{
+					btnhuoset86.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset86.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 7:
+				if((result==1)||(result==4))
+				{
+					btnhuoset87.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset87.setChecked(false);	
+				}
+				autophysic++;
+				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				break;
+			case 8:
+				if((result==1)||(result==4))
+				{
+					btnhuoset88.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset88.setChecked(false);	
+				}
+				dialog.dismiss();
+				autochu=false;
+				sethuofile();
+				gethuofile();
+				break;	
+		}
+	}
+	//保存逻辑货道实际对应物理货道的文件
+	private void sethuofile()
+	{
+		int logic=1,physic;
+		JSONObject allSet=new JSONObject();
+		try {
+			//第一层
+			physic=57;
+			if(btnhuoset11.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset12.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset13.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset14.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset15.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset16.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset17.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset18.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第二层
+			physic=49;
+			if(btnhuoset21.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset22.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset23.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset24.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset25.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset26.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset27.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset28.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第三层
+			physic=41;
+			if(btnhuoset31.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset32.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset33.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset34.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset35.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset36.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset37.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset38.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第四层
+			physic=33;
+			if(btnhuoset41.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset42.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset43.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset44.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset45.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset46.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset47.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset48.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第五层
+			physic=25;
+			if(btnhuoset51.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset52.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset53.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset54.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset55.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset56.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset57.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset58.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第六层
+			physic=17;
+			if(btnhuoset61.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset62.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset63.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset64.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset65.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset66.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset67.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset68.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第七层
+			physic=9;
+			if(btnhuoset71.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset72.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset73.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset74.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset75.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset76.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset77.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset78.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第八层
+			physic=1;
+			if(btnhuoset81.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset82.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset83.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset84.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset85.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset86.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset87.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset88.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"货道状态:"+allSet.toString(),"log.txt");	
+		ToolClass.WriteColumnFile(allSet.toString());
+		ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
+        // 弹出信息提示
+        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+	}
+	
+	//读取逻辑货道实际对应物理货道的文件
+	private void gethuofile()
+	{
+		int logic=1,physic;
+		Map<String, Integer> allset=ToolClass.ReadColumnFile();  
+		if(allset!=null)
+		{
+			//第一层
+			physic=57;
+			//如果判断有这个Value值
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset11.setChecked(true);
+			}
+			else
+			{
+				btnhuoset11.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset12.setChecked(true);
+			}
+			else
+			{
+				btnhuoset12.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset13.setChecked(true);
+			}
+			else
+			{
+				btnhuoset13.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset14.setChecked(true);
+			}
+			else
+			{
+				btnhuoset14.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset15.setChecked(true);
+			}
+			else
+			{
+				btnhuoset15.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset16.setChecked(true);
+			}
+			else
+			{
+				btnhuoset16.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset17.setChecked(true);
+			}
+			else
+			{
+				btnhuoset17.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset18.setChecked(true);
+			}
+			else
+			{
+				btnhuoset18.setChecked(false);
+			}
+			
+			//第二层
+			physic=49;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset21.setChecked(true);
+			}
+			else
+			{
+				btnhuoset21.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset22.setChecked(true);
+			}
+			else
+			{
+				btnhuoset22.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset23.setChecked(true);
+			}
+			else
+			{
+				btnhuoset23.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset24.setChecked(true);
+			}
+			else
+			{
+				btnhuoset24.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset25.setChecked(true);
+			}
+			else
+			{
+				btnhuoset25.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset26.setChecked(true);
+			}
+			else
+			{
+				btnhuoset26.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset27.setChecked(true);
+			}
+			else
+			{
+				btnhuoset27.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset28.setChecked(true);
+			}
+			else
+			{
+				btnhuoset28.setChecked(false);
+			}
+			
+			//第三层
+			physic=41;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset31.setChecked(true);
+			}
+			else
+			{
+				btnhuoset31.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset32.setChecked(true);
+			}
+			else
+			{
+				btnhuoset32.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset33.setChecked(true);
+			}
+			else
+			{
+				btnhuoset33.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset34.setChecked(true);
+			}
+			else
+			{
+				btnhuoset34.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset35.setChecked(true);
+			}
+			else
+			{
+				btnhuoset35.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset36.setChecked(true);
+			}
+			else
+			{
+				btnhuoset36.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset37.setChecked(true);
+			}
+			else
+			{
+				btnhuoset37.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset38.setChecked(true);
+			}
+			else
+			{
+				btnhuoset38.setChecked(false);
+			}
+			
+			//第四层
+			physic=33;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset41.setChecked(true);
+			}
+			else
+			{
+				btnhuoset41.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset42.setChecked(true);
+			}
+			else
+			{
+				btnhuoset42.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset43.setChecked(true);
+			}
+			else
+			{
+				btnhuoset43.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset44.setChecked(true);
+			}
+			else
+			{
+				btnhuoset44.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset45.setChecked(true);
+			}
+			else
+			{
+				btnhuoset45.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset46.setChecked(true);
+			}
+			else
+			{
+				btnhuoset46.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset47.setChecked(true);
+			}
+			else
+			{
+				btnhuoset47.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset48.setChecked(true);
+			}
+			else
+			{
+				btnhuoset48.setChecked(false);
+			}
+			
+			//第五层
+			physic=25;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset51.setChecked(true);
+			}
+			else
+			{
+				btnhuoset51.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset52.setChecked(true);
+			}
+			else
+			{
+				btnhuoset52.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset53.setChecked(true);
+			}
+			else
+			{
+				btnhuoset53.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset54.setChecked(true);
+			}
+			else
+			{
+				btnhuoset54.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset55.setChecked(true);
+			}
+			else
+			{
+				btnhuoset55.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset56.setChecked(true);
+			}
+			else
+			{
+				btnhuoset56.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset57.setChecked(true);
+			}
+			else
+			{
+				btnhuoset57.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset58.setChecked(true);
+			}
+			else
+			{
+				btnhuoset58.setChecked(false);
+			}
+			
+			//第六层
+			physic=17;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset61.setChecked(true);
+			}
+			else
+			{
+				btnhuoset61.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset62.setChecked(true);
+			}
+			else
+			{
+				btnhuoset62.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset63.setChecked(true);
+			}
+			else
+			{
+				btnhuoset63.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset64.setChecked(true);
+			}
+			else
+			{
+				btnhuoset64.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset65.setChecked(true);
+			}
+			else
+			{
+				btnhuoset65.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset66.setChecked(true);
+			}
+			else
+			{
+				btnhuoset66.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset67.setChecked(true);
+			}
+			else
+			{
+				btnhuoset67.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset68.setChecked(true);
+			}
+			else
+			{
+				btnhuoset68.setChecked(false);
+			}
+			
+			//第七层
+			physic=9;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset71.setChecked(true);
+			}
+			else
+			{
+				btnhuoset71.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset72.setChecked(true);
+			}
+			else
+			{
+				btnhuoset72.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset73.setChecked(true);
+			}
+			else
+			{
+				btnhuoset73.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset74.setChecked(true);
+			}
+			else
+			{
+				btnhuoset74.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset75.setChecked(true);
+			}
+			else
+			{
+				btnhuoset75.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset76.setChecked(true);
+			}
+			else
+			{
+				btnhuoset76.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset77.setChecked(true);
+			}
+			else
+			{
+				btnhuoset77.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset78.setChecked(true);
+			}
+			else
+			{
+				btnhuoset78.setChecked(false);
+			}
+			
+			//第八层
+			physic=1;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset81.setChecked(true);
+			}
+			else
+			{
+				btnhuoset81.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset82.setChecked(true);
+			}
+			else
+			{
+				btnhuoset82.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset83.setChecked(true);
+			}
+			else
+			{
+				btnhuoset83.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset84.setChecked(true);
+			}
+			else
+			{
+				btnhuoset84.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset85.setChecked(true);
+			}
+			else
+			{
+				btnhuoset85.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset86.setChecked(true);
+			}
+			else
+			{
+				btnhuoset86.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset87.setChecked(true);
+			}
+			else
+			{
+				btnhuoset87.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset88.setChecked(true);
+			}
+			else
+			{
+				btnhuoset88.setChecked(false);
+			}
 		}
 	}
 }

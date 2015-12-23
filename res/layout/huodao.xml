@@ -1235,28 +1235,19 @@
 			             android:layout_toRightOf="@+id/btnhuoset89" 
 			             android:layout_gravity="center_horizontal"              
 			             android:textOn="8层10:开"  
-				         android:textOff="8层10:关"  />
-				    <Switch
-			             android:id="@+id/btnhuosetgoc"			             
-			             android:layout_marginTop="20dip"  		             
-			             android:layout_width="wrap_content"  
-						 android:layout_height="wrap_content"
-			             android:layout_below="@+id/btnhuoset89" 
-			             android:layout_gravity="center_horizontal"              
-			             android:textOn="出货确认模块:开"  
-				         android:textOff="出货确认模块:关"  />
+				         android:textOff="8层10:关"  />				    
 				    <TextView 
 				        android:id="@+id/txthuosetCab"
 			            android:minWidth="160px"
 			            android:textSize="40sp"
-			            android:layout_below="@+id/btnhuosetgoc"
+			            android:layout_below="@+id/btnhuoset810"
 					    android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 						android:text="货柜:"/>
 			        <Spinner
 			            android:id="@+id/spinhuopeiCab"
-			            android:layout_below="@+id/btnhuosetgoc"
+			            android:layout_below="@+id/btnhuoset810"
 			            android:layout_toRightOf="@+id/txthuosetCab"
 			            android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"

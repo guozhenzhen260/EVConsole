@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusZhiAmount;
+import com.easivend.app.maintain.ParamManager;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
@@ -90,6 +92,8 @@ public class ToolClass
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;
 	public static String vmc_no="";
 	public static Bitmap mark=null;//售完图片
+	public static int goc=0;//是否使用出货确认板1是
+	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;
 	
@@ -124,6 +128,22 @@ public class ToolClass
 
 	public static void setMark(Bitmap mark) {
 		ToolClass.mark = mark;
+	}
+	
+	public static int getGoc() {
+		return goc;
+	}
+
+	public static void setGoc(Context context) 
+	{
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		ToolClass.goc = tb_inaccount.getIsbuyCar();
+    	}
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<goc="+ToolClass.goc,"log.txt");	
 	}
 
 	public static String getVmc_no() {
@@ -777,6 +797,240 @@ public class ToolClass
             ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<sslerror","log.txt");
         }
         
+    }
+    
+    /**
+     * 读取货道配置文件
+     */
+    public static Map<String, Integer> ReadColumnFile() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         huodaolist=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+	            	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+huodaolist.toString(),"log.txt");
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 读取逻辑物理货道配置表
+     */
+    public static Map<Integer, Integer> getHuodaolist() {
+		return huodaolist;
+	}
+    
+    /**
+     * 弹簧出货
+     */
+    public static void columnChuhuo(Integer logic)
+    {
+    	if(huodaolist!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]huodaolist="+huodaolist,"log.txt");
+    		if(huodaolist.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    Integer val=huodaolist.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]logic="+logic+"physic="+val,"log.txt");
+    		    EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,val,ToolClass.getGoc());	
+    		}
+    	}
+    }
+    /**
+     * 弹簧返回出货结果
+     *   GOODS_SOLD_ERR          (1 << 0)   //bit0总故障位
+	* 	 GOODS_SOLDOUT_BIT       (1 << 1)   //bit1电机故障
+	* 	 MOTO_MISPLACE_BIT       (1 << 2)   //bit2电机在转之前就不在正确的位置上(也算电机故障)
+	* 	 MOTO_NOTMOVE_BIT        (1 << 3)   //bit3电机不能转(也算电机故障)
+	* 	 MOTO_NOTRETURN_BIT      (1 << 4)   //bit4电机没转到正确位置(也算电机故障)
+	* 	 GOODS_NOTPASS_BIT       (1 << 5)   //bit5商品没出(出货确认没检测到)
+	* 	 DRV_CMDERR_BIT          (1 << 6)   //bit6命令错误(只有发送命令和查询命令着两个命令，如果发了其他的命令就报错)
+	* 	 DRV_GOCERR_BIT          (1 << 7)   //bit7出货检测模块状态(GOC故障)
+	 * 1:成功;0:故障;2:货道不存在;3:电机未到位;4:出货失败 5:通信故障
+     */
+    public static int colChuhuorst(int Rst)
+    {
+    	int GOODS_SOLD_ERR=(1 << 0);   //bit0总故障位
+    	int GOODS_SOLDOUT_BIT=(1 << 1);   //bit1电机故障
+    	int MOTO_MISPLACE_BIT=(1 << 2);  //bit2电机在转之前就不在正确的位置上(也算电机故障)
+    	int MOTO_NOTMOVE_BIT=(1 << 3); //bit3电机不能转(也算电机故障)
+    	int MOTO_NOTRETURN_BIT=(1 << 4);   //bit4电机没转到正确位置(也算电机故障)
+    	int GOODS_NOTPASS_BIT=(1 << 5);   //bit5商品没出(出货确认没检测到)
+    	int DRV_CMDERR_BIT   =(1 << 6);   //bit6命令错误(只有发送命令和查询命令着两个命令，如果发了其他的命令就报错)
+    	int DRV_GOCERR_BIT   =(1 << 7);   //bit7出货检测模块状态(GOC故障)
+    	if(Rst == 0x00)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_OK","log.txt");
+    		return 1;	
+    	}
+    	else if(Rst == 0xff)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_COMERR","log.txt");
+    		return 5;
+    	}	
+    	//1.判断GOC是否故障bit7:  GOC故障->扣钱
+    	else if((Rst&DRV_GOCERR_BIT)>0)
+    	{
+    		if((Rst&GOODS_SOLD_ERR)>0)
+    		{
+    			//2.在判断电机：
+    			//没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障  
+    			if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    				return 3;								
+    			}
+    			else
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    				return 4;	
+    			}
+    		}
+    		else
+    		{
+    			ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_1","log.txt");
+    			return 1;
+    		}
+    	}
+    	else if((Rst&GOODS_SOLD_ERR)>0)
+    	{
+    		/*
+    		//电机未转动
+    		if((GocType==1)&&(Rst&0x08))
+    			return 1;
+    		//出货确认开启。出货确认未检测到商品出货
+    		if((GocType==1)&&(Rst&0x20))
+    			return 4;	
+    		else
+    		//出货确认开启，电机未转到位，但出货确认检测到商品出货
+    		if((GocType==1)&&(Rst==0x11))
+    			return 0;
+    		else
+    		//出货确认未开启，电机未转到位
+    		if((GocType==0)&&(Rst&0x10))
+    			return 3;
+    		else
+    		//出货确认未开启，电机不能转动
+    		if((GocType==0)&&(Rst&0x08))
+    			return 1;
+    		*/
+    		/*********GOC打开的情况下********************/
+    		if(ToolClass.getGoc()==1)
+    		{			
+    			//1.电机未转动,不扣钱
+    			if((Rst&MOTO_NOTMOVE_BIT)>0)
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_0","log.txt");
+    				return 0;
+    			}			
+    			//2.先判断GOC是否检测到bit5,  ==0说明出货确认检测到商品出货 			
+    			else if((Rst & GOODS_NOTPASS_BIT) == 0) 
+    			{				
+    				//有检测到->出货成功扣钱  
+    				/*************************************************************************/
+    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_1","log.txt");
+    				return 1;		
+    			}
+    			else
+    			{ 
+    				   //没检测到->出货失败不扣钱
+    				   //3.在判断电机：
+    				   //没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障	
+    				   if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
+    				   {
+    						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    						return 3;
+    				   }
+    				   else
+    				   {
+    						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    						return 4;
+    				   }				   
+    			}
+    			
+    		}	
+    		/*********GOC关闭的情况下********************/
+    		else
+    		{
+    			//2.在判断电机：
+    		   //没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障	
+    		   if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
+    		   {
+    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    				return 3;								
+    		   }
+    		   else
+    		   {
+    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    				return 4;	
+    		   }
+    		}
+    	}
+    	return 0;
+    }
+    
+    /**
+     * 写入货道配置文件
+     */
+    public static void WriteColumnFile(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
     }
     
     //保存操作日志
