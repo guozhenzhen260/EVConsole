@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.easivend.app.business.BusPort;
+import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.view.MyVideoView;
@@ -102,7 +104,52 @@ public class MoviewlandFragment extends Fragment {
 		});
 		listFiles(); 
 		startVideo();
+		/**
+	     * 用来与其他fragment交互的,
+	     * 步骤五、当Fragment被加载到activity的时候，注册回调信息
+	     * @param activity
+	     */
+		BusPort.setCallBack(new buportInterfaceImp());
 		return view;
+	}
+	
+	private class buportInterfaceImp implements BusPortFragInteraction//加载接口
+	{
+		/**
+	     * 用来与其他fragment交互的,
+	     * 步骤三、实现BusPortFragInteraction接口
+	     * @param activity
+	     */
+		@Override
+		public void BusportTsxx(String str) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void BusportTbje(String str) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void BusportChjg(int sta) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void BusportSend(String str) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void BusportMovie() {
+			// TODO Auto-generated method stub
+			 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<视频重载入","log.txt");
+			 viewvideo=true;
+			 show(); 
+		}
 	}
 	
 	/* 播放列表 */  

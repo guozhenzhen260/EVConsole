@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.easivend.app.business.BusPort;
+import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
@@ -14,6 +15,8 @@ import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
+import com.easivend.view.GoodsSelect;
+import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 
 import android.app.Activity;
@@ -57,6 +60,7 @@ public class BusinessportFragment extends Fragment {
     //密码框
     private static int pwdcount=0;
     private static boolean pwdMode=false;//true维护模式设置
+    private final static int REQUEST_CODE=1;//声明请求标识
     
     //=========================
     //fragment与activity回调相关
@@ -460,90 +464,76 @@ public class BusinessportFragment extends Fragment {
     //密码框
     private void passdialog()
     {
-    	View myview=null;  
-		// TODO Auto-generated method stub
-		LayoutInflater factory = LayoutInflater.from(context);
-		myview=factory.inflate(R.layout.selectinteger, null);
-		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
-		dialoginte.setTransformationMethod(PasswordTransformationMethod.getInstance());
-		Dialog dialog = new AlertDialog.Builder(context)
-		.setTitle("设置")
-		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
-		{
-				
-			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				boolean istrue=false;
-				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+dialoginte.getText().toString(),"log.txt");
-				//调出维护页面密码
-				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
-			    // 获取所有收入信息，并存储到List泛型集合中
-		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-		    	if(tb_inaccount!=null)
-		    	{
-		    		String Pwd=tb_inaccount.getMainPwd().toString();
-		    		if(Pwd==null)
-		    		{
-		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值=null","log.txt");
-		    			istrue=passcmp(null,dialoginte.getText().toString());
-		    		}
-		    		else
-		    		{
-		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+Pwd,"log.txt");
-		    			istrue=passcmp(Pwd,dialoginte.getText().toString());
-		    		}
-		    	}
-		    	else
-		    	{
-		    		istrue=passcmp(null,dialoginte.getText().toString());
-				}
-		    	
-		    	if(istrue)
-		    	{
-		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
-		    		//步骤二、fragment向activity发送回调信息
-		        	listterner.finishBusiness();
-		    	}
-		    	else
-		    	{
-		    		
-				}
-			}
-		})
-		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-    	{			
-			@Override
-			public void onClick(DialogInterface dialog, int which) 
-			{
-				// TODO Auto-generated method stub	
-				
-			}
-    	})
-		.setView(myview)//这里将对话框布局文件加入到对话框中
-		.create();
-		dialog.show();
+//    	View myview=null;  
+//		// TODO Auto-generated method stub
+//		LayoutInflater factory = LayoutInflater.from(context);
+//		myview=factory.inflate(R.layout.selectinteger, null);
+//		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+//		dialoginte.setTransformationMethod(PasswordTransformationMethod.getInstance());
+//		Dialog dialog = new AlertDialog.Builder(context)
+//		.setTitle("设置")
+//		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
+//		{
+//				
+//			@Override
+//			public void onClick(DialogInterface dialog, int which)
+//			{
+//				boolean istrue=false;
+//				// TODO Auto-generated method stub
+//				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+dialoginte.getText().toString(),"log.txt");
+//				//调出维护页面密码
+//				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+//			    // 获取所有收入信息，并存储到List泛型集合中
+//		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+//		    	if(tb_inaccount!=null)
+//		    	{
+//		    		String Pwd=tb_inaccount.getMainPwd().toString();
+//		    		if(Pwd==null)
+//		    		{
+//		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值=null","log.txt");
+//		    			istrue=passcmp(null,dialoginte.getText().toString());
+//		    		}
+//		    		else
+//		    		{
+//		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+Pwd,"log.txt");
+//		    			istrue=passcmp(Pwd,dialoginte.getText().toString());
+//		    		}
+//		    	}
+//		    	else
+//		    	{
+//		    		istrue=passcmp(null,dialoginte.getText().toString());
+//				}
+//		    	
+//		    	if(istrue)
+//		    	{
+//		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
+//		    		//步骤二、fragment向activity发送回调信息
+//		        	listterner.finishBusiness();
+//		    	}
+//		    	else
+//		    	{
+//		    		
+//				}
+//			}
+//		})
+//		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+//    	{			
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) 
+//			{
+//				// TODO Auto-generated method stub	
+//				
+//			}
+//    	})
+//		.setView(myview)//这里将对话框布局文件加入到对话框中
+//		.create();
+//		dialog.show();  
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
+		//步骤二、fragment向activity发送回调信息
+    	listterner.finishBusiness();
     }
     
-    //密码框比对
-    private boolean passcmp(String pwd,String value)
-    {
-    	boolean istrue=false;
-    	if((pwd==null)||(pwd.equals("")==true))
-    	{
-    		if(value.equals("83718557"))
-    		{
-    			istrue=true;
-    		}
-    	}
-    	else
-    	{
-    		if(value.equals(pwd))
-    		{
-    			istrue=true;
-    		}
-    	}
-    	return istrue;
-    }
+    
+    
+    
 }

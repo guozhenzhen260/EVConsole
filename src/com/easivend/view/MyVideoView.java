@@ -1,3 +1,18 @@
+/****************************************Copyright (c)*************************************************
+**                      Fujian Junpeng Communicaiton Technology Co.,Ltd.
+**                               http://www.easivend.com.cn
+**--------------File Info------------------------------------------------------------------------------
+** File name:           MyVideoView.java
+** Last modified Date:  2015-01-10
+** Last Version:         
+** Descriptions:        改装视频控件        
+**------------------------------------------------------------------------------------------------------
+** Created by:          guozhenzhen 
+** Created date:        2015-01-10
+** Version:             V1.0 
+** Descriptions:        The original version       
+********************************************************************************************************/
+
 package com.easivend.view;
 
 import android.content.Context;  

@@ -13,7 +13,10 @@ import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
+import com.easivend.view.PassWord;
 import com.example.evconsole.R;
+
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -35,7 +38,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     //交易页面
     Intent intent=null;
     final static int REQUEST_CODE=1; 
-    
+    final static int PWD_CODE=2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -105,16 +108,19 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	    // transaction.addToBackStack();
 	    // 事务提交
 	    transaction.commit();
+	    //打开定时器
 	    isbus=false;
 	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 	
-	//步骤三、实现Business接口,关闭本activity界面
+	//步骤三、实现Business接口,打开密码框
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=finishBusiness","log.txt");
-		finish();
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=打开密码框","log.txt");
+    	Intent intent = new Intent();
+    	intent.setClass(BusLand.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
+        startActivityForResult(intent, PWD_CODE);
 	}
 	//步骤三、实现Business接口,暂停倒计时定时器并且转到商品购物页面
 	//buslevel级别1到商品类别，2到商品导购页面，3到商品详细页面
@@ -257,10 +263,26 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
-		//恢复倒计时定时器
-		//isbus=true;
-	    //recLen=SPLASH_DISPLAY_LENGHT;
-		switchMovie();
+		if(requestCode==PWD_CODE)
+		{
+			if(resultCode==PassWord.RESULT_OK)
+			{
+				Bundle bundle=data.getExtras();
+				String pwd = bundle.getString("pwd");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<维护密码pwd="+pwd,"log.txt");
+				boolean istrue=ToolClass.getpwdStatus(BusLand.this,pwd);
+				if(istrue)
+		    	{
+		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
+		    		finish();
+		    	}
+		    	else
+		    	{
+		    		switchMovie();
+				}
+			}			
+		}
+		
 	}
 	@Override
 	protected void onDestroy() {

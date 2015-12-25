@@ -144,6 +144,12 @@ public class BuszhiamountFragment extends Fragment
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void BusportMovie() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 		
 }

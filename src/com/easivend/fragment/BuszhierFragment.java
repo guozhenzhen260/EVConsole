@@ -154,5 +154,11 @@ public class BuszhierFragment extends Fragment
 			txtbuszhierrst.setText("交易结果:"+str);
 			ivbuszhier.setImageBitmap(ToolClass.createQRImage(str));
 		}
+
+		@Override
+		public void BusportMovie() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
@@ -34,6 +35,7 @@ import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
+import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 
 import android.R.bool;
@@ -80,7 +82,8 @@ BushuoFragInteraction
 	private BushuoFragment bushuoFragment;
 	//交易页面
     Intent intent=null;
-    final static int REQUEST_CODE=1; 
+    //final static int REQUEST_CODE=1; 
+    final static int PWD_CODE=2; 
     public static final int BUSPORT=1;//首页面
     public static final int BUSGOODSCLASS=2;//商品类别页面
 	public static final int BUSGOODS=3;//商品导购页面
@@ -164,6 +167,8 @@ BushuoFragInteraction
          * Activity 向Fragment传递指令，这个方法可以根据需求来定义
          * @param str
          */
+    	//视频页面
+        void BusportMovie();      //视频页面轮播
         //现金页面
         void BusportTsxx(String str);      //提示信息
         void BusportTbje(String str);      //投币金额
@@ -461,12 +466,14 @@ BushuoFragInteraction
 		// TODO Auto-generated method stub		
 	}
 
-	//步骤三、实现Business接口,关闭本activity界面
+	//步骤三、实现Business接口,打开密码框
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=finishBusiness","log.txt");
-		finish();
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=打开密码框","log.txt");
+    	Intent intent = new Intent();
+    	intent.setClass(BusPort.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
+        startActivityForResult(intent, PWD_CODE);
 	}
 	//步骤三、实现Business接口,转到商品购物页面
 	//buslevel跳转到的页面
@@ -1382,7 +1389,26 @@ BushuoFragInteraction
 	{		
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
 		//注册串口监听器
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());		
+		EVprotocolAPI.setCallBack(new jniInterfaceImp());	
+		if(requestCode==PWD_CODE)
+		{
+			if(resultCode==PassWord.RESULT_OK)
+			{
+				Bundle bundle=data.getExtras();
+				String pwd = bundle.getString("pwd");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<维护密码pwd="+pwd,"log.txt");
+				boolean istrue=ToolClass.getpwdStatus(BusPort.this,pwd);
+				if(istrue)
+		    	{
+		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
+		    		finish();
+		    	}
+		    	else
+		    	{
+		    		listterner.BusportMovie();
+				}
+			}			
+		}
 	}
 	@Override
 	protected void onDestroy() {

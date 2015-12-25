@@ -592,6 +592,16 @@ public class ToolClass
     }
     
     /**
+     * 读取日志文件
+     */
+    public static String ReadLogFile() 
+    {
+    	String  sDir =null;
+    	sDir = ToolClass.getEV_DIR()+File.separator+"logs"+File.separator;
+    	return sDir;
+    }
+    
+    /**
      * 检测后，如果没有导入成功支付宝或者微信的账号信息，重新导入一次
      */
     public static void CheckAliWeiFile()
@@ -1605,8 +1615,57 @@ public class ToolClass
 		return rst;
 	}
 	
+	//密码框比对
+    private static boolean passcmp(String pwd,String value)
+    {
+    	boolean istrue=false;
+    	if((pwd==null)||(pwd.equals("")==true))
+    	{
+    		if(value.equals("83718557"))
+    		{
+    			istrue=true;
+    		}
+    	}
+    	else
+    	{
+    		if(value.equals(pwd))
+    		{
+    			istrue=true;
+    		}
+    	}
+    	return istrue;
+    }
+	//获取是否输入正确
+	//返回：true正确,false错误
+	public static boolean getpwdStatus(Context context,String passwd)
+	{
+		boolean istrue=false;
+		//调出维护页面密码
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		String Pwd=tb_inaccount.getMainPwd().toString();
+    		if(Pwd==null)
+    		{
+    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值=null","log.txt");
+    			istrue=passcmp(null,passwd);
+    		}
+    		else
+    		{
+    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+Pwd,"log.txt");
+    			istrue=passcmp(Pwd,passwd);
+    		}
+    	}
+    	else
+    	{
+    		istrue=passcmp(null,passwd);
+		}
+		return istrue;
+	}
 	
-
+	
 	
 	
 }
