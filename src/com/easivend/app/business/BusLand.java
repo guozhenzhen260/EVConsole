@@ -282,7 +282,10 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 				}
 			}			
 		}
-		
+		else 
+		{
+			switchMovie();	
+		}
 	}
 	@Override
 	protected void onDestroy() {
