@@ -21,6 +21,7 @@ public class vmc_cabinetDAO
 	{
 		helper=new DBOpenHelper(context);// 初始化DBOpenHelper对象
 	}
+	//操作时，可以适当使用db.beginTransaction();  //开始事务 , db.endTransaction();    //结束事务   
 	//添加柜数据
 	public void add(Tb_vmc_cabinet tb_vmc_cabinet)throws SQLException
 	{

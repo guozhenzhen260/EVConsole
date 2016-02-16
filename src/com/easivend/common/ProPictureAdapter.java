@@ -85,13 +85,13 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
             viewHolder.prosales = (TextView) arg1.findViewById(R.id.prosales);// 设置图像标题
             viewHolder.count = (TextView) arg1.findViewById(R.id.count);// 设置剩余数量
             
-            arg1.setTag(viewHolder);// 设置提示
+            arg1.setTag(viewHolder);// 设置标识
         } 
         else
         {
-            viewHolder = (ProViewHolder) arg1.getTag();// 设置提示
+            viewHolder = (ProViewHolder) arg1.getTag();// 得到标识
         }
-                
+        //标识作为唯一id,用来比对和查询        
         viewHolder.proID.setText(pictures.get(arg0).getProID());// 设置图像ID
         viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
         viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
