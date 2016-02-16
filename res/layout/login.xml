@@ -27,7 +27,7 @@
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
 			        android:layout_below="@id/tvVersion"   
-			        android:text="请输入主串口号："
+			        android:text="请输入现金设备串口号："
 			        android:textColor="#8C6931"
 			        android:textSize="25dp" />
 			
@@ -65,7 +65,7 @@
 			        android:layout_below="@id/txtbent"   
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
-			        android:text="请输入主柜串口号："
+			        android:text="请输入传统柜串口号："
 			        android:textColor="#8C6931"
 			        android:textSize="25dp" />
 			
