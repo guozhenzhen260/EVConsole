@@ -95,6 +95,7 @@ public class MaintainActivity extends Activity
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     //EVprotocolAPI ev=null;
     int comopen=0,bentopen=0,columnopen=0;//1串口正在打开，0串口没有打开,-1打开设备返回失败,2串口打开设备完成    
+    boolean columnchk=false;//true代表已经做了货道自检了
     String com=null,bentcom=null,columncom=null,server="";
     final static int REQUEST_CODE=1;   
     //获取货柜信息
@@ -361,62 +362,59 @@ public class MaintainActivity extends Activity
 					//现金模块初始化完成
 					if(Set.get("port_com").equals(com))
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金模块连接完成","log.txt");	
 						ToolClass.setCom_id((Integer)Set.get("port_id"));
 						if((Integer)Set.get("port_id")>=0)
 						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金模块连接完成","log.txt");	
 							txtcom.setText(com+"[现金模块]连接完成");
 							comopen=2;
 						}
 						else
 						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金模块连接失败","log.txt");	
 							txtcom.setText(bentcom+"[现金模块]连接失败");	
 							comopen=-1;
-						}				
+						}						
 					}
-					//格子柜初始化完成
+					//格子柜准备连接
 					else if(Set.get("port_com").equals(bentcom))
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜连接完成","log.txt");	
 						ToolClass.setBentcom_id((Integer)Set.get("port_id"));
 						//初始化货道信息
 						if((Integer)Set.get("port_id")>=0)
 						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜连接...","log.txt");	
 							txtbentcom.setText(bentcom+"[格子柜]连接完成");	
 							getcolumnstat();
+							break;
 						}
 						else
 						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜连接失败","log.txt");	
 							txtbentcom.setText(bentcom+"[格子柜]连接失败");
 							bentopen=-1;														
 						}
 					}
-					//主柜初始化完成
+					//主柜准备连接
 					else if(Set.get("port_com").equals(columncom))
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜连接完成","log.txt");	
 						ToolClass.setColumncom_id((Integer)Set.get("port_id"));
 						//初始化货道信息
 						if((Integer)Set.get("port_id")>=0)
 						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜连接...","log.txt");	
 							txtcolumncom.setText(columncom+"[主柜]连接完成");
-							//有拖格子柜时，由格子柜来初始化货道,没有就用主柜来初始化货道
-							if(bentopen!=1)
-							{
-								getcolumnstat();
-							}
-//							else 
-//							{
-//								columnopen=2;
-//							}
-							
+							getcolumnstat();
+							break;	
 						}
 						else
 						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<主柜连接失败","log.txt");	
 							txtcolumncom.setText(columncom+"[主柜]连接失败");
 							columnopen=-1;							
 						}
 					}
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<签到1","log.txt");	
 					//判断条件后，可以开始签到操作							
 					onInit();
 					break;
@@ -452,8 +450,10 @@ public class MaintainActivity extends Activity
 			        }
 			        else
 			        {
+			        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜主柜连接完成","log.txt");	
 			        	columnopen=2;
 			        	bentopen=2;
+			        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<签到2","log.txt");	
 						//可以开始签到操作
 			        	onInit();
 					}
@@ -491,8 +491,10 @@ public class MaintainActivity extends Activity
 			        }
 			        else
 			        {
+			        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜主柜连接完成","log.txt");	
 			        	columnopen=2;
 			        	bentopen=2;
+			        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<签到3","log.txt");	
 						//可以开始签到操作
 			        	onInit();
 					}
@@ -520,6 +522,7 @@ public class MaintainActivity extends Activity
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<comopen="+comopen+"bentopen="+bentopen+"columnopen="+columnopen,"log.txt");	
 		if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1)) 
 		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
 	    	Intent intent=new Intent();
 			intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
 			intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
@@ -573,32 +576,40 @@ public class MaintainActivity extends Activity
 	//=============
 	//获取当前货道信息
 	private void getcolumnstat()
-	{		
-		vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(MaintainActivity.this);// 创建InaccountDAO对象
-	    // 1.获取所有柜号
-	    List<Tb_vmc_cabinet> listinfos = cabinetDAO.getScrollData();
-	    cabinetID = new String[listinfos.size()];// 设置字符串数组的长度
-	    cabinetType=new int[listinfos.size()];// 设置字符串数组的长度	    
-	    // 遍历List泛型集合
-	    for (Tb_vmc_cabinet tb_inaccount : listinfos) 
-	    {
-	        cabinetID[huom] = tb_inaccount.getCabID();
-	        cabinetType[huom]= tb_inaccount.getCabType();
-	        ToolClass.Log(ToolClass.INFO,"EV_JNI","获取柜号="+cabinetID[huom]+"类型="+cabinetType[huom],"log.txt");
-		    huom++;// 标识加1
-	    }
-	    huom=0;
-	    if(listinfos.size()>0)
-	    {
-		    //2.获取所有货道号
-		    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
-	    }
-	    else 
-	    {
-	    	bentopen=-1;
-	    	columnopen=-1;
-	    	//可以开始签到操作
-	    	onInit();
+	{	
+		if(columnchk==false)
+		{
+			columnchk=true;
+			vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(MaintainActivity.this);// 创建InaccountDAO对象
+		    // 1.获取所有柜号
+		    List<Tb_vmc_cabinet> listinfos = cabinetDAO.getScrollData();
+		    cabinetID = new String[listinfos.size()];// 设置字符串数组的长度
+		    cabinetType=new int[listinfos.size()];// 设置字符串数组的长度	    
+		    // 遍历List泛型集合
+		    for (Tb_vmc_cabinet tb_inaccount : listinfos) 
+		    {
+		        cabinetID[huom] = tb_inaccount.getCabID();
+		        cabinetType[huom]= tb_inaccount.getCabType();
+		        ToolClass.Log(ToolClass.INFO,"EV_JNI","获取柜号="+cabinetID[huom]+"类型="+cabinetType[huom],"log.txt");
+			    huom++;// 标识加1
+		    }
+		    huom=0;
+		    if(listinfos.size()>0)
+		    {
+			    //2.获取所有货道号
+			    queryhuodao(Integer.parseInt(cabinetID[huom]),cabinetType[huom]);
+		    }
+		    else 
+		    {
+		    	bentopen=-1;
+		    	columnopen=-1;
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<格子柜主柜连接失败","log.txt");	
+		    	txtbentcom.setText(bentcom+"[格子柜]连接失败");
+		    	txtcolumncom.setText(columncom+"[主柜]连接失败");
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<签到4","log.txt");	
+		    	//可以开始签到操作
+		    	onInit();
+			}
 		}
 	}
 	
