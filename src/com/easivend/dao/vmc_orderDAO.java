@@ -44,36 +44,48 @@ public class vmc_orderDAO
 	public void add(Tb_vmc_order_pay tb_vmc_order_pay,Tb_vmc_order_product tb_vmc_order_product)throws SQLException
 	{
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-		
-        // 执行添加订单支付表	
- 		db.execSQL(
- 				"insert into vmc_order_pay" +
- 				"(" +
- 				"ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
- 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime,isupload" +
- 				") " +
- 				"values" +
- 				"(" +
- 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime')),0" +
- 				")",
- 		        new Object[] { tb_vmc_order_pay.getOrdereID(), tb_vmc_order_pay.getPayType(),tb_vmc_order_pay.getPayStatus(), tb_vmc_order_pay.getRealStatus(),
- 						tb_vmc_order_pay.getSmallNote(), tb_vmc_order_pay.getSmallConi(),tb_vmc_order_pay.getSmallAmount(), tb_vmc_order_pay.getSmallCard(),
- 						tb_vmc_order_pay.getShouldPay(), tb_vmc_order_pay.getShouldNo(), tb_vmc_order_pay.getRealNote(), tb_vmc_order_pay.getRealCoin(), 
- 						tb_vmc_order_pay.getRealAmount(), tb_vmc_order_pay.getDebtAmount(), tb_vmc_order_pay.getRealCard()});
- 		
-		// 执行添加订单详细信息表	
- 		db.execSQL(
- 				"insert into vmc_order_product" +
- 				"(" +
- 				"orderID,productID,yujiHuo,realHuo,cabID,columnID,huoStatus" +
- 				") " +
- 				"values" +
- 				"(" +
- 				"?,?,?,?,?,?,?" +
- 				")",
- 		        new Object[] { tb_vmc_order_product.getOrderID(), tb_vmc_order_product.getProductID(),tb_vmc_order_product.getYujiHuo(), tb_vmc_order_product.getRealHuo(),
- 						tb_vmc_order_product.getCabID(), tb_vmc_order_product.getColumnID(),tb_vmc_order_product.getHuoStatus()});
- 	 	db.close(); 
+		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        // 执行添加订单支付表	
+	 		db.execSQL(
+	 				"insert into vmc_order_pay" +
+	 				"(" +
+	 				"ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
+	 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime,isupload" +
+	 				") " +
+	 				"values" +
+	 				"(" +
+	 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime')),0" +
+	 				")",
+	 		        new Object[] { tb_vmc_order_pay.getOrdereID(), tb_vmc_order_pay.getPayType(),tb_vmc_order_pay.getPayStatus(), tb_vmc_order_pay.getRealStatus(),
+	 						tb_vmc_order_pay.getSmallNote(), tb_vmc_order_pay.getSmallConi(),tb_vmc_order_pay.getSmallAmount(), tb_vmc_order_pay.getSmallCard(),
+	 						tb_vmc_order_pay.getShouldPay(), tb_vmc_order_pay.getShouldNo(), tb_vmc_order_pay.getRealNote(), tb_vmc_order_pay.getRealCoin(), 
+	 						tb_vmc_order_pay.getRealAmount(), tb_vmc_order_pay.getDebtAmount(), tb_vmc_order_pay.getRealCard()});
+	 		
+			// 执行添加订单详细信息表	
+	 		db.execSQL(
+	 				"insert into vmc_order_product" +
+	 				"(" +
+	 				"orderID,productID,yujiHuo,realHuo,cabID,columnID,huoStatus" +
+	 				") " +
+	 				"values" +
+	 				"(" +
+	 				"?,?,?,?,?,?,?" +
+	 				")",
+	 		        new Object[] { tb_vmc_order_product.getOrderID(), tb_vmc_order_product.getProductID(),tb_vmc_order_product.getYujiHuo(), tb_vmc_order_product.getRealHuo(),
+	 						tb_vmc_order_product.getCabID(), tb_vmc_order_product.getColumnID(),tb_vmc_order_product.getHuoStatus()});
+	 	
+	 		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
 	}
 	//删除时间范围内的数据
 	public void detele(String starttime, String endtime) 
@@ -88,34 +100,60 @@ public class vmc_orderDAO
 			alllist.add(cursor.getString(cursor.getColumnIndex("ordereID")));
         }
 		
-		for(int i=0;i<alllist.size();i++) 
-		{	
-			// 执行删除订单详细信息表	
-	 		db.execSQL(
-	 				"delete from vmc_order_product where orderID=?",
-	 		        new Object[] { alllist.get(i)});
-	 		// 执行添加订单支付表	
-	 		db.execSQL(
-	 				"delete from vmc_order_pay where ordereID=?",
-	 		        new Object[] { alllist.get(i)});
-		}
-		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
-        db.close();
+		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+			for(int i=0;i<alllist.size();i++) 
+			{	
+				// 执行删除订单详细信息表	
+		 		db.execSQL(
+		 				"delete from vmc_order_product where orderID=?",
+		 		        new Object[] { alllist.get(i)});
+		 		// 执行添加订单支付表	
+		 		db.execSQL(
+		 				"delete from vmc_order_pay where ordereID=?",
+		 		        new Object[] { alllist.get(i)});
+			}
+
+			// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
     }
 	//删除所有的数据
 	public void deteleall() 
 	{   
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        // 执行删除订单详细信息表	
- 		db.execSQL(
- 				"delete from vmc_order_product");
- 		// 执行添加订单支付表	
- 		db.execSQL(
- 				"delete from vmc_order_pay"); 
-        db.close();
+		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        // 执行删除订单详细信息表	
+	 		db.execSQL(
+	 				"delete from vmc_order_product");
+	 		// 执行添加订单支付表	
+	 		db.execSQL(
+	 				"delete from vmc_order_pay"); 
+	 		
+	 		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
     }
 	//查找所有的订单支付数据
 	public List<Tb_vmc_order_pay> getScrollPay() 
@@ -159,10 +197,23 @@ public class vmc_orderDAO
   	public void update(String orderno) 
   	{       
           db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
+       // 开启一个事务
+  	    db.beginTransaction();
+  	    try {
           // 执行删除商品表
           db.execSQL("update [vmc_order_pay] set isupload=1 where ordereID=?", 
           		new Object[] { orderno});        
-          db.close(); 
+          
+          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
   	}  	
 	//查找时间范围内的订单支付数据
 	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 

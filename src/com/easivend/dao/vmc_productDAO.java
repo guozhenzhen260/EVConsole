@@ -49,40 +49,54 @@ public class vmc_productDAO
         if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
         	max=cursor.getInt(0); 
         }
-        // 执行添加商品		
- 		db.execSQL(
- 				"insert into vmc_product" +
- 				"(" +
- 				"productID,productName,productDesc,marketPrice,salesPrice," +
- 				"shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3,paixu,isdelete" +
- 				") " +
- 				"values" +
- 				"(" +
- 				"?,?,?,?,?,?,(datetime('now', 'localtime')),(datetime('now', 'localtime')),?,?,?,?,?" +
- 				")",
- 		        new Object[] { tb_vmc_product.getProductID(), tb_vmc_product.getProductName(),tb_vmc_product.getProductDesc(), tb_vmc_product.getMarketPrice(),
- 						tb_vmc_product.getSalesPrice(), tb_vmc_product.getShelfLife(),tb_vmc_product.getAttBatch1(), tb_vmc_product.getAttBatch2(),
- 						tb_vmc_product.getAttBatch3(), max+1,tb_vmc_product.getIsdelete()});
- 		
- 		// 执行添加商品与类别关联表	
- 		if(Integer.parseInt(classID)>0)
- 		{
-		db.execSQL(
-				"insert into vmc_classproduct" +
-				"(" +
-				"classID,productID,classTime" +
-				") " +
-				"values" +
-				"(" +
-				"?,?,(datetime('now', 'localtime'))" +
-				")",
-		        new Object[] { classID,tb_vmc_product.getProductID()});
- 		}
- 		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
- 		db.close(); 
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+		
+	        // 执行添加商品		
+	 		db.execSQL(
+	 				"insert into vmc_product" +
+	 				"(" +
+	 				"productID,productName,productDesc,marketPrice,salesPrice," +
+	 				"shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3,paixu,isdelete" +
+	 				") " +
+	 				"values" +
+	 				"(" +
+	 				"?,?,?,?,?,?,(datetime('now', 'localtime')),(datetime('now', 'localtime')),?,?,?,?,?" +
+	 				")",
+	 		        new Object[] { tb_vmc_product.getProductID(), tb_vmc_product.getProductName(),tb_vmc_product.getProductDesc(), tb_vmc_product.getMarketPrice(),
+	 						tb_vmc_product.getSalesPrice(), tb_vmc_product.getShelfLife(),tb_vmc_product.getAttBatch1(), tb_vmc_product.getAttBatch2(),
+	 						tb_vmc_product.getAttBatch3(), max+1,tb_vmc_product.getIsdelete()});
+	 		
+	 		// 执行添加商品与类别关联表	
+	 		if(Integer.parseInt(classID)>0)
+	 		{
+			db.execSQL(
+					"insert into vmc_classproduct" +
+					"(" +
+					"classID,productID,classTime" +
+					") " +
+					"values" +
+					"(" +
+					"?,?,(datetime('now', 'localtime'))" +
+					")",
+			        new Object[] { classID,tb_vmc_product.getProductID()});
+	 		}
+	 		
+	 		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
 	}
     //修改
 	public void update(Tb_vmc_product tb_vmc_product,String classID)throws SQLException
@@ -103,45 +117,57 @@ public class vmc_productDAO
  		//查找原先商品ID对应的类别ID
  		String clsID=findclass(tb_vmc_product.getProductID()); 	
  		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象		
-        
- 		//如果需要进行商品分类
- 		if(Integer.parseInt(classID)>0)
- 		{
- 			if(clsID.isEmpty()==true)//如果原先没有商品分类
- 			{
- 				db.execSQL(
- 						"insert into vmc_classproduct" +
- 						"(" +
- 						"classID,productID,classTime" +
- 						") " +
- 						"values" +
- 						"(" +
- 						"?,?,(datetime('now', 'localtime'))" +
- 						")",
- 				        new Object[] { classID,tb_vmc_product.getProductID()});
- 			}
- 			//如果原先有商品分类
- 			else 
- 			{
-				db.execSQL(
-						"update vmc_classproduct set " +
-						"classID=?,classTime=(datetime('now', 'localtime')) " +
-						"where productID=?",
-				        new Object[] { classID,tb_vmc_product.getProductID()});
- 			}
- 		}	
- 		//不需要进行商品分类
- 		else
- 		{
- 			if(clsID.isEmpty()!=true)//如果原先有商品分类
- 			{
- 				db.execSQL(
-						"delete from vmc_classproduct " +
-						"where productID=?",
-				        new Object[] { tb_vmc_product.getProductID()});
- 			}
- 		}
- 		db.close();
+ 		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+	 		//如果需要进行商品分类
+	 		if(Integer.parseInt(classID)>0)
+	 		{
+	 			if(clsID.isEmpty()==true)//如果原先没有商品分类
+	 			{
+	 				db.execSQL(
+	 						"insert into vmc_classproduct" +
+	 						"(" +
+	 						"classID,productID,classTime" +
+	 						") " +
+	 						"values" +
+	 						"(" +
+	 						"?,?,(datetime('now', 'localtime'))" +
+	 						")",
+	 				        new Object[] { classID,tb_vmc_product.getProductID()});
+	 			}
+	 			//如果原先有商品分类
+	 			else 
+	 			{
+					db.execSQL(
+							"update vmc_classproduct set " +
+							"classID=?,classTime=(datetime('now', 'localtime')) " +
+							"where productID=?",
+					        new Object[] { classID,tb_vmc_product.getProductID()});
+	 			}
+	 		}	
+	 		//不需要进行商品分类
+	 		else
+	 		{
+	 			if(clsID.isEmpty()!=true)//如果原先有商品分类
+	 			{
+	 				db.execSQL(
+							"delete from vmc_classproduct " +
+							"where productID=?",
+					        new Object[] { tb_vmc_product.getProductID()});
+	 			}
+	 		}
+	 	
+	 		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
 	}
 	//添加或者修改
 	public void addorupdate(Tb_vmc_product tb_vmc_product,String classID) {
@@ -165,23 +191,36 @@ public class vmc_productDAO
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //是否在货道表上有关联
   		Cursor cursor = db.rawQuery("select productID from vmc_column where productID=?", new String[] { tb_vmc_product.getProductID()});// 获取收入信息表中的最大编号
-  	    // 没有关联货道，可以删除
-  		if (!cursor.moveToLast()) 
-        {
-  			// 执行删除商品表
-  	        db.execSQL("delete from vmc_product where productID=?", 
-  	        		new Object[] { tb_vmc_product.getProductID()});
-  	        //删除商品分类关联表
-  	        db.execSQL(
-  					"delete from vmc_classproduct " +
-  					"where productID=?",
-  			        new Object[] { tb_vmc_product.getProductID()});
-        }
-  		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		} 
-        db.close();
+  		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+	  		// 没有关联货道，可以删除
+	  		if (!cursor.moveToLast()) 
+	        {
+	  			// 执行删除商品表
+	  	        db.execSQL("delete from vmc_product where productID=?", 
+	  	        		new Object[] { tb_vmc_product.getProductID()});
+	  	        //删除商品分类关联表
+	  	        db.execSQL(
+	  					"delete from vmc_classproduct " +
+	  					"where productID=?",
+	  			        new Object[] { tb_vmc_product.getProductID()});
+	        }
+	  	
+	  		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
     }
 	/**
      * 通过ID刪除多条信息
@@ -226,70 +265,83 @@ public class vmc_productDAO
 	    	index=cursor.getInt(0); 
 	    }
 	    
-	    //上移
-	    if(type==1)
-	    {
-	    	//不是第一个值
-	    	if(index>0)
-	    	{
-	    		//取得上一排序值的id
-	    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
-	            		 new String[] { String.valueOf(index-1)});// 获取收入信息表中的最大编号
-	    	    if (cursor.moveToLast()) 
-	    	    {// 访问Cursor中的最后一条数据
-	    	    	nextid=cursor.getString(0); 
-	    	    }
-	    	    //上一个值+1
-	    	    db.execSQL(
-						"update vmc_product set " +
-						"paixu=? " +
-						"where productID=?",
-				        new Object[] { index,nextid});
-	    	    //本值-1
-	    	    db.execSQL(
-						"update vmc_product set " +
-						"paixu=? " +
-						"where productID=?",
-				        new Object[] { index-1,tb_vmc_product.getProductID()});
-	    	}
+	    // 开启一个事务
+	    db.beginTransaction();
+	    try {
+		    //上移
+		    if(type==1)
+		    {
+		    	//不是第一个值
+		    	if(index>0)
+		    	{
+		    		//取得上一排序值的id
+		    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
+		            		 new String[] { String.valueOf(index-1)});// 获取收入信息表中的最大编号
+		    	    if (cursor.moveToLast()) 
+		    	    {// 访问Cursor中的最后一条数据
+		    	    	nextid=cursor.getString(0); 
+		    	    }
+		    	    //上一个值+1
+		    	    db.execSQL(
+							"update vmc_product set " +
+							"paixu=? " +
+							"where productID=?",
+					        new Object[] { index,nextid});
+		    	    //本值-1
+		    	    db.execSQL(
+							"update vmc_product set " +
+							"paixu=? " +
+							"where productID=?",
+					        new Object[] { index-1,tb_vmc_product.getProductID()});
+		    	}
+		    }
+		    //下移
+		    else 
+		    {
+		    	//取得最大排序值
+		  		cursor = db.rawQuery("select max(paixu) from vmc_product", null);// 获取收入信息表中的最大编号
+		          if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
+		          	max=cursor.getInt(0); 
+		          }
+		        //不是最后一个值  
+		        if(index<max)
+		        {
+		    		//取得下一排序值的id
+		    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
+		            		 new String[] { String.valueOf(index+1)});// 获取收入信息表中的最大编号
+		    	    if (cursor.moveToLast()) 
+		    	    {// 访问Cursor中的最后一条数据
+		    	    	nextid=cursor.getString(0); 
+		    	    }
+		    	    //下一个值-1
+		    	    db.execSQL(
+							"update vmc_product set " +
+							"paixu=? " +
+							"where productID=?",
+					        new Object[] { index,nextid});
+		    	    //本值+1
+		    	    db.execSQL(
+							"update vmc_product set " +
+							"paixu=? " +
+							"where productID=?",
+					        new Object[] { index+1,tb_vmc_product.getProductID()});
+		    	}
+		    }
+		 
+		    // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
 	    }
-	    //下移
-	    else 
-	    {
-	    	//取得最大排序值
-	  		cursor = db.rawQuery("select max(paixu) from vmc_product", null);// 获取收入信息表中的最大编号
-	          if (cursor.moveToLast()) {// 访问Cursor中的最后一条数据
-	          	max=cursor.getInt(0); 
-	          }
-	        //不是最后一个值  
-	        if(index<max)
-	        {
-	    		//取得下一排序值的id
-	    	  	cursor = db.rawQuery("select productID from vmc_product where paixu=?", 
-	            		 new String[] { String.valueOf(index+1)});// 获取收入信息表中的最大编号
-	    	    if (cursor.moveToLast()) 
-	    	    {// 访问Cursor中的最后一条数据
-	    	    	nextid=cursor.getString(0); 
-	    	    }
-	    	    //下一个值-1
-	    	    db.execSQL(
-						"update vmc_product set " +
-						"paixu=? " +
-						"where productID=?",
-				        new Object[] { index,nextid});
-	    	    //本值+1
-	    	    db.execSQL(
-						"update vmc_product set " +
-						"paixu=? " +
-						"where productID=?",
-				        new Object[] { index+1,tb_vmc_product.getProductID()});
-	    	}
-	    }
-	    if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
- 		db.close(); 
 	    
       }
     

@@ -48,18 +48,44 @@ public class vmc_classDAO
 	{
 		
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-		// 执行添加		
-		db.execSQL("insert into vmc_class (classID,className,classTime,attBatch1) values (?,?,(datetime('now', 'localtime')),?)",
-		        new Object[] { tb_vmc_class.getClassID(), tb_vmc_class.getClassName(), tb_vmc_class.getAttBatch1() });
-		db.close(); 
+		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+			// 执行添加		
+			db.execSQL("insert into vmc_class (classID,className,classTime,attBatch1) values (?,?,(datetime('now', 'localtime')),?)",
+			        new Object[] { tb_vmc_class.getClassID(), tb_vmc_class.getClassName(), tb_vmc_class.getAttBatch1() });
+			
+			// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
 	}
     //修改
 	public void update(Tb_vmc_class tb_vmc_class) {
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        // 执行修改
-        db.execSQL("update vmc_class set className = ?,classTime=(datetime('now', 'localtime')),attBatch1= ? where classID = ?", 
-        		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getAttBatch1(),tb_vmc_class.getClassID()});
-        db.close(); 
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        // 执行修改
+	        db.execSQL("update vmc_class set className = ?,classTime=(datetime('now', 'localtime')),attBatch1= ? where classID = ?", 
+	        		new Object[] { tb_vmc_class.getClassName(),tb_vmc_class.getAttBatch1(),tb_vmc_class.getClassID()});
+	        
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
 	}
 	//添加或者修改
 	public void addorupdate(Tb_vmc_class tb_vmc_class) {
@@ -83,18 +109,32 @@ public class vmc_classDAO
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //是否在商品分类关联表上有关联
   		Cursor cursor = db.rawQuery("select classID from vmc_classproduct where classID=?", new String[] { tb_vmc_class.getClassID()});// 获取收入信息表中的最大编号
-  	    // 没有关联商品，可以删除
-  		if (!cursor.moveToLast()) 
-        {
-	        // 执行删除收入信息操作
-	        db.execSQL("delete from vmc_class where classID = ?", 
-	        		new Object[] { tb_vmc_class.getClassID()});
-        }
-  		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		} 
-        db.close(); 
+  		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+	  		// 没有关联商品，可以删除
+	  		if (!cursor.moveToLast()) 
+	        {
+		        // 执行删除收入信息操作
+		        db.execSQL("delete from vmc_class where classID = ?", 
+		        		new Object[] { tb_vmc_class.getClassID()});
+	        }
+	  		
+	  		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		} 
+	        db.close();
+	    }
+  		 
     }
 	/**
      * 通过ID刪除多条信息
@@ -114,9 +154,22 @@ public class vmc_classDAO
             }
             sb.deleteCharAt(sb.length() - 1);// 去掉最后一个“,“字符
             db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-            // 执行删除收入信息操作
-            db.execSQL("delete from vmc_class where classID in (" + sb + ")", (Object[]) ids);
-            db.close(); 
+            // 开启一个事务
+    	    db.beginTransaction();
+    	    try {
+	            // 执行删除收入信息操作
+	            db.execSQL("delete from vmc_class where classID in (" + sb + ")", (Object[]) ids);
+	            
+	            // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		        db.setTransactionSuccessful();
+		    } catch (Exception e) {
+		        // process it
+		        e.printStackTrace();
+		    } finally {
+		        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+		        db.endTransaction();
+		        db.close(); 
+		    }
         }
     }
 
