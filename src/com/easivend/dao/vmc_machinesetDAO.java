@@ -38,59 +38,73 @@ public class vmc_machinesetDAO
 	{
 		int max=0;
 		//取得排序值
-		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象		
         Cursor cursor = db.rawQuery("select count(*) from vmc_machineset", null);// 获取收入信息的记录数
         if (cursor.moveToNext()) {// 判断Cursor中是否有数据
 
             max=cursor.getInt(0);// 返回总记录数
         }
-        if(max==0)
-        {
-	        // 执行添加商品		
-	 		db.execSQL(
-	 				"insert into vmc_machineset" +
-	 				"(" +
-	 				"logoStr,audioWork,audioWorkstart,audioWorkend,audioSun," +
-	 				"audioSunstart,audioSunend,tempWork,tempWorkstart,tempWorkend,tempSunstart,tempSunend,ligntWorkstart," +
-	 				"ligntWorkend,ligntSunstart,ligntSunend,coldWorkstart,coldWorkend,coldSunstart," +
-	 				"coldSunend,chouWorkstart,chouWorkend,chouSunstart,chouSunend" +
-	 				") " +
-	 				"values" +
-	 				"(" +
-	 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
-	 				")",
-	 		        new Object[] { tb_vmc_machineset.getLogoStr(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
-	 						tb_vmc_machineset.getAudioSun(), tb_vmc_machineset.getAudioSunstart(),tb_vmc_machineset.getAudioSunend(), tb_vmc_machineset.getTempWork(),
-	 						tb_vmc_machineset.getTempWorkstart(), tb_vmc_machineset.getTempWorkend(), tb_vmc_machineset.getTempSunstart(), tb_vmc_machineset.getTempSunend(),
-	 						tb_vmc_machineset.getLigntWorkstart(), tb_vmc_machineset.getLigntWorkend(), tb_vmc_machineset.getLigntSunstart(), tb_vmc_machineset.getLigntSunend(),
-	 						tb_vmc_machineset.getColdWorkstart(), tb_vmc_machineset.getColdWorkend(), tb_vmc_machineset.getColdSunstart(), tb_vmc_machineset.getColdSunend(),
-	 						tb_vmc_machineset.getChouWorkstart(), tb_vmc_machineset.getChouWorkend(), tb_vmc_machineset.getChouSunstart(), tb_vmc_machineset.getChouSunend()});
- 		
-        }
-        else
-        {
-            // 执行添加商品		
-     		db.execSQL(
-     				"update vmc_machineset " +
-     				"set " +
-     				"logoStr=?,audioWork=?,audioWorkstart=?,audioWorkend=?,audioSun=?," +
-     				"audioSunstart=?,audioSunend=?,tempWork=?,tempWorkstart=?,tempWorkend=?,tempSunstart=?,tempSunend=?,ligntWorkstart=?," +
-     				"ligntWorkend=?,ligntSunstart=?,ligntSunend=?,coldWorkstart=?,coldWorkend=?,coldSunstart=?,coldSunend=?,"+ 
-					"chouWorkstart=?,chouWorkend=?,chouSunstart=?,chouSunend=?"
-     				,
-     				new Object[] { tb_vmc_machineset.getLogoStr(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
-	 						tb_vmc_machineset.getAudioSun(), tb_vmc_machineset.getAudioSunstart(),tb_vmc_machineset.getAudioSunend(), tb_vmc_machineset.getTempWork(),
-	 						tb_vmc_machineset.getTempWorkstart(), tb_vmc_machineset.getTempWorkend(), tb_vmc_machineset.getTempSunstart(), tb_vmc_machineset.getTempSunend(),
-	 						tb_vmc_machineset.getLigntWorkstart(), tb_vmc_machineset.getLigntWorkend(), tb_vmc_machineset.getLigntSunstart(), tb_vmc_machineset.getLigntSunend(),
-	 						tb_vmc_machineset.getColdWorkstart(), tb_vmc_machineset.getColdWorkend(), tb_vmc_machineset.getColdSunstart(), tb_vmc_machineset.getColdSunend(),
-	 						tb_vmc_machineset.getChouWorkstart(), tb_vmc_machineset.getChouWorkend(), tb_vmc_machineset.getChouSunstart(), tb_vmc_machineset.getChouSunend()});
- 		
-            }	
- 		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
- 		db.close(); 
+        
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if(max==0)
+	        {
+		        // 执行添加商品		
+		 		db.execSQL(
+		 				"insert into vmc_machineset" +
+		 				"(" +
+		 				"logoStr,audioWork,audioWorkstart,audioWorkend,audioSun," +
+		 				"audioSunstart,audioSunend,tempWork,tempWorkstart,tempWorkend,tempSunstart,tempSunend,ligntWorkstart," +
+		 				"ligntWorkend,ligntSunstart,ligntSunend,coldWorkstart,coldWorkend,coldSunstart," +
+		 				"coldSunend,chouWorkstart,chouWorkend,chouSunstart,chouSunend" +
+		 				") " +
+		 				"values" +
+		 				"(" +
+		 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
+		 				")",
+		 		        new Object[] { tb_vmc_machineset.getLogoStr(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
+		 						tb_vmc_machineset.getAudioSun(), tb_vmc_machineset.getAudioSunstart(),tb_vmc_machineset.getAudioSunend(), tb_vmc_machineset.getTempWork(),
+		 						tb_vmc_machineset.getTempWorkstart(), tb_vmc_machineset.getTempWorkend(), tb_vmc_machineset.getTempSunstart(), tb_vmc_machineset.getTempSunend(),
+		 						tb_vmc_machineset.getLigntWorkstart(), tb_vmc_machineset.getLigntWorkend(), tb_vmc_machineset.getLigntSunstart(), tb_vmc_machineset.getLigntSunend(),
+		 						tb_vmc_machineset.getColdWorkstart(), tb_vmc_machineset.getColdWorkend(), tb_vmc_machineset.getColdSunstart(), tb_vmc_machineset.getColdSunend(),
+		 						tb_vmc_machineset.getChouWorkstart(), tb_vmc_machineset.getChouWorkend(), tb_vmc_machineset.getChouSunstart(), tb_vmc_machineset.getChouSunend()});
+	 		
+	        }
+	        else
+	        {
+	            // 执行添加商品		
+	     		db.execSQL(
+	     				"update vmc_machineset " +
+	     				"set " +
+	     				"logoStr=?,audioWork=?,audioWorkstart=?,audioWorkend=?,audioSun=?," +
+	     				"audioSunstart=?,audioSunend=?,tempWork=?,tempWorkstart=?,tempWorkend=?,tempSunstart=?,tempSunend=?,ligntWorkstart=?," +
+	     				"ligntWorkend=?,ligntSunstart=?,ligntSunend=?,coldWorkstart=?,coldWorkend=?,coldSunstart=?,coldSunend=?,"+ 
+						"chouWorkstart=?,chouWorkend=?,chouSunstart=?,chouSunend=?"
+	     				,
+	     				new Object[] { tb_vmc_machineset.getLogoStr(), tb_vmc_machineset.getAudioWork(),tb_vmc_machineset.getAudioWorkstart(), tb_vmc_machineset.getAudioWorkend(),
+		 						tb_vmc_machineset.getAudioSun(), tb_vmc_machineset.getAudioSunstart(),tb_vmc_machineset.getAudioSunend(), tb_vmc_machineset.getTempWork(),
+		 						tb_vmc_machineset.getTempWorkstart(), tb_vmc_machineset.getTempWorkend(), tb_vmc_machineset.getTempSunstart(), tb_vmc_machineset.getTempSunend(),
+		 						tb_vmc_machineset.getLigntWorkstart(), tb_vmc_machineset.getLigntWorkend(), tb_vmc_machineset.getLigntSunstart(), tb_vmc_machineset.getLigntSunend(),
+		 						tb_vmc_machineset.getColdWorkstart(), tb_vmc_machineset.getColdWorkend(), tb_vmc_machineset.getColdSunstart(), tb_vmc_machineset.getColdSunend(),
+		 						tb_vmc_machineset.getChouWorkstart(), tb_vmc_machineset.getChouWorkend(), tb_vmc_machineset.getChouSunstart(), tb_vmc_machineset.getChouSunend()});
+	 		
+	        }	
+
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
 	}    
 	/**
      * 查找一条商品信息

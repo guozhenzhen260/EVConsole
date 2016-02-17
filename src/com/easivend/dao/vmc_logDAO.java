@@ -40,31 +40,54 @@ public class vmc_logDAO {
 	public void add(Tb_vmc_log tb_vmc_log)throws SQLException
 	{
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-		
-        // 执行添加订单支付表	
- 		db.execSQL(
- 				"insert into vmc_log" +
- 				"(" +
- 				"logID,logType,logDesc,logTime" +
- 				") " +
- 				"values" +
- 				"(" +
- 				"?,?,?,(datetime('now', 'localtime'))" +
- 				")",
- 		        new Object[] { tb_vmc_log.getLogID(), tb_vmc_log.getLogType(),tb_vmc_log.getLogDesc()});
+		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        // 执行添加订单支付表	
+	 		db.execSQL(
+	 				"insert into vmc_log" +
+	 				"(" +
+	 				"logID,logType,logDesc,logTime" +
+	 				") " +
+	 				"values" +
+	 				"(" +
+	 				"?,?,?,(datetime('now', 'localtime'))" +
+	 				")",
+	 		        new Object[] { tb_vmc_log.getLogID(), tb_vmc_log.getLogType(),tb_vmc_log.getLogDesc()});
  		
-		db.close(); 
+	 		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    } 
 	}
 	//删除时间范围内的数据
 	public void detele(String starttime, String endtime) 
 	{   
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象        	
-		// 执行删除订单详细信息表	
- 		db.execSQL(
- 				"delete from vmc_log where logTime between ? and ?",
- 				new String[] { starttime,endtime });
+		// 开启一个事务
+	    db.beginTransaction();
+	    try {
+			// 执行删除订单详细信息表	
+	 		db.execSQL(
+	 				"delete from vmc_log where logTime between ? and ?",
+	 				new String[] { starttime,endtime });
 	 		 
-        db.close();
+	 		// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    } 
     }
 	//查找时间范围内的订单支付数据
 	public List<Tb_vmc_log> getScrollPay(String starttime, String endtime) 
