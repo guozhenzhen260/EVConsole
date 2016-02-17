@@ -44,51 +44,65 @@ public class vmc_system_parameterDAO
 
             max=cursor.getInt(0);// 返回总记录数
         }
-        if(max==0)
-        {
-        // 执行添加商品		
- 		db.execSQL(
- 				"insert into vmc_system_parameter" +
- 				"(" +
- 				"devID,devhCode,isNet,isfenClass,isbuyCar," +
- 				"liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer," +
- 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType,marketAmount,billAmount" +
- 				") " +
- 				"values" +
- 				"(" +
- 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
- 				")",
- 		        new Object[] { tb_vmc_system_parameter.getDevID(), tb_vmc_system_parameter.getDevhCode(),tb_vmc_system_parameter.getIsNet(), tb_vmc_system_parameter.getIsfenClass(),
- 						tb_vmc_system_parameter.getIsbuyCar(), tb_vmc_system_parameter.getLiebiaoKuan(),tb_vmc_system_parameter.getMainPwd(), tb_vmc_system_parameter.getAmount(),
- 						tb_vmc_system_parameter.getCard(), tb_vmc_system_parameter.getZhifubaofaca(), tb_vmc_system_parameter.getZhifubaoer(), tb_vmc_system_parameter.getWeixing(),
- 						tb_vmc_system_parameter.getPrinter(), tb_vmc_system_parameter.getLanguage(), tb_vmc_system_parameter.getRstTime(), tb_vmc_system_parameter.getRstDay(),
- 						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType(),
- 						tb_vmc_system_parameter.getMarketAmount(),tb_vmc_system_parameter.getBillAmount()});
- 		
-        }
-        else
-        {
-            // 执行添加商品		
-     		db.execSQL(
-     				"update vmc_system_parameter " +
-     				"set " +
-     				"devID=?,devhCode=?,isNet=?,isfenClass=?,isbuyCar=?," +
-     				"liebiaoKuan=?,mainPwd=?,amount=?,card=?,zhifubaofaca=?,zhifubaoer=?,weixing=?,printer=?," +
-     				"language=?,rstTime=?,rstDay=?,baozhiProduct=?,emptyProduct=?,proSortType=?,marketAmount=?,billAmount=?" 
-     				,
-     		        new Object[] { tb_vmc_system_parameter.getDevID(), tb_vmc_system_parameter.getDevhCode(),tb_vmc_system_parameter.getIsNet(), tb_vmc_system_parameter.getIsfenClass(),
-     						tb_vmc_system_parameter.getIsbuyCar(), tb_vmc_system_parameter.getLiebiaoKuan(),tb_vmc_system_parameter.getMainPwd(), tb_vmc_system_parameter.getAmount(),
-     						tb_vmc_system_parameter.getCard(), tb_vmc_system_parameter.getZhifubaofaca(), tb_vmc_system_parameter.getZhifubaoer(), tb_vmc_system_parameter.getWeixing(),
-     						tb_vmc_system_parameter.getPrinter(), tb_vmc_system_parameter.getLanguage(), tb_vmc_system_parameter.getRstTime(), tb_vmc_system_parameter.getRstDay(),
-     						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType(),
-     						tb_vmc_system_parameter.getMarketAmount(),tb_vmc_system_parameter.getBillAmount()});
-     		
-            }	
- 		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
- 		db.close(); 
+     
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if(max==0)
+	        {
+	        // 执行添加商品		
+	 		db.execSQL(
+	 				"insert into vmc_system_parameter" +
+	 				"(" +
+	 				"devID,devhCode,isNet,isfenClass,isbuyCar," +
+	 				"liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer," +
+	 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType,marketAmount,billAmount" +
+	 				") " +
+	 				"values" +
+	 				"(" +
+	 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?" +
+	 				")",
+	 		        new Object[] { tb_vmc_system_parameter.getDevID(), tb_vmc_system_parameter.getDevhCode(),tb_vmc_system_parameter.getIsNet(), tb_vmc_system_parameter.getIsfenClass(),
+	 						tb_vmc_system_parameter.getIsbuyCar(), tb_vmc_system_parameter.getLiebiaoKuan(),tb_vmc_system_parameter.getMainPwd(), tb_vmc_system_parameter.getAmount(),
+	 						tb_vmc_system_parameter.getCard(), tb_vmc_system_parameter.getZhifubaofaca(), tb_vmc_system_parameter.getZhifubaoer(), tb_vmc_system_parameter.getWeixing(),
+	 						tb_vmc_system_parameter.getPrinter(), tb_vmc_system_parameter.getLanguage(), tb_vmc_system_parameter.getRstTime(), tb_vmc_system_parameter.getRstDay(),
+	 						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType(),
+	 						tb_vmc_system_parameter.getMarketAmount(),tb_vmc_system_parameter.getBillAmount()});
+	 		
+	        }
+	        else
+	        {
+	            // 执行添加商品		
+	     		db.execSQL(
+	     				"update vmc_system_parameter " +
+	     				"set " +
+	     				"devID=?,devhCode=?,isNet=?,isfenClass=?,isbuyCar=?," +
+	     				"liebiaoKuan=?,mainPwd=?,amount=?,card=?,zhifubaofaca=?,zhifubaoer=?,weixing=?,printer=?," +
+	     				"language=?,rstTime=?,rstDay=?,baozhiProduct=?,emptyProduct=?,proSortType=?,marketAmount=?,billAmount=?" 
+	     				,
+	     		        new Object[] { tb_vmc_system_parameter.getDevID(), tb_vmc_system_parameter.getDevhCode(),tb_vmc_system_parameter.getIsNet(), tb_vmc_system_parameter.getIsfenClass(),
+	     						tb_vmc_system_parameter.getIsbuyCar(), tb_vmc_system_parameter.getLiebiaoKuan(),tb_vmc_system_parameter.getMainPwd(), tb_vmc_system_parameter.getAmount(),
+	     						tb_vmc_system_parameter.getCard(), tb_vmc_system_parameter.getZhifubaofaca(), tb_vmc_system_parameter.getZhifubaoer(), tb_vmc_system_parameter.getWeixing(),
+	     						tb_vmc_system_parameter.getPrinter(), tb_vmc_system_parameter.getLanguage(), tb_vmc_system_parameter.getRstTime(), tb_vmc_system_parameter.getRstDay(),
+	     						tb_vmc_system_parameter.getBaozhiProduct(), tb_vmc_system_parameter.getEmptyProduct(), tb_vmc_system_parameter.getProSortType(),
+	     						tb_vmc_system_parameter.getMarketAmount(),tb_vmc_system_parameter.getBillAmount()});
+	     		
+	            }	
+	        
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
 	}    
 	/**
      * 查找一条商品信息

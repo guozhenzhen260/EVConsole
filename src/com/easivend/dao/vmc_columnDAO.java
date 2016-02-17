@@ -49,45 +49,57 @@ public class vmc_columnDAO
 		//是否已经存在本商品
         Cursor cursor = db.rawQuery("select columnID from vmc_column where cabID = ? and columnID=?", 
         		new String[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID() });// 根据编号查找支出信息，并存储到Cursor类中
-        if (cursor.moveToNext()) // 遍历查找到的支出信息
-        {
-        	//执行修改货道数据
-	 		db.execSQL(
-				"update vmc_column set " +
-				"productID=?,pathCount=?,pathRemain=?,columnStatus=?," +
-				"lasttime=(datetime('now', 'localtime')),isupload=0 " +
-				"where cabID=? and columnID=?",
-		        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
-						tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
-						tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
-		
-		}	      
-        else
-        {	
-        	// 执行添加货道		
-     		db.execSQL(
-     				"insert into vmc_column" +
-     				"(" +
-     				"cabID,columnID,productID,pathCount,pathRemain," +
-     				"columnStatus,lasttime,isupload" +
-     				") " +
-     				"values" +
-     				"(" +
-     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?" +
-     				")",
-     		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
-     						tb_vmc_column.getPathCount(),tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
-     						tb_vmc_column.getIsupload()});
-     		
-        }
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if (cursor.moveToNext()) // 遍历查找到的支出信息
+	        {
+	        	//执行修改货道数据
+		 		db.execSQL(
+					"update vmc_column set " +
+					"productID=?,pathCount=?,pathRemain=?,columnStatus=?," +
+					"lasttime=(datetime('now', 'localtime')),isupload=0 " +
+					"where cabID=? and columnID=?",
+			        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
+							tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
+							tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
+			
+			}	      
+	        else
+	        {	
+	        	// 执行添加货道		
+	     		db.execSQL(
+	     				"insert into vmc_column" +
+	     				"(" +
+	     				"cabID,columnID,productID,pathCount,pathRemain," +
+	     				"columnStatus,lasttime,isupload" +
+	     				") " +
+	     				"values" +
+	     				"(" +
+	     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?" +
+	     				")",
+	     		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
+	     						tb_vmc_column.getPathCount(),tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
+	     						tb_vmc_column.getIsupload()});
+	     		
+	        }
         
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
         
-        
- 		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
- 		db.close(); 
+ 		 
 	}
 	//为服务器设备下载添加或修改货道数据
 	public void addorupdateforserver(Tb_vmc_column tb_vmc_column)throws SQLException
@@ -96,73 +108,120 @@ public class vmc_columnDAO
 		//是否已经存在本商品
         Cursor cursor = db.rawQuery("select columnID from vmc_column where cabID = ? and columnID=?", 
         		new String[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID() });// 根据编号查找支出信息，并存储到Cursor类中
-        if (cursor.moveToNext()) // 遍历查找到的支出信息
-        {
-        	//执行修改货道数据
-	 		db.execSQL(
-				"update vmc_column set " +
-				"productID=?,pathCount=?,path_id=?," +
-				"lasttime=(datetime('now', 'localtime')),isupload=0 " +
-				"where cabID=? and columnID=?",
-		        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
-						tb_vmc_column.getPath_id(),
-						tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
-		
-		}	      
-        else
-        {	
-        	// 执行添加货道		
-     		db.execSQL(
-     				"insert into vmc_column" +
-     				"(" +
-     				"cabID,columnID,productID,pathCount,pathRemain," +
-     				"columnStatus,lasttime,path_id,isupload" +
-     				") " +
-     				"values" +
-     				"(" +
-     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?,?" +
-     				")",
-     		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
-     						tb_vmc_column.getPathCount(),0,3,tb_vmc_column.getPath_id(),tb_vmc_column.getIsupload()});
-     		
-        }
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if (cursor.moveToNext()) // 遍历查找到的支出信息
+	        {
+	        	//执行修改货道数据
+		 		db.execSQL(
+					"update vmc_column set " +
+					"productID=?,pathCount=?,path_id=?," +
+					"lasttime=(datetime('now', 'localtime')),isupload=0 " +
+					"where cabID=? and columnID=?",
+			        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
+							tb_vmc_column.getPath_id(),
+							tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
+			
+			}	      
+	        else
+	        {	
+	        	// 执行添加货道		
+	     		db.execSQL(
+	     				"insert into vmc_column" +
+	     				"(" +
+	     				"cabID,columnID,productID,pathCount,pathRemain," +
+	     				"columnStatus,lasttime,path_id,isupload" +
+	     				") " +
+	     				"values" +
+	     				"(" +
+	     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?,?" +
+	     				")",
+	     		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
+	     						tb_vmc_column.getPathCount(),0,3,tb_vmc_column.getPath_id(),tb_vmc_column.getIsupload()});
+	     		
+	        }
         
-        
-        
- 		if (!cursor.isClosed()) 
- 		{  
- 			cursor.close();  
- 		}  
- 		db.close(); 
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
 	}
 	//删除单条
 	public void detele(Tb_vmc_column tb_vmc_column) 
 	{       
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        // 执行删除商品表
-        db.execSQL("delete from vmc_column where cabID=? and columnID=?", 
-        		new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});        
-        db.close(); 
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        // 执行删除商品表
+	        db.execSQL("delete from vmc_column where cabID=? and columnID=?", 
+	        		new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});        
+
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	        db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
 	}
 	//删除该柜全部货道信息
   	public void deteleCab(String cabID) 
   	{       
           db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        // 开启一个事务
+  	    db.beginTransaction();
+  	    try {
           // 执行删除该柜商品表
           db.execSQL("delete from vmc_column where cabID=?", 
           		new Object[] { cabID});    
           
-          db.close(); 
+          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	      db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
   	}	
     //布满该柜全部货道存货数量
   	public void buhuoCab(String cabID) 
   	{       
-          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-          // 执行布满该柜货道表
-          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1,isupload=0 where cabID=? and columnStatus<>2 ", 
-          		new Object[] { cabID});    
+            db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+            // 开启一个事务
+    	    db.beginTransaction();
+    	    try {
+	          // 执行布满该柜货道表
+	          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1,isupload=0 where cabID=? and columnStatus<>2 ", 
+	          		new Object[] { cabID});    
           
-          db.close(); 
+	          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		      db.setTransactionSuccessful();
+		    } catch (Exception e) {
+		        // process it
+		        e.printStackTrace();
+		    } finally {
+		        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+		        db.endTransaction();
+		        db.close(); 
+		    }
   	}	
 	/**
      * 查找一条货道信息
@@ -235,11 +294,24 @@ public class vmc_columnDAO
      */
   	public void updatecol(String cabID,String columnID) 
   	{       
-          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
+          db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象     
+       // 开启一个事务
+  	    db.beginTransaction();
+  	    try {
           // 执行删除商品表
           db.execSQL("update [vmc_column] set isupload=1 where cabID=? and columnID=?", 
             		new String[] { cabID,columnID });        
-          db.close(); 
+
+          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+	      db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        db.close(); 
+	    }
   	}  
     
     /**
@@ -414,26 +486,39 @@ public class vmc_columnDAO
   	public void update(String cabID,String columnID) 
   	{       
           db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象          
-          // 执行删除商品表
-          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0 where cabID=? and columnID=?", 
-          		new Object[] { cabID,columnID});    
-          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
-          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中
-          //遍历所有的收入信息
-          if (cursor.moveToNext()) 
-          {
-        	  int pathRemain=cursor.getInt(cursor.getColumnIndex("pathRemain"));
-        	  if(pathRemain==0)
-        	  {
-        		  db.execSQL("update vmc_column set columnStatus=3 where cabID=? and columnID=?", 
-        	          		new Object[] { cabID,columnID}); 
-        	  }
-          }
-          if(!cursor.isClosed()) 
-   		 {  
-        	cursor.close();  
-   		 } 
-          db.close(); 
+	       // 开启一个事务
+	  	  db.beginTransaction();
+	  	  try {
+	          // 执行删除商品表
+	          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0 where cabID=? and columnID=?", 
+	          		new Object[] { cabID,columnID});    
+	          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
+	          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中
+	          //遍历所有的收入信息
+	          if (cursor.moveToNext()) 
+	          {
+	        	  int pathRemain=cursor.getInt(cursor.getColumnIndex("pathRemain"));
+	        	  if(pathRemain==0)
+	        	  {
+	        		  db.execSQL("update vmc_column set columnStatus=3 where cabID=? and columnID=?", 
+	        	          		new Object[] { cabID,columnID}); 
+	        	  }
+	          }
+	          if(!cursor.isClosed()) 
+	   		 {  
+	        	cursor.close();  
+	   		 } 
+	       
+	          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		        db.setTransactionSuccessful();
+		    } catch (Exception e) {
+		        // process it
+		        e.printStackTrace();
+		    } finally {
+		        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+		        db.endTransaction();
+		        db.close(); 
+		    }
   	}
 	
 }
