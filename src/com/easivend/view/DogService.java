@@ -18,6 +18,9 @@ package com.easivend.view;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +47,7 @@ import android.util.Log;
 
 public class DogService extends Service {
 
-	Timer timer;
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	private int allopen=1;//1表示一直打开应用,0表示关闭后不打开应用
 	private int logno=0;//表示计数
 	ActivityReceiver receiver;
@@ -79,7 +82,6 @@ public class DogService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		timer = new Timer(true);
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog create","dog.txt");
 		//9.注册接收器
 		receiver=new ActivityReceiver();
@@ -103,7 +105,7 @@ public class DogService extends Service {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog start","dog.txt");
-		timer.schedule(new TimerTask() { 
+		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
 	        	String str=null;	        	
@@ -157,7 +159,7 @@ public class DogService extends Service {
 	        		ToolClass.optLogFile(); 
 				}	        	
 	        } 
-	    }, 15*1000, 15*1000);       // timeTask 
+	    },15,15,TimeUnit.SECONDS);       // timeTask 
 	}
 	
 

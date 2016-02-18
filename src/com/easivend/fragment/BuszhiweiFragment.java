@@ -1,6 +1,5 @@
 package com.easivend.fragment;
 
-import java.util.Timer;
 
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusgoodsSelect;
@@ -32,7 +31,7 @@ public class BuszhiweiFragment extends Fragment
 	private int recLen = 180; 
 	private int queryLen = 0; 
     private TextView txtView; 
-    Timer timer = new Timer(); 
+//  Timer timer = new Timer(); 
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
