@@ -24,6 +24,9 @@ import java.util.TimerTask;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 
@@ -95,7 +98,7 @@ public class HuodaoTest extends TabActivity
 	private TextView txthuosetrst=null;
 	private int con=1;//查询连接次数
 	private int ishuoquery=0;//是否正在查询1,正在查询,0查询完成
-	Timer timer = new Timer(); 
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetbu=null,btnhuosetexit=null;
 	private Spinner spinhuosetCab=null,spinhuotestCab=null,spinhuopeiCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
@@ -375,7 +378,7 @@ public class HuodaoTest extends TabActivity
     	//===============
     	//货道设置页面
     	//===============
-  	    timer.schedule(task, 3*1000, 3*1000);       // timeTask 
+  	    timer.scheduleWithFixedDelay(task, 3, 3, TimeUnit.SECONDS);       // timeTask 
   	    txthuosetrst=(TextView)findViewById(R.id.txthuosetrst);
   	    barhuomanager= (ProgressBar) findViewById(R.id.barhuomanager);
   	    huoAdapter=new Vmc_HuoAdapter();
@@ -453,8 +456,7 @@ public class HuodaoTest extends TabActivity
     	btnhuosetexit = (Button) findViewById(R.id.btnhuosetexit);
     	btnhuosetexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {
-		    	timer.cancel();
+		    public void onClick(View arg0) {		    	
 		    	finish();
 		    }
 		});    	
@@ -656,8 +658,7 @@ public class HuodaoTest extends TabActivity
 		});
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {
-		    	timer.cancel();
+		    public void onClick(View arg0) {		    	
 		    	finish();
 		    }
 		});
@@ -1665,8 +1666,7 @@ public class HuodaoTest extends TabActivity
 		btnhuosetclose = (Button) findViewById(R.id.btnhuosetclose);
 		btnhuosetclose.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 				    @Override
-				    public void onClick(View arg0) {
-				    	timer.cancel();
+				    public void onClick(View arg0) {				    	
 				    	finish();
 				    }
 				});
@@ -1675,7 +1675,7 @@ public class HuodaoTest extends TabActivity
 	//货道设置页面
 	//===============
 	//调用倒计时定时器
-	TimerTask task = new TimerTask() { 
+	Runnable task = new Runnable() {  
         @Override 
         public void run() { 
   
@@ -1728,6 +1728,7 @@ public class HuodaoTest extends TabActivity
 	
 	@Override
 	protected void onDestroy() {
+		timer.shutdown();
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);
@@ -4021,4 +4022,6 @@ public class HuodaoTest extends TabActivity
 			}
 		}
 	}
+	
+	
 }

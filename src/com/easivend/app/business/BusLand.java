@@ -3,6 +3,9 @@ package com.easivend.app.business;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.ToolClass;
@@ -31,7 +34,7 @@ import android.widget.Button;
 public class BusLand extends Activity implements MovieFragInteraction,BusFragInteraction{	
     private MoviewlandFragment moviewlandFragment;
     private BusinesslandFragment businesslandFragment;
-    Timer timer = new Timer(true);
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
@@ -55,9 +58,10 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		initView();
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
-		timer.schedule(new TimerTask() { 
+		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
+	        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt"); 
 	        	  if(isbus==false)
 	        	  {
 		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
@@ -69,7 +73,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		              }	
 	        	  }
 	        } 
-	    }, 1000, 1000);       // timeTask  
+	    }, 1, 1, TimeUnit.SECONDS);       // timeTask  
 	}
 	
 	//初始化默认fragment
@@ -289,7 +293,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	}
 	@Override
 	protected void onDestroy() {
-		timer.cancel(); 
+		timer.shutdown();
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

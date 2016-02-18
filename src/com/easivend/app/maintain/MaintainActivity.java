@@ -27,6 +27,9 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Map.Entry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.EVprotocol;
@@ -111,7 +114,7 @@ public class MaintainActivity extends Activity
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
 	Map<String, String> vmcmap;
-	Timer timer = new Timer();
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -170,7 +173,7 @@ public class MaintainActivity extends Activity
 		this.registerReceiver(receiver,filter);
 		//7.发送指令广播给EVServerService
 		vmcmap = ToolClass.getvmc_no(MaintainActivity.this);		
-		timer.schedule(new TimerTask() { 
+		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
 	  
@@ -185,7 +188,7 @@ public class MaintainActivity extends Activity
 	                } 
 	            }); 
 	        } 
-	    }, 5*1000, 10*60*1000);       // timeTask 10*60
+	    }, 5, 10*60, TimeUnit.SECONDS);       // timeTask 10*60
 		
 		//================
 		//串口配置和注册相关
@@ -689,7 +692,7 @@ public class MaintainActivity extends Activity
 		if(columnopen!=0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getColumncom_id());
 		EVprotocolAPI.vmcEVStop();//关闭监听		
-		timer.cancel(); //关闭定时器
+		timer.shutdown(); //关闭定时器
 		//=============
 		//Server服务相关
 		//=============

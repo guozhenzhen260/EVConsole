@@ -1,6 +1,8 @@
 package com.easivend.app.maintain;
 
 import java.text.SimpleDateFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,8 +85,8 @@ public class ZhifubaoTest extends Activity
 		};	
 		//启动用户自己定义的类
 		final Zhifubaohttp zhifubaohttp=new Zhifubaohttp(mainhand);
-		Thread thread=new Thread(zhifubaohttp,"Zhifubaohttp Thread");
-		thread.start();
+		ExecutorService thread=Executors.newFixedThreadPool(3);
+		thread.execute(zhifubaohttp);	
 		imgzhifubaotest = (ImageView) findViewById(R.id.imgzhifubaotest);
 		edtzhifubaotest = (EditText) findViewById(R.id.edtzhifubaotest);
 		txtzhifubaotest = (TextView) findViewById(R.id.txtzhifubaotest);

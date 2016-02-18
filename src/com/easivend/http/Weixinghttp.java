@@ -62,6 +62,7 @@ public class Weixinghttp implements Runnable
 	public void run() 
 	{
 		// TODO Auto-generated method stub
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<weixinghttp="+Thread.currentThread().getId(),"log.txt");
 		Looper.prepare();//用户自己定义的类，创建线程需要自己准备loop
 		childhand=new Handler()
 		{

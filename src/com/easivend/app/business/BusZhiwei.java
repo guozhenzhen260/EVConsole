@@ -3,6 +3,10 @@ package com.easivend.app.business;
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +49,7 @@ public class BusZhiwei extends Activity
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
     private TextView txtView; 
-    Timer timer = new Timer(); 
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -57,7 +61,7 @@ public class BusZhiwei extends Activity
     private String zhifutype = "4";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行微信二维码操作
-    private Thread thread=null;
+    private ExecutorService thread=null;
     private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Weixinghttp weixinghttp=null;
@@ -93,7 +97,7 @@ public class BusZhiwei extends Activity
 		txtbuszhiweirst= (TextView) findViewById(R.id.txtbuszhiweirst);
 		txtbuszhiweitime= (TextView) findViewById(R.id.txtbuszhiweitime);
 		ivbuszhiwei= (ImageView) findViewById(R.id.ivbuszhiwei);
-		timer.schedule(task, 1000, 1000);       // timeTask 
+		timer.scheduleWithFixedDelay(task, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		imgbtnbuszhiweiqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhiweiqxzf);
 		imgbtnbuszhiweiqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -139,13 +143,13 @@ public class BusZhiwei extends Activity
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
 						txtbuszhiweirst.setText("交易结果:撤销成功");
-						timer.cancel(); 
+						timer.shutdown(); 
 						finish();
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						txtbuszhiweirst.setText("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
-						timer.cancel(); 
+						timer.shutdown(); 
 						tochuhuo();
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -165,8 +169,8 @@ public class BusZhiwei extends Activity
 		};
 		//启动用户自己定义的类
 		weixinghttp=new Weixinghttp(mainhand);
-		thread=new Thread(weixinghttp,"Weixinghttp Thread");
-		thread.start();
+		thread=Executors.newFixedThreadPool(3);
+		thread.execute(weixinghttp);
 		//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
@@ -276,45 +280,39 @@ public class BusZhiwei extends Activity
 	}
 	
 	//调用倒计时定时器
-	TimerTask task = new TimerTask() { 
-        @Override 
+	Runnable task = new Runnable() { 
+         @Override 
         public void run() { 
-  
-            runOnUiThread(new Runnable() {      // UI thread 
-                @Override 
-                public void run() { 
-                    recLen--; 
-                    txtbuszhiweitime.setText("倒计时:"+recLen); 
-                    //退出页面
-                    if(recLen <= 0)
-                    { 
-                        timer.cancel(); 
-                        timeoutfinishActivity();
-                    } 
-                    //发送查询交易指令
-                    if(iszhiwei==1)
-                    {
-	                    queryLen++;
-	                    if(queryLen>=4)
-	                    {
-	                    	queryLen=0;
-	                    	queryzhiwei();
-	                    }
-                    }
-                    //发送订单交易指令
-                    else if(iszhiwei==0)
-                    {
-	                    queryLen++;
-	                    if(queryLen>=10)
-	                    {
-	                    	queryLen=0;
-	                    	//发送订单
-	                		sendzhiwei();
-	                    }
-                    }
-                } 
-            }); 
-        } 
+            recLen--; 
+            txtbuszhiweitime.setText("倒计时:"+recLen); 
+            //退出页面
+            if(recLen <= 0)
+            { 
+                timer.shutdown(); 
+                timeoutfinishActivity();
+            } 
+            //发送查询交易指令
+            if(iszhiwei==1)
+            {
+                queryLen++;
+                if(queryLen>=4)
+                {
+                	queryLen=0;
+                	queryzhiwei();
+                }
+            }
+            //发送订单交易指令
+            else if(iszhiwei==0)
+            {
+                queryLen++;
+                if(queryLen>=10)
+                {
+                	queryLen=0;
+                	//发送订单
+            		sendzhiwei();
+                }
+            }
+        }             
     };
 	//结束界面
 	private void finishActivity()
@@ -323,7 +321,7 @@ public class BusZhiwei extends Activity
 			deletezhiwei();
 		else 
 		{
-			timer.cancel(); 
+			timer.shutdown(); 
 			finish();	
 		}
 	}
@@ -335,7 +333,7 @@ public class BusZhiwei extends Activity
 			deletezhiwei();
 		else 
 		{
-			timer.cancel(); 
+			timer.shutdown(); 
 			finish();
 		}
 	}
