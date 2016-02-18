@@ -64,6 +64,7 @@ public class Zhifubaohttp implements Runnable
 	}
 	@Override
 	public void run() {
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<zhifubaothread="+Thread.currentThread().getId(),"log.txt");
 		// TODO Auto-generated method stub
 		Looper.prepare();//用户自己定义的类，创建线程需要自己准备loop
 		childhand=new Handler()

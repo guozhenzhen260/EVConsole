@@ -3,6 +3,8 @@ package com.easivend.app.business;
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +59,7 @@ public class BusZhiwei extends Activity
     private String zhifutype = "4";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行微信二维码操作
-    private Thread thread=null;
+    private ExecutorService thread=null;
     private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Weixinghttp weixinghttp=null;
@@ -165,8 +167,8 @@ public class BusZhiwei extends Activity
 		};
 		//启动用户自己定义的类
 		weixinghttp=new Weixinghttp(mainhand);
-		thread=new Thread(weixinghttp,"Weixinghttp Thread");
-		thread.start();
+		thread=Executors.newFixedThreadPool(3);
+		thread.execute(weixinghttp);
 		//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
