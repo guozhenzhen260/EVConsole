@@ -1,6 +1,8 @@
 package com.easivend.app.maintain;
 
 import java.text.SimpleDateFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,8 +86,8 @@ public class WeixingTest extends Activity
 		};	
 		//启动用户自己定义的类
 		final Weixinghttp weixinghttp=new Weixinghttp(mainhand);
-		Thread thread=new Thread(weixinghttp,"Weixinghttp Thread");
-		thread.start();
+		ExecutorService thread=Executors.newFixedThreadPool(3);
+		thread.execute(weixinghttp);	
 		imgweixingtest = (ImageView) findViewById(R.id.imgweixingtest);
 		edtweixingtest = (EditText) findViewById(R.id.edtweixingtest);
 		txtweixingtest = (TextView) findViewById(R.id.txtweixingtest);

@@ -3,6 +3,10 @@ package com.easivend.app.business;
 import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +52,7 @@ public class BusZhier extends Activity
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
     private TextView txtView; 
-    Timer timer = new Timer(); 
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -60,7 +64,7 @@ public class BusZhier extends Activity
     private String zhifutype = "3";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行支付宝二维码操作
-    private Thread thread=null;
+    private ExecutorService thread=null;
     private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Zhifubaohttp zhifubaohttp=null;
@@ -96,7 +100,7 @@ public class BusZhier extends Activity
 		txtbuszhierrst= (TextView) findViewById(R.id.txtbuszhierrst);
 		txtbuszhiertime= (TextView) findViewById(R.id.txtbuszhiertime);
 		ivbuszhier= (ImageView) findViewById(R.id.ivbuszhier);
-		timer.schedule(task, 1000, 1000);       // timeTask 
+		timer.scheduleWithFixedDelay(task, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		imgbtnbuszhierqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhierqxzf);
 		imgbtnbuszhierqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -142,13 +146,13 @@ public class BusZhier extends Activity
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
 						txtbuszhierrst.setText("交易结果:撤销成功");
-						timer.cancel(); 
+						timer.shutdown(); 
 						finish();
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						txtbuszhierrst.setText("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
-						timer.cancel(); 
+						timer.shutdown(); 
 						tochuhuo();
 						break;
 					case Zhifubaohttp.SETQUERYMAIN://子线程接收主线程消息
@@ -168,8 +172,8 @@ public class BusZhier extends Activity
 		};	
 		//启动用户自己定义的类
 		zhifubaohttp=new Zhifubaohttp(mainhand);
-		thread=new Thread(zhifubaohttp,"Zhifubaohttp Thread");
-		thread.start();
+		thread=Executors.newFixedThreadPool(3);
+		thread.execute(zhifubaohttp);	
 		//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
@@ -278,47 +282,41 @@ public class BusZhier extends Activity
   		}
 	}
 	//调用倒计时定时器
-	TimerTask task = new TimerTask() { 
-        @Override 
+	Runnable task = new Runnable() { 
+         @Override 
         public void run() { 
-  
-            runOnUiThread(new Runnable() {      // UI thread 
-                @Override 
-                public void run() { 
-                    recLen--; 
-                    txtbuszhiertime.setText("倒计时:"+recLen); 
-                    //退出页面
-                    if(recLen <= 0)
-                    { 
-                        timer.cancel(); 
-                        timeoutfinishActivity();
-                    } 
-                    
-                    
-                    //发送查询交易指令
-                    if(iszhier==1)
-                    {
-	                    queryLen++;
-	                    if(queryLen>=4)
-	                    {
-	                    	queryLen=0;
-	                    	queryzhier();
-	                    }
-                    }
-                    //发送订单交易指令
-                    else if(iszhier==0)
-                    {
-	                    queryLen++;
-	                    if(queryLen>=10)
-	                    {
-	                    	queryLen=0;
-	                    	//发送订单
-	                		sendzhier();
-	                    }
-                    }
-                } 
-            }); 
-        } 
+            recLen--; 
+            txtbuszhiertime.setText("倒计时:"+recLen); 
+            //退出页面
+            if(recLen <= 0)
+            { 
+                timer.shutdown(); 
+                timeoutfinishActivity();
+            } 
+            
+            
+            //发送查询交易指令
+            if(iszhier==1)
+            {
+                queryLen++;
+                if(queryLen>=4)
+                {
+                	queryLen=0;
+                	queryzhier();
+                }
+            }
+            //发送订单交易指令
+            else if(iszhier==0)
+            {
+                queryLen++;
+                if(queryLen>=10)
+                {
+                	queryLen=0;
+                	//发送订单
+            		sendzhier();
+                }
+            }
+        }             
     };
 	//结束界面
 	private void finishActivity()
@@ -328,7 +326,7 @@ public class BusZhier extends Activity
 			deletezhier();
 		else 
 		{
-			timer.cancel(); 
+			timer.shutdown(); 
 			finish();
 		}
 	}
@@ -340,7 +338,7 @@ public class BusZhier extends Activity
 			deletezhier();
 		else 
 		{
-			timer.cancel(); 
+			timer.shutdown(); 
 			finish();
 		}
 	}

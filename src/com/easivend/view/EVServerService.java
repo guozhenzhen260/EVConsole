@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +57,7 @@ import android.widget.Toast;
 
 public class EVServerService extends Service {
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
-	private Thread thread=null;
+	private ExecutorService thread=null;
     private Handler mainhand=null,childhand=null;  
     private String vmc_no=null;
     private String vmc_auth_code=null;
@@ -370,8 +372,8 @@ public class EVServerService extends Service {
 		};
 		//启动用户自己定义的类，启动线程
   		serverhttp=new EVServerhttp(mainhand);
-  		thread=new Thread(serverhttp,"serverhttp Thread");
-  		thread.start();		
+  		thread=Executors.newFixedThreadPool(3);
+  		thread.execute(serverhttp);		
 	}	
 	
 	//更新商品分类信息

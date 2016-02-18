@@ -3,6 +3,10 @@ package com.easivend.app.business;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,7 +118,7 @@ BushuoFragInteraction
 	//==支付宝支付页面相关
 	//=================
 	//线程进行支付宝二维码操作
-    private Thread zhifubaothread=null;
+    private ExecutorService zhifubaothread=null;
     private Handler zhifubaomainhand=null,zhifubaochildhand=null;
     Zhifubaohttp zhifubaohttp=null;
     private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码
@@ -123,7 +127,7 @@ BushuoFragInteraction
   	//==微信支付页面相关
   	//=================
     //线程进行微信二维码操作
-    private Thread weixingthread=null;
+    private ExecutorService weixingthread=null;
     private Handler weixingmainhand=null,weixingchildhand=null;   
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
@@ -131,7 +135,7 @@ BushuoFragInteraction
 	//==出货页面相关
 	//=================
 	private int status=0;//出货结果	
-	Timer timer = new Timer(true);
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
@@ -201,9 +205,10 @@ BushuoFragInteraction
 		this.setRequestedOrientation(ToolClass.getOrientation());
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
-		timer.schedule(new TimerTask() { 
+		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
+	        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt");
 	        	  if(isbus==false)
 	        	  {
 		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
@@ -324,7 +329,7 @@ BushuoFragInteraction
 		        	}
 	        	  }
 	        } 
-	    }, 1000, 1000);       // timeTask 
+	    }, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		//初始化默认fragment
 		initView();
 		//***********************
@@ -381,8 +386,10 @@ BushuoFragInteraction
 		};
 		//启动用户自己定义的类
 		zhifubaohttp=new Zhifubaohttp(zhifubaomainhand);
-		zhifubaothread=new Thread(zhifubaohttp,"Zhifubaohttp Thread");
-		zhifubaothread.start();
+		zhifubaothread=Executors.newFixedThreadPool(3);
+		zhifubaothread.execute(zhifubaohttp);
+		
+		
 		//***********************
 		//线程进行微信二维码操作
 		//***********************
@@ -417,7 +424,7 @@ BushuoFragInteraction
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						listterner.BusportTsxx("交易结果:交易成功");
-//						//reamin_amount=String.valueOf(amount);
+						//reamin_amount=String.valueOf(amount);
 						tochuhuo();
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -437,8 +444,9 @@ BushuoFragInteraction
 		};
 		//启动用户自己定义的类
 		weixinghttp=new Weixinghttp(weixingmainhand);
-		weixingthread=new Thread(weixinghttp,"Weixinghttp Thread");
-		weixingthread.start();
+		weixingthread=Executors.newFixedThreadPool(3);
+		weixingthread.execute(weixinghttp);
+				
 	}
 	
 	//初始化默认fragment
@@ -1412,6 +1420,7 @@ BushuoFragInteraction
 	}
 	@Override
 	protected void onDestroy() {
+		timer.shutdown(); 
 		//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

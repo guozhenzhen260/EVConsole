@@ -1,6 +1,5 @@
 package com.easivend.fragment;
 
-import java.util.Timer;
 
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusgoodsSelect;
@@ -32,7 +31,7 @@ public class BuszhierFragment extends Fragment
 	private int recLen = 180; 
 	private int queryLen = 0; 
     private TextView txtView; 
-    Timer timer = new Timer(); 
+//  Timer timer = new Timer(); 
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -44,8 +43,8 @@ public class BuszhierFragment extends Fragment
     private String zhifutype = "3";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private float amount=0;
     //线程进行支付宝二维码操作
-    private Thread thread=null;
-    private Handler mainhand=null,childhand=null;   
+//    private Thread thread=null;
+//    private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Zhifubaohttp zhifubaohttp=null;
     private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码
