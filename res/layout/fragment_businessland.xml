@@ -1,131 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    <RelativeLayout 
-	    android:layout_width="fill_parent"
-	    android:layout_margin="10px" 
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center_horizontal" >
-	    <TextView 
-	        android:id="@+id/txtads"
-	        android:layout_width="wrap_content"	  
-		    android:textColor="#000000" 
-		    android:textSize="35px" 
-		    android:textStyle="bold"
-		    android:layout_height="wrap_content" 
-		    android:text="货道号：" />
-	    <EditText
-	        android:id="@+id/txtadsTip"
-	        android:layout_width="wrap_content"
-  			android:textSize="60sp" 
-  			android:layout_below="@+id/txtads"
-  			android:layout_height="wrap_content" 
-  			android:textStyle="bold"
-        	android:textColor="#FF0000"  
-  			android:hint="请输入出货货道号"        
-	        />
-	    <ImageButton
-	        android:id="@+id/btnadsclass"
-	        android:layout_width="380dp"
-	        android:layout_height="180dp"
-	        android:layout_toRightOf="@+id/txtadsTip" 
-	        android:textColor="#8C6931"
-	        android:src="@drawable/shpfl"
-	        android:textSize="40dp"/>
-	    <ImageButton
-	        android:id="@+id/btnads1"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_below="@+id/btnadsclass"	       
-	        android:textColor="#8C6931"
-	        android:src="@drawable/oneland" />   
-	    <ImageButton
-	        android:id="@+id/btnads2"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads1" 
-	        android:layout_below="@+id/btnadsclass"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/twoland" />
-	    <ImageButton
-	        android:id="@+id/btnads3"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads2" 
-	        android:layout_below="@+id/btnadsclass"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/threeland" />  
-	   <ImageButton
-	        android:id="@+id/btnads4"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_below="@+id/btnads1"	       
-	        android:textColor="#8C6931"
-	        android:src="@drawable/fourland" />   
-	   <ImageButton
-	        android:id="@+id/btnads5"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads4" 
-	        android:layout_below="@+id/btnads2"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/fiveland" />
-	   <ImageButton
-	        android:id="@+id/btnads6"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads5" 
-	        android:layout_below="@+id/btnads3"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/sixland" />
-	   <ImageButton
-	        android:id="@+id/btnads7"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_below="@+id/btnads4"	       
-	        android:textColor="#8C6931"
-	        android:src="@drawable/sevenland" />   
-	   <ImageButton
-	        android:id="@+id/btnads8"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads7" 
-	        android:layout_below="@+id/btnads5"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/eightland" />
-	   <ImageButton
-	        android:id="@+id/btnads9"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads8" 
-	        android:layout_below="@+id/btnads6"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/nineland" />  
-	   <ImageButton
-	        android:id="@+id/btnadscancel"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_below="@+id/btnads7"	       
-	        android:textColor="#8C6931"
-	        android:src="@drawable/tuigeland" />   
-	   <ImageButton
-	        android:id="@+id/btnads0"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnadscancel" 
-	        android:layout_below="@+id/btnads8"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/zeroland" />
-	   <ImageButton
-	        android:id="@+id/btnadsenter"
-	        android:layout_width="310dp"
-	        android:layout_height="90dp"
-	        android:layout_toRightOf="@+id/btnads0" 
-	        android:layout_below="@+id/btnads9"
-	        android:textColor="#8C6931"
-	        android:src="@drawable/enterland" />
-	</RelativeLayout>    
-
-</LinearLayout>
+    android:layout_height="match_parent">    
+    <TextView 
+        android:id="@+id/txtads"
+        android:layout_width="wrap_content"	  
+	    android:textColor="#000000" 
+	    android:textSize="35px" 
+	    android:textStyle="bold"
+	    android:layout_height="wrap_content" 
+	    android:text="货道号：" />
+    <EditText
+        android:id="@+id/txtadsTip"
+        android:layout_width="wrap_content"
+ 			android:textSize="60sp" 
+ 			android:layout_below="@+id/txtads"
+ 			android:layout_height="wrap_content" 
+ 			android:textStyle="bold"
+       	android:textColor="#FF0000"  
+ 			android:hint="请输入出货货道号"        
+        />
+    <ImageButton
+        android:id="@+id/btnadsclass"
+        android:layout_width="380dp"
+        android:layout_height="180dp"
+        android:layout_toRightOf="@+id/txtadsTip" 
+        android:textColor="#8C6931"
+        android:src="@drawable/shpfl"
+        android:textSize="40dp"/>
+    <ImageButton
+        android:id="@+id/btnads1"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/btnadsclass"	       
+        android:textColor="#8C6931"
+        android:src="@drawable/oneland" />   
+    <ImageButton
+        android:id="@+id/btnads2"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads1" 
+        android:layout_below="@+id/btnadsclass"
+        android:textColor="#8C6931"
+        android:src="@drawable/twoland" />
+    <ImageButton
+        android:id="@+id/btnads3"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads2" 
+        android:layout_below="@+id/btnadsclass"
+        android:textColor="#8C6931"
+        android:src="@drawable/threeland" />  
+   <ImageButton
+        android:id="@+id/btnads4"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/btnads1"	       
+        android:textColor="#8C6931"
+        android:src="@drawable/fourland" />   
+   <ImageButton
+        android:id="@+id/btnads5"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads4" 
+        android:layout_below="@+id/btnads2"
+        android:textColor="#8C6931"
+        android:src="@drawable/fiveland" />
+   <ImageButton
+        android:id="@+id/btnads6"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads5" 
+        android:layout_below="@+id/btnads3"
+        android:textColor="#8C6931"
+        android:src="@drawable/sixland" />
+   <ImageButton
+        android:id="@+id/btnads7"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/btnads4"	       
+        android:textColor="#8C6931"
+        android:src="@drawable/sevenland" />   
+   <ImageButton
+        android:id="@+id/btnads8"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads7" 
+        android:layout_below="@+id/btnads5"
+        android:textColor="#8C6931"
+        android:src="@drawable/eightland" />
+   <ImageButton
+        android:id="@+id/btnads9"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads8" 
+        android:layout_below="@+id/btnads6"
+        android:textColor="#8C6931"
+        android:src="@drawable/nineland" />  
+   <ImageButton
+        android:id="@+id/btnadscancel"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/btnads7"	       
+        android:textColor="#8C6931"
+        android:src="@drawable/tuigeland" />   
+   <ImageButton
+        android:id="@+id/btnads0"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnadscancel" 
+        android:layout_below="@+id/btnads8"
+        android:textColor="#8C6931"
+        android:src="@drawable/zeroland" />
+   <ImageButton
+        android:id="@+id/btnadsenter"
+        android:layout_width="310dp"
+        android:layout_height="90dp"
+        android:layout_toRightOf="@+id/btnads0" 
+        android:layout_below="@+id/btnads9"
+        android:textColor="#8C6931"
+        android:src="@drawable/enterland" />	
+</RelativeLayout>
