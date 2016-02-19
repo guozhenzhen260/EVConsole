@@ -1675,25 +1675,19 @@ public class HuodaoTest extends TabActivity
 	//货道设置页面
 	//===============
 	//调用倒计时定时器
-	Runnable task = new Runnable() {  
+	Runnable task = new Runnable() { 
         @Override 
         public void run() { 
-  
-            runOnUiThread(new Runnable() {      // UI thread 
-                @Override 
-                public void run() { 
-                    if(ishuoquery==1)
-                    {
-                    	queryhuodao();
-                    }
+            if(ishuoquery==1)
+            {
+            	queryhuodao();
+            }
 //                    //查询已经完成
 //                    else if(ishuoquery==0)
 //                    {
 //                    	timer.cancel(); //取消掉定时器，就不会再继续查了
 //                    }
-                } 
-            }); 
-        } 
+        }             
     };
 	private void queryhuodao()
 	{
