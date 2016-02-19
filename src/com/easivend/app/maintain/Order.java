@@ -18,9 +18,11 @@ import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_OrderAdapter;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.model.Tb_vmc_cabinet;
+import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.example.evconsole.R;
 
@@ -34,6 +36,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
@@ -422,8 +425,31 @@ public class Order extends TabActivity
 			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
 		  )
 		{
+			OrdergridQueryThread orderquery=new OrdergridQueryThread();
+			orderquery.execute();			
+		}
+		else
+		{
+			Toast.makeText(Order.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
+		}
+	}
+	//****************
+	//异步线程，用于查询记录
+	//****************
+	private class OrdergridQueryThread extends AsyncTask<Void,Void,Vmc_OrderAdapter>
+	{
+
+		@Override
+		protected Vmc_OrderAdapter doInBackground(Void... params) {
+			// TODO Auto-generated method stub
 			Vmc_OrderAdapter vmc_OrderAdapter=new Vmc_OrderAdapter();
 			vmc_OrderAdapter.grid(Order.this, mYear, mMon, mDay, eYear, eMon, eDay);
+			return vmc_OrderAdapter;
+		}
+
+		@Override
+		protected void onPostExecute(Vmc_OrderAdapter vmc_OrderAdapter) {
+			// TODO Auto-generated method stub
 			//总支付订单
 			ordereID = vmc_OrderAdapter.getOrdereID();// 订单ID[pk]
 			payType = vmc_OrderAdapter.getPayType();// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
@@ -466,7 +492,7 @@ public class Order extends TabActivity
 		    ourdercount=vmc_OrderAdapter.getCount();
 		    
 			int x=0;
-			this.listMap.clear();
+			Order.this.listMap.clear();
 			for(x=0;x<vmc_OrderAdapter.getCount();x++)
 			{
 			  	Map<String,String> map = new HashMap<String,String>();//定义Map集合，保存每一行数据
@@ -479,23 +505,20 @@ public class Order extends TabActivity
 		    	map.put("cabID", cabID[x]);
 		    	map.put("columnID", columnID[x]);
 		    	map.put("payTime", payTime[x]);
-		    	this.listMap.add(map);//保存数据行
+		    	Order.this.listMap.add(map);//保存数据行
 			}
 			//将这个构架加载到data_list中
-			this.simpleada = new SimpleAdapter(this,this.listMap,R.layout.orderlist,
+			Order.this.simpleada = new SimpleAdapter(Order.this,Order.this.listMap,R.layout.orderlist,
 			    		new String[]{"ordereID","payType","payStatus","RealStatus","productName","salesPrice","cabID","columnID","payTime"},//Map中的key名称
 			    		new int[]{R.id.txtordereID,R.id.txtpayType,R.id.txtpayStatus,R.id.txtRealStatus,R.id.txtproductName,R.id.txtsalesPrice,R.id.txtcabID,R.id.txtcolumnID,R.id.txtpayTime});
-			this.lvorder.setAdapter(this.simpleada);
+			Order.this.lvorder.setAdapter(Order.this.simpleada);
 			
 			//作图表统计信息
 			chartcount();
-			
 		}
-		else
-		{
-			Toast.makeText(Order.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
-		}
+				
 	}
+	
 	//删除查询报表
 	private void delgrid()
 	{	
@@ -519,10 +542,8 @@ public class Order extends TabActivity
 		    				public void onClick(DialogInterface dialog, int which) 
 		    				{
 		    					// TODO Auto-generated method stub	
-		    					Vmc_OrderAdapter vmc_OrderAdapter=new Vmc_OrderAdapter();
-		    					vmc_OrderAdapter.delgrid(Order.this, mYear, mMon, mDay, eYear, eMon, eDay);
-		    					// 弹出信息提示
-					            Toast.makeText(Order.this, "记录删除成功！", Toast.LENGTH_SHORT).show();
+		    					OrdergridDelThread orderdel=new OrdergridDelThread();
+		    					orderdel.execute();
 		    				}
 	    		      }
 	    			)		    		        
@@ -542,6 +563,30 @@ public class Order extends TabActivity
 		{
 			Toast.makeText(Order.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
 		}
+	}
+	
+	//*******************
+	//异步线程，用于删除查询记录
+	//*******************
+	private class OrdergridDelThread extends AsyncTask<Void,Void,Boolean>
+	{
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			Vmc_OrderAdapter vmc_OrderAdapter=new Vmc_OrderAdapter();
+			vmc_OrderAdapter.delgrid(Order.this, mYear, mMon, mDay, eYear, eMon, eDay);
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// TODO Auto-generated method stub
+			ToolClass.addOptLog(Order.this,2,"删除报表记录");
+			// 弹出信息提示
+            Toast.makeText(Order.this, "记录删除成功！", Toast.LENGTH_SHORT).show();
+      }
+		
 	}
 	
 	//作图表统计信息
