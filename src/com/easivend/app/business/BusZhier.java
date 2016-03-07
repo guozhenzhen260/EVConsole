@@ -282,41 +282,48 @@ public class BusZhier extends Activity
   		}
 	}
 	//调用倒计时定时器
-	Runnable task = new Runnable() { 
-         @Override 
+	TimerTask task = new TimerTask() { 
+        @Override 
         public void run() { 
-            recLen--; 
-            txtbuszhiertime.setText("倒计时:"+recLen); 
-            //退出页面
-            if(recLen <= 0)
-            { 
-                timer.shutdown(); 
-                timeoutfinishActivity();
-            } 
-            
-            
-            //发送查询交易指令
-            if(iszhier==1)
-            {
-                queryLen++;
-                if(queryLen>=4)
-                {
-                	queryLen=0;
-                	queryzhier();
-                }
-            }
-            //发送订单交易指令
-            else if(iszhier==0)
-            {
-                queryLen++;
-                if(queryLen>=10)
-                {
-                	queryLen=0;
-                	//发送订单
-            		sendzhier();
-                }
-            }
-        }             
+  
+            runOnUiThread(new Runnable() {      // UI thread 
+		         @Override 
+		        public void run()
+		        { 
+		            recLen--; 
+		            txtbuszhiertime.setText("倒计时:"+recLen); 
+		            //退出页面
+		            if(recLen <= 0)
+		            { 
+		                timer.shutdown(); 
+		                timeoutfinishActivity();
+		            } 
+		            
+		            
+		            //发送查询交易指令
+		            if(iszhier==1)
+		            {
+		                queryLen++;
+		                if(queryLen>=4)
+		                {
+		                	queryLen=0;
+		                	queryzhier();
+		                }
+		            }
+		            //发送订单交易指令
+		            else if(iszhier==0)
+		            {
+		                queryLen++;
+		                if(queryLen>=10)
+		                {
+		                	queryLen=0;
+		                	//发送订单
+		            		sendzhier();
+		                }
+		            }
+		        } 
+            });
+        }      
     };
 	//结束界面
 	private void finishActivity()
