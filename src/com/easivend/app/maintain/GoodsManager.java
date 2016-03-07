@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.easivend.dao.vmc_classDAO;
+import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ShowSortAdapter;
@@ -17,6 +18,7 @@ import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ClassAdapter;
 import com.easivend.common.Vmc_ProductAdapter;
 import com.easivend.model.Tb_vmc_class;
+import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_product;
 import com.example.evconsole.R;
 
@@ -35,6 +37,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rasterizer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts.Data;
 import android.text.Editable;
@@ -281,18 +284,16 @@ public class GoodsManager extends TabActivity
     	//商品设置页面
     	//===============
     	txtproidValue = (TextView) findViewById(R.id.txtproidValue);
-    	txtpronameValue = (TextView) findViewById(R.id.txtpronameValue);
-    	// 商品表中的所有商品信息补充到商品数据结构数组中
-    	productAdapter=new Vmc_ProductAdapter();
-    	productAdapter.showProInfo(this,"",datasort,"");     	
+    	txtpronameValue = (TextView) findViewById(R.id.txtpronameValue);    	  	
     	gvProduct = (GridView) findViewById(R.id.gvProduct);// 获取布局文件中的gvInfo组件
-    	ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), this);// 创建pictureAdapter对象
-    	gvProduct.setAdapter(adapter);// 为GridView设置数据源
+    	// 商品表中的所有商品信息补充到商品数据结构数组中  
+    	VmcProductThread vmcProductThread=new VmcProductThread();
+    	vmcProductThread.execute();
     	gvProduct.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+					long arg3) { 
 				// TODO Auto-generated method stub
 				String productID[]=productAdapter.getProductID();
 				String productName[]=productAdapter.getProductName();
@@ -433,29 +434,46 @@ public class GoodsManager extends TabActivity
 	// 显示商品分类信息
 	private void showInfo() 
 	{
-	    ArrayAdapter<String> arrayAdapter = null;// 创建ArrayAdapter对象
-	    Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
-	    String[] strInfos = vmc_classAdapter.showListInfo(GoodsManager.this);
-	    // 使用字符串数组初始化ArrayAdapter对象
-	    //arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, strInfos);
-	    //lvinfo.setAdapter(arrayAdapter);// 为ListView列表设置数据源
-	    imgDirs=vmc_classAdapter.getProImage();
-	    proclassID=vmc_classAdapter.getProclassID();
-		proclassName=vmc_classAdapter.getProclassName();
-		int x=0;
-		this.listMap.clear();
-		for(x=0;x<proclassID.length;x++)
-		{
-		  	Map<String,String> map = new HashMap<String,String>();//定义Map集合，保存每一行数据
-		   	map.put("proclassID", proclassID[x]);
-	    	map.put("proclassName", proclassName[x]);	    	
-	    	this.listMap.add(map);//保存数据行
+		VmcClassThread vmcClassThread=new VmcClassThread();
+		vmcClassThread.execute();
+	}
+	
+	//****************
+	//异步线程，用于查询记录
+	//****************
+	private class VmcClassThread extends AsyncTask<Void,Void,Vmc_ClassAdapter>
+	{
+
+		@Override
+		protected Vmc_ClassAdapter doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
+		    String[] strInfos = vmc_classAdapter.showListInfo(GoodsManager.this);
+			return vmc_classAdapter;
 		}
-		//将这个构架加载到data_list中
-		this.simpleada = new SimpleAdapter(this,this.listMap,R.layout.goodsclasslist,
-		    		new String[]{"proclassID","proclassName"},//Map中的key名称
-		    		new int[]{R.id.txtclassID,R.id.txtclassName});
-		this.lvinfo.setAdapter(this.simpleada);
+
+		@Override
+		protected void onPostExecute(Vmc_ClassAdapter vmc_classAdapter) {
+			// TODO Auto-generated method stub
+			imgDirs=vmc_classAdapter.getProImage();
+		    proclassID=vmc_classAdapter.getProclassID();
+			proclassName=vmc_classAdapter.getProclassName();
+			int x=0;
+			GoodsManager.this.listMap.clear();
+			for(x=0;x<proclassID.length;x++)
+			{
+			  	Map<String,String> map = new HashMap<String,String>();//定义Map集合，保存每一行数据
+			   	map.put("proclassID", proclassID[x]);
+		    	map.put("proclassName", proclassName[x]);	    	
+		    	GoodsManager.this.listMap.add(map);//保存数据行
+			}
+			//将这个构架加载到data_list中
+			GoodsManager.this.simpleada = new SimpleAdapter(GoodsManager.this,GoodsManager.this.listMap,R.layout.goodsclasslist,
+			    		new String[]{"proclassID","proclassName"},//Map中的key名称
+			    		new int[]{R.id.txtclassID,R.id.txtclassName});
+			GoodsManager.this.lvinfo.setAdapter(GoodsManager.this.simpleada);
+		}
+				
 	}
 	
 	@Override
@@ -467,6 +485,28 @@ public class GoodsManager extends TabActivity
 	//===============
 	//商品设置页面
 	//===============	
+	//****************
+	//异步线程，用于查询记录
+	//****************
+	private class VmcProductThread extends AsyncTask<Void,Void,Vmc_ProductAdapter>
+	{
+
+		@Override
+		protected Vmc_ProductAdapter doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			productAdapter=new Vmc_ProductAdapter();
+	    	productAdapter.showProInfo(GoodsManager.this,"",datasort,""); 
+			return productAdapter;
+		}
+
+		@Override
+		protected void onPostExecute(Vmc_ProductAdapter productAdapter) {
+			// TODO Auto-generated method stub
+			ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProID(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), GoodsManager.this);// 创建pictureAdapter对象
+	    	gvProduct.setAdapter(adapter);// 为GridView设置数据源	    	
+		}
+				
+	}
 	//接收GoodsProSet返回信息
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -58,6 +58,7 @@ import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -79,6 +80,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.SlidingDrawer;
 import android.widget.Switch;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
@@ -1675,25 +1677,19 @@ public class HuodaoTest extends TabActivity
 	//货道设置页面
 	//===============
 	//调用倒计时定时器
-	Runnable task = new Runnable() {  
+	Runnable task = new Runnable() { 
         @Override 
         public void run() { 
-  
-            runOnUiThread(new Runnable() {      // UI thread 
-                @Override 
-                public void run() { 
-                    if(ishuoquery==1)
-                    {
-                    	queryhuodao();
-                    }
+            if(ishuoquery==1)
+            {
+            	queryhuodao();
+            }
 //                    //查询已经完成
 //                    else if(ishuoquery==0)
 //                    {
 //                    	timer.cancel(); //取消掉定时器，就不会再继续查了
 //                    }
-                } 
-            }); 
-        } 
+        }             
     };
 	private void queryhuodao()
 	{
@@ -1832,11 +1828,30 @@ public class HuodaoTest extends TabActivity
 	//导入本柜全部货道信息
 	private void showhuodao()
 	{		 
-		huoAdapter.showProInfo(HuodaoTest.this, "", huoSet,String.valueOf(cabinetsetvar));
-		
-		HuoPictureAdapter adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
-		gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
-		barhuomanager.setVisibility(View.GONE);  
+		VmcHuoThread vmcHuoThread=new VmcHuoThread();
+		vmcHuoThread.execute(); 
+	}
+	//****************
+	//异步线程，用于查询记录
+	//****************
+	private class VmcHuoThread extends AsyncTask<Void,Void,Vmc_HuoAdapter>
+	{
+
+		@Override
+		protected Vmc_HuoAdapter doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			huoAdapter.showProInfo(HuodaoTest.this, "", huoSet,String.valueOf(cabinetsetvar));
+			return huoAdapter;
+		}
+
+		@Override
+		protected void onPostExecute(Vmc_HuoAdapter huoAdapter) {
+			// TODO Auto-generated method stub
+			HuoPictureAdapter adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+			gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
+			barhuomanager.setVisibility(View.GONE);
+		}
+				
 	}
 	//删除柜号以及柜内货道全部信息
 	private void cabinetDel()

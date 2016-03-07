@@ -25,6 +25,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -218,6 +219,23 @@ public class LogOpt extends Activity {
 			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
 		  )
 		{
+			LoggridQueryThread logquery=new LoggridQueryThread();
+			logquery.execute();
+		}
+		else
+		{
+			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
+		}
+	}
+	//****************
+	//异步线程，用于查询记录
+	//****************
+	private class LoggridQueryThread extends AsyncTask<Void,Void,List<Tb_vmc_log>>
+	{
+
+		@Override
+		protected List<Tb_vmc_log> doInBackground(Void... params) {
+			// TODO Auto-generated method stub
 			String mYearStr=null,mMonthStr=null,mDayStr=null;
 			String eYearStr=null,eMonthStr=null,eDayStr=null;
 			
@@ -230,8 +248,14 @@ public class LogOpt extends Activity {
 			// 创建InaccountDAO对象
 			vmc_logDAO logDAO = new vmc_logDAO(LogOpt.this);
 			String start=mYearStr+"-"+mMonthStr+"-"+mDayStr;
-			String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;	
+			String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;
 			List<Tb_vmc_log> listinfos=logDAO.getScrollPay(start,end);
+			return listinfos;
+		}
+
+		@Override
+		protected void onPostExecute(List<Tb_vmc_log> listinfos) {
+			// TODO Auto-generated method stub
 			String[] strInfos = new String[listinfos.size()];
 			logID = new String[listinfos.size()];
 			logType = new String[listinfos.size()];
@@ -250,7 +274,7 @@ public class LogOpt extends Activity {
 		    }
 			
 			int x=0;
-			this.listMap.clear();
+			LogOpt.this.listMap.clear();
 			for(x=0;x<listinfos.size();x++)
 			{
 			  	Map<String,String> map = new HashMap<String,String>();//定义Map集合，保存每一行数据
@@ -258,19 +282,15 @@ public class LogOpt extends Activity {
 		    	map.put("logType", logType[x]);
 		    	map.put("logDesc", logDesc[x]);
 		    	map.put("logTime", logTime[x]);
-		    	this.listMap.add(map);//保存数据行
+		    	LogOpt.this.listMap.add(map);//保存数据行
 			}
 			//将这个构架加载到data_list中
-			this.simpleada = new SimpleAdapter(this,this.listMap,R.layout.loglist,
+			LogOpt.this.simpleada = new SimpleAdapter(LogOpt.this,LogOpt.this.listMap,R.layout.loglist,
 			    		new String[]{"logID","logType","logDesc","logTime"},//Map中的key名称
 			    		new int[]{R.id.txtlogID,R.id.txtlogType,R.id.txtlogDesc,R.id.txtlogTime});
-			this.lvlog.setAdapter(this.simpleada);
-			
+			LogOpt.this.lvlog.setAdapter(LogOpt.this.simpleada);
 		}
-		else
-		{
-			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
-		}
+				
 	}
 	
 	//删除查询报表
@@ -294,22 +314,8 @@ public class LogOpt extends Activity {
 		    				public void onClick(DialogInterface dialog, int which) 
 		    				{
 		    					// TODO Auto-generated method stub	
-		    					String mYearStr=null,mMonthStr=null,mDayStr=null;
-		    					String eYearStr=null,eMonthStr=null,eDayStr=null;
-		    					
-		    					mYearStr=((mYear<10)?("0"+String.valueOf(mYear)):String.valueOf(mYear));
-		    					mMonthStr=((mMon<10)?("0"+String.valueOf(mMon)):String.valueOf(mMon));
-		    					mDayStr=((mDay<10)?("0"+String.valueOf(mDay)):String.valueOf(mDay));
-		    					eYearStr=((eYear<10)?("0"+String.valueOf(eYear)):String.valueOf(eYear));
-		    					eMonthStr=((eMon<10)?("0"+String.valueOf(eMon)):String.valueOf(eMon));
-		    					eDayStr=((eDay<10)?("0"+String.valueOf(eDay)):String.valueOf(eDay));
-		    					// 创建InaccountDAO对象
-		    					vmc_logDAO logDAO = new vmc_logDAO(LogOpt.this);
-		    					String start=mYearStr+"-"+mMonthStr+"-"+mDayStr;
-		    					String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;	
-		    					logDAO.detele(start,end);
-		    					// 弹出信息提示
-					            Toast.makeText(LogOpt.this, "记录删除成功！", Toast.LENGTH_SHORT).show();
+		    					LoggridDelThread logdel=new LoggridDelThread();
+		    					logdel.execute();
 		    				}
 	    		      }
 	    			)		    		        
@@ -331,6 +337,42 @@ public class LogOpt extends Activity {
 			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	//*******************
+	//异步线程，用于删除查询记录
+	//*******************
+	private class LoggridDelThread extends AsyncTask<Void,Void,Boolean>
+	{
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			String mYearStr=null,mMonthStr=null,mDayStr=null;
+			String eYearStr=null,eMonthStr=null,eDayStr=null;
+			
+			mYearStr=((mYear<10)?("0"+String.valueOf(mYear)):String.valueOf(mYear));
+			mMonthStr=((mMon<10)?("0"+String.valueOf(mMon)):String.valueOf(mMon));
+			mDayStr=((mDay<10)?("0"+String.valueOf(mDay)):String.valueOf(mDay));
+			eYearStr=((eYear<10)?("0"+String.valueOf(eYear)):String.valueOf(eYear));
+			eMonthStr=((eMon<10)?("0"+String.valueOf(eMon)):String.valueOf(eMon));
+			eDayStr=((eDay<10)?("0"+String.valueOf(eDay)):String.valueOf(eDay));
+			// 创建InaccountDAO对象
+			vmc_logDAO logDAO = new vmc_logDAO(LogOpt.this);
+			String start=mYearStr+"-"+mMonthStr+"-"+mDayStr;
+			String end=eYearStr+"-"+eMonthStr+"-"+eDayStr;	
+			logDAO.detele(start,end);
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// TODO Auto-generated method stub
+			// 弹出信息提示
+            Toast.makeText(LogOpt.this, "记录删除成功！", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+	
 	
 	@Override
 	protected void onDestroy() {

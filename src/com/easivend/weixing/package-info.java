@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 /**
  * @author Administrator
  *微信核心文件
