@@ -1,5 +1,8 @@
 package com.easivend.app.business;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.easivend.app.maintain.GoodsManager;
 import com.easivend.app.maintain.HuodaoTest;
 import com.easivend.app.maintain.MaintainActivity;
@@ -11,6 +14,7 @@ import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -20,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class BusgoodsClass extends Activity
@@ -28,6 +33,7 @@ public class BusgoodsClass extends Activity
 	public static BusgoodsClass BusgoodsClassAct=null;
 	GridView gvbusgoodsclass=null;
 	ImageButton imgbtnbusgoodsclassback=null;
+	String proclassID[];
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -40,11 +46,13 @@ public class BusgoodsClass extends Activity
 		setContentView(R.layout.busgoodsclass);
 		BusgoodsClassAct = this;
 		gvbusgoodsclass=(GridView) findViewById(R.id.gvbusgoodsclass); 
-		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
-	    String[] strInfos = vmc_classAdapter.showSpinInfo(BusgoodsClass.this);
-	    ClassPictureAdapter adapter = new ClassPictureAdapter(vmc_classAdapter.getProclassName(),vmc_classAdapter.getProImage(),BusgoodsClass.this);// 创建pictureAdapter对象
-	    final String proclassID[]=vmc_classAdapter.getProclassID();
-	    gvbusgoodsclass.setAdapter(adapter);// 为GridView设置数据源	
+//		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
+//	    String[] strInfos = vmc_classAdapter.showSpinInfo(BusgoodsClass.this);
+//	    ClassPictureAdapter adapter = new ClassPictureAdapter(vmc_classAdapter.getProclassName(),vmc_classAdapter.getProImage(),BusgoodsClass.this);// 创建pictureAdapter对象
+//	    final String proclassID[]=vmc_classAdapter.getProclassID();
+//	    gvbusgoodsclass.setAdapter(adapter);// 为GridView设置数据源	
+		VmcClassThread vmcClassThread=new VmcClassThread();
+		vmcClassThread.execute();
 	    gvbusgoodsclass.setOnItemClickListener(new OnItemClickListener() {// 为GridView设置项单击事件
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
@@ -80,6 +88,29 @@ public class BusgoodsClass extends Activity
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
+	}
+	//****************
+	//异步线程，用于查询记录
+	//****************
+	private class VmcClassThread extends AsyncTask<Void,Void,Vmc_ClassAdapter>
+	{
+
+		@Override
+		protected Vmc_ClassAdapter doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
+		    String[] strInfos = vmc_classAdapter.showSpinInfo(BusgoodsClass.this);
+		    return vmc_classAdapter;
+		}
+
+		@Override
+		protected void onPostExecute(Vmc_ClassAdapter vmc_classAdapter) {
+			// TODO Auto-generated method stub
+			ClassPictureAdapter adapter = new ClassPictureAdapter(vmc_classAdapter.getProclassName(),vmc_classAdapter.getProImage(),BusgoodsClass.this);// 创建pictureAdapter对象
+			BusgoodsClass.this.proclassID = vmc_classAdapter.getProclassID();
+		    gvbusgoodsclass.setAdapter(adapter);// 为GridView设置数据源	
+		}
+				
 	}
 	
 }
