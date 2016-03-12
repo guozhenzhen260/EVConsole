@@ -29,6 +29,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.easivend.app.maintain.GoodsManager;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
@@ -46,6 +53,7 @@ import android.os.Message;
 import android.util.Log;
 
 public class EVServerhttp implements Runnable {
+	RequestQueue mQueue = null; 
 	String vmc_no="";
 	String vmc_auth_code="";
 	public final static int SETCHILD=2;//what标记,发送给子线程签到
@@ -126,13 +134,11 @@ public class EVServerhttp implements Runnable {
 						httpStr= list.get("server");
 					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 签到["+Thread.currentThread().getId()+"]="+httpStr,"server.txt");
-										
-					//设备签到
+					//新建Volley
+					mQueue = Volley.newRequestQueue(ToolClass.getContext()); 
+					
+					//2.设置参数,设置服务器地址
 					String target = httpStr+"/api/vmcCheckin";	//要提交的目标地址
-					HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
-					httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
-					httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
-					HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap = new TreeMap<String,Object>() ;
 					parammap.put("vmc_no",vmc_no);
@@ -140,55 +146,64 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap.toString(),"server.txt");
 					//将2.map类集转为json格式
 					Gson gson=new Gson();
-					String param=gson.toJson(parammap);		
+					final String param=gson.toJson(parammap);		
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param.toString(),"server.txt");
-					//3.添加params
-					List<NameValuePair> params = new ArrayList<NameValuePair>();
-					params.add(new BasicNameValuePair("param", param));
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params.toString(),"server.txt");
-					try {
-						httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
-						HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求
-						//向主线程返回信息
-						Message tomain=mainhand.obtainMessage();
-						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
-							//如果请求成功
-							result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+					
+					//向主线程返回信息
+					final Message tomain1=mainhand.obtainMessage();
+					//4.设备签到
+					StringRequest stringRequest = new StringRequest(Method.POST, target,  new Response.Listener<String>() {  
+                        @Override  
+                        public void onResponse(String response) {  
+                           
+                          //如果请求成功
+							result = response;	//获取返回的字符串
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
-							JSONObject object=new JSONObject(result);
-							int errType =  object.getInt("Error");
-							//返回有故障
-							if(errType>0)
-							{
-								tomain.what=SETERRFAILMAIN;
-								tomain.obj=object.getString("Message");
-								ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETERRFAILMAIN","server.txt");
-							}
-							else
-							{
-								tomain.what=SETMAIN;
-								Tok=object.getString("Token");
-								ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok1]","server.txt");
-							}			    	    
-				    	    mainhand.sendMessage(tomain); // 发送消息
-						}else{
-							result = "请求失败！";
-							tomain.what=SETFAILMAIN;
-							mainhand.sendMessage(tomain); // 发送消息
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETFAILMAIN"+result,"server.txt");
-						}
-						
-						
-					} 
-			       catch (Exception e) 
-			       {  
-			           //e.printStackTrace();  
-			    	   //向主线程返回网络失败信息
-						Message tomain=mainhand.obtainMessage();
-			    	    tomain.what=SETFAILMAIN;
-			    	    mainhand.sendMessage(tomain); // 发送消息
-			    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail1]SETFAILMAIN","server.txt");
-			       }
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain1.what=SETERRFAILMAIN;
+									tomain1.obj=object.getString("Message");
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETERRFAILMAIN","server.txt");
+								}
+								else
+								{
+									tomain1.what=SETMAIN;
+									Tok=object.getString("Token");
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok1]","server.txt");
+								}	
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										    	    
+				    	    mainhand.sendMessage(tomain1); // 发送消息
+                        }  
+                    }, new Response.ErrorListener() {  
+                        @Override  
+                        public void onErrorResponse(VolleyError error) {  
+                        	result = "请求失败！";
+							tomain1.what=SETFAILMAIN;
+							mainhand.sendMessage(tomain1); // 发送消息
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETFAILMAIN"+result,"server.txt");  
+                        }  
+                    }) 
+					{  
+					    @Override  
+					    protected Map<String, String> getParams() throws AuthFailureError {  
+					    	//3.添加params
+					    	Map<String, String> map = new HashMap<String, String>();  
+					        map.put("param", param);  
+					        //params.add(new BasicNameValuePair("param", param));
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+param.toString(),"server.txt");
+					        return map;  
+					    }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest);
 					break;
 				case SETHEARTCHILD://子线程接收主线程心跳消息
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 心跳["+Thread.currentThread().getId()+"]","server.txt");

@@ -96,8 +96,16 @@ public class ToolClass
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;
+	public static Context context=null;
 	
-	
+	public static Context getContext() {
+		return context;
+	}
+
+	public static void setContext(Context context) {
+		ToolClass.context = context;
+	}
+
 	public static String getEV_DIR() {
 		return EV_DIR;
 	}
