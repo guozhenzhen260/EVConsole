@@ -1,0 +1,138 @@
+diff a/src/com/easivend/http/EVServerhttp.java b/src/com/easivend/http/EVServerhttp.java	(rejected hunks)
+@@ -210,82 +210,62 @@
+ 					//����
+ 					String target2 = httpStr+"/api/vmcPoll";	//Ҫ�ύ��Ŀ���ַ
+ 					
+-					HttpClient httpclient2 = new DefaultHttpClient();	//����HttpClient����
+-					httpclient2.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//����ʱ
+-					httpclient2.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//��ȡ��ʱ
+-					HttpPost httppost2 = new HttpPost(target2);	//����HttpPost����
+-					//��ӵ��༯�У�����key,value����ΪString
+-//					Map<String,Object> parammap = new TreeMap<String,Object>() ;
+-//					parammap.put("Token",Tok);
+-//					parammap.put("LastPollTime",new Date());			
+-//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",parammap.toString(),"server.txt");
+-//					//��map�༯תΪjson��ʽ
+-//					Gson gson=new Gson();
+-//					String param=gson.toJson(parammap);		
+-//					ToolClass.Log(ToolClass.INFO,"EV_SERVER",param.toString(),"server.txt");
+-					//���params
+-					List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+-					params2.add(new BasicNameValuePair("Token", Tok));
+-					params2.add(new BasicNameValuePair("LastPollTime", ToolClass.getLasttime()));
+-					//params2.add(new BasicNameValuePair("LastPollTime", "2015-08-31T10:45:19"));
+-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+params2.toString(),"server.txt");
+-					try {
+-						httppost2.setEntity(new UrlEncodedFormEntity(params2, "utf-8")); //���ñ��뷽ʽ
+-						HttpResponse httpResponse = httpclient2.execute(httppost2);	//ִ��HttpClient����
+-						//�����̷߳���ǩ����Ϣ
+-						Message tomain=mainhand.obtainMessage();
+-						if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//�������ɹ�
+-							result = EntityUtils.toString(httpResponse.getEntity());	//��ȡ���ص��ַ���
++					//�����̷߳�����Ϣ
++					final Message tomain2=mainhand.obtainMessage();
++					//4.׼��������Ϣ����
++					StringRequest stringRequest2 = new StringRequest(Method.POST, target2,  new Response.Listener<String>() {  
++                        @Override  
++                        public void onResponse(String response) {  
++                           
++                          //�������ɹ�
++                        	result = response;	//��ȡ���ص��ַ���
+ 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+-							JSONObject object=new JSONObject(result);
+-							int errType =  object.getInt("Error");
+-							//�����й���
+-							if(errType>0)
+-							{
+-								tomain.what=SETERRFAILHEARTMAIN;
+-								tomain.obj=object.getString("Message");
+-								ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail2]SETERRFAILHEARTMAIN","server.txt");
+-							}
+-							else
+-							{
+-								tomain.what=SETHEARTMAIN;
+-								tomain.obj=result;
+-								ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok2]","server.txt");
+-							}			    	    
+-							mainhand.sendMessage(tomain); // ������Ϣ
+-						}else{
+-							result = "����ʧ�ܣ�";
+-							tomain.what=SETFAILMAIN;
+-							mainhand.sendMessage(tomain); // ������Ϣ
++							JSONObject object;
++							try {
++								object = new JSONObject(result);
++								int errType =  object.getInt("Error");
++								//�����й���
++								if(errType>0)
++								{
++									tomain2.what=SETERRFAILHEARTMAIN;
++									tomain2.obj=object.getString("Message");
++									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail2]SETERRFAILHEARTMAIN","server.txt");
++								}
++								else
++								{
++									tomain2.what=SETHEARTMAIN;
++									tomain2.obj=result;
++									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok2]","server.txt");
++								}			    	    
++								mainhand.sendMessage(tomain2); // ������Ϣ
++							} catch (JSONException e) {
++								// TODO Auto-generated catch block
++								e.printStackTrace();
++							}										    	    
++				    	    mainhand.sendMessage(tomain2); // ������Ϣ
++                        }  
++                    }, new Response.ErrorListener() {  
++                        @Override  
++                        public void onErrorResponse(VolleyError error) {  
++                        	result = "����ʧ�ܣ�";
++							tomain2.what=SETFAILMAIN;
++							mainhand.sendMessage(tomain2); // ������Ϣ
+ 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail2]SETFAILMAIN"+result,"server.txt");
+-						}
+-						
+-						//�����̷߳���ǩ����Ϣ
+-//						Message tomain=mainhand.obtainMessage();
+-//						JSONObject object=new JSONObject(result);
+-//						int errType =  object.getInt("Error");
+-//						//�����й���
+-//						if(errType>0)
+-//						{
+-//							tomain.what=SETERRFAILMAIN;
+-//							tomain.obj=object.getString("Message");
+-//						}
+-//						else
+-//						{
+-//							tomain.what=SETMAIN;
+-//							Tok=object.getString("Token");
+-//						}			    	    
+-//			    	    mainhand.sendMessage(tomain); // ������Ϣ
+-					}
+-					catch (Exception e) 
+-			        {  
+-			           //e.printStackTrace();  
+-			    	   //�����̷߳�������ʧ����Ϣ
+-						Message tomain=mainhand.obtainMessage();
+-			    	    tomain.what=SETFAILMAIN;
+-			    	    mainhand.sendMessage(tomain); // ������Ϣ
+-			    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail2]SETFAILMAIN","server.txt");
+-			        }
++                        }  
++                    }) 
++					{  
++					    @Override  
++					    protected Map<String, String> getParams() throws AuthFailureError {  
++					    	//3.���params
++					    	Map<String, String> map = new HashMap<String, String>();  
++					        map.put("Token", Tok);  
++					        map.put("LastPollTime", ToolClass.getLasttime());
++					        ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
++					        return map;  
++					   }  
++					}; 	
++					//5.������Ϣ�����͵�������
++					mQueue.add(stringRequest2);		
+ 					break;
+ 				case SETCLASSCHILD://��ȡ��Ʒ����
+ 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread ��ȡ��Ʒ����["+Thread.currentThread().getId()+"]","server.txt");
