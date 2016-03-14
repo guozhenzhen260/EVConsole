@@ -379,9 +379,11 @@ public class EVServerhttp implements Runnable {
 								{
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok4]准备更新商品信息...","server.txt");
 									//向主线程返回签到信息
-									tomain4.what=SETRODUCTMAIN;
-									tomain4.obj=updateproductImg(result);
-									mainhand.sendMessage(tomain4); // 发送消息
+									//tomain4.what=SETRODUCTMAIN;
+									//tomain4.obj=updateproductImg(result);
+									//mainhand.sendMessage(tomain4); // 发送消息
+									productArray(result);
+									updateproduct(0);
 								}
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -815,54 +817,60 @@ public class EVServerhttp implements Runnable {
 		};
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop
 	}
-		
-	//更新商品图片信息
-	private String updateproductImg(String classrst) throws JSONException
+	
+	//==========
+	//==商品管理模块
+	//==========
+	JSONArray productarr=null;
+	JSONArray zhuheproductArray=null;
+	JSONObject zhuheproductjson = null; 
+	int productint=0;
+	//分解商品信息
+	private void productArray(String classrst) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject(classrst); 
-		JSONArray arr1=jsonObject.getJSONArray("ProductList");
-		JSONArray zhuheArray=new JSONArray();
-		JSONObject zhuhejson = new JSONObject(); 
-		for(int i=0;i<arr1.length();i++)
-		{
-			JSONObject object2=arr1.getJSONObject(i);
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品图片="+object2.toString(),"server.txt");										
-			JSONObject zhuheobj=object2;
-			//第一步.获取商品图片名字
-			String target6 = httpStr+"/api/productImage";	//要提交的目标地址
-			HttpClient httpclient6 = new DefaultHttpClient();	//创建HttpClient对象
-			httpclient6.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
-			httpclient6.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
-			HttpPost httppost6 = new HttpPost(target6);	//创建HttpPost对象
-			JSONObject json=new JSONObject();
-			try {
-				json.put("VmcNo", vmc_no);
-				json.put("attId", object2.getString("att_batch_id"));				
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-					
-			String param6=json.toString();		
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param6.toString(),"server.txt");
-			//3.添加params
-			List<NameValuePair> params6 = new ArrayList<NameValuePair>();
-			params6.add(new BasicNameValuePair("param", param6));
-			params6.add(new BasicNameValuePair("Token", Tok));
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params6.toString(),"server.txt");
-			
-			try {
-				httppost6.setEntity(new UrlEncodedFormEntity(params6, "utf-8")); //设置编码方式
-				HttpResponse httpResponse = httpclient6.execute(httppost6);	//执行HttpClient请求
-				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
-					//如果请求成功
-					result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
-					//获取返回的字符串
+		productarr=jsonObject.getJSONArray("ProductList");
+		productint=0;
+		zhuheproductArray=new JSONArray();
+		zhuheproductjson = new JSONObject(); 
+	}
+	//更新商品图片信息
+	private String updateproduct(int i) throws JSONException
+	{
+		final JSONObject object2=productarr.getJSONObject(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品图片="+object2.toString(),"server.txt");										
+		final JSONObject zhuheobj=object2;
+		//第一步.获取商品图片名字
+		String target6 = httpStr+"/api/productImage";	//要提交的目标地址
+		JSONObject json=new JSONObject();
+		try {
+			json.put("VmcNo", vmc_no);
+			json.put("attId", object2.getString("att_batch_id"));				
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}					
+		final String param6=json.toString();		
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param6.toString(),"server.txt");
+		//4.准备加载信息设置
+		StringRequest stringRequest6 = new StringRequest(Method.POST, target6,  new Response.Listener<String>() {  
+			@Override  
+			public void onResponse(String response) {  				   
+				//如果请求成功
+				result = response;	//获取返回的字符串
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1[ok10]="+result,"server.txt");
+				try
+				{
+					//第二步，获取图片名字ATTID
 					JSONObject jsonObject3 = new JSONObject(result); 
 					JSONArray arr3=jsonObject3.getJSONArray("ProductImageList");
 					JSONObject object3=arr3.getJSONObject(0);
 					String ATT_ID=object3.getString("ATT_ID");
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2="+result+" ATT_ID="+ATT_ID,"server.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]ATT_ID="+ATT_ID,"server.txt");
+					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]zhuheobj="+zhuheobj+"zhuheproductArray="+zhuheproductArray,"server.txt");
+					//第三步，把图片名字保存到json中
+					zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+					zhuheproductArray.put(zhuheobj);
 					if(ATT_ID.isEmpty())
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]无图片","server.txt");
@@ -876,52 +884,107 @@ public class EVServerhttp implements Runnable {
 						else 
 						{
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片","server.txt");
-							//第二步.准备下载
-							String url= httpStr+"/topic/getFile/"+ATT_ID + ".jpg";	//要提交的目标地址
-							HttpClient httpClient4=new DefaultHttpClient();
-							HttpGet httprequest4=new HttpGet(url);
-							HttpResponse httpResponse4;
-							httpResponse4=httpClient4.execute(httprequest4);
-							if (httpResponse4.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-							{	//如果请求成功
-								//result = EntityUtils.toString(httpResponse4.getEntity());	//获取返回的字符串
-								//取得相关信息 取得HttpEntiy  
-				                HttpEntity httpEntity4 = httpResponse4.getEntity();  
-				                //获得一个输入流  
-				                InputStream is = httpEntity4.getContent();  
-				                Bitmap bitmap = BitmapFactory.decodeStream(is);  
-				                ToolClass.saveBitmaptofile(bitmap,ATT_ID);				                 
-							}else{
-								result = "请求失败！";
-								ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=Pic[fail10]"+result,"server.txt");
-							}
+	//						//第四步.准备下载
+	//						String url= httpStr+"/topic/getFile/"+ATT_ID + ".jpg";	//要提交的目标地址
+	//						HttpClient httpClient4=new DefaultHttpClient();
+	//						HttpGet httprequest4=new HttpGet(url);
+	//						HttpResponse httpResponse4;
+	//						httpResponse4=httpClient4.execute(httprequest4);
+	//						if (httpResponse4.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+	//						{	//如果请求成功
+	//							//result = EntityUtils.toString(httpResponse4.getEntity());	//获取返回的字符串
+	//							//取得相关信息 取得HttpEntiy  
+	//			                HttpEntity httpEntity4 = httpResponse4.getEntity();  
+	//			                //获得一个输入流  
+	//			                InputStream is = httpEntity4.getContent();  
+	//			                Bitmap bitmap = BitmapFactory.decodeStream(is);  
+	//			                ToolClass.saveBitmaptofile(bitmap,ATT_ID);				                 
+	//						}else{
+	//							result = "请求失败！";
+	//							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=Pic[fail10]"+result,"server.txt");
+	//						}
 						}
-						//第三步，把图片名字保存到json中
-						zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+						
 					}
-					
-				}else{
-					result = "请求失败！";
-					//第三步，把图片名字保存到json中
-					zhuheobj.put("AttImg", "");
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10]"+result,"server.txt");
 				}
+				catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				
+				
+				//第五步：进行下一个商品信息
+				productint++;
+				if(productint<productarr.length())
+				{
+					try {
+						updateproduct(productint);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					try {
+						zhuheproductjson.put("ProductList", zhuheproductArray);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
 
-			} 
-	       catch (Exception e) 
-	       {  
-	           //e.printStackTrace();  
-	    	   //第三步，把图片名字保存到json中
-			   zhuheobj.put("AttImg", "");
-	    	   ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail10]="+i,"server.txt");
-	       }
-		   zhuheArray.put(zhuheobj);
-		}
-		zhuhejson.put("ProductList", zhuheArray);
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuhejson.toString(),"server.txt");
-		return zhuhejson.toString();
+					//上传给server
+					//向主线程返回信息
+					Message tomain4=mainhand.obtainMessage();
+					tomain4.what=SETRODUCTMAIN;
+					tomain4.obj=zhuheproductjson.toString();
+					mainhand.sendMessage(tomain4); // 发送消息
+				}
+			}  
+		}, new Response.ErrorListener() {  
+			@Override  
+			public void onErrorResponse(VolleyError error) {  
+				result = "请求失败！";
+				//第三步，把图片名字保存到json中
+				try {
+					zhuheobj.put("AttImg", "");
+					zhuheproductArray.put(zhuheobj);
+					zhuheproductjson.put("ProductList", zhuheproductArray);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10]"+result,"server.txt");
+				
+				//上传给server
+				//向主线程返回信息
+				Message tomain4=mainhand.obtainMessage();
+				tomain4.what=SETRODUCTMAIN;
+				tomain4.obj=zhuheproductjson.toString();
+				mainhand.sendMessage(tomain4); // 发送消息
+			}  
+		}) 
+		{  
+			@Override  
+			protected Map<String, String> getParams() throws AuthFailureError {  
+				//3.添加params
+				Map<String, String> map = new HashMap<String, String>();  
+				map.put("Token", Tok);  
+				map.put("param", param6);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+map.toString(),"server.txt");
+				return map;  
+		   }  
+		}; 	
+		//5.加载信息并发送到网络上
+		mQueue.add(stringRequest6);	
+		
+		//zhuheproductjson.put("ProductList", zhuheproductArray);
+		//ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
+		//return zhuheproductjson.toString();
+		return "";
 	}
+	
 	
 	//更新交易记录信息
 	private String updaterecords(String classrst) 
