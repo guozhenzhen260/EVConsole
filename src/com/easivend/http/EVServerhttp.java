@@ -34,6 +34,7 @@ import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.easivend.app.maintain.GoodsManager;
@@ -46,6 +47,7 @@ import com.easivend.view.EVServerService;
 import com.google.gson.Gson;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
@@ -865,7 +867,7 @@ public class EVServerhttp implements Runnable {
 					JSONObject jsonObject3 = new JSONObject(result); 
 					JSONArray arr3=jsonObject3.getJSONArray("ProductImageList");
 					JSONObject object3=arr3.getJSONObject(0);
-					String ATT_ID=object3.getString("ATT_ID");
+					final String ATT_ID=object3.getString("ATT_ID");
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]ATT_ID="+ATT_ID,"server.txt");
 					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]zhuheobj="+zhuheobj+"zhuheproductArray="+zhuheproductArray,"server.txt");
 					//第三步，把图片名字保存到json中
@@ -883,26 +885,35 @@ public class EVServerhttp implements Runnable {
 						}
 						else 
 						{
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片","server.txt");
-	//						//第四步.准备下载
-	//						String url= httpStr+"/topic/getFile/"+ATT_ID + ".jpg";	//要提交的目标地址
-	//						HttpClient httpClient4=new DefaultHttpClient();
-	//						HttpGet httprequest4=new HttpGet(url);
-	//						HttpResponse httpResponse4;
-	//						httpResponse4=httpClient4.execute(httprequest4);
-	//						if (httpResponse4.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-	//						{	//如果请求成功
-	//							//result = EntityUtils.toString(httpResponse4.getEntity());	//获取返回的字符串
-	//							//取得相关信息 取得HttpEntiy  
-	//			                HttpEntity httpEntity4 = httpResponse4.getEntity();  
-	//			                //获得一个输入流  
-	//			                InputStream is = httpEntity4.getContent();  
-	//			                Bitmap bitmap = BitmapFactory.decodeStream(is);  
-	//			                ToolClass.saveBitmaptofile(bitmap,ATT_ID);				                 
-	//						}else{
-	//							result = "请求失败！";
-	//							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=Pic[fail10]"+result,"server.txt");
-	//						}
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片...","server.txt");
+							//第四步.准备下载	
+							String url= httpStr+"/topic/getFile/"+ATT_ID + ".jpg";	//要提交的目标地址
+							ImageRequest imageRequest = new ImageRequest(  
+									url,  
+							        new Response.Listener<Bitmap>() {  
+							            @Override  
+							            public void onResponse(Bitmap response) {  
+							            	ToolClass.saveBitmaptofile(response,ATT_ID);
+							            	try {
+												ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片完成","server.txt");
+											} catch (JSONException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+							            }  
+							        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+							            @Override  
+							            public void onErrorResponse(VolleyError error) {  
+											result = "请求失败！";
+											try {
+												ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片失败","server.txt");
+											} catch (JSONException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+							            }  
+							        });
+							mQueue.add(imageRequest); 
 						}
 						
 					}
