@@ -361,7 +361,10 @@ public class EVServerhttp implements Runnable {
 								{
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok4]准备更新商品信息...","server.txt");
 									productArray(result);
-									updateproduct(0);
+									if(productarr.length()>0)
+									{
+										updateproduct(0);
+									}
 								}
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -667,6 +670,14 @@ public class EVServerhttp implements Runnable {
 		productint=0;
 		zhuheproductArray=new JSONArray();
 		zhuheproductjson = new JSONObject(); 
+		if(productarr.length()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETRODUCTMAIN;
+			tomain.obj=zhuheproductjson.toString();
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
 	}
 	//更新商品图片信息
 	private String updateproduct(int i) throws JSONException
