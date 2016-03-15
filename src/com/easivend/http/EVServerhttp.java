@@ -571,38 +571,48 @@ public class EVServerhttp implements Runnable {
 				case EVServerhttp.SETRECORDCHILD://交易记录上报	
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 交易记录上报["+Thread.currentThread().getId()+"]","server.txt");
 					//1.得到交易记录编号信息
-					JSONArray ev8=null;
 					try {
-						ev8 = new JSONArray(msg.obj.toString());
-						JSONArray retjson=new JSONArray();
-						//向主线程返回信息
-						Message tomain=mainhand.obtainMessage();
-						
-						for(int i=0;i<ev8.length();i++)
+						recordArray(msg.obj.toString());
+						if(recordarr.length()>0)
 						{
-							JSONObject object2=ev8.getJSONObject(i);
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+object2.toString()
-									,"server.txt");
-							String orderno=updaterecords(object2.toString());
-							if(orderno!=null)
-							{
-								JSONObject ret=new JSONObject();
-								ret.put("orderno", orderno);
-								retjson.put(ret);
-							}
-						}	
-						tomain.what=SETRECORDMAIN;
-						tomain.obj=retjson;
-						mainhand.sendMessage(tomain); // 发送消息		
-					} catch (Exception e1) {
+							updaterecord(0);
+						}
+					} catch (JSONException e2) {
 						// TODO Auto-generated catch block
-						//e1.printStackTrace();
-						//向主线程返回信息
-						Message tomain=mainhand.obtainMessage();
-						tomain.what=SETFAILMAIN;
-						mainhand.sendMessage(tomain); // 发送消息	
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail7]SETFAILMAIN","server.txt");
+						e2.printStackTrace();
 					}
+//					JSONArray ev8=null;
+//					try {						
+//						ev8 = new JSONArray(msg.obj.toString());
+//						JSONArray retjson=new JSONArray();
+//						//向主线程返回信息
+//						Message tomain=mainhand.obtainMessage();
+//						
+//						for(int i=0;i<ev8.length();i++)
+//						{
+//							JSONObject object2=ev8.getJSONObject(i);
+//							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+object2.toString()
+//									,"server.txt");
+//							String orderno=updaterecords(object2.toString());
+//							if(orderno!=null)
+//							{
+//								JSONObject ret=new JSONObject();
+//								ret.put("orderno", orderno);
+//								retjson.put(ret);
+//							}
+//						}	
+//						tomain.what=SETRECORDMAIN;
+//						tomain.obj=retjson;
+//						mainhand.sendMessage(tomain); // 发送消息		
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						//e1.printStackTrace();
+//						//向主线程返回信息
+//						Message tomain=mainhand.obtainMessage();
+//						tomain.what=SETFAILMAIN;
+//						mainhand.sendMessage(tomain); // 发送消息	
+//						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail7]SETFAILMAIN","server.txt");
+//					}
 					break;
 				case SETHUODAOSTATUCHILD://货道状态上报消息	
 //					String CABINET_NO=null;
@@ -997,14 +1007,36 @@ public class EVServerhttp implements Runnable {
 	}
 	
 	
-	//更新交易记录信息
-	private String updaterecords(String classrst) 
+	//==========
+	//==交易记录模块
+	//==========
+	JSONArray recordarr=null;
+	JSONArray retjson=null;	
+	int retint=0;
+	//分解交易记录信息
+	private void recordArray(String classrst) throws JSONException
 	{
-		String ret=null;
+		retint=0;
+		recordarr=new JSONArray(classrst);
+		retjson=new JSONArray();
+		if(recordarr.length()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETRECORDMAIN;
+			tomain.obj=retjson;
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
+	}
+	//更新交易记录信息
+	private void updaterecord(int i) 
+	{
+		final String ret[]={null};
 		JSONObject jsonObject = null; 
 		String productNo="";
 		String shouldPay="";
 		String orderNo="";
+		final String orderNoVal[]={null};
 		int payStatus=0;
 		String customerPrice="";
 		int payType=0;
@@ -1016,10 +1048,13 @@ public class EVServerhttp implements Runnable {
 		String RefundAmount="";
 		int Status=0;
 		try {
-			jsonObject = new JSONObject(classrst); 
+			jsonObject =recordarr.getJSONObject(i);
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+jsonObject.toString()
+			,"server.txt");
 			productNo=jsonObject.getString("productNo");
 			shouldPay=jsonObject.getString("shouldPay");
 			orderNo=jsonObject.getString("orderNo");
+			orderNoVal[0]=orderNo;
 			payStatus=jsonObject.getInt("payStatus");
 			customerPrice=jsonObject.getString("customerPrice");
 			payType=jsonObject.getInt("payType");
@@ -1040,7 +1075,7 @@ public class EVServerhttp implements Runnable {
 		}
 		//组装json包
 		//交易记录信息
-		String target = httpStr+"/api/vmcTransactionRecords";	//要提交的目标地址
+		String target3 = httpStr+"/api/vmcTransactionRecords";	//要提交的目标地址
 				
 		JSONObject param=null;
 		try {
@@ -1142,63 +1177,93 @@ public class EVServerhttp implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		final JSONObject paramVal[]={null};
+		paramVal[0]=param;
 		
-		HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
-		httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
-		httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
-		HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
-//				//添加到类集中，其中key,value类型为String
-//				Map<String,Object> parammap = new TreeMap<String,Object>() ;
-//				parammap.put("VMC_NO", "junpeng0004");
-//				parammap.put("TOTAL",1);	
-//				parammap.put("ACTUAL_TOTAL",1);
-//				Oreder_Product_Pay orederProductPayList=new Oreder_Product_Pay();
-//				parammap.put("TRANSACTION",orederProductPayList);
-//				ToolClass.Log(ToolClass.INFO,"EV_SERVER",,parammap.toString());
-//				//将map类集转为json格式
-//				Gson gson=new Gson();
-//				String param=gson.toJson(parammap);		
-//				ToolClass.Log(ToolClass.INFO,"EV_SERVER",,param.toString());
-		//添加params
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("Token", Tok));
-		params.add(new BasicNameValuePair("param", param.toString()));
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Records="+params.toString(),"server.txt");
-		try{
-			httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
-			HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求
-			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
-				//如果请求成功
-				result = EntityUtils.toString(httpResponse.getEntity());	
-				//获取返回的字符串
+		//向主线程返回信息
+		final Message tomain3=mainhand.obtainMessage();
+		//4.准备加载信息设置
+		StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
+			@Override  
+			public void onResponse(String response) {  
+			   
+			  //如果请求成功
+				result = response;	//获取返回的字符串
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
-				JSONObject object=new JSONObject(result);
-				int errType =  object.getInt("Error");
-				//返回有故障
-				if(errType>0)
-				{
-					ret=null;
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail7]Records","server.txt");
-				}
-				else
-				{
-					ret=orderNo;
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok7]","server.txt");
-				}	
-			}else{
+				JSONObject object;
+				try {
+					object = new JSONObject(result);
+					int errType =  object.getInt("Error");
+					//返回有故障
+					if(errType>0)
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail7]Records","server.txt");
+					}
+					else
+					{
+						ret[0]=orderNoVal[0];						
+						JSONObject retj=new JSONObject();
+						retj.put("orderno", ret[0]);
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok7]["+retj.toString()+"]","server.txt");
+						retjson.put(retj);
+					}
+					
+					//第五步：进行下一个记录信息
+					retint++;
+					if(retint<recordarr.length())
+					{
+						updaterecord(retint);
+					}
+					else
+					{					
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2="+retjson.toString(),"server.txt");
+						//上传给server
+						//向主线程返回信息
+						tomain3.what=SETRECORDMAIN;
+						tomain3.obj=retjson;
+						mainhand.sendMessage(tomain3); // 发送消息
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}										   
+			}  
+		}, new Response.ErrorListener() {  
+			@Override  
+			public void onErrorResponse(VolleyError error) {  
 				result = "请求失败！";
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail7]"+result,"server.txt");
-				ret=null;
-			}			
-		} 
-		catch (Exception e1) 
-		{
-			//e1.printStackTrace();	//输出异常信息
-			ret=null;
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail7]Records","server.txt");
-		}		
-		return ret;
+				//第五步：进行下一个记录信息
+				retint++;
+				if(retint<recordarr.length())
+				{
+					updaterecord(retint);
+				}
+				else
+				{						
+					//上传给server
+					//向主线程返回信息
+					tomain3.what=SETRECORDMAIN;
+					tomain3.obj=retjson;
+					mainhand.sendMessage(tomain3); // 发送消息
+				}
+			}  
+		}) 
+		{  
+			@Override  
+			protected Map<String, String> getParams() throws AuthFailureError {  
+				//3.添加params
+				Map<String, String> map = new HashMap<String, String>();  
+				map.put("Token", Tok);  
+				map.put("param", paramVal[0].toString());
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Records="+map.toString(),"server.txt");
+				return map;  
+		   }  
+		}; 	
+		//5.加载信息并发送到网络上
+		mQueue.add(stringRequest3);				
 	}
+	
 	
 	//更新交易记录信息
 	private JSONObject updatecolumns(String classrst) 
