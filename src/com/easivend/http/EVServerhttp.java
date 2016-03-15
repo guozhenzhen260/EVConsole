@@ -575,63 +575,49 @@ public class EVServerhttp implements Runnable {
 					}
 					break;
 				case SETHUODAOSTATUCHILD://货道状态上报消息	
-//					String CABINET_NO=null;
-//	    			String PATH_NO=null;
-//	    			String PATH_STATUS=null;
-//	    			String PATH_COUNT=null;
-//	    			String PATH_REMAINING=null;
-//	    			String PRODUCT_NO=null;
-//	    			String PATH_ID=null;
-//					//1.得到本机编号信息
-//					JSONObject ev2=null;
-//					try {
-//						ev2 = new JSONObject(msg.obj.toString());
-//						CABINET_NO=ev2.getString("CABINET_NO");
-//		    			PATH_NO=ev2.getString("PATH_NO");
-//		    			PATH_STATUS=ev2.getString("PATH_STATUS");
-//		    			PATH_COUNT=ev2.getString("PATH_COUNT");
-//		    			PATH_REMAINING=ev2.getString("PATH_REMAINING");
-//		    			PRODUCT_NO=ev2.getString("PRODUCT_NO");
-//		    			PATH_ID=ev2.getString("PATH_ID");
-//						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=vmc_no="+vmc_no+"PATH_ID="+PATH_ID+"CABINET_NO="+CABINET_NO
-//						+" PATH_NO="+PATH_NO+" PATH_STATUS="+PATH_STATUS+" PATH_COUNT="+PATH_COUNT
-//						+" PATH_REMAINING="+PATH_REMAINING+" PRODUCT_NO="+PRODUCT_NO,"server.txt");
-//					} catch (JSONException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 货道状态上报["+Thread.currentThread().getId()+"]","server.txt");
 					//1.得到交易记录编号信息
-					JSONArray ev9=null;
 					try {
-						ev9 = new JSONArray(msg.obj.toString());
-						JSONArray retjson=new JSONArray();
-						//向主线程返回信息
-						Message tomain=mainhand.obtainMessage();
-						
-						for(int i=0;i<ev9.length();i++)
+						columnArray(msg.obj.toString());
+						if(columnarr.length()>0)
 						{
-							JSONObject object2=ev9.getJSONObject(i);
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+object2.toString()
-									,"server.txt");
-							JSONObject ret=updatecolumns(object2.toString());
-							if(ret!=null)
-							{
-								retjson.put(ret);
-							}
-						}	
-						tomain.what=SETHUODAOSTATUMAIN;
-						tomain.obj=retjson;
-						mainhand.sendMessage(tomain); // 发送消息		
-					} catch (Exception e1) {
+							updatecolumn(0);
+						}
+					} catch (JSONException e2) {
 						// TODO Auto-generated catch block
-						//e1.printStackTrace();
-						//向主线程返回信息
-						Message tomain=mainhand.obtainMessage();
-						tomain.what=SETFAILMAIN;
-						mainhand.sendMessage(tomain); // 发送消息	
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail8]SETFAILMAIN","server.txt");
+						e2.printStackTrace();
 					}
+//					//1.得到交易记录编号信息
+//					JSONArray ev9=null;
+//					try {
+//						ev9 = new JSONArray(msg.obj.toString());
+//						JSONArray retjson=new JSONArray();
+//						//向主线程返回信息
+//						Message tomain=mainhand.obtainMessage();
+//						
+//						for(int i=0;i<ev9.length();i++)
+//						{
+//							JSONObject object2=ev9.getJSONObject(i);
+//							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+object2.toString()
+//									,"server.txt");
+//							JSONObject ret=updatecolumns(object2.toString());
+//							if(ret!=null)
+//							{
+//								retjson.put(ret);
+//							}
+//						}	
+//						tomain.what=SETHUODAOSTATUMAIN;
+//						tomain.obj=retjson;
+//						mainhand.sendMessage(tomain); // 发送消息		
+//					} catch (Exception e1) {
+//						// TODO Auto-generated catch block
+//						//e1.printStackTrace();
+//						//向主线程返回信息
+//						Message tomain=mainhand.obtainMessage();
+//						tomain.what=SETFAILMAIN;
+//						mainhand.sendMessage(tomain); // 发送消息	
+//						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail8]SETFAILMAIN","server.txt");
+//					}
 					
 					
 					
@@ -1224,8 +1210,180 @@ public class EVServerhttp implements Runnable {
 		mQueue.add(stringRequest3);				
 	}
 	
-	
-	//更新交易记录信息
+	//==========
+	//==货道管理模块
+	//==========
+	JSONArray columnarr=null;
+	JSONArray columnjson=null;	
+	int columnint=0;
+	//分解交易记录信息
+	private void columnArray(String classrst) throws JSONException
+	{
+		columnint=0;
+		columnarr=new JSONArray(classrst);
+		columnjson=new JSONArray();
+		if(columnarr.length()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETHUODAOSTATUMAIN;
+			tomain.obj=columnjson;
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
+	}
+	//更新货道状态信息
+	private void updatecolumn(int i) 
+	{
+		JSONObject jsonObject = null; 
+		String pathID="";
+		String cabinetNumber="";
+		String pathName="";
+		final String cabinetNumberVal[]={null};
+		final String pathNameVal[]={null};
+		String productID="";
+		String productNum="";
+		String pathCount="";
+		String pathStatus="";
+		String pathRemaining="";
+		String lastedittime="";
+		String isdisable="";
+		try {
+			jsonObject =columnarr.getJSONObject(i);
+			pathID=jsonObject.getString("pathID");
+			cabinetNumber=jsonObject.getString("cabinetNumber");
+			cabinetNumberVal[0]=cabinetNumber;
+			pathName=jsonObject.getString("pathName");
+			pathNameVal[0]=pathName;
+			productID=jsonObject.getString("productID");
+			productNum=jsonObject.getString("productNum");
+			pathCount=jsonObject.getString("pathCount");
+			pathStatus=jsonObject.getString("pathStatus");
+			pathRemaining=jsonObject.getString("pathRemaining");
+			lastedittime=jsonObject.getString("lastedittime");
+			isdisable=jsonObject.getString("isdisable");
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=pathID="+pathID+"cabinetNumber="+cabinetNumber+"pathName="+pathName+"productID="
+				+productID+"productNum="+productNum+"pathCount="+pathCount+"pathStatus="+pathStatus+"pathRemaining="+pathRemaining+"lastedittime="+lastedittime+
+				"isdisable="+isdisable,"server.txt");			
+			  	
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+		//组装json包
+		//交易记录信息
+		String target3 = httpStr+"/api/vmcPathStatus";	//要提交的目标地址
+				
+		JSONObject param=null;
+		try {
+			JSONObject trans=new JSONObject();
+			trans.put("pathID", pathID);
+			trans.put("cabinetNumber", cabinetNumber);
+			trans.put("pathName", pathName);
+			trans.put("productID", productID);	
+			trans.put("productNum", productNum);	
+			trans.put("pathCount", pathCount);	
+			trans.put("pathStatus", pathStatus);	
+			trans.put("pathRemaining", pathRemaining);
+			trans.put("lastedittime", lastedittime);	
+			trans.put("isdisable", isdisable);
+			JSONArray PATHLIST=new JSONArray();
+			PATHLIST.put(trans);
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","PATHLIST="+PATHLIST.toString(),"server.txt");
+			param=new JSONObject();
+			param.put("VMC_NO", vmc_no);
+			param.put("PATHLIST", PATHLIST);
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","param="+param.toString(),"server.txt");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		final JSONObject paramVal[]={null};
+		paramVal[0]=param;
+
+			
+		//向主线程返回信息
+		final Message tomain3=mainhand.obtainMessage();
+		//4.准备加载信息设置
+		StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
+			@Override  
+			public void onResponse(String response) {  
+			   
+			  //如果请求成功
+				result = response;	//获取返回的字符串
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+				JSONObject object;
+				try {
+					object = new JSONObject(result);
+					int errType =  object.getInt("Error");
+					//返回有故障
+					if(errType>0)
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8]Records","server.txt");
+					}
+					else
+					{
+						JSONObject retj=new JSONObject();
+						retj.put("cabinetNumber", cabinetNumberVal[0]);
+						retj.put("pathName", pathNameVal[0]);
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok8]["+retj.toString()+"]","server.txt");
+						columnjson.put(retj);
+					}
+					
+					//第五步：进行下一个货道信息
+					columnint++;
+					if(columnint<columnarr.length())
+					{
+						updatecolumn(columnint);
+					}
+					else
+					{						
+						//上传给server
+						//向主线程返回信息
+						tomain3.what=SETHUODAOSTATUMAIN;
+						tomain3.obj=columnjson;
+						mainhand.sendMessage(tomain3); // 发送消息
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}										   
+			}  
+		}, new Response.ErrorListener() {  
+			@Override  
+			public void onErrorResponse(VolleyError error) {  
+				result = "请求失败！";
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8]"+result,"server.txt");
+				//第五步：进行下一个货道信息
+				columnint++;
+				if(columnint<columnarr.length())
+				{
+					updatecolumn(columnint);
+				}
+				else
+				{						
+					//上传给server
+					//向主线程返回信息
+					tomain3.what=SETHUODAOSTATUMAIN;
+					tomain3.obj=columnjson;
+					mainhand.sendMessage(tomain3); // 发送消息
+				}
+			}  
+		}) 
+		{  
+			@Override  
+			protected Map<String, String> getParams() throws AuthFailureError {  
+				//3.添加params
+				Map<String, String> map = new HashMap<String, String>();  
+				map.put("Token", Tok);  
+				map.put("param", paramVal[0].toString());
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","columns="+map.toString(),"server.txt");
+				return map;  
+		   }  
+		}; 	
+		//5.加载信息并发送到网络上
+		mQueue.add(stringRequest3);				
+	}
+
 	private JSONObject updatecolumns(String classrst) 
 	{
 		JSONObject ret=new JSONObject();
