@@ -67,6 +67,7 @@ public class EVServerService extends Service {
     Map<String,Integer> huoSet=null;
     private String LAST_EDIT_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
+    private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -264,11 +265,25 @@ public class EVServerService extends Service {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//初始化五、发送心跳命令到子线程中
-		            	childhand=serverhttp.obtainHandler();
-		        		Message childheartmsg=childhand.obtainMessage();
-		        		childheartmsg.what=EVServerhttp.SETHEARTCHILD;
-		        		childhand.sendMessage(childheartmsg);						
+						//有不存在的商品
+						if(isspempty)
+						{
+							isspempty=false;
+							//初始化三:获取商品信息
+							childhand=serverhttp.obtainHandler();
+			        		Message childmsg4=childhand.obtainMessage();
+			        		childmsg4.what=EVServerhttp.SETPRODUCTCHILD;
+			        		childmsg4.obj="";
+			        		childhand.sendMessage(childmsg4);
+						}
+						else
+						{
+							//初始化五、发送心跳命令到子线程中
+			            	childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg=childhand.obtainMessage();
+			        		childheartmsg.what=EVServerhttp.SETHEARTCHILD;
+			        		childhand.sendMessage(childheartmsg);	
+						}
 						break;					
 					//获取心跳信息	
 					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
@@ -472,7 +487,18 @@ public class EVServerService extends Service {
     			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,object2.getString("PRODUCT_NO"),
     					Integer.parseInt(object2.getString("PATH_COUNT")),Integer.parseInt(object2.getString("PATH_REMAINING")),
     					status,"",PATH_ID,0);    			
-    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加商品信息
+    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息
+    			//查看本货道对应的商品是否存在
+    			// 创建InaccountDAO对象
+    			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
+    			//创建Tb_inaccount对象
+    			Tb_vmc_product tb_vmc_product = productDAO.find(object2.getString("PRODUCT_NO"));
+    			if(tb_vmc_product==null)
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
+    						+"不存在","server.txt");	
+    				isspempty=true;
+    			}
 			}
 			//更新货道失败
 			else
