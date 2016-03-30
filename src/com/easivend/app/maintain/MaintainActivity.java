@@ -15,6 +15,7 @@
 
 package com.easivend.app.maintain;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,7 +197,8 @@ public class MaintainActivity extends Activity
 		txtcom=(TextView)super.findViewById(R.id.txtcom);
 		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
 		txtcolumncom=(TextView)super.findViewById(R.id.txtcolumncom);
-		ToolClass.SetDir();		
+		ToolClass.SetDir();	
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
