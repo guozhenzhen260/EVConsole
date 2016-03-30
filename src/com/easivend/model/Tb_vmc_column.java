@@ -21,6 +21,7 @@ public class Tb_vmc_column
 {
 	private String cabineID;// 货柜号
     private String columnID;// 货道号
+    private String tihuoPwd;// 货道号
     private String productID;// 商品ID
     private int pathCount;// 货道总数
     private int pathRemain;// 货道剩余商品数量
@@ -29,12 +30,13 @@ public class Tb_vmc_column
     private int path_id;//下载的编号
     private int isupload;//是否已经上传，1是，0不是
  // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
-	public Tb_vmc_column(String cabineID, String columnID, String productID,
+	public Tb_vmc_column(String cabineID, String columnID, String tihuoPwd,String productID,
 			int pathCount, int pathRemain, int columnStatus, String lasttime,
 			int path_id, int isupload) {
 		super();
 		this.cabineID = cabineID;
 		this.columnID = columnID;
+		this.tihuoPwd = tihuoPwd;
 		this.productID = productID;
 		this.pathCount = pathCount;
 		this.pathRemain = pathRemain;
@@ -43,6 +45,15 @@ public class Tb_vmc_column
 		this.path_id = path_id;
 		this.isupload = isupload;
 	}
+	
+	public String getTihuoPwd() {
+		return tihuoPwd;
+	}
+
+	public void setTihuoPwd(String tihuoPwd) {
+		this.tihuoPwd = tihuoPwd;
+	}
+
 	public String getCabineID() {
 		return cabineID;
 	}

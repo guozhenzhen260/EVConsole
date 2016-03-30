@@ -484,7 +484,7 @@ public class EVServerService extends Service {
 				// 创建InaccountDAO对象
     			vmc_columnDAO columnDAO = new vmc_columnDAO(EVServerService.this);
 	            //创建Tb_inaccount对象
-    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,object2.getString("PRODUCT_NO"),
+    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,"",object2.getString("PRODUCT_NO"),
     					Integer.parseInt(object2.getString("PATH_COUNT")),Integer.parseInt(object2.getString("PATH_REMAINING")),
     					status,"",PATH_ID,0);    			
     			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息

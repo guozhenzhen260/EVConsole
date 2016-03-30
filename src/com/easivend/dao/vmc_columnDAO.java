@@ -57,10 +57,10 @@ public class vmc_columnDAO
 	        	//执行修改货道数据
 		 		db.execSQL(
 					"update vmc_column set " +
-					"productID=?,pathCount=?,pathRemain=?,columnStatus=?," +
+					"tihuoPwd=?,productID=?,pathCount=?,pathRemain=?,columnStatus=?," +
 					"lasttime=(datetime('now', 'localtime')),isupload=0 " +
 					"where cabID=? and columnID=?",
-			        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
+			        new Object[] { tb_vmc_column.getTihuoPwd(),tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
 							tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
 							tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
 			
@@ -72,15 +72,15 @@ public class vmc_columnDAO
 	     				"insert into vmc_column" +
 	     				"(" +
 	     				"cabID,columnID,productID,pathCount,pathRemain," +
-	     				"columnStatus,lasttime,isupload" +
+	     				"columnStatus,lasttime,isupload,tihuoPwd" +
 	     				") " +
 	     				"values" +
 	     				"(" +
-	     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?" +
+	     				"?,?,?,?,?,?,(datetime('now', 'localtime')),?,?" +
 	     				")",
 	     		        new Object[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID(),tb_vmc_column.getProductID(),
 	     						tb_vmc_column.getPathCount(),tb_vmc_column.getPathRemain(),tb_vmc_column.getColumnStatus(),
-	     						tb_vmc_column.getIsupload()});
+	     						tb_vmc_column.getIsupload(),tb_vmc_column.getTihuoPwd()});
 	     		
 	        }
         
@@ -234,13 +234,14 @@ public class vmc_columnDAO
     	Tb_vmc_column tb_vmc_column=null;
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select cabID,columnID,productID,pathCount,pathRemain," +
-            		"columnStatus,lasttime,path_id,isupload from vmc_column where cabID=? and columnID=?", 
+            		"columnStatus,lasttime,path_id,isupload,tihuoPwd from vmc_column where cabID=? and columnID=?", 
             		new String[] { cabID,columnID });// 根据编号查找支出信息，并存储到Cursor类中
         if (cursor.moveToNext()) {// 遍历查找到的支出信息
 
             // 将遍历到的支出信息存储到Tb_outaccount类中
         	tb_vmc_column=new Tb_vmc_column(
     				cursor.getString(cursor.getColumnIndex("cabID")), cursor.getString(cursor.getColumnIndex("columnID")),
+    				cursor.getString(cursor.getColumnIndex("tihuoPwd")),
     				cursor.getString(cursor.getColumnIndex("productID")),cursor.getInt(cursor.getColumnIndex("pathCount")),
     				cursor.getInt(cursor.getColumnIndex("pathRemain")),cursor.getInt(cursor.getColumnIndex("columnStatus")),
     				cursor.getString(cursor.getColumnIndex("lasttime")),cursor.getInt(cursor.getColumnIndex("path_id")),
@@ -266,13 +267,14 @@ public class vmc_columnDAO
     	List<Tb_vmc_column> tb_vmc_column = new ArrayList<Tb_vmc_column>();// 创建集合对象
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select cabID,columnID,productID,pathCount,pathRemain," +
-            		"columnStatus,lasttime,path_id,isupload from vmc_column where isupload <> 1 ", null);// 根据编号查找支出信息，并存储到Cursor类中
+            		"columnStatus,lasttime,path_id,isupload,tihuoPwd from vmc_column where isupload <> 1 ", null);// 根据编号查找支出信息，并存储到Cursor类中
         while (cursor.moveToNext()) {// 遍历查找到的支出信息
 
             // 将遍历到的支出信息存储到Tb_outaccount类中
         	tb_vmc_column.add(new Tb_vmc_column
         			(
     				cursor.getString(cursor.getColumnIndex("cabID")), cursor.getString(cursor.getColumnIndex("columnID")),
+    				cursor.getString(cursor.getColumnIndex("tihuoPwd")),
     				cursor.getString(cursor.getColumnIndex("productID")),cursor.getInt(cursor.getColumnIndex("pathCount")),
     				cursor.getInt(cursor.getColumnIndex("pathRemain")),cursor.getInt(cursor.getColumnIndex("columnStatus")),
     				cursor.getString(cursor.getColumnIndex("lasttime")),cursor.getInt(cursor.getColumnIndex("path_id")),
@@ -326,7 +328,7 @@ public class vmc_columnDAO
         List<Tb_vmc_column> tb_inaccount = new ArrayList<Tb_vmc_column>();// 创建集合对象
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select cabID,columnID,productID,pathCount,pathRemain," +
-        		"columnStatus,lasttime,path_id,isupload from vmc_column where cabID=? ", 
+        		"columnStatus,lasttime,path_id,isupload,tihuoPwd from vmc_column where cabID=? ", 
         		new String[] { cabID});// 根据编号查找支出信息，并存储到Cursor类中
     
         //遍历所有的收入信息
@@ -336,6 +338,7 @@ public class vmc_columnDAO
             tb_inaccount.add(new Tb_vmc_column
         		(
         				cursor.getString(cursor.getColumnIndex("cabID")), cursor.getString(cursor.getColumnIndex("columnID")),
+        				cursor.getString(cursor.getColumnIndex("tihuoPwd")),
         				cursor.getString(cursor.getColumnIndex("productID")),cursor.getInt(cursor.getColumnIndex("pathCount")),
         				cursor.getInt(cursor.getColumnIndex("pathRemain")),cursor.getInt(cursor.getColumnIndex("columnStatus")),
         				cursor.getString(cursor.getColumnIndex("lasttime")),cursor.getInt(cursor.getColumnIndex("path_id")),
