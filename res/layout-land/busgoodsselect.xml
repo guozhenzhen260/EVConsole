@@ -72,6 +72,14 @@
 		android:layout_alignParentBottom="true"
 		android:layout_toRightOf="@+id/ivbuszhiselweixing"	
 		android:src="@drawable/amount"			
+   	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiseltihuo"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_alignParentBottom="true"
+		android:layout_toRightOf="@+id/ivbuszhiselamount"	
+		android:src="@drawable/tihuopwd"			
    	/> 	
 	<ImageButton
         android:id="@+id/imgbtnbusgoodselback"

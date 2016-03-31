@@ -24,7 +24,7 @@ public class BusgoodsSelect extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static BusgoodsSelect BusgoodsSelectAct=null;
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
-	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
+	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiseltihuo=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	private String proID = null;
 	private String productID = null;
@@ -115,6 +115,19 @@ public class BusgoodsSelect extends Activity
 		    	}
 		    }
 		});
+		ivbuszhiseltihuo = (ImageView) findViewById(R.id.ivbuszhiseltihuo);	
+		ivbuszhiseltihuo.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(Integer.parseInt(procount)>0)
+		    	{
+			    	sendzhifu();
+			    	Intent intent = null;// 创建Intent对象                
+	            	intent = new Intent(BusgoodsSelect.this, BusZhitihuo.class);// 使用Accountflag窗口初始化Intent
+	            	startActivity(intent);// 打开Accountflag
+		    	}
+		    }
+		});
 		//*********************
 		//搜索可以得到的支付方式
 		//*********************
@@ -146,6 +159,14 @@ public class BusgoodsSelect extends Activity
     		else
     		{
     			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+    		}
+    		if(tb_inaccount.getPrinter()!=1)
+    		{
+    			ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiseltihuo.setVisibility(View.VISIBLE);//打开
     		}
     	}		
 		imgbtnbusgoodselback=(ImageButton)findViewById(R.id.imgbtnbusgoodselback);
