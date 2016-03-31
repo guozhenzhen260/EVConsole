@@ -100,7 +100,7 @@ public final class R {
     public static final class id {
         public static final int ItemImage=0x7f0900a2;
         public static final int ItemTitle=0x7f0900a3;
-        public static final int action_settings=0x7f0901f3;
+        public static final int action_settings=0x7f0901f6;
         public static final int addr=0x7f090157;
         public static final int barhuomanager=0x7f0900d1;
         public static final int barweixingtest=0x7f0901e2;
@@ -385,6 +385,9 @@ public final class R {
         public static final int lvclass=0x7f0900a8;
         public static final int lvlog=0x7f090159;
         public static final int lvorder=0x7f09017b;
+        public static final int newpwd=0x7f0901f4;
+        public static final int newpwd2=0x7f0901f5;
+        public static final int oldpwd=0x7f0901f3;
         public static final int onloadTime=0x7f0900c6;
         public static final int proID=0x7f0901d8;
         public static final int proImage=0x7f0901d6;
@@ -645,6 +648,7 @@ public final class R {
         public static final int viewspinner=0x7f03002a;
         public static final int weixingtest=0x7f03002b;
         public static final int zhifubaotest=0x7f03002c;
+        public static final int zhitipwd=0x7f03002d;
     }
     public static final class menu {
         public static final int maintain=0x7f080000;

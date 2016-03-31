@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.easivend.app.business.BusZhitihuo;
 import com.easivend.app.business.Busgoods;
 import com.easivend.app.business.BusgoodsClass;
 import com.easivend.app.business.BusgoodsSelect;
@@ -44,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class BusinesslandFragment extends Fragment 
 {	
@@ -413,6 +415,8 @@ public class BusinesslandFragment extends Fragment
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");
+			    // 弹出信息提示
+		        Toast.makeText(context, "抱歉，本商品已售完！", Toast.LENGTH_LONG).show();
 			}
 		    
 		}

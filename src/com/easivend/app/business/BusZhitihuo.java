@@ -5,16 +5,25 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.easivend.app.maintain.HuodaoSet;
+import com.easivend.app.maintain.HuodaoTest;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
+import com.easivend.dao.vmc_columnDAO;
+import com.easivend.model.Tb_vmc_column;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class BusZhitihuo extends Activity 
 {
@@ -184,7 +194,85 @@ public class BusZhitihuo extends Activity
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    			    	
+		    	LayoutInflater factory = LayoutInflater.from(BusZhitihuo.this);
+				final View myview=factory.inflate(R.layout.zhitipwd, null);
+				Dialog dialog = new AlertDialog.Builder(BusZhitihuo.this)				
+				.setPositiveButton("修改", new DialogInterface.OnClickListener() 		{
+						
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						// TODO Auto-generated method stub
+						EditText oldpwd = (EditText) myview.findViewById(R.id.oldpwd);
+						EditText newpwd = (EditText) myview.findViewById(R.id.newpwd);
+						EditText newpwd2 = (EditText) myview.findViewById(R.id.newpwd2);
+						String oldstr=oldpwd.getText().toString();
+						String newstr=newpwd.getText().toString();
+						String newstr2=newpwd2.getText().toString();
+						if(newstr.equals("")==true)
+						{
+							// 弹出信息提示
+				            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗错误！", Toast.LENGTH_LONG).show();
+						}
+						else if(newstr.equals(newstr2)==false)
+						{
+							// 弹出信息提示
+				            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗错误！", Toast.LENGTH_LONG).show();
+						}
+						else if(ToolClass.getzhitihuo(BusZhitihuo.this, OrderDetail.getCabID(), OrderDetail.getColumnID(), oldstr))
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<准备修改密码"+newstr,"log.txt");
+							final String tihuoPwd=newstr;
+							//创建警告对话框
+					    	Dialog alert=new AlertDialog.Builder(BusZhitihuo.this)
+					    		.setTitle("对话框")//标题
+					    		.setMessage("您确定要修改提货码吗？")//表示对话框中得内容
+					    		.setIcon(R.drawable.ic_launcher)//设置logo
+					    		.setPositiveButton("修改", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+					    			{				
+						    				@Override
+						    				public void onClick(DialogInterface dialog, int which) 
+						    				{
+						    					// TODO Auto-generated method stub	
+						    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<修改密码="+tihuoPwd,"log.txt");
+//						    					// 创建InaccountDAO对象
+								    			vmc_columnDAO columnDAO = new vmc_columnDAO(BusZhitihuo.this);
+									            //创建Tb_inaccount对象
+								    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(OrderDetail.getCabID(), OrderDetail.getColumnID(),tihuoPwd,"",0,
+								    					0,0,"",0,0);
+								    			
+								    			columnDAO.updatetihuo(tb_vmc_column);// 添加商品信息
+								    			// 弹出信息提示
+									            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗成功！", Toast.LENGTH_LONG).show();
+									            
+						    				}
+					    		      }
+					    			)		    		        
+							        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+							        	{			
+											@Override
+											public void onClick(DialogInterface dialog, int which) 
+											{
+												// TODO Auto-generated method stub				
+											}
+							        	}
+							        )
+							        .create();//创建一个对话框
+							        alert.show();//显示对话框
+						}
+					}
+				})
+				.setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+	        	{			
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						// TODO Auto-generated method stub				
+					}
+	        	})
+				.setView(myview)//这里将对话框布局文件加入到对话框中
+				.create();
+				dialog.show();		    	
 		    }
 		});
 	}

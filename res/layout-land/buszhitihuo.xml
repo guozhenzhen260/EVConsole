@@ -8,7 +8,6 @@
 		android:textSize="60sp" 
 		android:layout_height="wrap_content" 
 		android:textStyle="bold"
-       	android:textColor="#FF0000"  
  		android:hint="请输入提货密码"        
         />
     <Button

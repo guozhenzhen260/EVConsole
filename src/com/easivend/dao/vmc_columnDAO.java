@@ -42,6 +42,45 @@ public class vmc_columnDAO
 		helper=new DBOpenHelper(context);// 初始化DBOpenHelper对象
 	}
 	
+	//修改货道提货码
+	public void updatetihuo(Tb_vmc_column tb_vmc_column)throws SQLException
+	{
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+		//是否已经存在本商品
+        Cursor cursor = db.rawQuery("select columnID from vmc_column where cabID = ? and columnID=?", 
+        		new String[] { tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID() });// 根据编号查找支出信息，并存储到Cursor类中
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if (cursor.moveToNext()) // 遍历查找到的支出信息
+	        {
+	        	//执行修改货道数据
+		 		db.execSQL(
+					"update vmc_column set " +
+					"tihuoPwd=?, " +
+					"lasttime=(datetime('now', 'localtime')) " +
+					"where cabID=? and columnID=?",
+			        new Object[] { tb_vmc_column.getTihuoPwd(),
+							tb_vmc_column.getCabineID(),tb_vmc_column.getColumnID()});
+			
+			}	    
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
+        
+ 		 
+	}
 	//添加或修改货道数据
 	public void addorupdate(Tb_vmc_column tb_vmc_column)throws SQLException
 	{
@@ -362,7 +401,7 @@ public class vmc_columnDAO
     public int getproductCount(String productID) {
     	int count=0;
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select pathRemain from vmc_column where productID=?", 
+        Cursor cursor = db.rawQuery("select pathRemain from vmc_column where (tihuoPwd is null or tihuoPwd=='') and  productID=?", 
         		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
         //遍历所有的收入信息
         while (cursor.moveToNext()) 
@@ -387,7 +426,7 @@ public class vmc_columnDAO
     	List<String> alllist=new ArrayList<String>();
     	
     	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where pathRemain>0 and productID=?", 
+        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=?", 
         		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
         //遍历所有的收入信息
         if (cursor.moveToNext()) 

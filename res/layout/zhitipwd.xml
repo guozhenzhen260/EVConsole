@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <TableRow>
+        <TextView 
+            android:text = "初始密码:"
+            android:layout_marginLeft="20dip"
+            android:textSize="16pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <EditText 
+            android:width="160pt"
+            android:numeric="integer"
+            android:id="@+id/oldpwd"
+            android:layout_height="wrap_content"
+        />
+    </TableRow>
+	<TableRow>
+        <TextView 
+            android:text = "新密码:"
+            android:layout_marginLeft="20dip"
+            android:textSize="16pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <EditText 
+            android:width="160pt"
+            android:id="@+id/newpwd"
+            android:numeric="integer"
+            android:layout_height="wrap_content"            
+        />
+    </TableRow>
+    <TableRow>
+        <TextView 
+            android:text = "请再输入一次:"
+            android:layout_marginLeft="20dip"
+            android:textSize="16pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <EditText 
+            android:width="160pt"
+            android:id="@+id/newpwd2"
+            android:numeric="integer"
+            android:layout_height="wrap_content"            
+        />
+    </TableRow>
+</TableLayout>

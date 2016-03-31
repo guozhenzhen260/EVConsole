@@ -136,38 +136,74 @@ public class BusgoodsSelect extends Activity
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-    		if(tb_inaccount.getAmount()!=1)
+    		//有打开提货码功能
+    		if(tb_inaccount.getPrinter()==1)
     		{
-    			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+    			//可以提货
+    			if(ToolClass.getzhitihuotype(BusgoodsSelect.this, cabID, huoID))
+        		{
+        			ivbuszhiseltihuo.setVisibility(View.VISIBLE);//打开
+        			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+        			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+        			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+        		}
+    			else
+    			{
+    				ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
+    				if(tb_inaccount.getAmount()!=1)
+            		{
+            			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+            		}
+            		else
+            		{
+            			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+            		}	
+            		if(tb_inaccount.getZhifubaoer()!=1)
+            		{
+            			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+            		}
+            		else
+            		{
+            			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+            		}
+            		if(tb_inaccount.getWeixing()!=1)
+            		{
+            			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+            		}
+            		else
+            		{
+            			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+            		}
+    			}
     		}
+    		//没有打开提货码功能
     		else
     		{
-    			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
-    		}	
-    		if(tb_inaccount.getZhifubaoer()!=1)
-    		{
-    			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
-    		}
-    		else
-    		{
-    			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
-    		}
-    		if(tb_inaccount.getWeixing()!=1)
-    		{
-    			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
-    		}
-    		else
-    		{
-    			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
-    		}
-    		if(tb_inaccount.getPrinter()!=1)
-    		{
-    			ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
-    		}
-    		else
-    		{
-    			ivbuszhiseltihuo.setVisibility(View.VISIBLE);//打开
-    		}
+    			if(tb_inaccount.getAmount()!=1)
+        		{
+        			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+        		}	
+        		if(tb_inaccount.getZhifubaoer()!=1)
+        		{
+        			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+        		}
+        		if(tb_inaccount.getWeixing()!=1)
+        		{
+        			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+        		}
+    		}    		    			
     	}		
 		imgbtnbusgoodselback=(ImageButton)findViewById(R.id.imgbtnbusgoodselback);
 		imgbtnbusgoodselback.setOnClickListener(new OnClickListener() {
