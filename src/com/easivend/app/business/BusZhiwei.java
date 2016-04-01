@@ -129,7 +129,8 @@ public class BusZhiwei extends Activity
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
 						ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
+						//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
+						txtbuszhiweirst.setText("交易结果:请扫描二维码");
 						iszhiwei=1;
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
@@ -161,7 +162,8 @@ public class BusZhiwei extends Activity
 					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息		
-						txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
+						//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
+						txtbuszhiweirst.setText("交易结果:请扫描二维码");
 						break;		
 				}				
 			}

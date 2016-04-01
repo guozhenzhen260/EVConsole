@@ -48,7 +48,15 @@
             android:textStyle="bold"		        
             android:text="产品描述"
 	        />      
-	
+	<WebView
+            android:id="@+id/webproductDesc"
+            android:textSize="40sp"
+	        android:minWidth="150px"
+	        android:layout_toRightOf="@+id/txtbusgoodselAmount"
+	        android:layout_below="@+id/txtbusgoodselAmount"
+			android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:text="" />
 	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselzhier"

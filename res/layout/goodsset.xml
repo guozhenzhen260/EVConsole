@@ -201,8 +201,8 @@
 						android:layout_height="wrap_content"
 						android:text="商品描述:"/>
 			        
-			         <EditText
-			            android:id="@+id/edtproductDesc"
+			         <WebView
+			            android:id="@+id/webproductDesc"
 			            android:textSize="40sp"
 				        android:minWidth="150px"
 						android:layout_width="wrap_content" 

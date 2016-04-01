@@ -423,19 +423,20 @@ public class EVServerService extends Service {
 			
 			String product_Class_NO=(object2.getString("product_Class_NO").isEmpty())?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","2更新商品"+i+"txt=product_NO="+object2.getString("product_NO")
-					+"product_Name="+object2.getString("product_Name")+"product_Class_NO="+product_Class_NO
-					+"AttImg="+object2.getString("AttImg"),"server.txt");	
+			String product_TXT=object2.getString("product_TXT");
 			//用于签到完成后，更新商品信息时间段
-//			if(ischeck==true)
+//			if(ischeck==true) 
 //			{
 //				LAST_EDIT_TIME=ToolClass.getLasttime();
 //			}
 			// 创建InaccountDAO对象
 			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
             //创建Tb_inaccount对象
-			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(object2.getString("product_NO"), object2.getString("product_Name"),object2.getString("product_TXT"),Float.parseFloat(object2.getString("market_Price")),
+			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(object2.getString("product_NO"), object2.getString("product_Name"),product_TXT,Float.parseFloat(object2.getString("market_Price")),
 					Float.parseFloat(object2.getString("sales_Price")),0,object2.getString("create_Time"),object2.getString("last_Edit_Time"),object2.getString("AttImg"),"","",0,0);
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","2更新商品"+i+"txt=product_NO="+tb_vmc_product.getProductID()
+					+"product_Name="+tb_vmc_product.getProductName()+"product_Class_NO="+product_Class_NO
+					+"AttImg="+tb_vmc_product.getAttBatch1()+"product_TXT="+tb_vmc_product.getProductDesc(),"server.txt");	
 			productDAO.addorupdate(tb_vmc_product,product_Class_NO);// 修改
 		}
 		return true;

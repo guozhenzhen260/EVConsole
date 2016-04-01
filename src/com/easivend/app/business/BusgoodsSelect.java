@@ -1,8 +1,14 @@
 package com.easivend.app.business;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
@@ -15,6 +21,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +34,7 @@ public class BusgoodsSelect extends Activity
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiseltihuo=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
+	WebView webproductDesc;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -75,7 +84,17 @@ public class BusgoodsSelect extends Activity
 		else
 		{
 			txtbusgoodselAmount.setText("已售罄");
-		}	
+		}
+		//得到商品描述
+		webproductDesc = (WebView) findViewById(R.id.webproductDesc);
+		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
+	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
+	    WebSettings settings = webproductDesc.getSettings();
+	    settings.setSupportZoom(true);
+	    settings.setTextSize(WebSettings.TextSize.LARGEST);
+	    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+	    webproductDesc.loadData(tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8", null);//这种写法可以正确中文解码
+		
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
 		    @Override
