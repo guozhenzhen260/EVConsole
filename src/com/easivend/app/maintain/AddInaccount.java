@@ -55,6 +55,7 @@ public class AddInaccount extends TabActivity
 {
 	private TabHost mytabhost = null;
 	private int[] layres=new int[]{R.id.tab_billmanager,R.id.tab_coinmanager,R.id.tab_payoutmanager};//内嵌布局文件的id
+	private double amount=0;//总投币金额
 	//纸币器
 	private Spinner spinbillmanagerbill=null;
 	private String [] billStringArray; 
@@ -292,7 +293,8 @@ public class AddInaccount extends TabActivity
 					  	String bill_err=((Integer)Set.get("bill_err")==0)?"正常":"故障码:"+(Integer)Set.get("bill_err");
 					  	txtbillerr.setText(bill_err);
 					  	double money=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));					  	
-					  	txtbillpayin.setText(String.valueOf(money));					  	
+					  	txtbillpayin.setText(String.valueOf(money));
+					  	amount=money;//当前纸币投入
 					  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
 					  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
 					  	
@@ -303,7 +305,8 @@ public class AddInaccount extends TabActivity
 					  	String coin_err=((Integer)Set.get("coin_err")==0)?"正常":"故障码:"+(Integer)Set.get("coin_err");
 					  	txtcoinerr.setText(coin_err);
 					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));					  	
-					  	txtcoinpayin.setText(String.valueOf(money));					  	
+					  	txtcoinpayin.setText(String.valueOf(money));
+					  	amount+=money;//当前硬币投入
 					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
 					  	txtcoinmanagercoininamount.setText(String.valueOf(money));
 					  	
@@ -633,6 +636,12 @@ public class AddInaccount extends TabActivity
 		        )
 		        .create();//创建一个对话框
 		        alert.show();//显示对话框
+	}
+	@Override
+	protected void onDestroy() {
+		//扣钱
+	    EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend((float)amount));
+		super.onDestroy();		
 	}
 	
 }

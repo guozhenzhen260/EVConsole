@@ -179,6 +179,8 @@ public class BusZhitihuo extends Activity
 		    	{
 			    	str.delete(0,str.length()); 
 			    	txtadsTip.setText(str);
+			    	// 弹出信息提示
+		            Toast.makeText(BusZhitihuo.this, "〖提货密码〗错误！", Toast.LENGTH_LONG).show();
 		    	}
 		    }
 		});

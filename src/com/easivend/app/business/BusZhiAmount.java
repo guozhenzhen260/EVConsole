@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +53,7 @@ public class BusZhiAmount  extends Activity
 	private int recLen = 180; 
 	private int queryLen = 0; 
     private TextView txtView; 
-    Timer timer = new Timer();
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
     private int dispenser=0;//0无,1hopper,2mdb
@@ -100,7 +103,7 @@ public class BusZhiAmount  extends Activity
 		txtbuszhiamountbillAmount= (TextView) findViewById(R.id.txtbuszhiamountbillAmount);		
 		txtbuszhiamounttime = (TextView) findViewById(R.id.txtbuszhiamounttime);
 		txtbuszhiamounttsxx = (TextView) findViewById(R.id.txtbuszhiamounttsxx);
-		timer.schedule(task, 1000, 1000);       // timeTask 
+		timer.scheduleWithFixedDelay(task, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		imgbtnbuszhiamountqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhiamountqxzf);
 		imgbtnbuszhiamountqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -217,14 +220,14 @@ public class BusZhiAmount  extends Activity
 				  	if(money>0)
 				  	{
 				  		iszhiamount=1;
-				  		recLen = 180;
+				  		recLen = 180;//有投币后倒计时不用计算了
 				  		txtbuszhiamountbillAmount.setText(String.valueOf(money));
 				  		OrderDetail.setSmallNote(billmoney);
 				  		OrderDetail.setSmallConi(coinmoney);
 				  		OrderDetail.setSmallAmount(money);
 				  		if(money>=amount)
 				  		{
-				  			timer.cancel(); 
+				  			timer.shutdown(); 
 				  			tochuhuo();
 				  		}
 				  	}
@@ -277,10 +280,10 @@ public class BusZhiAmount  extends Activity
                 public void run() { 
                     recLen--; 
                     txtbuszhiamounttime.setText("倒计时:"+recLen); 
-                    //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
+                    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
                     if(recLen <= 0)
                     { 
-                        timer.cancel(); 
+                    	timer.shutdown(); 
                         finishActivity();
                     } 
                     //发送查询交易指令
@@ -372,7 +375,7 @@ public class BusZhiAmount  extends Activity
     //结束界面
   	private void finishActivity()
   	{
-  		timer.cancel(); 
+  		timer.shutdown(); 
   		if(iszhiamount==1)
   		{
   			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
