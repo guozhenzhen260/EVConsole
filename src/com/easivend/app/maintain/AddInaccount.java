@@ -55,6 +55,7 @@ public class AddInaccount extends TabActivity
 {
 	private TabHost mytabhost = null;
 	private int[] layres=new int[]{R.id.tab_billmanager,R.id.tab_coinmanager,R.id.tab_payoutmanager};//内嵌布局文件的id
+	private double amount=0;//总投币金额
 	//纸币器
 	private Spinner spinbillmanagerbill=null;
 	private String [] billStringArray; 
@@ -112,223 +113,7 @@ public class AddInaccount extends TabActivity
     	this.mytabhost.addTab(myTabpay); 
     	
 		//注册投币找零监听器
-  	    EVprotocolAPI.setCallBack(new JNIInterface() 
-		{
-			
-			@Override
-			public void jniCallback(Map<String, Object> allSet) {
-				float payin_amount=0,reamin_amount=0,payout_amount=0;
-				// TODO Auto-generated method stub	
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果","log.txt");
-				Map<String, Object> Set= allSet;
-				int jnirst=(Integer)Set.get("EV_TYPE");
-				switch (jnirst)
-				{
-					case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
-						//纸币启动成功
-						if((Integer)Set.get("bill_result")>0)
-						{
-							EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
-							EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-						}
-						//硬币启动成功
-						if((Integer)Set.get("coin_result")>0)
-						{
-							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
-							EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-						}
-						break;
-					case EVprotocolAPI.EV_MDB_B_INFO:							 
-						String acceptor=((Integer)Set.get("acceptor")==2)?"MDB":"无";
-						String dispenser=((Integer)Set.get("dispenser")==2)?"MDB":"无";
-						String code=(String) Set.get("code");
-						String sn=(String) Set.get("sn");
-						String model=(String) Set.get("model");
-						String ver=(String) Set.get("ver");
-						int capacity=(Integer)Set.get("capacity");
-						String str="纸币接收器:"+acceptor+"纸币找零器:"+dispenser+"厂商:"+code
-								+"序列号"+sn;
-						txtbillmanagerpar.setText(str);
-						str=" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
-						txtbillmanagerpar2.setText(str);
-						if((Integer)Set.get("acceptor")==2)
-							spinbillmanagerbill.setSelection((Integer)Set.get("acceptor")-1);
-						else if((Integer)Set.get("acceptor")==0)
-							spinbillmanagerbill.setSelection(0);	
-						
-						Map<String,Integer> allSet1=(Map<String, Integer>) Set.get("ch_r");
-						String allb1[]=new String[allSet1.size()];	
-						int bi=0;
-						Set<Map.Entry<String,Integer>> allset=allSet1.entrySet();  //实例化
-					    Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
-					    while(iter.hasNext())
-					    {
-					        Map.Entry<String,Integer> me=iter.next();
-					        //str+="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue()) + ",";
-					        allb1[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
-					    }
-					    String bstr1="",bstr2="";
-					    for(bi=0;bi<16;bi++)
-					    {
-					    	if(bi<8)
-					    		bstr1+=allb1[bi];
-					    	else
-					    		bstr2+=allb1[bi];							
-					    }
-					    txtbillmanagerbillin.setText(bstr1);
-					    txtbillmanagerbillin2.setText(bstr2);
-					  
-					    Map<String,Integer> allSet2=(Map<String, Integer>) Set.get("ch_d");
-					    String allb2[]=new String[allSet2.size()];	
-					    bi=0;
-						Set<Map.Entry<String,Integer>> allset2=allSet2.entrySet();  //实例化
-					    Iterator<Map.Entry<String,Integer>> iter2=allset2.iterator();
-					    while(iter2.hasNext())
-					    {
-					        Map.Entry<String,Integer> me=iter2.next();
-					        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
-					        allb2[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
-					    }
-					    bstr1="";
-					    bstr2="";
-					    for(bi=0;bi<16;bi++)
-					    {
-					    	if(bi<8)
-					    		bstr1+=allb2[bi];
-					    	else
-					    		bstr2+=allb2[bi];							
-					    }
-					    txtbillmanagerbillpay.setText(bstr1);
-					    txtbillmanagerbillpay2.setText(bstr2);
-						break;
-					case EVprotocolAPI.EV_MDB_C_INFO:
-						String acceptor2="";
-						if((Integer)Set.get("acceptor")==3)
-							acceptor2="串行脉冲";
-						else if((Integer)Set.get("acceptor")==2)
-							acceptor2="MDB";
-						else if((Integer)Set.get("acceptor")==1)
-							acceptor2="并行脉冲";
-						else if((Integer)Set.get("acceptor")==0)
-							acceptor2="无";
-						String dispenser2="";
-						if((Integer)Set.get("dispenser")==2)
-							dispenser2="MDB";
-						else if((Integer)Set.get("dispenser")==1)
-							dispenser2="hopper";
-						else if((Integer)Set.get("dispenser")==0)
-							dispenser2="无";
-						String code2=(String) Set.get("code");
-						String sn2=(String) Set.get("sn");
-						String model2=(String) Set.get("model");
-						String ver2=(String) Set.get("ver");
-						int capacity2=(Integer)Set.get("capacity");
-						String str2="硬币接收器:"+acceptor2+"硬币找零器:"+dispenser2+"厂商:"+code2
-								+"序列号"+sn2;
-						txtcoinmanagerpar.setText(str2);
-						str2=" 型号:"+model2+"版本号:"+ver2+"储币量:"+capacity2;
-						txtcoinmanagerpar2.setText(str2);
-						spincoinmanagercoin.setSelection((Integer)Set.get("acceptor"));
-						
-						
-						str2="";
-						Map<String, Integer>  allSet3=(Map<String, Integer>) Set.get("ch_r");
-						//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet3.toString());
-						double all[]=new double[allSet3.size()];	
-						int i=0;
-						Set<Map.Entry<String,Integer>> allset3=allSet3.entrySet();  //实例化
-						Iterator<Map.Entry<String,Integer>> iter3=allset3.iterator();
-					    while(iter3.hasNext())
-					    {
-					        Map.Entry<String,Integer> me=iter3.next();
-					        all[i++]=ToolClass.MoneyRec(me.getValue());
-					        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
-					    }
-					    txtcoinmanagercoinin1.setText(String.valueOf(all[0]));
-					    txtcoinmanagercoinin2.setText(String.valueOf(all[1]));
-					    txtcoinmanagercoinin3.setText(String.valueOf(all[2]));
-					    txtcoinmanagercoinin4.setText(String.valueOf(all[3]));
-					    txtcoinmanagercoinin5.setText(String.valueOf(all[4]));
-					    txtcoinmanagercoinin6.setText(String.valueOf(all[5]));
-					    txtcoinmanagercoinin7.setText(String.valueOf(all[6]));
-					    txtcoinmanagercoinin8.setText(String.valueOf(all[7]));
-					    txtcoinmanagercoinin9.setText(String.valueOf(all[8]));
-					    txtcoinmanagercoinin10.setText(String.valueOf(all[9]));
-					    txtcoinmanagercoinin11.setText(String.valueOf(all[10]));
-					    txtcoinmanagercoinin12.setText(String.valueOf(all[11]));
-					    txtcoinmanagercoinin13.setText(String.valueOf(all[12]));
-					    txtcoinmanagercoinin14.setText(String.valueOf(all[13]));
-					    txtcoinmanagercoinin15.setText(String.valueOf(all[14]));
-					    txtcoinmanagercoinin16.setText(String.valueOf(all[15]));
-					    //找零通道面值
-					    spinhopper.setSelection((Integer)Set.get("dispenser"));
-					    str2="";
-					    Map<String, Integer> allSet4=(Map<String, Integer>) Set.get("ch_d");
-					    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet4.toString(),"log.txt");
-					    double all2[]=new double[allSet4.size()];	
-						i=0;
-						Set<Map.Entry<String,Integer>> allset4=allSet4.entrySet();  //实例化
-					    Iterator<Map.Entry<String,Integer>> iter4=allset4.iterator();
-					    while(iter4.hasNext())
-					    {
-					        Map.Entry<String,Integer> me=iter4.next();
-					        all2[i++]=ToolClass.MoneyRec(me.getValue());
-					        //str2+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
-					    }
-					    txthopperin1.setText(String.valueOf(all2[0]));
-					    txthopperin2.setText(String.valueOf(all2[1]));
-					    txthopperin3.setText(String.valueOf(all2[2]));
-					    txthopperin4.setText(String.valueOf(all2[3]));
-					    txthopperin5.setText(String.valueOf(all2[4]));
-					    txthopperin6.setText(String.valueOf(all2[5]));
-					    txthopperin7.setText(String.valueOf(all2[6]));
-					    txthopperin8.setText(String.valueOf(all2[7]));
-						break;	
-					case EVprotocolAPI.EV_MDB_HEART://心跳查询
-						String bill_enable=((Integer)Set.get("bill_enable")==1)?"使能":"禁能";
-						txtbillmanagerstate.setText(bill_enable);
-						String bill_payback=((Integer)Set.get("bill_payback")==1)?"触发":"没触发";
-					  	txtbillpayback.setText(bill_payback);
-					  	String bill_err=((Integer)Set.get("bill_err")==0)?"正常":"故障码:"+(Integer)Set.get("bill_err");
-					  	txtbillerr.setText(bill_err);
-					  	double money=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));					  	
-					  	txtbillpayin.setText(String.valueOf(money));					  	
-					  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
-					  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
-					  	
-					  	String coin_enable=((Integer)Set.get("coin_enable")==1)?"使能":"禁能";
-					  	txtcoinmanagerstate.setText(coin_enable);
-						String coin_payback=((Integer)Set.get("coin_payback")==1)?"触发":"没触发";
-						txtcoinpayback.setText(coin_payback);
-					  	String coin_err=((Integer)Set.get("coin_err")==0)?"正常":"故障码:"+(Integer)Set.get("coin_err");
-					  	txtcoinerr.setText(coin_err);
-					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));					  	
-					  	txtcoinpayin.setText(String.valueOf(money));					  	
-					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
-					  	txtcoinmanagercoininamount.setText(String.valueOf(money));
-					  	
-					  	String hopperString=null;
-					  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))
-					  				+"[[3]:"+ToolClass.gethopperstats((Integer)Set.get("hopper3"))+"[4]:"+ToolClass.gethopperstats((Integer)Set.get("hopper4"))
-						  			+"[5]:"+ToolClass.gethopperstats((Integer)Set.get("hopper5"))+"[6]:"+ToolClass.gethopperstats((Integer)Set.get("hopper6"))
-						  			+"[7]:"+ToolClass.gethopperstats((Integer)Set.get("hopper7"))+"[8]:"+ToolClass.gethopperstats((Integer)Set.get("hopper8"));
-					  	txthopperincount.setText(hopperString);
-						break;
-					case EVprotocolAPI.EV_MDB_PAYOUT://找零
-						money=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));					  	
-						txtpaymoney.setText(String.valueOf(money));	
-						money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
-						txtcoinpaymoney.setText(String.valueOf(money));	
-						txthopperpaymoney.setText(String.valueOf(money));	
-						break;
-					case EVprotocolAPI.EV_MDB_HP_PAYOUT://找零
-						txthopperpaynum.setText(String.valueOf((Integer)Set.get("changed")));
-						
-						break;		
-				}				
-			}
-			
-		});
+  	    EVprotocolAPI.setCallBack(new jniInterfaceImp());
   	    //===============
     	//纸币器设置页面
     	//===============
@@ -568,6 +353,227 @@ public class AddInaccount extends TabActivity
 		    }
 		});
 	}
+	
+	//创建一个专门处理单击接口的子类
+	private class jniInterfaceImp implements JNIInterface
+	{
+		
+		@Override
+		public void jniCallback(Map<String, Object> allSet) {
+			float payin_amount=0,reamin_amount=0,payout_amount=0;
+			// TODO Auto-generated method stub	
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果","log.txt");
+			Map<String, Object> Set= allSet;
+			int jnirst=(Integer)Set.get("EV_TYPE");
+			switch (jnirst)
+			{
+				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
+					//纸币启动成功
+					if((Integer)Set.get("bill_result")>0)
+					{
+						EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
+						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+					}
+					//硬币启动成功
+					if((Integer)Set.get("coin_result")>0)
+					{
+						EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+					}
+					break;
+				case EVprotocolAPI.EV_MDB_B_INFO:							 
+					String acceptor=((Integer)Set.get("acceptor")==2)?"MDB":"无";
+					String dispenser=((Integer)Set.get("dispenser")==2)?"MDB":"无";
+					String code=(String) Set.get("code");
+					String sn=(String) Set.get("sn");
+					String model=(String) Set.get("model");
+					String ver=(String) Set.get("ver");
+					int capacity=(Integer)Set.get("capacity");
+					String str="纸币接收器:"+acceptor+"纸币找零器:"+dispenser+"厂商:"+code
+							+"序列号"+sn;
+					txtbillmanagerpar.setText(str);
+					str=" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
+					txtbillmanagerpar2.setText(str);
+					if((Integer)Set.get("acceptor")==2)
+						spinbillmanagerbill.setSelection((Integer)Set.get("acceptor")-1);
+					else if((Integer)Set.get("acceptor")==0)
+						spinbillmanagerbill.setSelection(0);	
+					
+					Map<String,Integer> allSet1=(Map<String, Integer>) Set.get("ch_r");
+					String allb1[]=new String[allSet1.size()];	
+					int bi=0;
+					Set<Map.Entry<String,Integer>> allset=allSet1.entrySet();  //实例化
+				    Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
+				    while(iter.hasNext())
+				    {
+				        Map.Entry<String,Integer> me=iter.next();
+				        //str+="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue()) + ",";
+				        allb1[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
+				    }
+				    String bstr1="",bstr2="";
+				    for(bi=0;bi<16;bi++)
+				    {
+				    	if(bi<8)
+				    		bstr1+=allb1[bi];
+				    	else
+				    		bstr2+=allb1[bi];							
+				    }
+				    txtbillmanagerbillin.setText(bstr1);
+				    txtbillmanagerbillin2.setText(bstr2);
+				  
+				    Map<String,Integer> allSet2=(Map<String, Integer>) Set.get("ch_d");
+				    String allb2[]=new String[allSet2.size()];	
+				    bi=0;
+					Set<Map.Entry<String,Integer>> allset2=allSet2.entrySet();  //实例化
+				    Iterator<Map.Entry<String,Integer>> iter2=allset2.iterator();
+				    while(iter2.hasNext())
+				    {
+				        Map.Entry<String,Integer> me=iter2.next();
+				        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+				        allb2[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
+				    }
+				    bstr1="";
+				    bstr2="";
+				    for(bi=0;bi<16;bi++)
+				    {
+				    	if(bi<8)
+				    		bstr1+=allb2[bi];
+				    	else
+				    		bstr2+=allb2[bi];							
+				    }
+				    txtbillmanagerbillpay.setText(bstr1);
+				    txtbillmanagerbillpay2.setText(bstr2);
+					break;
+				case EVprotocolAPI.EV_MDB_C_INFO:
+					String acceptor2="";
+					if((Integer)Set.get("acceptor")==3)
+						acceptor2="串行脉冲";
+					else if((Integer)Set.get("acceptor")==2)
+						acceptor2="MDB";
+					else if((Integer)Set.get("acceptor")==1)
+						acceptor2="并行脉冲";
+					else if((Integer)Set.get("acceptor")==0)
+						acceptor2="无";
+					String dispenser2="";
+					if((Integer)Set.get("dispenser")==2)
+						dispenser2="MDB";
+					else if((Integer)Set.get("dispenser")==1)
+						dispenser2="hopper";
+					else if((Integer)Set.get("dispenser")==0)
+						dispenser2="无";
+					String code2=(String) Set.get("code");
+					String sn2=(String) Set.get("sn");
+					String model2=(String) Set.get("model");
+					String ver2=(String) Set.get("ver");
+					int capacity2=(Integer)Set.get("capacity");
+					String str2="硬币接收器:"+acceptor2+"硬币找零器:"+dispenser2+"厂商:"+code2
+							+"序列号"+sn2;
+					txtcoinmanagerpar.setText(str2);
+					str2=" 型号:"+model2+"版本号:"+ver2+"储币量:"+capacity2;
+					txtcoinmanagerpar2.setText(str2);
+					spincoinmanagercoin.setSelection((Integer)Set.get("acceptor"));
+					
+					
+					str2="";
+					Map<String, Integer>  allSet3=(Map<String, Integer>) Set.get("ch_r");
+					//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet3.toString());
+					double all[]=new double[allSet3.size()];	
+					int i=0;
+					Set<Map.Entry<String,Integer>> allset3=allSet3.entrySet();  //实例化
+					Iterator<Map.Entry<String,Integer>> iter3=allset3.iterator();
+				    while(iter3.hasNext())
+				    {
+				        Map.Entry<String,Integer> me=iter3.next();
+				        all[i++]=ToolClass.MoneyRec(me.getValue());
+				        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+				    }
+				    txtcoinmanagercoinin1.setText(String.valueOf(all[0]));
+				    txtcoinmanagercoinin2.setText(String.valueOf(all[1]));
+				    txtcoinmanagercoinin3.setText(String.valueOf(all[2]));
+				    txtcoinmanagercoinin4.setText(String.valueOf(all[3]));
+				    txtcoinmanagercoinin5.setText(String.valueOf(all[4]));
+				    txtcoinmanagercoinin6.setText(String.valueOf(all[5]));
+				    txtcoinmanagercoinin7.setText(String.valueOf(all[6]));
+				    txtcoinmanagercoinin8.setText(String.valueOf(all[7]));
+				    txtcoinmanagercoinin9.setText(String.valueOf(all[8]));
+				    txtcoinmanagercoinin10.setText(String.valueOf(all[9]));
+				    txtcoinmanagercoinin11.setText(String.valueOf(all[10]));
+				    txtcoinmanagercoinin12.setText(String.valueOf(all[11]));
+				    txtcoinmanagercoinin13.setText(String.valueOf(all[12]));
+				    txtcoinmanagercoinin14.setText(String.valueOf(all[13]));
+				    txtcoinmanagercoinin15.setText(String.valueOf(all[14]));
+				    txtcoinmanagercoinin16.setText(String.valueOf(all[15]));
+				    //找零通道面值
+				    spinhopper.setSelection((Integer)Set.get("dispenser"));
+				    str2="";
+				    Map<String, Integer> allSet4=(Map<String, Integer>) Set.get("ch_d");
+				    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet4.toString(),"log.txt");
+				    double all2[]=new double[allSet4.size()];	
+					i=0;
+					Set<Map.Entry<String,Integer>> allset4=allSet4.entrySet();  //实例化
+				    Iterator<Map.Entry<String,Integer>> iter4=allset4.iterator();
+				    while(iter4.hasNext())
+				    {
+				        Map.Entry<String,Integer> me=iter4.next();
+				        all2[i++]=ToolClass.MoneyRec(me.getValue());
+				        //str2+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+				    }
+				    txthopperin1.setText(String.valueOf(all2[0]));
+				    txthopperin2.setText(String.valueOf(all2[1]));
+				    txthopperin3.setText(String.valueOf(all2[2]));
+				    txthopperin4.setText(String.valueOf(all2[3]));
+				    txthopperin5.setText(String.valueOf(all2[4]));
+				    txthopperin6.setText(String.valueOf(all2[5]));
+				    txthopperin7.setText(String.valueOf(all2[6]));
+				    txthopperin8.setText(String.valueOf(all2[7]));
+					break;	
+				case EVprotocolAPI.EV_MDB_HEART://心跳查询
+					String bill_enable=((Integer)Set.get("bill_enable")==1)?"使能":"禁能";
+					txtbillmanagerstate.setText(bill_enable);
+					String bill_payback=((Integer)Set.get("bill_payback")==1)?"触发":"没触发";
+				  	txtbillpayback.setText(bill_payback);
+				  	String bill_err=((Integer)Set.get("bill_err")==0)?"正常":"故障码:"+(Integer)Set.get("bill_err");
+				  	txtbillerr.setText(bill_err);
+				  	double money=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));					  	
+				  	txtbillpayin.setText(String.valueOf(money));
+				  	amount=money;//当前纸币投入
+				  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
+				  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
+				  	
+				  	String coin_enable=((Integer)Set.get("coin_enable")==1)?"使能":"禁能";
+				  	txtcoinmanagerstate.setText(coin_enable);
+					String coin_payback=((Integer)Set.get("coin_payback")==1)?"触发":"没触发";
+					txtcoinpayback.setText(coin_payback);
+				  	String coin_err=((Integer)Set.get("coin_err")==0)?"正常":"故障码:"+(Integer)Set.get("coin_err");
+				  	txtcoinerr.setText(coin_err);
+				  	money=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));					  	
+				  	txtcoinpayin.setText(String.valueOf(money));
+				  	amount+=money;//当前硬币投入
+				  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
+				  	txtcoinmanagercoininamount.setText(String.valueOf(money));
+				  	
+				  	String hopperString=null;
+				  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))
+				  				+"[[3]:"+ToolClass.gethopperstats((Integer)Set.get("hopper3"))+"[4]:"+ToolClass.gethopperstats((Integer)Set.get("hopper4"))
+					  			+"[5]:"+ToolClass.gethopperstats((Integer)Set.get("hopper5"))+"[6]:"+ToolClass.gethopperstats((Integer)Set.get("hopper6"))
+					  			+"[7]:"+ToolClass.gethopperstats((Integer)Set.get("hopper7"))+"[8]:"+ToolClass.gethopperstats((Integer)Set.get("hopper8"));
+				  	txthopperincount.setText(hopperString);
+					break;
+				case EVprotocolAPI.EV_MDB_PAYOUT://找零
+					money=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));					  	
+					txtpaymoney.setText(String.valueOf(money));	
+					money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
+					txtcoinpaymoney.setText(String.valueOf(money));	
+					txthopperpaymoney.setText(String.valueOf(money));	
+					break;
+				case EVprotocolAPI.EV_MDB_HP_PAYOUT://找零
+					txthopperpaynum.setText(String.valueOf((Integer)Set.get("changed")));
+					
+					break;		
+			}				
+		}
+		
+	}
 	private void CoinConfig()
 	{
 		//创建警告对话框
@@ -633,6 +639,12 @@ public class AddInaccount extends TabActivity
 		        )
 		        .create();//创建一个对话框
 		        alert.show();//显示对话框
+	}
+	@Override
+	protected void onDestroy() {
+		//扣钱
+	    EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend((float)amount));
+		super.onDestroy();		
 	}
 	
 }

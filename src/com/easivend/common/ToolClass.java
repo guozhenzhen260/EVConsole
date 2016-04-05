@@ -47,11 +47,14 @@ import org.json.JSONObject;
 import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusZhiAmount;
+import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.ParamManager;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_order_product;
@@ -1204,7 +1207,7 @@ public class ToolClass
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-    		id=tb_inaccount.getDevhCode().toString();
+    		id=tb_inaccount.getDevID().toString();
     	}
     	Log.i("EV_JNI","Send0.0="+id);
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //精确到毫秒 
@@ -1673,7 +1676,80 @@ public class ToolClass
 		return istrue;
 	}
 	
-	
-	
+	//提货码比对
+	//返回：true正确,false错误
+	public static boolean getzhitihuo(Context context,String cabid,String columnID,String pwd)
+	{
+		boolean istrue=false;
+		if((pwd==null)||(pwd.equals("")==true))
+		{
+			istrue=false;
+		}
+		else if((cabid==null)||(cabid.equals("")==true))
+		{
+			istrue=false;
+		}	
+		else if((columnID==null)||(columnID.equals("")==true))
+		{
+			istrue=false;
+		}
+		//调出货道提货密码
+		else
+		{
+			// 创建InaccountDAO对象
+			vmc_columnDAO columnDAO = new vmc_columnDAO(context);
+			Tb_vmc_column tb_vmc_column = columnDAO.find(cabid,columnID);// 添加商品信息
+			if(tb_vmc_column!=null)
+			{
+				String str=tb_vmc_column.getTihuoPwd();
+				if((str==null)||(str.equals("")==true))
+				{
+					istrue=false;
+				}
+				else
+				{
+					if(pwd.equals(str)==true)
+					{
+						istrue=true;
+					}
+				}
+			}	
+		}
+		return istrue;
+	}
+	//是否可以使用提货码出货
+	//返回：true正确,false错误
+	public static boolean getzhitihuotype(Context context,String cabid,String columnID)
+	{
+		boolean istrue=false;
+		if((cabid==null)||(cabid.equals("")==true))
+		{
+			istrue=false;
+		}	
+		else if((columnID==null)||(columnID.equals("")==true))
+		{
+			istrue=false;
+		}
+		//调出货道提货密码
+		else
+		{
+			// 创建InaccountDAO对象
+			vmc_columnDAO columnDAO = new vmc_columnDAO(context);
+			Tb_vmc_column tb_vmc_column = columnDAO.find(cabid,columnID);// 添加商品信息
+			if(tb_vmc_column!=null)
+			{
+				String str=tb_vmc_column.getTihuoPwd();
+				if((str==null)||(str.equals("")==true))
+				{
+					istrue=false;
+				}
+				else
+				{
+					istrue=true;
+				}
+			}	
+		}
+		return istrue;
+	}
 	
 }

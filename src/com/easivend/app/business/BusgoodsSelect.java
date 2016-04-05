@@ -1,8 +1,14 @@
 package com.easivend.app.business;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
@@ -15,6 +21,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,8 +32,9 @@ public class BusgoodsSelect extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static BusgoodsSelect BusgoodsSelectAct=null;
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
-	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
+	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiseltihuo=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
+	WebView webproductDesc;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -75,7 +84,17 @@ public class BusgoodsSelect extends Activity
 		else
 		{
 			txtbusgoodselAmount.setText("已售罄");
-		}	
+		}
+		//得到商品描述
+		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
+		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
+	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
+	    WebSettings settings = webproductDesc.getSettings();
+	    settings.setSupportZoom(true);
+	    settings.setTextSize(WebSettings.TextSize.LARGEST);
+	    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+	    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+		
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -115,6 +134,19 @@ public class BusgoodsSelect extends Activity
 		    	}
 		    }
 		});
+		ivbuszhiseltihuo = (ImageView) findViewById(R.id.ivbuszhiseltihuo);	
+		ivbuszhiseltihuo.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(Integer.parseInt(procount)>0)
+		    	{
+			    	sendzhifu();
+			    	Intent intent = null;// 创建Intent对象                
+	            	intent = new Intent(BusgoodsSelect.this, BusZhitihuo.class);// 使用Accountflag窗口初始化Intent
+	            	startActivity(intent);// 打开Accountflag
+		    	}
+		    }
+		});
 		//*********************
 		//搜索可以得到的支付方式
 		//*********************
@@ -123,30 +155,75 @@ public class BusgoodsSelect extends Activity
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-    		if(tb_inaccount.getAmount()!=1)
+    		//有打开提货码功能
+    		if(tb_inaccount.getPrinter()==1)
     		{
-    			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+    			//可以提货
+    			if(ToolClass.getzhitihuotype(BusgoodsSelect.this, cabID, huoID))
+        		{
+        			ivbuszhiseltihuo.setVisibility(View.VISIBLE);//打开
+        			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+        			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+        			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+        		}
+    			else
+    			{
+    				ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
+    				if(tb_inaccount.getAmount()!=1)
+            		{
+            			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+            		}
+            		else
+            		{
+            			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+            		}	
+            		if(tb_inaccount.getZhifubaoer()!=1)
+            		{
+            			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+            		}
+            		else
+            		{
+            			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+            		}
+            		if(tb_inaccount.getWeixing()!=1)
+            		{
+            			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+            		}
+            		else
+            		{
+            			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+            		}
+    			}
     		}
+    		//没有打开提货码功能
     		else
     		{
-    			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
-    		}	
-    		if(tb_inaccount.getZhifubaoer()!=1)
-    		{
-    			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
-    		}
-    		else
-    		{
-    			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
-    		}
-    		if(tb_inaccount.getWeixing()!=1)
-    		{
-    			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
-    		}
-    		else
-    		{
-    			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
-    		}
+    			ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
+    			if(tb_inaccount.getAmount()!=1)
+        		{
+        			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+        		}	
+        		if(tb_inaccount.getZhifubaoer()!=1)
+        		{
+        			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+        		}
+        		if(tb_inaccount.getWeixing()!=1)
+        		{
+        			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+        		}
+    		}    		    			
     	}		
 		imgbtnbusgoodselback=(ImageButton)findViewById(R.id.imgbtnbusgoodselback);
 		imgbtnbusgoodselback.setOnClickListener(new OnClickListener() {

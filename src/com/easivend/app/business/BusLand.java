@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class BusLand extends Activity implements MovieFragInteraction,BusFragInteraction{	
     private MoviewlandFragment moviewlandFragment;
@@ -281,8 +282,10 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		    		finish();
 		    	}
 		    	else
-		    	{
+		    	{		    		
 		    		switchMovie();
+		    		// 弹出信息提示
+			        Toast.makeText(BusLand.this, "抱歉，维护密码输入错误！", Toast.LENGTH_LONG).show();
 				}
 			}			
 		}

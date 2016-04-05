@@ -127,12 +127,13 @@ public class BusZhier extends Activity
 			public void handleMessage(Message msg) {
 				//barzhifubaotest.setVisibility(View.GONE);
 				ercheck=false;
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub		 		
 				switch (msg.what)
 				{
 					case Zhifubaohttp.SETMAIN://子线程接收主线程消息
 						ivbuszhier.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
+						//txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
+						txtbuszhierrst.setText("交易结果:请扫描二维码");
 						iszhier=1;
 						break;
 					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
@@ -164,7 +165,8 @@ public class BusZhier extends Activity
 					case Zhifubaohttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
-						txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
+						//txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
+						txtbuszhierrst.setText("交易结果:请扫描二维码");
 						break;	
 				}				
 			}

@@ -48,7 +48,15 @@
             android:textStyle="bold"		        
             android:text="产品描述"
 	        />      
-	
+	<WebView
+            android:id="@+id/webproductDesc"
+            android:textSize="40sp"
+	        android:minWidth="150px"
+	        android:layout_toRightOf="@+id/txtbusgoodselAmount"
+	        android:layout_below="@+id/txtbusgoodselAmount"
+			android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:text="" />
 	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselzhier"
@@ -72,6 +80,14 @@
 		android:layout_alignParentBottom="true"
 		android:layout_toRightOf="@+id/ivbuszhiselweixing"	
 		android:src="@drawable/amount"			
+   	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiseltihuo"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_alignParentBottom="true"
+		android:layout_toRightOf="@+id/ivbuszhiselamount"	
+		android:src="@drawable/tihuopwd"			
    	/> 	
 	<ImageButton
         android:id="@+id/imgbtnbusgoodselback"

@@ -134,6 +134,10 @@ public class BusHuo extends Activity
 	                        	{                        			
                     	            setResult(BusZhiwei.RESULT_CANCELED,intent);                    	            
                         		}
+	                        	else if(zhifutype==5)//提货码
+	                        	{                        			
+                    	            setResult(BusZhitihuo.RESULT_CANCELED,intent);                    	            
+                        		}
 	                        	finish();
 //	                        	//出货完成,把非现金模块去掉
 //	                        	if(status==0)

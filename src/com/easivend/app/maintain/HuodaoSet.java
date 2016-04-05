@@ -43,7 +43,7 @@ public class HuodaoSet extends Activity
 	private Button btnhuoProID=null,btnhuoaddSave=null,btnhuodelSave=null,btnhuoexit=null;
 	private TextView txthuoCabID=null,txthuoColID=null,txthuoProID=null,txthuoProName=null,txthuomarketPrice=null,
 			txthuosalesPrice=null,txthuocolumnStatus=null,txthuoshelfLife=null,txthuolasttime=null,txthuoIslast=null;	
-	private EditText edthuopathCount=null,edthuopathRemain=null;
+	private EditText edthuopathCount=null,edthuopathRemain=null,edttihuoPwd=null;
 	private String huoID=null,cabID=null,temphuostatus=null,huostatus=null,productID=null,imgDir=null;;
 	private View popview=null;
 	private PopupWindow popWin=null;
@@ -70,7 +70,9 @@ public class HuodaoSet extends Activity
 		txthuoshelfLife = (TextView) findViewById(R.id.txthuoshelfLife);
 		txthuolasttime = (TextView) findViewById(R.id.txthuolasttime);
 		txthuoIslast = (TextView) findViewById(R.id.txthuoIslast);
-		edthuopathCount = (EditText) findViewById(R.id.edthuopathCount);	
+		edthuopathCount = (EditText) findViewById(R.id.edthuopathCount);
+		edttihuoPwd = (EditText) findViewById(R.id.edttihuoPwd);
+		
 		edthuopathCount.addTextChangedListener(new TextWatcher() {
 			
 			@Override
@@ -155,12 +157,15 @@ public class HuodaoSet extends Activity
 		    {
 		    	int pathCount= 0;
 		    	int pathRemain= 0;
+		    	String tihuoPwd="";
+		    	if(edttihuoPwd.getText().toString().isEmpty()!=true)
+		    		tihuoPwd= edttihuoPwd.getText().toString();
 		    	if(edthuopathCount.getText().toString().isEmpty()!=true)
 		    		pathCount= Integer.parseInt(edthuopathCount.getText().toString());
 		    	if(edthuopathRemain.getText().toString().isEmpty()!=true)
 		    		pathRemain= Integer.parseInt(edthuopathRemain.getText().toString());
 		    	
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道cabineID="+cabID+" columnID="+huoID+" productID="
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道cabineID="+cabID+" columnID="+huoID+"tihuoPwd="+tihuoPwd+" productID="
     					+productID+" pathCount="+pathCount+" pathRemain="+pathRemain+" columnStatus="+huostatus,"log.txt");
     			
 		    	if ((productID.isEmpty()!=true)&&(edthuopathCount.getText().toString().isEmpty()!=true)
@@ -173,7 +178,7 @@ public class HuodaoSet extends Activity
 		    			// 创建InaccountDAO对象
 		    			vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoSet.this);
 			            //创建Tb_inaccount对象
-		    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID, huoID,productID,pathCount,
+		    			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID,huoID,tihuoPwd,productID,pathCount,
 		    					pathRemain,Integer.parseInt(huostatus),date,0,0);
 		    			
 		    			columnDAO.addorupdate(tb_vmc_column);// 添加商品信息
@@ -227,7 +232,7 @@ public class HuodaoSet extends Activity
 			    					// 创建InaccountDAO对象
 			    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoSet.this);
 						            //创建Tb_inaccount对象
-			    					Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID, huoID,productID,0,
+			    					Tb_vmc_column tb_vmc_column = new Tb_vmc_column(cabID, huoID,"",productID,0,
 					    					0,Integer.parseInt(huostatus),date,0,0);				    			
 			    					columnDAO.detele(tb_vmc_column);// 删除货道信息	
 			    					ToolClass.addOptLog(HuodaoSet.this,2,"下架货道:"+cabID+huoID);
@@ -341,6 +346,7 @@ public class HuodaoSet extends Activity
 		{
 			edthuopathCount.setText(String.valueOf(tb_vmc_column.getPathCount()));
 			edthuopathRemain.setText(String.valueOf(tb_vmc_column.getPathRemain()));
+			edttihuoPwd.setText(tb_vmc_column.getTihuoPwd());
 			txthuolasttime.setText(tb_vmc_column.getLasttime());
 			HuodaoSet.this.productID=tb_vmc_column.getProductID();
 			updateProduct(HuodaoSet.this.productID);//更新商品信息到页面中

@@ -26,6 +26,8 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,7 +43,8 @@ public class GoodsProSet extends Activity
 	private ImageView ivProduct=null;
 	private Button btnImg=null,btnaddProSave=null,btnaddProexit=null;
 	private EditText edtproductID=null,edtproductName=null,edtmarketPrice=null,edtsalesPrice=null,
-			edtshelfLife=null,edtproductDesc=null;
+			edtshelfLife=null;
+	private WebView webproductDesc=null;
 	private TextView onloadTime=null;	
 	private String[] proclassID = null;// 定义字符串数组，用来存储商品id信息
 	private Spinner spinproductclassID=null;
@@ -62,7 +65,7 @@ public class GoodsProSet extends Activity
 		edtmarketPrice = (EditText) findViewById(R.id.edtmarketPrice);		
 		edtsalesPrice = (EditText) findViewById(R.id.edtsalesPrice);
 		edtshelfLife = (EditText) findViewById(R.id.edtshelfLife);		
-		edtproductDesc = (EditText) findViewById(R.id.edtproductDesc);
+		webproductDesc = (WebView) findViewById(R.id.webproductDesc);
 		this.spinproductclassID = (Spinner) super.findViewById(R.id.spinproductclassID);
 		
 		showInfo();//显示下拉列表
@@ -87,7 +90,13 @@ public class GoodsProSet extends Activity
 		    edtmarketPrice.setText(String.valueOf(tb_inaccount.getMarketPrice()));
 		    edtsalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
 		    edtshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));
-		    edtproductDesc.setText(tb_inaccount.getProductDesc().toString());
+		    //得到商品描述
+		    WebSettings settings = webproductDesc.getSettings();
+		    settings.setSupportZoom(true);
+		    settings.setTextSize(WebSettings.TextSize.LARGEST);
+		    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+		    webproductDesc.loadDataWithBaseURL(null,tb_inaccount.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+			
 		    onloadTime.setText(tb_inaccount.getOnloadTime().toString());
 		    //设置下拉框默认值
 		    String classID=productDAO.findclass(proID);
@@ -135,7 +144,7 @@ public class GoodsProSet extends Activity
 		    	int shelfLife= 0;
 		    	if(edtshelfLife.getText().toString().isEmpty()!=true)
 		    		shelfLife = Integer.parseInt(edtshelfLife.getText().toString());		    	
-		    	String productDesc = edtproductDesc.getText().toString();
+		    	String productDesc = "";
 		    	//商品类别
 		    	String strInfo= spinproductclassID.getSelectedItem().toString();
 		    	String classID= strInfo.substring(0, strInfo.indexOf('<'));// 从收入信息中截取收入编号

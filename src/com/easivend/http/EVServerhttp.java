@@ -685,11 +685,11 @@ public class EVServerhttp implements Runnable {
 			mainhand.sendMessage(tomain); // 发送消息	
 		}
 	}
-	//更新商品图片信息
+	//更新商品和图片信息
 	private String updateproduct(int i) throws JSONException
 	{
 		final JSONObject object2=productarr.getJSONObject(i);
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品图片="+object2.toString(),"server.txt");										
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品和图片="+object2.toString(),"server.txt");										
 		final JSONObject zhuheobj=object2;
 		//第一步.获取商品图片名字
 		String target6 = httpStr+"/api/productImage";	//要提交的目标地址

@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 14;// 定义数据库版本号
+    private static final int VERSION = 15;// 定义数据库版本号
     private static final String DBNAME = "vmc.db";// 定义数据库名
 
     public DBOpenHelper(Context context) {// 定义构造函数
@@ -159,7 +159,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         		"columnStatus INT NOT NULL DEFAULT 0,"+                     		
         		"lasttime DATETIME NOT NULL,"+
         		"path_id int," +
-        		"isupload INT NOT NULL DEFAULT 0"+
+        		"isupload INT NOT NULL DEFAULT 0,"+
+        		"tihuoPwd nvarchar(50)" +
         		")"
         		
         );

@@ -250,7 +250,7 @@ public class ParamManager extends TabActivity
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				btnprinter.setEnabled(isChecked);	
+				//btnprinter.setEnabled(isChecked);	
 			}  
             
             
