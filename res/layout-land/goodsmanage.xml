@@ -204,18 +204,11 @@
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"  
 					             android:layout_below="@+id/txtproname"           
-					             android:text="添加" />
-				         <Button
-					             android:id="@+id/btnproupdate"
-					             android:layout_below="@+id/txtproname"  
-					             android:layout_toRightOf="@+id/btnproadd"
-					             android:layout_width="150dp"
-					             android:layout_height="70dp"
-					             android:text="修改" />
+					             android:text="添加" />				         
 				         <Button
 					             android:id="@+id/btnprodel"
 					             android:layout_below="@+id/txtproname"  
-					             android:layout_toRightOf="@+id/btnproupdate"
+					             android:layout_toRightOf="@+id/btnproadd"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
 					             android:text="删除" />

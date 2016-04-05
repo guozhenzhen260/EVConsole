@@ -169,7 +169,7 @@ public class BusZhiAmount  extends Activity
 				case EVprotocolAPI.EV_MDB_B_INFO:	
 					break;
 				case EVprotocolAPI.EV_MDB_C_INFO:
-					dispenser=(Integer)Set.get("acceptor");
+					dispenser=(Integer)Set.get("dispenser");
 					EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 					break;	
 				case EVprotocolAPI.EV_MDB_HEART://ÐÄÌø²éÑ¯

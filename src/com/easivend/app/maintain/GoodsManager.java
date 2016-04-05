@@ -85,7 +85,7 @@ public class GoodsManager extends TabActivity
 	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
 	private ImageView imgclassname=null;
 	private Button btnclassname=null,btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
-	private Button btnproadd=null,btnproupdate=null,btnprodel=null,btnproexit=null;	
+	private Button btnproadd=null,btnprodel=null,btnproexit=null;	
 	// 定义商品列表
 	Vmc_ProductAdapter productAdapter=null;
     private GridView gvProduct=null;
@@ -301,10 +301,11 @@ public class GoodsManager extends TabActivity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+strInfo,"log.txt");
 				txtproidValue.setText(strInfo);
 				txtpronameValue.setText(productName[arg2]);
-//				intent = new Intent();
-//		    	intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
-//                intent.putExtra("proID", strInfo);
-//		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
+				//跳转页面
+				intent = new Intent();
+		    	intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
+                intent.putExtra("proID", strInfo);
+		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 			}// 为GridView设置项单击事件
     		
     	});
@@ -319,19 +320,7 @@ public class GoodsManager extends TabActivity
                  intent.putExtra("proID", "");
 		    	 startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 		    }
-		});
-    	//修改
-    	btnproupdate = (Button) findViewById(R.id.btnproupdate);
-    	btnproupdate.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
-		    @Override
-		    public void onClick(View arg0)
-		    {
-		    	 intent = new Intent();
-		    	 intent.setClass(GoodsManager.this, GoodsProSet.class);// 使用AddInaccount窗口初始化Intent
-                 intent.putExtra("proID", strInfo);
-		    	 startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
-		    }
-		});
+		});    	
     	//删除
     	btnprodel = (Button) findViewById(R.id.btnprodel);
     	btnprodel.setOnClickListener(new OnClickListener() {

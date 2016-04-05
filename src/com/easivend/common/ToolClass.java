@@ -1207,7 +1207,7 @@ public class ToolClass
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-    		id=tb_inaccount.getDevhCode().toString();
+    		id=tb_inaccount.getDevID().toString();
     	}
     	Log.i("EV_JNI","Send0.0="+id);
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //¾«È·µ½ºÁÃë 

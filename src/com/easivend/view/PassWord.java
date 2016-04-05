@@ -133,19 +133,7 @@ public class PassWord extends Activity
 	            setResult(PassWord.RESULT_OK,intent);
   		    	finish();
   		    }
-  		});  
-  	   //退出
-        btn_end = (Button) findViewById(R.id.btn_end);
-        btn_end.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
-		    @Override
-		    public void onClick(View arg0) {
-		    	//退出时，返回intent
-	            Intent intent=new Intent();
-	            intent.putExtra("pwd", "");
-	            setResult(PassWord.RESULT_OK,intent);
-		    	finish();
-		    }
-		});
+  		}); 
     } 
 	/** 
      * Setting Up Bluetooth 

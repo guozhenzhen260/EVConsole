@@ -86,14 +86,14 @@ public class BusgoodsSelect extends Activity
 			txtbusgoodselAmount.setText("已售罄");
 		}
 		//得到商品描述
-		webproductDesc = (WebView) findViewById(R.id.webproductDesc);
+		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
 		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
 	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
 	    WebSettings settings = webproductDesc.getSettings();
 	    settings.setSupportZoom(true);
 	    settings.setTextSize(WebSettings.TextSize.LARGEST);
 	    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
-	    webproductDesc.loadData(tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8", null);//这种写法可以正确中文解码
+	    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
 		
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
@@ -198,6 +198,7 @@ public class BusgoodsSelect extends Activity
     		//没有打开提货码功能
     		else
     		{
+    			ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
     			if(tb_inaccount.getAmount()!=1)
         		{
         			ivbuszhiselamount.setVisibility(View.GONE);//关闭
