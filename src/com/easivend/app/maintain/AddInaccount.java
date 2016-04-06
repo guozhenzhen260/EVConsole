@@ -539,6 +539,8 @@ public class AddInaccount extends TabActivity
 				  	amount=money;//当前纸币投入
 				  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
 				  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
+				  	int bill_errstatus=ToolClass.getvmcStatus(Set,1);
+				  	ToolClass.setBill_err(bill_errstatus);
 				  	
 				  	String coin_enable=((Integer)Set.get("coin_enable")==1)?"使能":"禁能";
 				  	txtcoinmanagerstate.setText(coin_enable);
@@ -551,6 +553,8 @@ public class AddInaccount extends TabActivity
 				  	amount+=money;//当前硬币投入
 				  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
 				  	txtcoinmanagercoininamount.setText(String.valueOf(money));
+				  	int coin_errstatus=ToolClass.getvmcStatus(Set,2);
+				  	ToolClass.setCoin_err(coin_errstatus);
 				  	
 				  	String hopperString=null;
 				  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))

@@ -57,9 +57,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
 		//初始化默认fragment
-		initView();
-		//注册串口监听器
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());
+		initView();		
 		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -234,42 +232,12 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 //        // 事务提交
 //        transaction.commit();
 //    }
-			
-	//创建一个专门处理单击接口的子类
-	private class jniInterfaceImp implements JNIInterface
-	{
-		@Override
-		public void jniCallback(Map<String, Object> allSet) {
-			// TODO Auto-generated method stub
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<business监听到","log.txt");	
-			Map<String, Object> Set= allSet;
-			int jnirst=(Integer) Set.get("EV_TYPE");
-			//txtcom.setText(String.valueOf(jnirst));
-			switch (jnirst)
-			{
-				//现金设备状态查询
-				case EVprotocolAPI.EV_MDB_HEART://心跳查询
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-					int bill_err=ToolClass.getvmcStatus(Set,1);
-					int coin_err=ToolClass.getvmcStatus(Set,2);
-					//上报给服务器
-					Intent intent=new Intent();
-    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
-    				intent.putExtra("bill_err", bill_err);
-    				intent.putExtra("coin_err", coin_err);
-    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(BusLand.this);
-    				localBroadreceiver.sendBroadcast(intent); 
-					break; 	
-			}
-		}
-	}
+		
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
-		//注册串口监听器
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");		
 		if(requestCode==PWD_CODE)
 		{
 			if(resultCode==PassWord.RESULT_OK)

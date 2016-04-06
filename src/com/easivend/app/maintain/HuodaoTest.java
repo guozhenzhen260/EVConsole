@@ -1663,21 +1663,7 @@ public class HuodaoTest extends TabActivity
 					status=(Integer)allSet.get("result");//结果
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货柜操作结果"+"device=["+device+"],opt=["+opt+"],status=["+status+"]","log.txt");	
 					txthuorst.setText("device=["+device+"],opt=["+opt+"],status=["+status+"]");						
-					break;	
-				//现金设备状态查询
-				case EVprotocolAPI.EV_MDB_HEART://心跳查询
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-					int bill_err=ToolClass.getvmcStatus(Set,1);
-					int coin_err=ToolClass.getvmcStatus(Set,2);
-					//上报给服务器
-					Intent intent=new Intent();
-    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
-    				intent.putExtra("bill_err", bill_err);
-    				intent.putExtra("coin_err", coin_err);
-    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoTest.this);
-    				localBroadreceiver.sendBroadcast(intent); 
-					break;	
+					break;
 			}
 		}
 	}

@@ -1243,14 +1243,8 @@ BushuoFragInteraction
 						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
 						int bill_err=ToolClass.getvmcStatus(Set,1);
 						int coin_err=ToolClass.getvmcStatus(Set,2);
-						//上报给服务器
-						Intent intent=new Intent();
-	    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
-	    				intent.putExtra("bill_err", bill_err);
-	    				intent.putExtra("coin_err", coin_err);
-	    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-	    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(BusPort.this);
-	    				localBroadreceiver.sendBroadcast(intent); 
+						ToolClass.setBill_err(bill_err);
+						ToolClass.setCoin_err(coin_err);
 					}
 					break; 	
 				case EVprotocolAPI.EV_MDB_PAYOUT://找零

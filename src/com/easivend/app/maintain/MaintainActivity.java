@@ -118,7 +118,6 @@ public class MaintainActivity extends Activity
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
 	Map<String, String> vmcmap;
-	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -178,25 +177,8 @@ public class MaintainActivity extends Activity
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.vmserverrec");
 		localBroadreceiver.registerReceiver(receiver,filter);
-		//7.发送指令广播给EVServerService
 		vmcmap = ToolClass.getvmc_no(MaintainActivity.this);		
-		timer.scheduleWithFixedDelay(new Runnable() { 
-	        @Override 
-	        public void run() { 
-	  
-	            runOnUiThread(new Runnable() {      // UI thread 
-	                @Override 
-	                public void run() { 
-	                	if(issuc==2) 
-	                	{
-	                		//先查询设备信息，再上报给服务器
-	                		EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-						}
-	                } 
-	            }); 
-	        } 
-	    }, 5, 10*60, TimeUnit.SECONDS);       // timeTask 10*60
-		
+				
 		//================
 		//串口配置和注册相关
 		//================
@@ -509,21 +491,7 @@ public class MaintainActivity extends Activity
 						//可以开始签到操作
 			        	onInit();
 					}
-					break;	
-				//现金设备状态查询
-				case EVprotocolAPI.EV_MDB_HEART://心跳查询
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-					
-					int bill_err=ToolClass.getvmcStatus(Set,1);
-					int coin_err=ToolClass.getvmcStatus(Set,2);
-					//上报给服务器
-					Intent intent=new Intent();
-    				intent.putExtra("EVWhat", EVServerhttp.SETDEVSTATUCHILD);
-    				intent.putExtra("bill_err", bill_err);
-    				intent.putExtra("coin_err", coin_err);
-    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-    				localBroadreceiver.sendBroadcast(intent); 
-					break; 	
+					break;
 			}
 		}
 	}
@@ -534,7 +502,8 @@ public class MaintainActivity extends Activity
 		if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1)) 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
-	    	Intent intent=new Intent();
+			//7.发送指令广播给EVServerService
+			Intent intent=new Intent();
 			intent.putExtra("EVWhat", EVServerhttp.SETCHILD);
 			intent.putExtra("vmc_no", vmcmap.get("vmc_no"));
 			intent.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
@@ -700,8 +669,7 @@ public class MaintainActivity extends Activity
 			EVprotocolAPI.EV_portRelease(ToolClass.getBentcom_id());
 		if(columnopen!=0)
 			EVprotocolAPI.EV_portRelease(ToolClass.getColumncom_id());
-		EVprotocolAPI.vmcEVStop();//关闭监听		
-		timer.shutdown(); //关闭定时器
+		EVprotocolAPI.vmcEVStop();//关闭监听	
 		//=============
 		//Server服务相关
 		//=============

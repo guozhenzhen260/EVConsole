@@ -14,6 +14,8 @@ import java.util.TimerTask;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ import org.json.JSONObject;
 
 import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.HuodaoSet;
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.app.maintain.Order;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -391,7 +394,38 @@ public class EVServerService extends Service {
 		//启动用户自己定义的类，启动线程
   		serverhttp=new EVServerhttp(mainhand);
   		thread=Executors.newFixedThreadPool(3);
-  		thread.execute(serverhttp);		
+  		thread.execute(serverhttp);	
+  		//启动设备同步定时器
+  		ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+  		timer.scheduleWithFixedDelay(new Runnable() { 
+	        @Override 
+	        public void run() { 
+	        	if(ischeck)
+	        	{
+	        		//ToolClass.Log(ToolClass.INFO,"EV_SERVER","server["+Thread.currentThread().getId()+"]","server.txt");
+	        		int bill_err=ToolClass.getBill_err();
+					int coin_err=ToolClass.getCoin_err();
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备bill_err="+bill_err
+							+" coin_err="+coin_err,"server.txt");				
+	    			//
+		        	childhand=serverhttp.obtainHandler();
+		    		Message childmsg3=childhand.obtainMessage();
+		    		childmsg3.what=EVServerhttp.SETDEVSTATUCHILD;
+		    		JSONObject ev3=null;
+		    		try {
+		    			ev3=new JSONObject();
+		    			ev3.put("bill_err", bill_err);
+		    			ev3.put("coin_err", coin_err);	    			  			
+		    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev3.toString(),"server.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		childmsg3.obj=ev3;
+		    		childhand.sendMessage(childmsg3);
+	        	}
+	        } 
+	    },15,15,TimeUnit.SECONDS);       // timeTask 
 	}	
 	
 	//更新商品分类信息

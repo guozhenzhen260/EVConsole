@@ -179,6 +179,8 @@ public class BusZhiAmount  extends Activity
 					String hopperString="";
 					int bill_err=ToolClass.getvmcStatus(Set,1);
 					int coin_err=ToolClass.getvmcStatus(Set,2);
+					ToolClass.setBill_err(bill_err);
+					ToolClass.setCoin_err(coin_err);
 					int hopper1=ToolClass.getvmcStatus(Set,3);
 					if(bill_err>0)
 						bill_enable="[纸币器]无法使用";

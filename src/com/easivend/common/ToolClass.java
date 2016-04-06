@@ -93,6 +93,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;
+	private static int bill_err=0,coin_err=0;
 	public static String vmc_no="";
 	public static Bitmap mark=null;//售完图片
 	public static int goc=0;//是否使用出货确认板1是
@@ -1626,8 +1627,24 @@ public class ToolClass
 		return rst;
 	}
 	
+	public static int getBill_err() {
+		return bill_err;
+	}
+
+	public static void setBill_err(int bill_err) {
+		ToolClass.bill_err = bill_err;
+	}
+
+	public static int getCoin_err() {
+		return coin_err;
+	}
+
+	public static void setCoin_err(int coin_err) {
+		ToolClass.coin_err = coin_err;
+	}
+	
 	//密码框比对
-    private static boolean passcmp(String pwd,String value)
+	private static boolean passcmp(String pwd,String value)
     {
     	boolean istrue=false;
     	if((pwd==null)||(pwd.equals("")==true))
