@@ -156,6 +156,10 @@ public class BusZhiAmount  extends Activity
 					if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
 					{
 						txtbuszhiamounttsxx.setText("提示信息：重试"+con);
+						if((Integer)Set.get("bill_result")==0)
+							ToolClass.setBill_err(2);
+						if((Integer)Set.get("coin_result")==0)
+							ToolClass.setCoin_err(2);
 						con++;
 					}
 					//打开成功
@@ -164,6 +168,8 @@ public class BusZhiAmount  extends Activity
 						//第一次打开才发送coninfo，以后就不再操作这个了
 						if(iszhienable==0)
 							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+						ToolClass.setBill_err(0);
+						ToolClass.setCoin_err(0);
 					}										
 					break;
 				case EVprotocolAPI.EV_MDB_B_INFO:	

@@ -371,14 +371,24 @@ public class AddInaccount extends TabActivity
 					//纸币启动成功
 					if((Integer)Set.get("bill_result")>0)
 					{
+						ToolClass.setBill_err(0);
 						EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
 						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+					}
+					else
+					{
+						ToolClass.setBill_err(2);
 					}
 					//硬币启动成功
 					if((Integer)Set.get("coin_result")>0)
 					{
+						ToolClass.setCoin_err(0);
 						EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
 						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+					}
+					else
+					{
+						ToolClass.setCoin_err(2);
 					}
 					break;
 				case EVprotocolAPI.EV_MDB_B_INFO:							 
