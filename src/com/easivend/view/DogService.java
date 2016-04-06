@@ -43,6 +43,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class DogService extends Service {
@@ -51,6 +52,8 @@ public class DogService extends Service {
 	private int allopen=1;//1表示一直打开应用,0表示关闭后不打开应用
 	private int logno=0;//表示计数
 	ActivityReceiver receiver;
+	//LocalBroadcastManager localBroadreceiver;
+	
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -84,10 +87,12 @@ public class DogService extends Service {
 		super.onCreate();
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog create","dog.txt");
 		//9.注册接收器
+		//localBroadreceiver = LocalBroadcastManager.getInstance(this);
 		receiver=new ActivityReceiver();
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.dogserversend");
-		this.registerReceiver(receiver,filter);	
+		//localBroadreceiver.registerReceiver(receiver,filter);	
+		registerReceiver(receiver,filter);	
 	}
 	
 	@Override
@@ -95,7 +100,8 @@ public class DogService extends Service {
 		// TODO Auto-generated method stub		
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","dog destroy","dog.txt");
 		//解除注册接收器
-		this.unregisterReceiver(receiver);
+		//localBroadreceiver.unregisterReceiver(receiver);
+		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 

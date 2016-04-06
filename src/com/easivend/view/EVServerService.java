@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ public class EVServerService extends Service {
     private String vmc_auth_code=null;
     private int tokenno=0;
     EVServerhttp serverhttp=null;
+    LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
     private String LAST_EDIT_TIME="";
@@ -162,10 +164,11 @@ public class EVServerService extends Service {
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service create","server.txt");
 		super.onCreate();
 		//9.注册接收器
+		localBroadreceiver = LocalBroadcastManager.getInstance(this);
 		receiver=new ActivityReceiver();
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.vmserversend");
-		this.registerReceiver(receiver,filter);						
+		localBroadreceiver.registerReceiver(receiver,filter);						
 	}
 
 	@Override
@@ -173,7 +176,7 @@ public class EVServerService extends Service {
 		// TODO Auto-generated method stub		
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service destroy","server.txt");
 		//解除注册接收器
-		this.unregisterReceiver(receiver);
+		localBroadreceiver.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 	
@@ -201,7 +204,7 @@ public class EVServerService extends Service {
 						intent=new Intent();
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
 						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-						sendBroadcast(intent);	
+						localBroadreceiver.sendBroadcast(intent);	
 						break;					
 					case EVServerhttp.SETMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
@@ -351,7 +354,7 @@ public class EVServerService extends Service {
 							intent=new Intent();
 							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
 							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-							sendBroadcast(intent);
+							localBroadreceiver.sendBroadcast(intent);
 							ischeck=true;
 							LAST_EDIT_TIME=ToolClass.getLasttime();
 						}
@@ -379,7 +382,7 @@ public class EVServerService extends Service {
 						intent=new Intent();
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
 						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-						sendBroadcast(intent);	
+						localBroadreceiver.sendBroadcast(intent);	
 						break;						
 				}				
 			}

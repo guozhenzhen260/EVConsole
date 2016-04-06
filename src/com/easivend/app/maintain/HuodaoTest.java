@@ -39,6 +39,7 @@ import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
+import com.easivend.app.business.BusLand;
 import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
@@ -62,6 +63,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -1673,7 +1675,8 @@ public class HuodaoTest extends TabActivity
     				intent.putExtra("bill_err", bill_err);
     				intent.putExtra("coin_err", coin_err);
     				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-    				sendBroadcast(intent); 
+    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoTest.this);
+    				localBroadreceiver.sendBroadcast(intent); 
 					break;	
 			}
 		}
@@ -1922,7 +1925,8 @@ public class HuodaoTest extends TabActivity
 			    			Intent intent2=new Intent();
 		    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUCHILD);
 		    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-		    				sendBroadcast(intent2);
+		    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoTest.this);
+		    				localBroadreceiver.sendBroadcast(intent2);
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	
 	    				}

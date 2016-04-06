@@ -68,6 +68,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -110,7 +111,9 @@ public class MaintainActivity extends Activity
     //Dog服务相关
     int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
 	private final int SPLASH_DISPLAY_LENGHT = 5000; // 延迟5秒
+	//LocalBroadcastManager dogBroadreceiver;
 	//Server服务相关
+	LocalBroadcastManager localBroadreceiver;
 	EVServerReceiver receiver;
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
@@ -145,6 +148,7 @@ public class MaintainActivity extends Activity
 		//==========
 		//启动服务
 		startService(new Intent(this,DogService.class));
+		//dogBroadreceiver.getInstance(this);
 		//延时5s
 	    new Handler().postDelayed(new Runnable() 
 		{
@@ -155,6 +159,7 @@ public class MaintainActivity extends Activity
         		Intent intent=new Intent();
         		intent.putExtra("isallopen", isallopen);
         		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
+        		//dogBroadreceiver.sendBroadcast(intent); 
         		sendBroadcast(intent); 
             }
 
@@ -168,10 +173,11 @@ public class MaintainActivity extends Activity
 		//3.开启服务
 		startService(new Intent(MaintainActivity.this,EVServerService.class));
 		//4.注册接收器
+		localBroadreceiver = LocalBroadcastManager.getInstance(this);
 		receiver=new EVServerReceiver();
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.vmserverrec");
-		this.registerReceiver(receiver,filter);
+		localBroadreceiver.registerReceiver(receiver,filter);
 		//7.发送指令广播给EVServerService
 		vmcmap = ToolClass.getvmc_no(MaintainActivity.this);		
 		timer.scheduleWithFixedDelay(new Runnable() { 
@@ -516,7 +522,7 @@ public class MaintainActivity extends Activity
     				intent.putExtra("bill_err", bill_err);
     				intent.putExtra("coin_err", coin_err);
     				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-    				sendBroadcast(intent); 
+    				localBroadreceiver.sendBroadcast(intent); 
 					break; 	
 			}
 		}
@@ -539,7 +545,7 @@ public class MaintainActivity extends Activity
 	        bundle.putSerializable("huoSet", myMap);
 	        intent.putExtras(bundle);
 			intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-			sendBroadcast(intent);  
+			localBroadreceiver.sendBroadcast(intent);  
 		}
 	}
 	
@@ -567,7 +573,8 @@ public class MaintainActivity extends Activity
 		        		Intent intent=new Intent();
 		        		intent.putExtra("isallopen", isallopen);
 		        		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
-		        		sendBroadcast(intent);
+		        		//dogBroadreceiver.sendBroadcast(intent);
+		        		sendBroadcast(intent); 
 			        }
 				}
 			}
@@ -699,7 +706,7 @@ public class MaintainActivity extends Activity
 		//Server服务相关
 		//=============
 		//5.解除注册接收器
-		MaintainActivity.this.unregisterReceiver(receiver);
+		localBroadreceiver.unregisterReceiver(receiver);
 		//6.结束服务
 		stopService(new Intent(MaintainActivity.this, EVServerService.class));
 		// TODO Auto-generated method stub

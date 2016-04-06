@@ -26,6 +26,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -257,7 +258,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     				intent.putExtra("bill_err", bill_err);
     				intent.putExtra("coin_err", coin_err);
     				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-    				sendBroadcast(intent); 
+    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(BusLand.this);
+    				localBroadreceiver.sendBroadcast(intent); 
 					break; 	
 			}
 		}

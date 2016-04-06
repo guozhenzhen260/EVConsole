@@ -53,6 +53,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -1248,7 +1249,8 @@ BushuoFragInteraction
 	    				intent.putExtra("bill_err", bill_err);
 	    				intent.putExtra("coin_err", coin_err);
 	    				intent.setAction("android.intent.action.vmserversend");//action与接收器相同
-	    				sendBroadcast(intent); 
+	    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(BusPort.this);
+	    				localBroadreceiver.sendBroadcast(intent); 
 					}
 					break; 	
 				case EVprotocolAPI.EV_MDB_PAYOUT://找零

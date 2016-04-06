@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -190,7 +191,8 @@ public class HuodaoSet extends Activity
 		    			Intent intent2=new Intent();
 	    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUCHILD);
 	    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-	    				sendBroadcast(intent2);	    				
+	    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoSet.this);
+	    				localBroadreceiver.sendBroadcast(intent2);	    				
 			        	// 弹出信息提示
 			            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
 			            //退出时，返回intent
@@ -243,9 +245,10 @@ public class HuodaoSet extends Activity
 					    			Intent intent2=new Intent();
 				    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUCHILD);
 				    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-				    				sendBroadcast(intent2);	 
+				    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoSet.this);
+				    				localBroadreceiver.sendBroadcast(intent2);	 
 			    					// 弹出信息提示
-						            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
+						            Toast.makeText(HuodaoSet.this, "〖新增商品〗数据删除成功！", Toast.LENGTH_SHORT).show();
 						            //退出时，返回intent
 						            Intent intent=new Intent();
 						            intent.putExtra("back", "ok");
