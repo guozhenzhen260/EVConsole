@@ -91,80 +91,68 @@ public class COMService extends Service {
 			//查询全部柜子状态
 			case EV_CHECKALLCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询全部","com.txt");
-//				vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
-//			    // 1.获取所有柜号
-//			    List<Tb_vmc_cabinet> listinfos = cabinetDAO.getScrollData();
-//			    cabinetID = new String[listinfos.size()];// 设置字符串数组的长度
-//			    // 遍历List泛型集合
-//			    for (Tb_vmc_cabinet tb_inaccount : listinfos) 
-//			    {
-//			        cabinetID[huom] = tb_inaccount.getCabID();
-//			        ToolClass.Log(ToolClass.INFO,"EV_COM","获取柜号="+cabinetID[huom],"com.txt");
-//				    huom++;// 标识加1
-//			    }
-//			    huom=0;
-//			    if(listinfos.size()==0)
-//			    {
-//			    	//返回给activity广播
-//					Intent recintent=new Intent();
-//					recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
-//					//传递数据
-//			        SerializableMap myMap=new SerializableMap();
-//			        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
-//			        Bundle bundlerec=new Bundle();
-//			        bundlerec.putSerializable("result", myMap);
-//			        recintent.putExtras(bundlerec);
-//			        recintent.setAction("android.intent.action.comrec");//action与接收器相同
-//					sendBroadcast(recintent);
-//			    }
-//			    else
-//				{
-//			    	childhand=comserial.obtainHandler();
-//	        		Message childrec=childhand.obtainMessage();
-//	        		//查找货道类型
-//	        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
-//	        		// 获取所有收入信息，并存储到List泛型集合中
-//	        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
-//	        		//格子柜
-//	        	    if(listinfosrec.getCabType()==5)
-//	        		{
-//	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
-//	        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
-//	        		}
-//	        		else
-//	        		{
-//	        			
-//	        		}
-//	        		JSONObject evrec=null;
-//		    		try {
-//		    			evrec=new JSONObject();
-//		    			evrec.put("cabinet", cabinetID[huom]);	    			  			
-//		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
-//		    		} catch (JSONException e) {
-//		    			// TODO Auto-generated catch block
-//		    			e.printStackTrace();
-//		    		}
-//		    		childrec.obj=evrec;
-//	        		childhand.sendMessage(childrec);	        	
-//				}	
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
+			    // 1.获取所有柜号
+			    List<Tb_vmc_cabinet> listinfos = cabinetDAO.getScrollData();
+			    cabinetID = new String[listinfos.size()];// 设置字符串数组的长度
+			    // 遍历List泛型集合
+			    for (Tb_vmc_cabinet tb_inaccount : listinfos) 
+			    {
+			        cabinetID[huom] = tb_inaccount.getCabID();
+			        ToolClass.Log(ToolClass.INFO,"EV_COM","获取柜号="+cabinetID[huom],"com.txt");
+				    huom++;// 标识加1
+			    }
+			    huom=0;
+			    if(listinfos.size()==0)
+			    {
+			    	//返回给activity广播
+					Intent recintent=new Intent();
+					recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
+					//传递数据
+			        SerializableMap myMap=new SerializableMap();
+			        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
+			        Bundle bundlerec=new Bundle();
+			        bundlerec.putSerializable("result", myMap);
+			        recintent.putExtras(bundlerec);
+			        recintent.setAction("android.intent.action.comrec");//action与接收器相同
+			        localBroadreceiver.sendBroadcast(recintent);
+			    }
+			    else
+				{
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			    	childhand=comserial.obtainHandler();
+	        		Message childrec=childhand.obtainMessage();
+	        		//查找货道类型
+	        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
+	        		// 获取所有收入信息，并存储到List泛型集合中
+	        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
+	        		//格子柜
+	        	    if(listinfosrec.getCabType()==5)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
+	        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+	        		}
+	        		else
+	        		{
+	        			
+	        		}
+	        		JSONObject evrec=null;
+		    		try {
+		    			evrec=new JSONObject();
+		    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		childrec.obj=evrec;
+	        		childhand.sendMessage(childrec);	        	
 				}
-		    	childhand=comserial.obtainHandler();
-        		Message childrec=childhand.obtainMessage();
-        		childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
-	    		childrec.obj="";
-        		childhand.sendMessage(childrec);
-				
-        		//返回给activity广播
-				Intent recintent=new Intent();
-				recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
-				recintent.setAction("android.intent.action.comrec");//action与接收器相同
-				localBroadreceiver.sendBroadcast(recintent);
-
 				break;    
 			//货道查询	
 			case EV_CHECKCHILD:
@@ -317,76 +305,77 @@ public class COMService extends Service {
 					//全部查询
 					case COMThread.EV_BENTO_CHECKALLMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道全部查询返回="+msg.obj,"com.txt");
-//						String tempno=null; 
-//						Map<String, Object> Set= (Map<String, Object>) msg.obj;
-//						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回=2","com.txt");
-//						//输出内容
-//				        Set<Entry<String, Object>> allmap2=Set.entrySet();  //实例化
-//				        Iterator<Entry<String, Object>> iter2=allmap2.iterator();
-//				        while(iter2.hasNext())
-//				        {
-//				            Entry<String, Object> me=iter2.next();
-//				            if(
-//				               (me.getKey().equals("cabinet")!=true)&&(me.getKey().equals("cool")!=true)
-//				               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
-//				            )   
-//				            {
-//				            	if(Integer.parseInt(me.getKey())<10)
-//				    				tempno="0"+me.getKey();
-//				    			else 
-//				    				tempno=me.getKey();
-//				            	
-//				            	huoSet.put(cabinetID[huom]+tempno,(Integer)me.getValue());
-//				            }
-//				        } 
-//				        ToolClass.Log(ToolClass.INFO,"EV_COM","COMService<<"+huoSet.size()+"货道状态:"+huoSet.toString(),"com.txt");	
-//				        huom++;
-//				        //2.继续获取所有货道号
-//				        if(huom<cabinetID.length)
-//				        {					        	
-//				        	childhand=comserial.obtainHandler();
-//			        		Message childrec=childhand.obtainMessage();
-//			        		//查找货道类型
-//			        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(COMService.this);// 创建InaccountDAO对象
-//			        		// 获取所有收入信息，并存储到List泛型集合中
-//			        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
-//			        		//格子柜
-//			        	    if(listinfosrec.getCabType()==5)
-//			        		{
-//			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
-//			        			childrec.what=COMThread.EV_BENTO_CHECKCHILD;
-//			        		}
-//			        		else
-//			        		{
-//			        			
-//			        		}
-//			        		JSONObject evrec=null;
-//				    		try {
-//				    			evrec=new JSONObject();
-//				    			evrec.put("cabinet", cabinetID[huom]);	    			  			
-//				    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
-//				    		} catch (JSONException e) {
-//				    			// TODO Auto-generated catch block
-//				    			e.printStackTrace();
-//				    		}
-//				    		childrec.obj=evrec;
-//			        		childhand.sendMessage(childrec);
-//				        }
-//				        else
-//				        {
-//				        	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜连接完成","com.txt");
-//				        	//返回给activity广播
-//							Intent recintent=new Intent();
-//							recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
-//							//传递数据
-//					        SerializableMap myMap=new SerializableMap();
-//					        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
-//					        Bundle bundle=new Bundle();
-//					        bundle.putSerializable("result", myMap);
-//					        recintent.putExtras(bundle);
-//							recintent.setAction("android.intent.action.comrec");//action与接收器相同
-//							sendBroadcast(recintent);
-//						}												
+						String tempno6=null; 
+						Map<String, Object> Set6= (Map<String, Object>) msg.obj;
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回=2","com.txt");
+						//输出内容
+				        Set<Entry<String, Object>> allmap6=Set6.entrySet();  //实例化
+				        Iterator<Entry<String, Object>> iter6=allmap6.iterator();
+				        while(iter6.hasNext())
+				        {
+				            Entry<String, Object> me=iter6.next();
+				            if(
+				               (me.getKey().equals("cabinet")!=true)&&(me.getKey().equals("cool")!=true)
+				               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
+				               &&(me.getKey().equals("EV_TYPE")!=true)
+				            )   
+				            {
+				            	if(Integer.parseInt(me.getKey())<10)
+				    				tempno6="0"+me.getKey();
+				    			else 
+				    				tempno6=me.getKey();
+				            	
+				            	huoSet.put(cabinetID[huom]+tempno6,(Integer)me.getValue());
+				            }
+				        } 
+				        ToolClass.Log(ToolClass.INFO,"EV_COM","COMService<<"+huoSet.size()+"货道状态:"+huoSet.toString(),"com.txt");	
+				        huom++;
+				        //2.继续获取所有货道号
+				        if(huom<cabinetID.length)
+				        {					        	
+				        	childhand=comserial.obtainHandler();
+			        		Message childrec=childhand.obtainMessage();
+			        		//查找货道类型
+			        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(COMService.this);// 创建InaccountDAO对象
+			        		// 获取所有收入信息，并存储到List泛型集合中
+			        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
+			        		//格子柜
+			        	    if(listinfosrec.getCabType()==5)
+			        		{
+			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
+			        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+			        		}
+			        		else
+			        		{
+			        			
+			        		}
+			        		JSONObject evrec=null;
+				    		try {
+				    			evrec=new JSONObject();
+				    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+				    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+				    		} catch (JSONException e) {
+				    			// TODO Auto-generated catch block
+				    			e.printStackTrace();
+				    		}
+				    		childrec.obj=evrec;
+			        		childhand.sendMessage(childrec);
+				        }
+				        else
+				        {
+				        	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜连接完成","com.txt");
+				        	//返回给activity广播
+							Intent recintent=new Intent();
+							recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
+							//传递数据
+					        SerializableMap myMap=new SerializableMap();
+					        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
+					        Bundle bundle=new Bundle();
+					        bundle.putSerializable("result", myMap);
+					        recintent.putExtras(bundle);
+							recintent.setAction("android.intent.action.comrec");//action与接收器相同
+							localBroadreceiver.sendBroadcast(recintent);
+						}												
 						break;
 					//查询
 					case COMThread.EV_BENTO_CHECKMAIN://子线程接收主线程消息签到完成

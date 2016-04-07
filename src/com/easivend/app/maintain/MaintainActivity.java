@@ -291,10 +291,10 @@ public class MaintainActivity extends Activity
 //				}
 //			}
 //			
-			if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1))
-			{
-				dialog.dismiss();
-			}
+//			if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1))
+//			{
+//				dialog.dismiss();
+//			}
 	        
 		}
 		else
@@ -708,26 +708,26 @@ public class MaintainActivity extends Activity
 			switch(EVWhat)
 			{
 			case COMService.EV_CHECKALLMAIN:
-				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
-//				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
-//				Map<String, Integer> Set=serializableMap.getMap();
-//				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部="+Set,"com.txt");	
-//				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
-//		    	//*******
-//				//服务器同步
-//				//*******
-//				Intent intent2=new Intent();
-//				intent2.putExtra("EVWhat", EVServerhttp.SETCHILD);
-//				intent2.putExtra("vmc_no", vmcmap.get("vmc_no"));
-//				intent2.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
-//				//传递数据
-//		        final SerializableMap myMap=new SerializableMap();
-//		        myMap.setMap(Set);//将map数据添加到封装的myMap<span></span>中
-//		        Bundle bundle2=new Bundle();
-//		        bundle2.putSerializable("huoSet", myMap);
-//		        intent2.putExtras(bundle2);
-//				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-//				sendBroadcast(intent2);  
+				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
+				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部="+Set,"com.txt");	
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
+		    	//*******
+				//服务器同步
+				//*******
+				Intent intent2=new Intent();
+				intent2.putExtra("EVWhat", EVServerhttp.SETCHILD);
+				intent2.putExtra("vmc_no", vmcmap.get("vmc_no"));
+				intent2.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+				//传递数据
+		        final SerializableMap myMap=new SerializableMap();
+		        myMap.setMap(Set);//将map数据添加到封装的myMap<span></span>中
+		        Bundle bundle2=new Bundle();
+		        bundle2.putSerializable("huoSet", myMap);
+		        intent2.putExtras(bundle2);
+				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+				localBroadreceiver.sendBroadcast(intent2);  
 	    		break;				
 			}			
 		}
