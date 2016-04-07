@@ -362,8 +362,20 @@ public class ToolClass
             	{
             		updatefile(fileName,sDir);
             	}
-    	    } 
-        	//5.将目录下的所有文件，如果有超出半个月的，全部删除
+    	    }
+        	//5.如果存在com文件，则判断
+        	fileName=new File(sDir+File.separator+"com.txt"); 
+        	if(fileName.exists())
+        	{  
+        		System.out.println(" 判断重命名文件com.txt");
+        		String logdatetime = getFileCreated(fileName);
+            	int inter=getInterval(logdatetime,datetime); 
+            	if(inter>=4)
+            	{
+            		updatefile(fileName,sDir);
+            	}
+    	    }
+        	//6.将目录下的所有文件，如果有超出半个月的，全部删除
         	delFiles(dirName,datetime);
         	
         } catch (Exception e) {
@@ -1767,6 +1779,56 @@ public class ToolClass
 			}	
 		}
 		return istrue;
+	}
+	/*********************************************************************************************************
+	** Function name:     	CrcCheck
+	** Descriptions:	    CRC校验和
+	** input parameters:    msg需要检验的数据;len数据长度
+	** output parameters:   无
+	** Returned value:      CRC检验结果
+	*********************************************************************************************************/
+	public static int crcCheck(byte msg[], int len){
+        int i, j, crc = 0, current;
+        for(i = 0;i < len;i++)
+        {
+            current = ((msg[i] & 0x000000FF) << 8);
+            for (j = 0;j < 8;j++)
+            {
+                if((short)(crc ^ current) < 0)
+                {
+                    crc =  ((crc << 1) ^ 0x1021) & 0x0000FFFF;
+                }
+                else
+                {
+                    crc = (crc << 1) & 0x0000FFFF;
+                }
+                current = (current << 1) & 0x0000FFFF;
+            }
+        }
+
+        return crc;
+    }
+
+	/*********************************************************************************************************
+	** Function name:     	printHex
+	** Descriptions:	    打印十六进制信息
+	** input parameters:    bentrecv需要打印的数据;bentindex数据长度
+	** output parameters:   无
+	** Returned value:      打印的十六进制信息
+	*********************************************************************************************************/
+	public static StringBuilder printHex(byte[] bentrecv,int bentindex)
+	{
+		StringBuilder res=new StringBuilder();
+		for(int i=0;i<bentindex;i++)
+	    {
+	    	String hex = Integer.toHexString(bentrecv[i] & 0xFF);
+            if (hex.length() == 1)
+            {
+                hex = '0' + hex;
+            }	
+	    	res.append("[").append(hex.toUpperCase()).append("]");				    	
+	    }
+		return res;
 	}
 	
 }

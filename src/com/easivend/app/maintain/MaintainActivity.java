@@ -38,6 +38,7 @@ import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
+import com.easivend.view.COMService;
 import com.easivend.view.DogService;
 import com.easivend.view.EVServerService;
 import com.easivend.weixing.WeiConfigAPI;
@@ -118,6 +119,9 @@ public class MaintainActivity extends Activity
 	private int issuc=0;//0准备串口初始化，1可以开始签到，2签到成功	
 	private boolean issale=false;//true是否已经自动打开过售卖页面了，如果打开过，就不再打开了
 	Map<String, String> vmcmap;
+	//COM服务相关
+	LocalBroadcastManager comBroadreceiver;
+	COMReceiver comreceiver;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -177,7 +181,33 @@ public class MaintainActivity extends Activity
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.vmserverrec");
 		localBroadreceiver.registerReceiver(receiver,filter);
-		vmcmap = ToolClass.getvmc_no(MaintainActivity.this);		
+		vmcmap = ToolClass.getvmc_no(MaintainActivity.this);
+		
+		//=============
+		//COM服务相关
+		//=============
+		//3.开启服务
+		startService(new Intent(MaintainActivity.this,COMService.class));
+		//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+		//延时3s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	//7.发送指令广播给COMService
+        		Intent intent=new Intent();
+        		intent.putExtra("EVWhat", COMService.EV_CHECKALLCHILD);	
+        		intent.setAction("android.intent.action.comsend");//action与接收器相同
+        		comBroadreceiver.sendBroadcast(intent);
+            }
+
+		}, 1000);
 				
 		//================
 		//串口配置和注册相关
@@ -659,6 +689,48 @@ public class MaintainActivity extends Activity
 
 	}
 	
+	//=============
+	//COM服务相关
+	//=============	
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			case COMService.EV_CHECKALLMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
+//				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+//				Map<String, Integer> Set=serializableMap.getMap();
+//				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部="+Set,"com.txt");	
+//				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
+//		    	//*******
+//				//服务器同步
+//				//*******
+//				Intent intent2=new Intent();
+//				intent2.putExtra("EVWhat", EVServerhttp.SETCHILD);
+//				intent2.putExtra("vmc_no", vmcmap.get("vmc_no"));
+//				intent2.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+//				//传递数据
+//		        final SerializableMap myMap=new SerializableMap();
+//		        myMap.setMap(Set);//将map数据添加到封装的myMap<span></span>中
+//		        Bundle bundle2=new Bundle();
+//		        bundle2.putSerializable("huoSet", myMap);
+//		        intent2.putExtras(bundle2);
+//				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+//				sendBroadcast(intent2);  
+	    		break;				
+			}			
+		}
+
+	}
+	
 	@Override
 	protected void onDestroy() {
 		EVprotocolAPI.vmcEVStop();//关闭监听
@@ -677,6 +749,13 @@ public class MaintainActivity extends Activity
 		localBroadreceiver.unregisterReceiver(receiver);
 		//6.结束服务
 		stopService(new Intent(MaintainActivity.this, EVServerService.class));
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);
+		//6.结束服务
+		stopService(new Intent(MaintainActivity.this, COMService.class));
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}
