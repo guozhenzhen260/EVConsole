@@ -1,8 +1,11 @@
 package com.easivend.app.business;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,7 +16,9 @@ import org.json.JSONObject;
 
 import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.app.maintain.HuodaoTest.COMReceiver;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
@@ -39,6 +44,7 @@ import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
+import com.easivend.view.COMService;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 
@@ -48,8 +54,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -140,7 +148,11 @@ BushuoFragInteraction
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
-    
+    //=================
+    //COM服务相关
+    //=================
+  	LocalBroadcastManager comBroadreceiver;
+  	COMReceiver comreceiver;
     
     //=========================
     //activity与fragment回调相关
@@ -204,6 +216,12 @@ BushuoFragInteraction
 		setContentView(R.layout.busport);		
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
+		//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
 		//注册串口监听器
 		EVprotocolAPI.setCallBack(new jniInterfaceImp());
 		timer.scheduleWithFixedDelay(new Runnable() { 
@@ -823,17 +841,17 @@ BushuoFragInteraction
 		// TODO Auto-generated method stub
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<busport商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt");
 		dialog= ProgressDialog.show(BusPort.this,"正在出货中","请稍候...");
-		//格子柜
-		if(cabinetTypevar==5)
-		{
-			EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huodaoNo);							
-			
-		}
-		//普通柜
-		else 
-		{
-			ToolClass.columnChuhuo(huodaoNo);
-		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" column="+huodaoNo		    	
+		    	,"log.txt");
+		Intent intent = new Intent();
+		//4.发送指令广播给COMService
+		intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
+		intent.putExtra("cabinet", cabinetvar);	
+		intent.putExtra("column", huodaoNo);	
+		intent.setAction("android.intent.action.comsend");//action与接收器相同
+		comBroadreceiver.sendBroadcast(intent);
     }
     
     //步骤三、实现Bushuo接口,结束出货页面
@@ -1420,9 +1438,43 @@ BushuoFragInteraction
 			}			
 		}
 	}
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//操作返回	
+			case COMService.EV_OPTMAIN: 
+				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set2=serializableMap2.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
+				//是出货操作
+				if(gotoswitch==BUSHUO)
+				{
+					status=Set2.get("result");//出货结果
+					dialog.dismiss();
+					listterner.BusportChjg(status);
+				}
+				break;
+			}			
+		}
+
+	}
 	@Override
 	protected void onDestroy() {
 		timer.shutdown(); 
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);	
 		//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

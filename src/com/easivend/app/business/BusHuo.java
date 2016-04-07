@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.easivend.app.business.BusPort.COMReceiver;
 import com.easivend.app.maintain.GoodsManager;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
@@ -20,14 +22,19 @@ import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_system_parameter;
+import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -57,7 +64,11 @@ public class BusHuo extends Activity
     private vmc_columnDAO columnDAO =null; 
     //出货结果
     private int status=0;//出货结果	
-	
+    //=================
+    //COM服务相关
+    //=================
+  	LocalBroadcastManager comBroadreceiver;
+  	COMReceiver comreceiver;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +89,12 @@ public class BusHuo extends Activity
 			BusgoodsSelect.BusgoodsSelectAct.finish(); 
 		
 		
-		
+		//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
 		//注册出货监听器
   	    EVprotocolAPI.setCallBack(new JNIInterface() {
 			
@@ -168,99 +184,7 @@ public class BusHuo extends Activity
 	                        }
 
 						}, SPLASH_DISPLAY_LENGHT);
-						break;
-					case EVprotocolAPI.EV_TRADE_RPT://接收子线程消息
-//						device=allSet.get("device");//出货柜号
-//						status=allSet.get("status");//出货结果
-//						hdid=allSet.get("hdid");//货道id
-//						hdtype=allSet.get("type");//出货类型
-//						cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
-//						totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
-//						huodao=allSet.get("huodao");//剩余存货数量
-//						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-//								+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
-//						if(status==0)
-//						{
-//							data[tempx][0]=String.valueOf(R.drawable.yes);
-//							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-//							//扣除存货余量
-//							chuhuoupdate(cabinetvar,huodaoNo);
-//							chuhuoLog(0);//记录日志
-//						}
-//						else
-//						{
-//							data[tempx][0]=String.valueOf(R.drawable.no);
-//							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-//							//扣除存货余量
-//							chuhuoupdate(cabinetvar,huodaoNo);
-//							chuhuoLog(1);//记录日志
-//						}
-//						updateListview();
-//						tempx++;
-//						huorst=0;
-//						while((huorst!=1)&&(tempx<count))
-//				 	    {
-//				 	    	huorst=chuhuoopt(tempx);
-//				 	    	if(huorst==2)
-//							{
-//								data[tempx][0]=String.valueOf(R.drawable.yes);
-//								data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-//								updateListview();
-//								tempx++;
-//								//扣除存货余量
-//								chuhuoupdate(cabinetvar,huodaoNo);
-//								chuhuoLog(0);//记录日志
-//							}
-//							else if(huorst==0)
-//							{
-//								data[tempx][0]=String.valueOf(R.drawable.no);
-//								data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-//								updateListview();
-//								tempx++;
-//								//扣除存货余量
-//								chuhuoupdate(cabinetvar,huodaoNo);
-//								chuhuoLog(1);//记录日志
-//							}
-//				 	    }
-//						if(tempx>=count)
-//				 	    {
-//							ivbushuoquhuo.setVisibility(View.VISIBLE);
-//				 	    	new Handler().postDelayed(new Runnable() 
-//							{
-//		                        @Override
-//		                        public void run() 
-//		                        {
-//		                        	//出货完成,把非现金模块去掉
-//		                        	if(status==0)
-//		                        	{
-//		                        		if(BusZhier.BusZhierAct!=null)
-//		                        			BusZhier.BusZhierAct.finish(); 
-//		                        		if(BusZhiwei.BusZhiweiAct!=null)
-//		                        			BusZhiwei.BusZhiweiAct.finish(); 
-//		                        		OrderDetail.addLog(BusHuo.this);
-//		                        	}
-//		                        	//出货失败，退到非现金模块进行退币操作
-//		                        	else
-//		                        	{
-//		                        		if(BusZhier.BusZhierAct!=null)
-//		                        		{
-//		                        			//退出时，返回intent
-//		                    	            Intent intent=new Intent();
-//		                    	            setResult(BusZhier.RESULT_CANCELED,intent);
-//		                        		}
-//		                        		if(BusZhiwei.BusZhiweiAct!=null)
-//		                        		{
-//		                        			//退出时，返回intent
-//		                    	            Intent intent=new Intent();
-//		                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
-//		                        		}
-//									}		                        	
-//		                            finish();
-//		                        }
-//
-//							}, SPLASH_DISPLAY_LENGHT);
-//				 	    }
-						break;					
+						break;										
 				}
 			}
 		}); 
@@ -327,18 +251,18 @@ public class BusHuo extends Activity
 		{
             @Override
             public void run() 
-            {	   
-            	//格子柜
-        		if(cabinetTypevar==5)
-        		{
-        			EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huodaoNo);							
-        			
-        		}
-        		//普通柜
-        		else 
-        		{
-        			ToolClass.columnChuhuo(huodaoNo);
-        		}
+            {	  
+        		ToolClass.Log(ToolClass.INFO,"EV_JNI",
+        		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+        		    	+" column="+huodaoNo		    	
+        		    	,"log.txt");
+        		Intent intent = new Intent();
+        		//4.发送指令广播给COMService
+        		intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
+        		intent.putExtra("cabinet", cabinetvar);	
+        		intent.putExtra("column", huodaoNo);	
+        		intent.setAction("android.intent.action.comsend");//action与接收器相同
+        		comBroadreceiver.sendBroadcast(intent);
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
@@ -379,5 +303,88 @@ public class BusHuo extends Activity
 			OrderDetail.setRealHuo(0);
 			OrderDetail.setHuoStatus(1);
 		}
-	}	
+	}
+	
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//操作返回	
+			case COMService.EV_OPTMAIN: 
+				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set2=serializableMap2.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
+				status=Set2.get("result");//出货结果
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
+				dialog.dismiss();
+				//1.更新出货结果
+				//扣除存货余量
+				chuhuoupdate(cabinetvar,huodaoNo);
+				//出货成功
+				if(status==1)
+				{
+					txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
+					txtbushuoname.setTextColor(android.graphics.Color.BLUE);
+					chuhuoLog(1);//记录日志
+				}
+				else
+				{
+					txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
+					txtbushuoname.setTextColor(android.graphics.Color.RED);
+					chuhuoLog(0);//记录日志
+				}
+										
+				//3.退回找零页面
+				ivbushuoquhuo.setVisibility(View.VISIBLE);
+	 	    	new Handler().postDelayed(new Runnable() 
+				{
+                    @Override
+                    public void run() 
+                    {	   
+                    	//退出时，返回intent
+        	            Intent intentrec=new Intent();
+        	            intentrec.putExtra("status", status);//出货结果
+//                    	if(zhifutype==0)//现金支付
+//                    	{                        			
+//            	            setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
+//                		}
+//                    	else if(zhifutype==3)//支付宝二维码
+//                    	{
+//            	            setResult(BusZhier.RESULT_CANCELED,intentrec);                    	            
+//                		}
+//                    	else if(zhifutype==4)//微信扫描
+//                    	{                        			
+//            	            setResult(BusZhiwei.RESULT_CANCELED,intentrec);                    	            
+//                		}
+//                    	else if(zhifutype==5)//提货码
+//                    	{                        			
+//            	            setResult(BusZhitihuo.RESULT_CANCELED,intentrec);                    	            
+//                		}
+                    	finish();	
+                    }
+
+				}, SPLASH_DISPLAY_LENGHT);
+				break;
+			}			
+		}
+
+	}
+	
+	@Override
+	protected void onDestroy() {
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);	
+		super.onDestroy();		
+	}
 }
