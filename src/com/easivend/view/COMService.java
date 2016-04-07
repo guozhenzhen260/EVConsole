@@ -35,6 +35,7 @@ import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.COMThread;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.view.EVServerService.ActivityReceiver;
@@ -146,6 +147,12 @@ public class COMService extends Service {
 //		    		childrec.obj=evrec;
 //	        		childhand.sendMessage(childrec);	        	
 //				}	
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 		    	childhand=comserial.obtainHandler();
         		Message childrec=childhand.obtainMessage();
         		childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
@@ -394,18 +401,22 @@ public class COMService extends Service {
 				        bundle.putSerializable("result", myMap);
 				        recintent.putExtras(bundle);
 						recintent.setAction("android.intent.action.comrec");//action与接收器相同
-						sendBroadcast(recintent);						
+						localBroadreceiver.sendBroadcast(recintent);						
 						break;	
 					//操作完成	
 					case COMThread.EV_BENTO_OPTMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道操作="+msg.obj,"com.txt");	
-						Map<String,Object> recv2=(Map<String, Object>) msg.obj;
 						//返回给activity广播
 						Intent recintent2=new Intent();
-						recintent2.putExtra("EVWhat", COMService.EV_OPTMAIN);
-						recintent2.putExtra("result", (Boolean) recv2.get("result"));//true成功,false失败
+						recintent2.putExtra("EVWhat", COMService.EV_OPTMAIN);						
+						//传递数据
+				        SerializableMap myMap2=new SerializableMap();
+				        myMap2.setMap((Map<String, Integer>) msg.obj);//将map数据添加到封装的myMap<span></span>中
+				        Bundle bundle2=new Bundle();
+				        bundle2.putSerializable("result", myMap2);
+				        recintent2.putExtras(bundle2);
 						recintent2.setAction("android.intent.action.comrec");//action与接收器相同
-						sendBroadcast(recintent2);
+						localBroadreceiver.sendBroadcast(recintent2);
 						break;
 				}				
 			}
@@ -423,6 +434,7 @@ public class COMService extends Service {
 	public void onDestroy() {
 		// TODO Auto-generated method stub		
 		ToolClass.Log(ToolClass.INFO,"EV_COM","COMService destroy","com.txt");
+		EVprotocol.EVPortRelease(ToolClass.getBentcom_id());
 		//解除注册接收器
 		localBroadreceiver.unregisterReceiver(receiver);
 		super.onDestroy();

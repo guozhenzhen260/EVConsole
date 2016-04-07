@@ -39,9 +39,12 @@ import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
+import com.easivend.view.COMService;
 import com.easivend.app.business.BusLand;
+import com.easivend.app.maintain.MaintainActivity.COMReceiver;
 import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.ProPictureAdapter;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_CabinetAdapter;
 import com.easivend.common.Vmc_ClassAdapter;
@@ -56,8 +59,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -108,6 +114,7 @@ public class HuodaoTest extends TabActivity
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0,cabinetTypesetvar=0;
+	private int devopt=0;//操作类型，出货，照明，制冷，加热	
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
 	private int huonno=0;//循环出货第几个格子了
@@ -157,7 +164,9 @@ public class HuodaoTest extends TabActivity
 	//测试进度对话框
 	ProgressDialog dialog= null;
 	private Handler myhHandler=null;
-	//EVprotocolAPI ev=null;
+	//COM服务相关
+	LocalBroadcastManager comBroadreceiver;
+	COMReceiver comreceiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -183,6 +192,12 @@ public class HuodaoTest extends TabActivity
     	myTabhuodaoset.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabhuodaoset); 
     	
+    	//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
     	//注册出货监听器
   	    EVprotocolAPI.setCallBack(new jniInterfaceImp());
     	//===============
@@ -322,32 +337,11 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub
 				if(isChecked)
 				{
-					//格子柜
-					if(cabinetTypevar==5)
-					{
-						EVprotocolAPI.EV_bentoLight(ToolClass.getBentcom_id(),cabinetvar,1);						
-					}
-					//普通柜
-					else 
-					{
-						//rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-				    	//		ToolClass.MoneySend(price));	
-					}
+					comsend(COMService.EV_LIGHTCHILD,1);
 				}
 				else 
 				{
-					//格子柜
-					if(cabinetTypevar==5)
-					{
-						EVprotocolAPI.EV_bentoLight(ToolClass.getBentcom_id(),cabinetvar,0);						
-					}
-					//普通柜
-					else 
-					{
-						//rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-				    	//		ToolClass.MoneySend(price));	
-					}
-					
+					comsend(COMService.EV_LIGHTCHILD,0);					
 				}
 			}  
 			
@@ -361,7 +355,14 @@ public class HuodaoTest extends TabActivity
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				
+				if(isChecked)
+				{
+					comsend(COMService.EV_COOLCHILD,1);
+				}
+				else 
+				{
+					comsend(COMService.EV_COOLCHILD,0);					
+				}
 			}  
 			
 			
@@ -373,7 +374,14 @@ public class HuodaoTest extends TabActivity
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				
+				if(isChecked)
+				{
+					comsend(COMService.EV_HOTCHILD,1);
+				}
+				else 
+				{
+					comsend(COMService.EV_HOTCHILD,0);					
+				}
 			}  
 			
 			
@@ -402,62 +410,18 @@ public class HuodaoTest extends TabActivity
 		
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {		    	  
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
-		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-		    	+" cabType="+String.valueOf(cabinetTypevar)
-		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString())),"log.txt"		    	
-		    	);
+		    public void onClick(View arg0) {
 		    	if (edtcolumn.getText().toString().isEmpty()!=true)	
 		    	{
-		    		float price=0;
-		    		int typevar=0;
-		    		if(price>0)
-		    			typevar=0;
-		    		else 
-		    			typevar=2;
-		    		int rst=0;
-		    		//格子柜
-					if(cabinetTypevar==5)
-					{
-						EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
-					}
-					//普通柜
-					else 
-					{
-						ToolClass.columnChuhuo(Integer.parseInt(edtcolumn.getText().toString()));	
-					}
-			    	   	
-		    	}
+		    		comsend(COMService.EV_CHUHUOCHILD,Integer.parseInt(edtcolumn.getText().toString()));
+			    }
 		    }
 		});
 		btnhuochuall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {		    	  
-		    	   		    		
-	    		int rst=0;
-	    		//格子柜
-				if(cabinetTypevar==5)
-				{
-					huonno=1;
-					ToolClass.Log(ToolClass.INFO,"EV_JNI",
-					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-					    	+" cabType="+String.valueOf(cabinetTypevar)
-					    	+" column="+huonno,"log.txt"		    	
-					    	);	 
-					EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
-				}
-				//普通柜
-				else 
-				{
-					huonno=1;
-					ToolClass.Log(ToolClass.INFO,"EV_JNI",
-					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-					    	+" cabType="+String.valueOf(cabinetTypevar)
-					    	+" column="+huonno,"log.txt"		    	
-					    	);	
-					ToolClass.columnChuhuo(huonno);	
-				}
+		    public void onClick(View arg0) {	    	  
+		    	huonno=1;
+		    	comsend(COMService.EV_CHUHUOCHILD,huonno);
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
@@ -1482,6 +1446,165 @@ public class HuodaoTest extends TabActivity
 				});
 	}
 	//===============
+	//串口发送和监听模块
+	//===============	
+	//发送模块type发送类型,opt参数
+	private void comsend(int type,int opt)
+	{
+		Intent intent=new Intent();
+		
+		devopt=type;
+		//7.发送指令广播给COMService	
+		switch(type)
+		{
+			case COMService.EV_CHECKCHILD:	
+				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+				    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+				    	,"log.txt");
+				intent.putExtra("EVWhat", COMService.EV_CHECKCHILD);	
+				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				break;
+			case COMService.EV_CHUHUOCHILD:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" column="+huonno		    	
+		    	,"log.txt");
+				//4.发送指令广播给COMService
+				intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
+				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.putExtra("column", opt);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				break;
+			case COMService.EV_LIGHTCHILD:
+			case COMService.EV_COOLCHILD:
+			case COMService.EV_HOTCHILD:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" opt="+opt		    	
+		    	,"log.txt");
+				//4.发送指令广播给COMService
+				intent.putExtra("EVWhat", type);	
+				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.putExtra("opt", opt);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				break;
+		}
+
+	}
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//货道查询
+			case COMService.EV_CHECKMAIN:
+				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询="+Set,"com.txt");
+				
+				ishuoquery=0;
+				String tempno=null;
+				
+				cool=(Integer)Set.get("cool");
+				hot=(Integer)Set.get("hot");
+				light=(Integer)Set.get("light");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
+				if(light>0)
+				{
+					txtlight.setText("支持");
+					switchlight.setEnabled(true);
+					
+				}
+				else
+				{
+					txtlight.setText("不支持");
+					switchlight.setEnabled(false);
+				}
+				if(cool>0)
+				{
+					txtcold.setText("支持");
+					switcold.setEnabled(true);
+				}
+				else
+				{
+					txtcold.setText("不支持");
+					switcold.setEnabled(false);
+				}
+				if(hot>0)
+				{
+					txthot.setText("支持");
+					switchhot.setEnabled(true);
+				}
+				else
+				{
+					txthot.setText("不支持");
+					switchhot.setEnabled(false);
+				}
+
+				huoSet.clear();
+				//输出内容
+				Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
+				Iterator<Entry<String, Integer>> iter=allmap.iterator();
+				while(iter.hasNext())
+				{
+					Entry<String, Integer> me=iter.next();
+					if(
+					   (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
+					   &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
+					)   
+					{
+						if(Integer.parseInt(me.getKey())<10)
+							tempno="0"+me.getKey();
+						else 
+							tempno=me.getKey();
+						
+						huoSet.put(tempno, (Integer)me.getValue());
+					}
+				} 
+				huonum=huoSet.size();
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
+				showhuodao();
+				break;
+			//操作返回	
+			case COMService.EV_OPTMAIN: 
+				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set2=serializableMap2.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
+				//是出货操作
+				if(devopt==COMService.EV_CHUHUOCHILD)
+				{
+					status=Set2.get("result");//出货结果
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
+										
+					sethuorst(status);
+					//循环继续做出货操作
+					if((huonno>0)&&(huonno<huonum))
+					{							
+						huonno++;
+						comsend(COMService.EV_CHUHUOCHILD,huonno);
+					}
+					else if(huonno>=huonum)
+					{
+						huonno=0;
+					}
+				}
+				break;
+			}			
+		}
+
+	}
+	//===============
 	//货道设置页面
 	//===============
 	private class jniInterfaceImp implements JNIInterface
@@ -1686,19 +1809,8 @@ public class HuodaoTest extends TabActivity
 	private void queryhuodao()
 	{
 		txthuosetrst.setText("查询次数:"+(con++));		
-		ishuoquery=1;
-		//格子柜
-		if(cabinetTypesetvar==5)
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关","log.txt");
-			EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);
-		}
-		//普通柜
-		else 
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao普通柜查询","log.txt");
-			EVprotocolAPI.getColumn(ToolClass.getColumncom_id(),1,1);
-		}
+		ishuoquery=1;		
+		comsend(COMService.EV_CHECKCHILD,0);
 	}
 	//接收GoodsProSet返回信息
 	@Override
@@ -1717,6 +1829,11 @@ public class HuodaoTest extends TabActivity
 	@Override
 	protected void onDestroy() {
 		timer.shutdown();
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);		
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

@@ -231,68 +231,71 @@ public class MaintainActivity extends Activity
 	        {
 	        	isallopen=Integer.parseInt(list.get("isallopen"));		        	
 	        }
-			
-	        //串口设置
-	        EVprotocolAPI.vmcEVStart();//开启监听
-	        //现金模块
-			if(com.equals("")==true)
-			{
-				txtcom.setText(com+"[现金模块]串口未开启");		
-			}
-			else 
-			{
-				//打开主柜串口		
-				comopen = EVprotocolAPI.EV_portRegister(com);
-				if(comopen == 1)
-				{
-					txtcom.setText(com+"[现金模块]串口正在准备连接");			
-				}
-				else
-				{
-					txtcom.setText(com+"[现金模块]串口打开失败");
-				}	
-			}
-			//格子柜
-			if(bentcom.equals("")==true)
-			{
-				txtbentcom.setText(bentcom+"[格子柜]串口未开启");		
-			}
-			else
-			{
-				//打开格子柜
-				bentopen = EVprotocolAPI.EV_portRegister(bentcom);
-				if(bentopen == 1)
-				{
-					txtbentcom.setText(bentcom+"[格子柜]串口正在准备连接");			
-				}
-				else
-				{
-					txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
-				}
-			}
-			//主柜
-			if(columncom.equals("")==true)
-			{
-				txtcolumncom.setText(columncom+"[主柜]串口未开启");		
-			}
-			else
-			{
-				//打开格子柜
-				columnopen = EVprotocolAPI.EV_portRegister(columncom);
-				if(columnopen == 1)
-				{
-					txtcolumncom.setText(columncom+"[主柜]串口正在准备连接");			
-				}
-				else
-				{
-					txtcolumncom.setText(columncom+"[主柜]串口打开失败");
-				}
-			}
-			
+	        ToolClass.setCom(com);
+	        ToolClass.setBentcom(bentcom);
+	        ToolClass.setColumncom(columncom);
+//	        //串口设置
+//	        EVprotocolAPI.vmcEVStart();//开启监听
+//	        //现金模块
+//			if(com.equals("")==true)
+//			{
+//				txtcom.setText(com+"[现金模块]串口未开启");		
+//			}
+//			else 
+//			{
+//				//打开主柜串口		
+//				comopen = EVprotocolAPI.EV_portRegister(com);
+//				if(comopen == 1)
+//				{
+//					txtcom.setText(com+"[现金模块]串口正在准备连接");			
+//				}
+//				else
+//				{
+//					txtcom.setText(com+"[现金模块]串口打开失败");
+//				}	
+//			}
+//			//格子柜
+//			if(bentcom.equals("")==true)
+//			{
+//				txtbentcom.setText(bentcom+"[格子柜]串口未开启");		
+//			}
+//			else
+//			{
+//				//打开格子柜
+//				bentopen = EVprotocolAPI.EV_portRegister(bentcom);
+//				if(bentopen == 1)
+//				{
+//					txtbentcom.setText(bentcom+"[格子柜]串口正在准备连接");			
+//				}
+//				else
+//				{
+//					txtbentcom.setText(bentcom+"[格子柜]串口打开失败");
+//				}
+//			}
+//			//主柜
+//			if(columncom.equals("")==true)
+//			{
+//				txtcolumncom.setText(columncom+"[主柜]串口未开启");		
+//			}
+//			else
+//			{
+//				//打开格子柜
+//				columnopen = EVprotocolAPI.EV_portRegister(columncom);
+//				if(columnopen == 1)
+//				{
+//					txtcolumncom.setText(columncom+"[主柜]串口正在准备连接");			
+//				}
+//				else
+//				{
+//					txtcolumncom.setText(columncom+"[主柜]串口打开失败");
+//				}
+//			}
+//			
 			if((comopen!=1)&&(bentopen!=1)&&(columnopen!=1))
 			{
 				dialog.dismiss();
-			}	
+			}
+	        
 		}
 		else
 		{

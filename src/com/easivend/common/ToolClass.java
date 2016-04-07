@@ -93,6 +93,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;
+	private static String bentcom="",com="",columncom="";
 	private static int bill_err=0,coin_err=0;
 	public static String vmc_no="";
 	public static Bitmap mark=null;// €ÕÍÕº∆¨
@@ -102,6 +103,31 @@ public class ToolClass
 	public static SSLSocketFactory ssl=null;
 	public static Context context=null;
 	
+	
+	public static String getBentcom() {
+		return bentcom;
+	}
+
+	public static void setBentcom(String bentcom) {
+		ToolClass.bentcom = bentcom;
+	}
+
+	public static String getCom() {
+		return com;
+	}
+
+	public static void setCom(String com) {
+		ToolClass.com = com;
+	}
+
+	public static String getColumncom() {
+		return columncom;
+	}
+
+	public static void setColumncom(String columncom) {
+		ToolClass.columncom = columncom;
+	}
+
 	public static Context getContext() {
 		return context;
 	}
