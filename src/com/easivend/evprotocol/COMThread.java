@@ -67,8 +67,19 @@ public class COMThread implements Runnable
 	//=====================弹簧柜类型==============================================================================
 	public static final int EV_COLUMN_CHECKALLCHILD = 10;	//弹簧柜全部查询
 	public static final int EV_COLUMN_CHECKCHILD = 11;	//弹簧柜查询
-	public static final int EV_COLUMN_OPENCHILD 	= 14;	//弹簧柜出货	
-	public static final int EV_COLUMN_OPTMAIN	= 15;	//弹簧柜出货返回
+	public static final int EV_COLUMN_OPENCHILD 	= 12;	//弹簧柜出货
+	
+	//=====================现金设备==================================
+	public static final int EV_MDB_ENABLE 	= 22;	//MDB设备使能
+	public static final int EV_MDB_HEART 	= 23;	//MDB设备心跳
+	public static final int EV_MDB_B_INFO 	= 24;	//MDB纸币器信息
+	public static final int EV_MDB_C_INFO 	= 25;	//MDB硬币器信息
+	public static final int EV_MDB_COST 	= 26;	//MDB设备扣款
+	public static final int EV_MDB_PAYBACK = 27;	//MDB设备退币
+	public static final int EV_MDB_PAYOUT 	= 28;	//MDB设备找币
+	public static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
+	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
+	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
 	
 	
 	private Handler mainhand=null,childhand=null;
@@ -105,11 +116,19 @@ public class COMThread implements Runnable
 //	            e.printStackTrace();  
 //	        }
 //		}
+		//打开格子柜串口
 		if(ToolClass.getBentcom().equals("")==false)
 		{
 			String bentcom = EVprotocol.EVPortRegister(ToolClass.getBentcom());
 			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadbentcom="+bentcom,"com.txt");
 			ToolClass.setBentcom_id(Resetportid(bentcom));
+		}
+		//打开弹簧柜串口
+		if(ToolClass.getColumncom().equals("")==false)
+		{
+			String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
+			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadcolumncom="+columncom,"com.txt");
+			ToolClass.setColumncom_id(Resetportid(columncom));
 		}
 		
 				
@@ -120,6 +139,7 @@ public class COMThread implements Runnable
 				devopt=msg.what;
 				switch (msg.what)
 				{
+				//格子柜
 				case EV_BENTO_CHECKALLCHILD://子线程接收主线程格子查询消息		
 					//1.得到信息
 					JSONObject ev6=null;
@@ -464,6 +484,7 @@ public class COMThread implements Runnable
 	  				tomain5.obj=allSet;
 	  				mainhand.sendMessage(tomain5); // 发送消息
 					break;	
+				//弹簧柜	
 				case EV_COLUMN_CHECKALLCHILD://子线程接收主线程格子查询消息	
 					//1.得到信息
 					JSONObject ev7=null;
@@ -546,6 +567,59 @@ public class COMThread implements Runnable
 	  				tomain8.what=EV_BENTO_CHECKMAIN;							
 	  				tomain8.obj=allSet;
 	  				mainhand.sendMessage(tomain8); // 发送消息
+					break;
+				case EV_COLUMN_OPENCHILD://子线程接收主线程弹簧出货
+					//1.得到信息
+					JSONObject ev9=null;
+					try {
+						ev9 = new JSONObject(msg.obj.toString());
+						cabinet=ev9.getInt("cabinet");
+						column=ev9.getInt("column");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cabinet="+cabinet+"column="+column,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec9.toString(),"log.txt");
+
+					//2.重新组包
+					try {
+						JSONObject jsonObject9 = new JSONObject(rec9); 
+						//根据key取出内容
+						JSONObject ev_head9 = (JSONObject) jsonObject9.getJSONObject("EV_json");
+						int str_evType9 =  ev_head9.getInt("EV_type");
+						if(str_evType9==EVprotocol.EV_COLUMN_OPEN)
+						{
+							if(ev_head9.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
+								allSet.put("addr", ev_head9.getInt("addr"));//柜子地址
+								allSet.put("box", ev_head9.getInt("box"));//格子地址
+								allSet.put("result", ToolClass.colChuhuorst(ev_head9.getInt("result")));								
+					    	}
+					    	else
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
+								allSet.put("addr", 0);//柜子地址
+								allSet.put("box", 0);//格子地址
+								allSet.put("result", ToolClass.colChuhuorst(11));							
+					    	}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain9=mainhand.obtainMessage();
+	  				tomain9.what=EV_BENTO_OPTMAIN;							
+	  				tomain9.obj=allSet;
+	  				mainhand.sendMessage(tomain9); // 发送消息
+					
 					break;	
 				default:
 					break;

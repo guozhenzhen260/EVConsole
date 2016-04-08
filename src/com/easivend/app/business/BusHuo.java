@@ -352,22 +352,22 @@ public class BusHuo extends Activity
                     	//退出时，返回intent
         	            Intent intentrec=new Intent();
         	            intentrec.putExtra("status", status);//出货结果
-//                    	if(zhifutype==0)//现金支付
-//                    	{                        			
-//            	            setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
-//                		}
-//                    	else if(zhifutype==3)//支付宝二维码
-//                    	{
-//            	            setResult(BusZhier.RESULT_CANCELED,intentrec);                    	            
-//                		}
-//                    	else if(zhifutype==4)//微信扫描
-//                    	{                        			
-//            	            setResult(BusZhiwei.RESULT_CANCELED,intentrec);                    	            
-//                		}
-//                    	else if(zhifutype==5)//提货码
-//                    	{                        			
-//            	            setResult(BusZhitihuo.RESULT_CANCELED,intentrec);                    	            
-//                		}
+                    	if(zhifutype==0)//现金支付
+                    	{                        			
+            	            BusHuo.this.setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
+                		}
+                    	else if(zhifutype==3)//支付宝二维码
+                    	{
+                    		BusHuo.this.setResult(BusZhier.RESULT_CANCELED,intentrec);                    	            
+                		}
+                    	else if(zhifutype==4)//微信扫描
+                    	{                        			
+                    		BusHuo.this.setResult(BusZhiwei.RESULT_CANCELED,intentrec);                    	            
+                		}
+                    	else if(zhifutype==5)//提货码
+                    	{                        			
+                    		BusHuo.this.setResult(BusZhitihuo.RESULT_CANCELED,intentrec);                    	            
+                		}
                     	finish();	
                     }
 

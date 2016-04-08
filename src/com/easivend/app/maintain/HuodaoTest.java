@@ -244,12 +244,12 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub cabinetID[0],
 				String huo[]=huoAdapter.getHuoID();
 				String huoID = huo[arg2];// 记录收入信息               
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID+"status="+huoSet.get(huoID),"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID,"log.txt");
 				Intent intent = new Intent();
 		    	intent.setClass(HuodaoTest.this, HuodaoSet.class);// 使用AddInaccount窗口初始化Intent
                 intent.putExtra("huoID", huoID);
                 intent.putExtra("cabID", String.valueOf(cabinetsetvar));
-                intent.putExtra("huoStatus", String.valueOf(huoSet.get(huoID)));
+                intent.putExtra("huoStatus", "1");
 		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 			}// 为GridView设置项单击事件
     		
@@ -1423,8 +1423,33 @@ public class HuodaoTest extends TabActivity
 		btnhuosetsethuo.setOnClickListener(new OnClickListener() {
 				    @Override
 				    public void onClick(View arg0) {
-				    	sethuofile();	
-				    	gethuofile();
+				    	//创建警告对话框
+				    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+				    		.setTitle("对话框")//标题
+				    		.setMessage("您确定要手动配置货道吗？")//表示对话框中得内容
+				    		.setIcon(R.drawable.ic_launcher)//设置logo
+				    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+				    			{				
+					    				@Override
+					    				public void onClick(DialogInterface dialog, int which) 
+					    				{
+					    					// TODO Auto-generated method stub	
+					    					sethuofile();	
+									    	gethuofile();
+					    				}
+				    		      }
+				    			)		    		        
+						        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+						        	{			
+										@Override
+										public void onClick(DialogInterface dialog, int which) 
+										{
+											// TODO Auto-generated method stub				
+										}
+						        	}
+						        )
+						        .create();//创建一个对话框
+						        alert.show();//显示对话框				    	
 				    }
 				});
 		btnhuosetautohuo = (Button) findViewById(R.id.btnhuosetautohuo);
@@ -1432,9 +1457,34 @@ public class HuodaoTest extends TabActivity
 				    @Override
 				    public void onClick(View arg0) {
 				    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<hello","log.txt");	
-				    	dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
-				    	autochu=true;
-				    	EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				    	//创建警告对话框
+				    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+				    		.setTitle("对话框")//标题
+				    		.setMessage("您确定要自动配置货道吗？")//表示对话框中得内容
+				    		.setIcon(R.drawable.ic_launcher)//设置logo
+				    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+				    			{				
+					    				@Override
+					    				public void onClick(DialogInterface dialog, int which) 
+					    				{
+					    					// TODO Auto-generated method stub	
+					    					HuodaoTest.this.dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
+									    	autochu=true;
+									    	comsend(COMService.EV_CHUHUOCHILD,autophysic);
+					    				}
+				    		      }
+				    			)		    		        
+						        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+						        	{			
+										@Override
+										public void onClick(DialogInterface dialog, int which) 
+										{
+											// TODO Auto-generated method stub				
+										}
+						        	}
+						        )
+						        .create();//创建一个对话框
+						        alert.show();//显示对话框				    	
 				    }
 				});
 		btnhuosetclose = (Button) findViewById(R.id.btnhuosetclose);
@@ -1469,10 +1519,14 @@ public class HuodaoTest extends TabActivity
 			case COMService.EV_CHUHUOCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-		    	+" column="+huonno		    	
+		    	+" column="+opt		    	
 		    	,"log.txt");
 				//4.发送指令广播给COMService
-				intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
+				if(autochu)
+					intent.putExtra("EVWhat", COMService.EV_SETHUOCHILD);	
+				else
+					intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);
+				
 				intent.putExtra("cabinet", cabinetsetvar);	
 				intent.putExtra("column", opt);	
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
@@ -1584,9 +1638,18 @@ public class HuodaoTest extends TabActivity
 				//是出货操作
 				if(devopt==COMService.EV_CHUHUOCHILD)
 				{
+					device=(Integer)Set2.get("addr");//出货柜号						
+					hdid=(Integer)Set2.get("box");//货道id
 					status=Set2.get("result");//出货结果
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
-										
+							
+					txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
+					//循环继续做货道配置操作
+					if(autochu)
+					{
+						autohuofile(status);
+					}
+					
 					sethuorst(status);
 					//循环继续做出货操作
 					if((huonno>0)&&(huonno<huonum))
@@ -2280,8 +2343,8 @@ public class HuodaoTest extends TabActivity
 				{
 					btnhuoset11.setChecked(false);	
 				}
-				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				autophysic++;				
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 58:
 				if((result==1)||(result==4))
@@ -2293,7 +2356,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset12.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 59:
 				if((result==1)||(result==4))
@@ -2305,7 +2368,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset13.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 60:
 				if((result==1)||(result==4))
@@ -2317,7 +2380,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset14.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 61:
 				if((result==1)||(result==4))
@@ -2329,7 +2392,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset15.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 62:
 				if((result==1)||(result==4))
@@ -2341,7 +2404,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset16.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 63:
 				if((result==1)||(result==4))
@@ -2353,7 +2416,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset17.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 64:
 				if((result==1)||(result==4))
@@ -2365,7 +2428,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset18.setChecked(false);	
 				}
 				autophysic=49;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第二层	
 			case 49:
@@ -2378,7 +2441,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset21.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 50:
 				if((result==1)||(result==4))
@@ -2390,7 +2453,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset22.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 51:
 				if((result==1)||(result==4))
@@ -2402,7 +2465,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset23.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 52:
 				if((result==1)||(result==4))
@@ -2414,7 +2477,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset24.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 53:
 				if((result==1)||(result==4))
@@ -2426,7 +2489,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset25.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 54:
 				if((result==1)||(result==4))
@@ -2438,7 +2501,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset26.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 55:
 				if((result==1)||(result==4))
@@ -2450,7 +2513,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset27.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 56:
 				if((result==1)||(result==4))
@@ -2462,7 +2525,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset28.setChecked(false);	
 				}
 				autophysic=41;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			//第三层	
 			case 41:
@@ -2475,7 +2538,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset31.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 42:
 				if((result==1)||(result==4))
@@ -2487,7 +2550,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset32.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 43:
 				if((result==1)||(result==4))
@@ -2499,7 +2562,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset33.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 44:
 				if((result==1)||(result==4))
@@ -2511,7 +2574,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset34.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 45:
 				if((result==1)||(result==4))
@@ -2523,7 +2586,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset35.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 46:
 				if((result==1)||(result==4))
@@ -2535,7 +2598,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset36.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 47:
 				if((result==1)||(result==4))
@@ -2547,7 +2610,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset37.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 48:
 				if((result==1)||(result==4))
@@ -2559,7 +2622,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset38.setChecked(false);	
 				}
 				autophysic=33;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第四层	
 			case 33:
@@ -2572,7 +2635,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset41.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 34:
 				if((result==1)||(result==4))
@@ -2584,7 +2647,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset42.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 35:
 				if((result==1)||(result==4))
@@ -2596,7 +2659,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset43.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 36:
 				if((result==1)||(result==4))
@@ -2608,7 +2671,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset44.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 37:
 				if((result==1)||(result==4))
@@ -2620,7 +2683,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset45.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 38:
 				if((result==1)||(result==4))
@@ -2632,7 +2695,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset46.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 39:
 				if((result==1)||(result==4))
@@ -2644,7 +2707,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset47.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 40:
 				if((result==1)||(result==4))
@@ -2656,7 +2719,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset48.setChecked(false);	
 				}
 				autophysic=25;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			//第五层	
 			case 25:
@@ -2669,7 +2732,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset51.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 26:
 				if((result==1)||(result==4))
@@ -2681,7 +2744,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset52.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 27:
 				if((result==1)||(result==4))
@@ -2693,7 +2756,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset53.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 28:
 				if((result==1)||(result==4))
@@ -2705,7 +2768,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset54.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 29:
 				if((result==1)||(result==4))
@@ -2717,7 +2780,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset55.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 30:
 				if((result==1)||(result==4))
@@ -2729,7 +2792,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset56.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 31:
 				if((result==1)||(result==4))
@@ -2741,7 +2804,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset57.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 32:
 				if((result==1)||(result==4))
@@ -2753,7 +2816,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset58.setChecked(false);	
 				}
 				autophysic=17;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第六层	
 			case 17:
@@ -2766,7 +2829,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset61.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 18:
 				if((result==1)||(result==4))
@@ -2778,7 +2841,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset62.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 19:
 				if((result==1)||(result==4))
@@ -2790,7 +2853,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset63.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 20:
 				if((result==1)||(result==4))
@@ -2802,7 +2865,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset64.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 21:
 				if((result==1)||(result==4))
@@ -2814,7 +2877,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset65.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 22:
 				if((result==1)||(result==4))
@@ -2826,7 +2889,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset66.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 23:
 				if((result==1)||(result==4))
@@ -2838,7 +2901,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset67.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 24:
 				if((result==1)||(result==4))
@@ -2850,7 +2913,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset68.setChecked(false);	
 				}
 				autophysic=9;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第七层
 			case 9:
@@ -2863,7 +2926,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset71.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 10:
 				if((result==1)||(result==4))
@@ -2875,7 +2938,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset72.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 11:
 				if((result==1)||(result==4))
@@ -2887,7 +2950,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset73.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 12:
 				if((result==1)||(result==4))
@@ -2899,7 +2962,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset74.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 13:
 				if((result==1)||(result==4))
@@ -2911,7 +2974,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset75.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 14:
 				if((result==1)||(result==4))
@@ -2923,7 +2986,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset76.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 15:
 				if((result==1)||(result==4))
@@ -2935,7 +2998,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset77.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 16:
 				if((result==1)||(result==4))
@@ -2947,7 +3010,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset78.setChecked(false);	
 				}
 				autophysic=1;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			//第八层
 			case 1:
@@ -2960,7 +3023,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset81.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 2:
 				if((result==1)||(result==4))
@@ -2972,7 +3035,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset82.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 3:
 				if((result==1)||(result==4))
@@ -2984,7 +3047,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset83.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 4:
 				if((result==1)||(result==4))
@@ -2996,7 +3059,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset84.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 5:
 				if((result==1)||(result==4))
@@ -3008,7 +3071,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset85.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 6:
 				if((result==1)||(result==4))
@@ -3020,7 +3083,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset86.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 7:
 				if((result==1)||(result==4))
@@ -3032,7 +3095,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset87.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 8:
 				if((result==1)||(result==4))

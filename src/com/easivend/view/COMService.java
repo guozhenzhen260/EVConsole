@@ -52,6 +52,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class COMService extends Service {
+	//=====================货道==================================
 	public static final int EV_CHECKALLCHILD= 1;	//查询全部柜子状态
 	public static final int EV_CHECKALLMAIN	= 2;	//查询全部柜子状态返回
 	public static final int EV_CHECKCHILD	= 3;	//货道查询	
@@ -62,6 +63,19 @@ public class COMService extends Service {
 	
 	public static final int EV_CHECKMAIN	= 8;	//货道查询	返回
 	public static final int EV_OPTMAIN  	= 9;	//货道操作返回
+	public static final int EV_SETHUOCHILD	= 10;	//货道设置
+	
+	//=====================现金设备==================================
+	public static final int EV_MDB_ENABLE 	= 22;	//MDB设备使能
+	public static final int EV_MDB_HEART 	= 23;	//MDB设备心跳
+	public static final int EV_MDB_B_INFO 	= 24;	//MDB纸币器信息
+	public static final int EV_MDB_C_INFO 	= 25;	//MDB硬币器信息
+	public static final int EV_MDB_COST 	= 26;	//MDB设备扣款
+	public static final int EV_MDB_PAYBACK = 27;	//MDB设备退币
+	public static final int EV_MDB_PAYOUT 	= 28;	//MDB设备找币
+	public static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
+	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
+	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
 	
 	ActivityReceiver receiver;
 	LocalBroadcastManager localBroadreceiver;
@@ -194,21 +208,24 @@ public class COMService extends Service {
         		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
         	    // 获取所有收入信息，并存储到List泛型集合中
         	    Tb_vmc_cabinet listinfos3 = cabinetDAO3.findScrollData(String.valueOf(bundle.getInt("cabinet")));
-        		//格子柜
-        	    if(listinfos3.getCabType()==5)
-        		{
-        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
-    				child3.what=COMThread.EV_BENTO_OPENCHILD;
-        		}
-        		else
-        		{
-        			
-        		}
+        		
         		JSONObject ev3=null;
 	    		try {
 	    			ev3=new JSONObject();
 	    			ev3.put("cabinet", bundle.getInt("cabinet"));	
-	    			ev3.put("column", bundle.getInt("column"));
+	    			//格子柜
+	        	    if(listinfos3.getCabType()==5)
+	        		{
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
+	    				child3.what=COMThread.EV_BENTO_OPENCHILD;
+	    				ev3.put("column", bundle.getInt("column"));
+	        		}
+	        		else
+	        		{
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
+	    				child3.what=COMThread.EV_COLUMN_OPENCHILD;
+	    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
+	        		}	    			
 	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
 	    		} catch (JSONException e) {
 	    			// TODO Auto-generated catch block
@@ -217,6 +234,39 @@ public class COMService extends Service {
 	    		child3.obj=ev3;
         		childhand.sendMessage(child3);	
 				break;
+				//货道设置
+			case EV_SETHUOCHILD:		
+				Message child7=childhand.obtainMessage();
+				//查找货道类型
+        		vmc_cabinetDAO cabinetDAO7 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
+        	    // 获取所有收入信息，并存储到List泛型集合中
+        	    Tb_vmc_cabinet listinfos7 = cabinetDAO7.findScrollData(String.valueOf(bundle.getInt("cabinet")));
+        		
+        		JSONObject ev7=null;
+	    		try {
+	    			ev7=new JSONObject();
+	    			ev7.put("cabinet", bundle.getInt("cabinet"));	
+	    			//格子柜
+	        	    if(listinfos7.getCabType()==5)
+	        		{
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
+	    				child7.what=COMThread.EV_BENTO_OPENCHILD;
+	    				ev7.put("column", bundle.getInt("column"));
+	        		}
+	        		else
+	        		{
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
+	    				child7.what=COMThread.EV_COLUMN_OPENCHILD;
+	    				ev7.put("column", bundle.getInt("column"));
+	        		}	    			
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev7.toString(),"com.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		child7.obj=ev7;
+        		childhand.sendMessage(child7);	
+				break;	
 			//快递柜照明	
 			case EV_LIGHTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 照明","com.txt");

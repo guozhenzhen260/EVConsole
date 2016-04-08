@@ -917,19 +917,20 @@ public class ToolClass
     /**
      * 弹簧出货
      */
-    public static void columnChuhuo(Integer logic)
+    public static int columnChuhuo(Integer logic)
     {
+    	int val=0;
     	if(huodaolist!=null)
     	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]huodaolist="+huodaolist,"log.txt");
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]huodaolist="+huodaolist,"com.txt");
     		if(huodaolist.containsKey(logic))
     		{
     			//根据key取出内容
-    		    Integer val=huodaolist.get(logic); 
-    		    ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]logic="+logic+"physic="+val,"log.txt");
-    		    EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,val,ToolClass.getGoc());	
+    		    val=huodaolist.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
     		}
     	}
+    	return val;
     }
     /**
      * 弹簧返回出货结果
@@ -955,12 +956,12 @@ public class ToolClass
     	int DRV_GOCERR_BIT   =(1 << 7);   //bit7出货检测模块状态(GOC故障)
     	if(Rst == 0x00)
     	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_OK","log.txt");
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_OK","com.txt");
     		return 1;	
     	}
     	else if(Rst == 0xff)
     	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_COMERR","log.txt");
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_COMERR","com.txt");
     		return 5;
     	}	
     	//1.判断GOC是否故障bit7:  GOC故障->扣钱
@@ -972,18 +973,18 @@ public class ToolClass
     			//没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障  
     			if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_3","com.txt");
     				return 3;								
     			}
     			else
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_4","com.txt");
     				return 4;	
     			}
     		}
     		else
     		{
-    			ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_1","log.txt");
+    			ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_1","com.txt");
     			return 1;
     		}
     	}
@@ -1015,7 +1016,7 @@ public class ToolClass
     			//1.电机未转动,不扣钱
     			if((Rst&MOTO_NOTMOVE_BIT)>0)
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_0","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_0","com.txt");
     				return 0;
     			}			
     			//2.先判断GOC是否检测到bit5,  ==0说明出货确认检测到商品出货 			
@@ -1023,7 +1024,7 @@ public class ToolClass
     			{				
     				//有检测到->出货成功扣钱  
     				/*************************************************************************/
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_1","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_1","com.txt");
     				return 1;		
     			}
     			else
@@ -1033,12 +1034,12 @@ public class ToolClass
     				   //没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障	
     				   if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
     				   {
-    						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    						ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_3","com.txt");
     						return 3;
     				   }
     				   else
     				   {
-    						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    						ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_4","com.txt");
     						return 4;
     				   }				   
     			}
@@ -1051,12 +1052,12 @@ public class ToolClass
     		   //没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障	
     		   if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
     		   {
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_3","com.txt");
     				return 3;								
     		   }
     		   else
     		   {
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_4","com.txt");
     				return 4;	
     		   }
     		}
