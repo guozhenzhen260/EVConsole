@@ -139,7 +139,8 @@ public class COMService extends Service {
 	        		}
 	        		else
 	        		{
-	        			
+	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
+	        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
 	        		}
 	        		JSONObject evrec=null;
 		    		try {
@@ -171,7 +172,8 @@ public class COMService extends Service {
         		}
         		else
         		{
-        			
+        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+        			child2.what=COMThread.EV_COLUMN_CHECKCHILD;
         		}
         		JSONObject ev2=null;
 	    		try {
@@ -347,7 +349,8 @@ public class COMService extends Service {
 			        		}
 			        		else
 			        		{
-			        			
+			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
+			        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
 			        		}
 			        		JSONObject evrec=null;
 				    		try {

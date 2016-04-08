@@ -61,6 +61,12 @@ public class COMThread implements Runnable
 	
 	public static final int EV_BENTO_CHECKMAIN	= 8;	//快递柜查询返回
 	public static final int EV_BENTO_OPTMAIN	= 9;	//快递柜操作返回
+	//=====================弹簧柜类型==============================================================================
+	public static final int EV_COLUMN_CHECKALLCHILD = 10;	//弹簧柜全部查询
+	public static final int EV_COLUMN_CHECKCHILD = 11;	//弹簧柜查询
+	public static final int EV_COLUMN_OPENCHILD 	= 14;	//弹簧柜出货	
+	public static final int EV_COLUMN_OPTMAIN	= 15;	//弹簧柜出货返回
+	
 	
 	private Handler mainhand=null,childhand=null;
 	int cabinet=0,column=0,opt=0;
@@ -112,7 +118,7 @@ public class COMThread implements Runnable
 				switch (msg.what)
 				{
 				case EV_BENTO_CHECKALLCHILD://子线程接收主线程格子查询消息		
-//					//1.得到信息
+					//1.得到信息
 					JSONObject ev6=null;
 					try {
 						ev6 = new JSONObject(msg.obj.toString());
@@ -454,7 +460,63 @@ public class COMThread implements Runnable
 	  				tomain5.what=EV_BENTO_OPTMAIN;							
 	  				tomain5.obj=allSet;
 	  				mainhand.sendMessage(tomain5); // 发送消息
-					break;		
+					break;	
+				case EV_COLUMN_CHECKALLCHILD://子线程接收主线程格子查询消息	
+					//1.得到信息
+					JSONObject ev7=null;
+					try {
+						ev7 = new JSONObject(msg.obj.toString());
+						cabinet=ev7.getInt("cabinet");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bentid="+ToolClass.getBentcom_id()+" cabinet="+cabinet,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					Map<String, Integer> list=ToolClass.ReadColumnFile();				
+										
+					//2.重新组包
+					//往接口回调信息
+					allSet.clear();
+					allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_CHECK);
+					allSet.put("cool", 0);
+					allSet.put("hot", 0);
+					allSet.put("light", 0);
+					allSet.putAll(list);
+					
+					//3.向主线程返回信息
+	  				Message tomain7=mainhand.obtainMessage();
+	  				tomain7.what=EV_BENTO_CHECKALLMAIN;							
+	  				tomain7.obj=allSet;
+	  				mainhand.sendMessage(tomain7); // 发送消息
+					break;
+				case EV_COLUMN_CHECKCHILD://子线程接收主线程格子查询消息	
+					//1.得到信息
+					JSONObject ev8=null;
+					try {
+						ev8 = new JSONObject(msg.obj.toString());
+						cabinet=ev8.getInt("cabinet");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bentid="+ToolClass.getBentcom_id()+" cabinet="+cabinet,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					Map<String, Integer> list8=ToolClass.ReadColumnFile();				
+										
+					//2.重新组包
+					//往接口回调信息
+					allSet.clear();
+					allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_CHECK);
+					allSet.put("cool", 0);
+					allSet.put("hot", 0);
+					allSet.put("light", 0);
+					allSet.putAll(list8);
+					
+					//3.向主线程返回信息
+	  				Message tomain8=mainhand.obtainMessage();
+	  				tomain8.what=EV_BENTO_CHECKMAIN;							
+	  				tomain8.obj=allSet;
+	  				mainhand.sendMessage(tomain8); // 发送消息
+					break;	
 				default:
 					break;
 				}
