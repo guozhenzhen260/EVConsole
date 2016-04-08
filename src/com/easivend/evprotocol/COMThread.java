@@ -21,8 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -509,7 +512,34 @@ public class COMThread implements Runnable
 					allSet.put("cool", 0);
 					allSet.put("hot", 0);
 					allSet.put("light", 0);
-					allSet.putAll(list8);
+					//作排序
+					Map<Integer, Integer> tempSet8= new TreeMap<Integer,Integer>();
+					Set<Entry<String, Integer>> allmap8=list8.entrySet();  //实例化
+			        Iterator<Entry<String, Integer>> iter8=allmap8.iterator();
+			        while(iter8.hasNext())
+			        {
+			            Entry<String, Integer> me=iter8.next();
+			            if(
+			               (me.getKey().equals("EV_TYPE")!=true)
+			            )   
+			            {
+			            	tempSet8.put(Integer.parseInt(me.getKey()), (Integer)me.getValue());
+			            }
+			        } 
+			        
+			        //输出内容
+			        Set<Entry<Integer, Integer>> zhuhemap8=tempSet8.entrySet();  //实例化
+			        Iterator<Entry<Integer, Integer>> zhuheiter8=zhuhemap8.iterator();
+			        while(zhuheiter8.hasNext())
+			        {
+			            Entry<Integer, Integer> me=zhuheiter8.next();
+			            if(
+			               (me.getKey().equals("EV_TYPE")!=true)
+			            )   
+			            {
+			            	allSet.put(me.getKey().toString(), me.getValue());
+			            }
+			        } 
 					
 					//3.向主线程返回信息
 	  				Message tomain8=mainhand.obtainMessage();

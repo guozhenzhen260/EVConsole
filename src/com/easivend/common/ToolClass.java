@@ -882,7 +882,7 @@ public class ToolClass
 	  	          {
 	  	           	str=scan.next()+"\n";
 	  	          }
-	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
 	  	         huodaolist=new HashMap<Integer,Integer>(); 
@@ -898,7 +898,7 @@ public class ToolClass
 	            	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
 		        } 			
 				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+huodaolist.toString(),"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
         	  }
         	             
         } catch (Exception e) {
