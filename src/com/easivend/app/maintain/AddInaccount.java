@@ -18,13 +18,18 @@ package com.easivend.app.maintain;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.model.Tb_vmc_column;
+import com.easivend.view.COMService;
+import com.easivend.app.maintain.HuodaoTest.COMReceiver;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 
@@ -33,11 +38,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +96,11 @@ public class AddInaccount extends TabActivity
 			edthopperpayno=null,edthopperpaynum=null;		
 	private Button btnhopperquery=null,btnhopperpay=null,btnhopperpaymoney=null,btnhopperset=null,btnhopperexit=null,
 			btnhopperpaynum=null;
-	private Handler myhHandler=null;	
+	private Handler myhHandler=null;
+	private int devopt=0;//操作类型	
+	//COM服务相关
+	LocalBroadcastManager comBroadreceiver;
+	COMReceiver comreceiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -112,6 +125,12 @@ public class AddInaccount extends TabActivity
     	myTabpay.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabpay); 
     	
+    	//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
 		//注册投币找零监听器
   	    EVprotocolAPI.setCallBack(new jniInterfaceImp());
   	    //===============
@@ -148,21 +167,42 @@ public class AddInaccount extends TabActivity
 		btnbillon.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,0,1);
+		    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,0,1);
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+				intent.putExtra("bill", 1);	
+				intent.putExtra("coin", 0);	
+				intent.putExtra("opt", 1);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				devopt=1;//操作纸币器
 		    }
 		});
 		btnbilloff = (Button) findViewById(R.id.btnbilloff);
 		btnbilloff.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,0,0);
+		    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,0,0);
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+				intent.putExtra("bill", 1);	
+				intent.putExtra("coin", 0);	
+				intent.putExtra("opt", 0);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				devopt=1;//操作纸币器
 		    }
 		});
 		btnbillquery = (Button) findViewById(R.id.btnbillquery);
 		btnbillquery.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    	Intent intent2=new Intent();
+		    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+				intent2.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent2);
+				devopt=COMService.EV_MDB_HEART;//Heart操作
 		    }
 		});
 		btnbillset = (Button) findViewById(R.id.btnbillset);
@@ -249,21 +289,42 @@ public class AddInaccount extends TabActivity
 	  	btncoinon.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),0,1,1);
+		    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),0,1,1);
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+				intent.putExtra("bill", 0);	
+				intent.putExtra("coin", 1);	
+				intent.putExtra("opt", 1);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				devopt=2;//操作硬币器
 		    }
 		});
 	  	btncoinoff = (Button) findViewById(R.id.btncoinoff);
 	  	btncoinoff.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),0,1,0);
+		    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),0,1,0);
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+				intent.putExtra("bill", 0);	
+				intent.putExtra("coin", 1);	
+				intent.putExtra("opt", 0);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				devopt=2;//操作硬币器
 		    }
 		});
 	  	btncoinquery = (Button) findViewById(R.id.btncoinquery);
 	  	btncoinquery.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    	Intent intent2=new Intent();
+		    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+				intent2.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent2);
+				devopt=COMService.EV_MDB_HEART;//Heart操作
 		    }
 		});
 	  	btncoinpayout = (Button) findViewById(R.id.btncoinpayout);
@@ -353,7 +414,301 @@ public class AddInaccount extends TabActivity
 		    }
 		});
 	}
-	
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//操作返回	
+			case COMService.EV_OPTMAIN: 
+				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 现金设备操作="+Set,"com.txt");
+				int EV_TYPE=Set.get("EV_TYPE");
+				switch(EV_TYPE)
+				{
+					case COMService.EV_MDB_ENABLE:
+						if(devopt==1)//操作纸币器
+						{
+							//纸币启动成功
+							if((Integer)Set.get("bill_result")>0)
+							{
+								ToolClass.setBill_err(0);
+	//							EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
+	//							EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+								//纸币器查询接口
+								Intent intent2=new Intent();
+						    	intent2.putExtra("EVWhat", COMService.EV_MDB_B_INFO);	
+								intent2.setAction("android.intent.action.comsend");//action与接收器相同
+								comBroadreceiver.sendBroadcast(intent2);
+							}
+							else
+							{
+								ToolClass.setBill_err(2);
+							}
+						}
+						
+						if(devopt==2)//操作硬币器
+						{
+							//硬币启动成功
+							if((Integer)Set.get("coin_result")>0)
+							{
+								ToolClass.setCoin_err(0);
+	//							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+	//							EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+								//硬币器查询接口
+								Intent intent3=new Intent();
+						    	intent3.putExtra("EVWhat", COMService.EV_MDB_C_INFO);	
+								intent3.setAction("android.intent.action.comsend");//action与接收器相同
+								comBroadreceiver.sendBroadcast(intent3);
+							}
+							else
+							{
+								ToolClass.setCoin_err(2);
+							}
+						}
+						break;
+					case COMService.EV_MDB_B_INFO:							 
+						String acceptor=((Integer)Set.get("acceptor")==2)?"MDB":"无";
+						String dispenser=((Integer)Set.get("dispenser")==2)?"MDB":"无";
+						String code=String.valueOf(Set.get("code"));
+						String sn=String.valueOf(Set.get("sn"));
+						String model=String.valueOf( Set.get("model"));
+						String ver=String.valueOf(Set.get("ver"));
+						int capacity=(Integer)Set.get("capacity");
+						String str="纸币接收器:"+acceptor+"纸币找零器:"+dispenser+"厂商:"+code
+								+"序列号"+sn;
+						txtbillmanagerpar.setText(str);
+						str=" 型号:"+model+"版本号:"+ver+"储币量:"+capacity;
+						txtbillmanagerpar2.setText(str);
+						if((Integer)Set.get("acceptor")==2)
+							spinbillmanagerbill.setSelection((Integer)Set.get("acceptor")-1);
+						else if((Integer)Set.get("acceptor")==0)
+							spinbillmanagerbill.setSelection(0);	
+						
+						Map<String,Integer> allSet1=new LinkedHashMap<String, Integer>();
+						allSet1.put("ch_r1", Set.get("ch_r1"));
+						allSet1.put("ch_r2", Set.get("ch_r2"));
+						allSet1.put("ch_r3", Set.get("ch_r3"));
+						allSet1.put("ch_r4", Set.get("ch_r4"));
+						allSet1.put("ch_r5", Set.get("ch_r5"));
+						allSet1.put("ch_r6", Set.get("ch_r6"));
+						allSet1.put("ch_r7", Set.get("ch_r7"));
+						allSet1.put("ch_r8", Set.get("ch_r8"));
+						String allb1[]=new String[allSet1.size()];	
+						int bi=0;
+						Set<Map.Entry<String,Integer>> allset=allSet1.entrySet();  //实例化
+					    Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
+					    while(iter.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter.next();
+					        //str+="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue()) + ",";
+					        allb1[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
+					    }
+					    String bstr1="",bstr2="";
+					    for(bi=0;bi<8;bi++)
+					    {
+					    	if(bi<4)
+					    		bstr1+=allb1[bi];
+					    	else
+					    		bstr2+=allb1[bi];							
+					    }
+					    txtbillmanagerbillin.setText(bstr1);
+					    txtbillmanagerbillin2.setText(bstr2);
+					  
+					    Map<String,Integer> allSet2=new LinkedHashMap<String, Integer>();
+						allSet2.put("ch_d1", Set.get("ch_d1"));
+						allSet2.put("ch_d2", Set.get("ch_d2"));
+						allSet2.put("ch_d3", Set.get("ch_d3"));
+						allSet2.put("ch_d4", Set.get("ch_d4"));
+						allSet2.put("ch_d5", Set.get("ch_d5"));
+						allSet2.put("ch_d6", Set.get("ch_d6"));
+						allSet2.put("ch_d7", Set.get("ch_d7"));
+						allSet2.put("ch_d8", Set.get("ch_d8"));
+					    String allb2[]=new String[allSet2.size()];	
+					    bi=0;
+						Set<Map.Entry<String,Integer>> allset2=allSet2.entrySet();  //实例化
+					    Iterator<Map.Entry<String,Integer>> iter2=allset2.iterator();
+					    while(iter2.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter2.next();
+					        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					        allb2[bi++]="["+me.getKey() + "]" + ToolClass.MoneyRec(me.getValue());
+					    }
+					    bstr1="";
+					    bstr2="";
+					    for(bi=0;bi<8;bi++)
+					    {
+					    	if(bi<4)
+					    		bstr1+=allb2[bi];
+					    	else
+					    		bstr2+=allb2[bi];							
+					    }
+					    txtbillmanagerbillpay.setText(bstr1);
+					    txtbillmanagerbillpay2.setText(bstr2);
+					    //Heart操作
+					    Intent intent2=new Intent();
+				    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+						intent2.setAction("android.intent.action.comsend");//action与接收器相同
+						comBroadreceiver.sendBroadcast(intent2);
+						devopt=COMService.EV_MDB_HEART;//Heart操作
+						break;
+					case COMService.EV_MDB_C_INFO:
+						String acceptor2="";
+						if((Integer)Set.get("acceptor")==3)
+							acceptor2="串行脉冲";
+						else if((Integer)Set.get("acceptor")==2)
+							acceptor2="MDB";
+						else if((Integer)Set.get("acceptor")==1)
+							acceptor2="并行脉冲";
+						else if((Integer)Set.get("acceptor")==0)
+							acceptor2="无";
+						String dispenser2="";
+						if((Integer)Set.get("dispenser")==2)
+							dispenser2="MDB";
+						else if((Integer)Set.get("dispenser")==1)
+							dispenser2="hopper";
+						else if((Integer)Set.get("dispenser")==0)
+							dispenser2="无";
+						String code2=String.valueOf(Set.get("code"));
+						String sn2=String.valueOf(Set.get("sn"));
+						String model2=String.valueOf(Set.get("model"));
+						String ver2=String.valueOf(Set.get("ver"));
+						int capacity2=(Integer)Set.get("capacity");
+						String str2="硬币接收器:"+acceptor2+"硬币找零器:"+dispenser2+"厂商:"+code2
+								+"序列号"+sn2;
+						txtcoinmanagerpar.setText(str2);
+						str2=" 型号:"+model2+"版本号:"+ver2+"储币量:"+capacity2;
+						txtcoinmanagerpar2.setText(str2);
+						spincoinmanagercoin.setSelection((Integer)Set.get("acceptor"));
+						
+						
+						str2="";
+						Map<String,Integer> allSet3=new LinkedHashMap<String, Integer>();
+						allSet3.put("ch_r1", Set.get("ch_r1"));
+						allSet3.put("ch_r2", Set.get("ch_r2"));
+						allSet3.put("ch_r3", Set.get("ch_r3"));
+						allSet3.put("ch_r4", Set.get("ch_r4"));
+						allSet3.put("ch_r5", Set.get("ch_r5"));
+						allSet3.put("ch_r6", Set.get("ch_r6"));
+						allSet3.put("ch_r7", Set.get("ch_r7"));
+						allSet3.put("ch_r8", Set.get("ch_r8"));
+						//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet3.toString());
+						double all[]=new double[allSet3.size()];	
+						int i=0;
+						Set<Map.Entry<String,Integer>> allset3=allSet3.entrySet();  //实例化
+						Iterator<Map.Entry<String,Integer>> iter3=allset3.iterator();
+					    while(iter3.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter3.next();
+					        all[i++]=ToolClass.MoneyRec(me.getValue());
+					        //str+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					    }
+					    txtcoinmanagercoinin1.setText(String.valueOf(all[0]));
+					    txtcoinmanagercoinin2.setText(String.valueOf(all[1]));
+					    txtcoinmanagercoinin3.setText(String.valueOf(all[2]));
+					    txtcoinmanagercoinin4.setText(String.valueOf(all[3]));
+					    txtcoinmanagercoinin5.setText(String.valueOf(all[4]));
+					    txtcoinmanagercoinin6.setText(String.valueOf(all[5]));
+					    txtcoinmanagercoinin7.setText(String.valueOf(all[6]));
+					    txtcoinmanagercoinin8.setText(String.valueOf(all[7]));
+					    txtcoinmanagercoinin9.setText("");
+					    txtcoinmanagercoinin10.setText("");
+					    txtcoinmanagercoinin11.setText("");
+					    txtcoinmanagercoinin12.setText("");
+					    txtcoinmanagercoinin13.setText("");
+					    txtcoinmanagercoinin14.setText("");
+					    txtcoinmanagercoinin15.setText("");
+					    txtcoinmanagercoinin16.setText("");
+					    //找零通道面值
+					    spinhopper.setSelection((Integer)Set.get("dispenser"));
+					    str2="";
+					    Map<String,Integer> allSet4=new LinkedHashMap<String, Integer>();
+						allSet4.put("ch_d1", Set.get("ch_d1"));
+						allSet4.put("ch_d2", Set.get("ch_d2"));
+						allSet4.put("ch_d3", Set.get("ch_d3"));
+						allSet4.put("ch_d4", Set.get("ch_d4"));
+						allSet4.put("ch_d5", Set.get("ch_d5"));
+						allSet4.put("ch_d6", Set.get("ch_d6"));
+						allSet4.put("ch_d7", Set.get("ch_d7"));
+						allSet4.put("ch_d8", Set.get("ch_d8"));
+					    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet4.toString(),"log.txt");
+					    double all2[]=new double[allSet4.size()];	
+						i=0;
+						Set<Map.Entry<String,Integer>> allset4=allSet4.entrySet();  //实例化
+					    Iterator<Map.Entry<String,Integer>> iter4=allset4.iterator();
+					    while(iter4.hasNext())
+					    {
+					        Map.Entry<String,Integer> me=iter4.next();
+					        all2[i++]=ToolClass.MoneyRec(me.getValue());
+					        //str2+="[通道"+me.getKey() + "]=" + ToolClass.MoneyRec(me.getValue()) + ",";
+					    }
+					    txthopperin1.setText(String.valueOf(all2[0]));
+					    txthopperin2.setText(String.valueOf(all2[1]));
+					    txthopperin3.setText(String.valueOf(all2[2]));
+					    txthopperin4.setText(String.valueOf(all2[3]));
+					    txthopperin5.setText(String.valueOf(all2[4]));
+					    txthopperin6.setText(String.valueOf(all2[5]));
+					    txthopperin7.setText(String.valueOf(all2[6]));
+					    txthopperin8.setText(String.valueOf(all2[7]));
+					    //Heart操作
+					    Intent intent4=new Intent();
+				    	intent4.putExtra("EVWhat", COMService.EV_MDB_HEART);
+						intent4.setAction("android.intent.action.comsend");//action与接收器相同
+						comBroadreceiver.sendBroadcast(intent4);
+						devopt=COMService.EV_MDB_HEART;//Heart操作
+						break;	
+					case COMService.EV_MDB_HEART://心跳查询
+						Map<String,Object> obj=new LinkedHashMap<String, Object>();
+						obj.putAll(Set);
+						String bill_enable=((Integer)Set.get("bill_enable")==1)?"使能":"禁能";
+						txtbillmanagerstate.setText(bill_enable);
+						String bill_payback=((Integer)Set.get("bill_payback")==1)?"触发":"没触发";
+					  	txtbillpayback.setText(bill_payback);
+					  	String bill_err=((Integer)Set.get("bill_err")==0)?"正常":"故障码:"+(Integer)Set.get("bill_err");
+					  	txtbillerr.setText(bill_err);
+					  	double money=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));					  	
+					  	txtbillpayin.setText(String.valueOf(money));
+					  	amount=money;//当前纸币投入
+					  	money=ToolClass.MoneyRec((Integer)Set.get("bill_remain"));
+					  	txtbillmanagerbillpayamount.setText(String.valueOf(money));
+					  	int bill_errstatus=ToolClass.getvmcStatus(obj,1);
+					  	ToolClass.setBill_err(bill_errstatus);
+					  	
+					  	String coin_enable=((Integer)Set.get("coin_enable")==1)?"使能":"禁能";
+					  	txtcoinmanagerstate.setText(coin_enable);
+						String coin_payback=((Integer)Set.get("coin_payback")==1)?"触发":"没触发";
+						txtcoinpayback.setText(coin_payback);
+					  	String coin_err=((Integer)Set.get("coin_err")==0)?"正常":"故障码:"+(Integer)Set.get("coin_err");
+					  	txtcoinerr.setText(coin_err);
+					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));					  	
+					  	txtcoinpayin.setText(String.valueOf(money));
+					  	amount+=money;//当前硬币投入
+					  	money=ToolClass.MoneyRec((Integer)Set.get("coin_remain"));
+					  	txtcoinmanagercoininamount.setText(String.valueOf(money));
+					  	int coin_errstatus=ToolClass.getvmcStatus(obj,2);
+					  	ToolClass.setCoin_err(coin_errstatus);
+					  	
+					  	String hopperString=null;
+					  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))
+					  				+"[[3]:"+ToolClass.gethopperstats((Integer)Set.get("hopper3"))+"[4]:"+ToolClass.gethopperstats((Integer)Set.get("hopper4"))
+						  			+"[5]:"+ToolClass.gethopperstats((Integer)Set.get("hopper5"))+"[6]:"+ToolClass.gethopperstats((Integer)Set.get("hopper6"))
+						  			+"[7]:"+ToolClass.gethopperstats((Integer)Set.get("hopper7"))+"[8]:"+ToolClass.gethopperstats((Integer)Set.get("hopper8"));
+					  	txthopperincount.setText(hopperString);
+						break;	
+				}
+				break;			
+			}			
+		}
+
+	}
 	//创建一个专门处理单击接口的子类
 	private class jniInterfaceImp implements JNIInterface
 	{
@@ -372,8 +727,8 @@ public class AddInaccount extends TabActivity
 					if((Integer)Set.get("bill_result")>0)
 					{
 						ToolClass.setBill_err(0);
-						EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
-						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+//						EVprotocolAPI.EV_mdbBillInfoCheck(ToolClass.getCom_id());
+//						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 					}
 					else
 					{
@@ -383,8 +738,8 @@ public class AddInaccount extends TabActivity
 					if((Integer)Set.get("coin_result")>0)
 					{
 						ToolClass.setCoin_err(0);
-						EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
-						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+//						EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+//						EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 					}
 					else
 					{
@@ -658,7 +1013,12 @@ public class AddInaccount extends TabActivity
 	protected void onDestroy() {
 		//扣钱
 	    EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend((float)amount));
-		super.onDestroy();		
+	    //=============
+  		//COM服务相关
+  		//=============
+  		//5.解除注册接收器
+  		comBroadreceiver.unregisterReceiver(comreceiver);
+	    super.onDestroy();		
 	}
 	
 }

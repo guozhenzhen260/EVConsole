@@ -216,7 +216,7 @@ public class EVprotocol {
 	*							"port_id":原样返回,"bill":原样返回柜子地址,"coin":原样返回操作;"opt":原样返回
 	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
 	*							"bill_result": 纸币器处理结果	1:成功   0:失败
-	*							"coin_result": 纸币器处理结果	1:成功   0:失败
+	*							"coin_result": 硬币器处理结果	1:成功   0:失败
 	*********************************************************************************************************/
 	public  native static String EVmdbEnable(int port_id,int bill,int coin,int opt);
 	

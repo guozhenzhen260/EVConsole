@@ -234,7 +234,7 @@ public class COMService extends Service {
 	    		child3.obj=ev3;
         		childhand.sendMessage(child3);	
 				break;
-				//货道设置
+			//货道设置
 			case EV_SETHUOCHILD:		
 				Message child7=childhand.obtainMessage();
 				//查找货道类型
@@ -320,6 +320,58 @@ public class COMService extends Service {
 	    		}
 	    		child6.obj=ev6;
         		childhand.sendMessage(child6);	
+				break;
+			//现金设备使能禁能	
+			case EV_MDB_ENABLE:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 使能禁能","com.txt");
+				Message child8=childhand.obtainMessage();
+				child8.what=COMThread.EV_MDB_ENABLE;
+        		JSONObject ev8=null;
+	    		try {
+	    			ev8=new JSONObject();
+	    			ev8.put("bill", bundle.getInt("bill"));	
+	    			ev8.put("coin", bundle.getInt("coin"));
+	    			ev8.put("opt", bundle.getInt("opt"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev8.toString(),"com.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		child8.obj=ev8;
+        		childhand.sendMessage(child8);	
+				break;
+				//纸币器查询接口
+			case EV_MDB_B_INFO:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 纸币器查询接口","com.txt");
+				Message child9=childhand.obtainMessage();
+				child9.what=COMThread.EV_MDB_B_INFO;
+        		JSONObject ev9=null;
+	    		ev9=new JSONObject();	    			
+				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev9.toString(),"com.txt");
+	    		child9.obj=ev9;
+        		childhand.sendMessage(child9);	
+				break;
+				//硬币器查询接口
+			case EV_MDB_C_INFO:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 硬币器查询接口","com.txt");
+				Message child10=childhand.obtainMessage();
+				child10.what=COMThread.EV_MDB_C_INFO;
+        		JSONObject ev10=null;
+	    		ev10=new JSONObject();	    			
+				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev10.toString(),"com.txt");
+	    		child10.obj=ev10;
+        		childhand.sendMessage(child10);	
+				break;		
+				//硬币器查询接口
+			case EV_MDB_HEART:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService EV_MDB_HEART接口","com.txt");
+				Message child11=childhand.obtainMessage();
+				child11.what=COMThread.EV_MDB_HEART;
+        		JSONObject ev11=null;
+	    		ev11=new JSONObject();	    			
+				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev11.toString(),"com.txt");
+	    		child11.obj=ev11;
+        		childhand.sendMessage(child11);	
 				break;	
 			}			
 		}

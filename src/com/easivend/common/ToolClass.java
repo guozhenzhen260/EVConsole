@@ -91,17 +91,17 @@ public class ToolClass
 	public final static int INFO=2;
 	public final static int WARN=3;
 	public final static int ERROR=4;
-	public static String EV_DIR=null;
-	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;
-	private static String bentcom="",com="",columncom="";
-	private static int bill_err=0,coin_err=0;
-	public static String vmc_no="";
+	public static String EV_DIR=null;//ev包的地址
+	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;//串口id号
+	private static String bentcom="",com="",columncom="";//串口描述符
+	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
+	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
 	public static int goc=0;//是否使用出货确认板1是
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
-	public static SSLSocketFactory ssl=null;
-	public static Context context=null;
+	public static SSLSocketFactory ssl=null;//ssl网络加密
+	public static Context context=null;//本应用context
 	
 	
 	public static String getBentcom() {

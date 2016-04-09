@@ -85,7 +85,7 @@ public class COMThread implements Runnable
 	private Handler mainhand=null,childhand=null;
 	int cabinet=0,column=0,opt=0;
 	int devopt=0;//操作方法
-	int retry=0;
+	
 	private static Map<String,Object> allSet = new LinkedHashMap<String,Object>() ;
 	
 	
@@ -129,6 +129,13 @@ public class COMThread implements Runnable
 			String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
 			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadcolumncom="+columncom,"com.txt");
 			ToolClass.setColumncom_id(Resetportid(columncom));
+		}
+		//打开现金设备串口
+		if(ToolClass.getCom().equals("")==false)
+		{
+			String com = EVprotocol.EVPortRegister(ToolClass.getCom());
+			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadcolumncom="+com,"com.txt");
+			ToolClass.setCom_id(Resetportid(com));
 		}
 		
 				
@@ -619,6 +626,247 @@ public class COMThread implements Runnable
 	  				tomain9.what=EV_BENTO_OPTMAIN;							
 	  				tomain9.obj=allSet;
 	  				mainhand.sendMessage(tomain9); // 发送消息
+					
+					break;
+				case EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
+					int bill=0;
+					int coin=0;
+					int opt=0;
+					//1.得到信息
+					JSONObject ev10=null;
+					try {
+						ev10 = new JSONObject(msg.obj.toString());
+						bill=ev10.getInt("bill");
+						coin=ev10.getInt("coin");
+						opt=ev10.getInt("opt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bill="+bill+"coin="+coin+"opt="+opt,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec10=EVprotocol.EVmdbEnable(ToolClass.getCom_id(),bill,coin,opt);
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec10.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject10 = new JSONObject(rec10); 
+						//根据key取出内容
+						JSONObject ev_head10 = (JSONObject) jsonObject10.getJSONObject("EV_json");
+						int str_evType10 =  ev_head10.getInt("EV_type");
+						if(str_evType10==EVprotocol.EV_MDB_ENABLE)
+						{
+							if(ev_head10.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_ENABLE);
+								allSet.put("opt", ev_head10.getInt("opt"));
+								allSet.put("bill_result", ev_head10.getInt("bill_result"));
+								allSet.put("coin_result", ev_head10.getInt("coin_result"));								
+					    	}
+					    	else
+					    	{
+					    		//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_ENABLE);
+								allSet.put("opt", ev_head10.getInt("opt"));
+					    		allSet.put("bill_result", 0);
+								allSet.put("coin_result", 0);								
+							}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain10=mainhand.obtainMessage();
+	  				tomain10.what=EV_BENTO_OPTMAIN;							
+	  				tomain10.obj=allSet;
+	  				mainhand.sendMessage(tomain10); // 发送消息
+					
+					break;
+				case EV_MDB_B_INFO://子线程接收主线程现金设备
+					//1.得到信息					
+					String rec11=EVprotocol.EVmdbBillInfoCheck(ToolClass.getCom_id());
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec11.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject11 = new JSONObject(rec11); 
+						//根据key取出内容
+						JSONObject ev_head11 = (JSONObject) jsonObject11.getJSONObject("EV_json");
+						int str_evType11 =  ev_head11.getInt("EV_type");
+						if(str_evType11==EVprotocol.EV_MDB_B_INFO)
+						{
+							if(ev_head11.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_B_INFO);
+								allSet.put("acceptor", ev_head11.getInt("acceptor"));
+								allSet.put("dispenser", ev_head11.getInt("dispenser"));
+								allSet.put("code", ev_head11.getString("code"));
+								allSet.put("sn", ev_head11.getString("sn"));
+								allSet.put("model", ev_head11.getString("model"));
+								allSet.put("ver", ev_head11.getString("ver"));
+								allSet.put("capacity", ev_head11.getInt("capacity"));
+								JSONArray arr1=ev_head11.getJSONArray("ch_r");//返回json数组
+								for(int i=0;i<arr1.length();i++)
+								{
+									JSONObject object2=arr1.getJSONObject(i);
+									allSet.put("ch_r"+object2.getInt("ch"), object2.getInt("value"));								
+								}
+								
+								JSONArray arr2=ev_head11.getJSONArray("ch_d");//返回json数组
+								for(int i=0;i<arr2.length();i++)
+								{
+									JSONObject object2=arr2.getJSONObject(i);
+									allSet.put("ch_d"+object2.getInt("ch"), object2.getInt("value"));								
+								}								
+					    	}
+					    	else
+					    	{
+					    		
+							}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain11=mainhand.obtainMessage();
+	  				tomain11.what=EV_BENTO_OPTMAIN;							
+	  				tomain11.obj=allSet;
+	  				mainhand.sendMessage(tomain11); // 发送消息
+					
+					break;
+				case EV_MDB_C_INFO://子线程接收主线程现金设备
+					//1.得到信息					
+					String rec12=EVprotocol.EVmdbCoinInfoCheck(ToolClass.getCom_id());
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec12.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject12 = new JSONObject(rec12); 
+						//根据key取出内容
+						JSONObject ev_head12 = (JSONObject) jsonObject12.getJSONObject("EV_json");
+						int str_evType12 =  ev_head12.getInt("EV_type");
+						if(str_evType12==EVprotocol.EV_MDB_C_INFO)
+						{
+							if(ev_head12.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_C_INFO);
+								allSet.put("acceptor", ev_head12.getInt("acceptor"));
+								allSet.put("dispenser", ev_head12.getInt("dispenser"));
+								allSet.put("code", ev_head12.getString("code"));
+								allSet.put("sn", ev_head12.getString("sn"));
+								allSet.put("model", ev_head12.getString("model"));
+								allSet.put("ver", ev_head12.getString("ver"));
+								allSet.put("capacity", ev_head12.getInt("capacity"));
+								JSONArray arr1=ev_head12.getJSONArray("ch_r");//返回json数组
+								for(int i=0;i<arr1.length();i++)
+								{
+									JSONObject object2=arr1.getJSONObject(i);
+									allSet.put("ch_r"+object2.getInt("ch"), object2.getInt("value"));								
+								}
+								
+								JSONArray arr2=ev_head12.getJSONArray("ch_d");//返回json数组
+								for(int i=0;i<arr2.length();i++)
+								{
+									JSONObject object2=arr2.getJSONObject(i);
+									allSet.put("ch_d"+object2.getInt("ch"), object2.getInt("value"));								
+								}								
+					    	}
+					    	else
+					    	{
+					    		
+							}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain12=mainhand.obtainMessage();
+	  				tomain12.what=EV_BENTO_OPTMAIN;							
+	  				tomain12.obj=allSet;
+	  				mainhand.sendMessage(tomain12); // 发送消息
+					
+					break;
+				case EV_MDB_HEART://子线程接收主线程现金设备
+					//1.得到信息					
+					String rec13=EVprotocol.EVmdbHeart(ToolClass.getCom_id());
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec13.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject13 = new JSONObject(rec13); 
+						//根据key取出内容
+						JSONObject ev_head13 = (JSONObject) jsonObject13.getJSONObject("EV_json");
+						int str_evType13 =  ev_head13.getInt("EV_type");
+						if(str_evType13==EVprotocol.EV_MDB_HEART)
+						{
+							if(ev_head13.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_HEART);
+								allSet.put("bill_enable", ev_head13.getInt("bill_enable"));
+								allSet.put("bill_payback", ev_head13.getInt("bill_payback"));
+								allSet.put("bill_err", ev_head13.getInt("bill_err"));
+								allSet.put("bill_recv", ev_head13.getInt("bill_recv"));
+								allSet.put("bill_remain", ev_head13.getInt("bill_remain"));
+								allSet.put("coin_enable", ev_head13.getInt("coin_enable"));
+								allSet.put("coin_payback", ev_head13.getInt("coin_payback"));
+								allSet.put("coin_err", ev_head13.getInt("coin_err"));
+								allSet.put("coin_recv", ev_head13.getInt("coin_recv"));
+								allSet.put("coin_remain", ev_head13.getInt("coin_remain"));
+								JSONObject object2=ev_head13.getJSONObject("hopper");//返回json数组
+								allSet.put("hopper1", object2.getInt("hopper1"));
+								allSet.put("hopper2", object2.getInt("hopper2"));
+								allSet.put("hopper3", object2.getInt("hopper3"));
+								allSet.put("hopper4", object2.getInt("hopper4"));
+								allSet.put("hopper5", object2.getInt("hopper5"));
+								allSet.put("hopper6", object2.getInt("hopper6"));
+								allSet.put("hopper7", object2.getInt("hopper7"));
+								allSet.put("hopper8", object2.getInt("hopper8"));								
+					    	}
+					    	else
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_HEART);
+								allSet.put("bill_enable", 0);
+								allSet.put("bill_payback", 0);
+								allSet.put("bill_err", 1);
+								allSet.put("bill_recv", 0);
+								allSet.put("bill_remain", 0);
+								allSet.put("coin_enable", 0);
+								allSet.put("coin_payback", 0);
+								allSet.put("coin_err", 1);
+								allSet.put("coin_recv", 0);
+								allSet.put("coin_remain", 0);
+								allSet.put("hopper1", 3);
+								allSet.put("hopper2", 3);
+								allSet.put("hopper3", 3);
+								allSet.put("hopper4", 3);
+								allSet.put("hopper5", 3);
+								allSet.put("hopper6", 3);
+								allSet.put("hopper7", 3);
+								allSet.put("hopper8", 3);
+					    	}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain13=mainhand.obtainMessage();
+	  				tomain13.what=EV_BENTO_OPTMAIN;							
+	  				tomain13.obj=allSet;
+	  				mainhand.sendMessage(tomain13); // 发送消息
 					
 					break;	
 				default:
