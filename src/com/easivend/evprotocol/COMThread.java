@@ -900,6 +900,118 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain15); // 发送消息
 					
 					break;	
+				case EV_MDB_PAYOUT:
+					int bill16=0;
+					int coin16=0;
+					int billPay16=0;
+					int coinPay16=0;
+					//1.得到信息
+					JSONObject ev16=null;
+					try {
+						ev16 = new JSONObject(msg.obj.toString());
+						bill16=ev16.getInt("bill");
+						coin16=ev16.getInt("coin");
+						billPay16=ev16.getInt("billPay");
+						coinPay16=ev16.getInt("coinPay");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bill="+bill16+"coin="+coin16+"billPay="+billPay16+"coinPay="+coinPay16,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec16=EVprotocol.EVmdbPayout(ToolClass.getCom_id(),bill16,coin16,billPay16,coinPay16);
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec16.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject16 = new JSONObject(rec16); 
+						//根据key取出内容
+						JSONObject ev_head16 = (JSONObject) jsonObject16.getJSONObject("EV_json");
+						int str_evType16 =  ev_head16.getInt("EV_type");
+						if(str_evType16==EVprotocol.EV_MDB_PAYOUT)
+						{
+							if(ev_head16.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_PAYOUT);
+								allSet.put("result", ev_head16.getInt("result"));
+								allSet.put("bill_changed", ev_head16.getInt("bill_changed"));
+								allSet.put("coin_changed", ev_head16.getInt("coin_changed"));
+							}	
+					    	else
+					    	{
+					    		//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_PAYOUT);
+								allSet.put("result", 0);
+					    		allSet.put("bill_changed", 0);
+								allSet.put("coin_changed", 0);								
+							}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain16=mainhand.obtainMessage();
+	  				tomain16.what=EV_BENTO_OPTMAIN;							
+	  				tomain16.obj=allSet;
+	  				mainhand.sendMessage(tomain16); // 发送消息
+					
+					break;
+				case EV_MDB_HP_PAYOUT://Hopper找币接口
+					int no17=0;
+					int nums17=0;
+					//1.得到信息
+					JSONObject ev17=null;
+					try {
+						ev17 = new JSONObject(msg.obj.toString());
+						no17=ev17.getInt("no");
+						nums17=ev17.getInt("nums");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=no="+no17+"nums="+nums17,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec17=EVprotocol.EVmdbHopperPayout(ToolClass.getCom_id(),no17,nums17);
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec17.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject17 = new JSONObject(rec17); 
+						//根据key取出内容
+						JSONObject ev_head17 = (JSONObject) jsonObject17.getJSONObject("EV_json");
+						int str_evType17 =  ev_head17.getInt("EV_type");
+						if(str_evType17==EVprotocol.EV_MDB_HP_PAYOUT)
+						{
+							if(ev_head17.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_HP_PAYOUT);
+								allSet.put("result", ev_head17.getInt("result"));
+								allSet.put("changed", ev_head17.getInt("changed"));								
+					    	}
+					    	else
+					    	{
+					    		//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_HP_PAYOUT);
+								allSet.put("result", 0);
+					    		allSet.put("changed", 0);					    		
+							}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain17=mainhand.obtainMessage();
+	  				tomain17.what=EV_BENTO_OPTMAIN;							
+	  				tomain17.obj=allSet;
+	  				mainhand.sendMessage(tomain17); // 发送消息
+					
+					break;
 				case EV_MDB_HEART://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec13=EVprotocol.EVmdbHeart(ToolClass.getCom_id());

@@ -458,6 +458,41 @@ public class COMService extends Service {
 	    		child13.obj=EV_json13;
         		childhand.sendMessage(child13);
 				break;
+			case EV_MDB_PAYOUT:
+				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 使能禁能","com.txt");
+				Message child14=childhand.obtainMessage();
+				child14.what=COMThread.EV_MDB_PAYOUT;
+        		JSONObject ev14=null;
+	    		try {
+	    			ev14=new JSONObject();
+	    			ev14.put("bill", bundle.getInt("bill"));	
+	    			ev14.put("coin", bundle.getInt("coin"));
+	    			ev14.put("billPay", bundle.getInt("billPay"));
+	    			ev14.put("coinPay", bundle.getInt("coinPay"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev14.toString(),"com.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		child14.obj=ev14;
+        		childhand.sendMessage(child14);	
+				break;
+			case EV_MDB_HP_PAYOUT:
+				Message child15=childhand.obtainMessage();
+				child15.what=COMThread.EV_MDB_HP_PAYOUT;
+        		JSONObject ev15=null;
+	    		try {
+	    			ev15=new JSONObject();
+	    			ev15.put("no", bundle.getInt("no"));	
+	    			ev15.put("nums", bundle.getInt("nums"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev15.toString(),"com.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		child15.obj=ev15;
+        		childhand.sendMessage(child15);
+				break;
 				//心跳查询接口
 			case EV_MDB_HEART:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService EV_MDB_HEART接口","com.txt");
@@ -595,7 +630,7 @@ public class COMService extends Service {
 						break;	
 					//操作完成	
 					case COMThread.EV_BENTO_OPTMAIN:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道操作="+msg.obj,"com.txt");	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 综合操作="+msg.obj,"com.txt");	
 						//返回给activity广播
 						Intent recintent2=new Intent();
 						recintent2.putExtra("EVWhat", COMService.EV_OPTMAIN);						

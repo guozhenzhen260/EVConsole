@@ -160,7 +160,16 @@ public class AddInaccount extends TabActivity
 		btnbillpayout.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),1,0,ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())),0);
+		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),1,0,ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())),0);
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYOUT);	
+				intent.putExtra("bill", 1);	
+				intent.putExtra("coin", 0);	
+				intent.putExtra("billPay", ToolClass.MoneySend(Float.parseFloat(edtpayout.getText().toString())));	
+				intent.putExtra("coinPay", 0);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				devopt=COMService.EV_MDB_PAYOUT;
 		    }
 		});
 		btnbillon = (Button) findViewById(R.id.btnbillon);
@@ -337,7 +346,16 @@ public class AddInaccount extends TabActivity
 	  	btncoinpayout.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edtcoinpayout.getText().toString())));
+		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edtcoinpayout.getText().toString())));
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYOUT);	
+				intent.putExtra("bill", 0);	
+				intent.putExtra("coin", 1);	
+				intent.putExtra("billPay", 0);	
+				intent.putExtra("coinPay", ToolClass.MoneySend(Float.parseFloat(edtcoinpayout.getText().toString())));	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				devopt=COMService.EV_MDB_PAYOUT;
 		    }
 		});
 	  	btncoinset = (Button) findViewById(R.id.btncoinset);
@@ -380,29 +398,59 @@ public class AddInaccount extends TabActivity
 	  	btnhopperquery.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
-		    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    	//EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+		    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		    	Intent intent2=new Intent();
+		    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+				intent2.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent2);
+				devopt=COMService.EV_MDB_HEART;//Heart操作
 		    }
 		});
 	  	btnhopperpay = (Button) findViewById(R.id.btnhopperpay);
 	  	btnhopperpay.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYOUT);	
+		    	intent.putExtra("bill", 0);	
+		    	intent.putExtra("coin", 1);	
+		    	intent.putExtra("billPay", 0);	
+		    	intent.putExtra("coinPay", ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));	
+		    	intent.setAction("android.intent.action.comsend");//action与接收器相同
+		    	comBroadreceiver.sendBroadcast(intent);
+		    	devopt=COMService.EV_MDB_PAYOUT;
 		    }
 		});
 	  	btnhopperpaymoney = (Button) findViewById(R.id.btnhopperpaymoney);
 	  	btnhopperpaymoney.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    	//EVprotocolAPI.EV_mdbPayout(ToolClass.getCom_id(),0,1,0,ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYOUT);	
+		    	intent.putExtra("bill", 0);	
+		    	intent.putExtra("coin", 1);	
+		    	intent.putExtra("billPay", 0);	
+		    	intent.putExtra("coinPay", ToolClass.MoneySend(Float.parseFloat(edthopperpayout.getText().toString())));	
+		    	intent.setAction("android.intent.action.comsend");//action与接收器相同
+		    	comBroadreceiver.sendBroadcast(intent);
+		    	devopt=COMService.EV_MDB_PAYOUT;
 		    }
 		});
 	  	btnhopperpaynum = (Button) findViewById(R.id.btnhopperpaynum);
 	  	btnhopperpaynum.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	EVprotocolAPI.EV_mdbHopperPayout(ToolClass.getCom_id(),Integer.parseInt(edthopperpayno.getText().toString()),Integer.parseInt(edthopperpaynum.getText().toString()));
+		    	//EVprotocolAPI.EV_mdbHopperPayout(ToolClass.getCom_id(),Integer.parseInt(edthopperpayno.getText().toString()),Integer.parseInt(edthopperpaynum.getText().toString()));
+		    	Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_HP_PAYOUT);	
+		    	intent.putExtra("no", Integer.parseInt(edthopperpayno.getText().toString()));	
+		    	intent.putExtra("nums", Integer.parseInt(edthopperpaynum.getText().toString()));	
+		    	intent.setAction("android.intent.action.comsend");//action与接收器相同
+		    	comBroadreceiver.sendBroadcast(intent);
+		    	devopt=COMService.EV_MDB_HP_PAYOUT;
 		    }
 		});
 	  	btnhopperset = (Button) findViewById(R.id.btnhopperset);
@@ -712,6 +760,17 @@ public class AddInaccount extends TabActivity
 					  	}
 					  	txthopperincount.setText(hopperString);
 						break;
+					case EVprotocolAPI.EV_MDB_PAYOUT://找零
+						money=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));					  	
+						txtpaymoney.setText(String.valueOf(money));	
+						money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
+						txtcoinpaymoney.setText(String.valueOf(money));	
+						txthopperpaymoney.setText(String.valueOf(money));	
+						break;
+					case EVprotocolAPI.EV_MDB_HP_PAYOUT://找零
+						txthopperpaynum.setText(String.valueOf((Integer)Set.get("changed")));
+						
+						break;	
 					default:break;	
 				}
 				break;			
@@ -966,8 +1025,8 @@ public class AddInaccount extends TabActivity
 	    				public void onClick(DialogInterface dialog, int which) 
 	    				{
 	    					// TODO Auto-generated method stub	
-	    					Map<String, Integer>ch_r=new HashMap<String, Integer>();
-	    			    	Map<String, Integer>ch_d=new HashMap<String, Integer>();
+	    					Map<String, Integer>ch_r=new LinkedHashMap<String, Integer>();
+	    			    	Map<String, Integer>ch_d=new LinkedHashMap<String, Integer>();
 	    			    	ch_r.put("1", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin1.getText().toString())));
 	    			    	ch_r.put("2", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin2.getText().toString())));
 	    			    	ch_r.put("3", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin3.getText().toString())));
