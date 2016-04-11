@@ -225,8 +225,14 @@ public class AddInaccount extends TabActivity
 			    			    		billtype=2;
 			    					else if(spinbillmanagerbill.getSelectedItemPosition()==0)
 			    						billtype=0;
-			    			    	EVprotocolAPI.EV_mdbBillConfig(ToolClass.getCom_id(),billtype);	
-			    					// 弹出信息提示
+			    			    	//EVprotocolAPI.EV_mdbBillConfig(ToolClass.getCom_id(),billtype);	
+			    			    	Intent intent2=new Intent();
+			    			    	intent2.putExtra("EVWhat", COMService.EV_MDB_B_CON);
+			    			    	intent2.putExtra("billtype", billtype);
+			    			    	intent2.setAction("android.intent.action.comsend");//action与接收器相同
+			    					comBroadreceiver.sendBroadcast(intent2);
+			    					devopt=COMService.EV_MDB_B_CON;
+			    			    	// 弹出信息提示
 						            Toast.makeText(AddInaccount.this, "配置纸币器成功！", Toast.LENGTH_SHORT).show();
 						     }
 		    		      }
@@ -619,14 +625,14 @@ public class AddInaccount extends TabActivity
 					    txtcoinmanagercoinin6.setText(String.valueOf(all[5]));
 					    txtcoinmanagercoinin7.setText(String.valueOf(all[6]));
 					    txtcoinmanagercoinin8.setText(String.valueOf(all[7]));
-					    txtcoinmanagercoinin9.setText("");
-					    txtcoinmanagercoinin10.setText("");
-					    txtcoinmanagercoinin11.setText("");
-					    txtcoinmanagercoinin12.setText("");
-					    txtcoinmanagercoinin13.setText("");
-					    txtcoinmanagercoinin14.setText("");
-					    txtcoinmanagercoinin15.setText("");
-					    txtcoinmanagercoinin16.setText("");
+					    txtcoinmanagercoinin9.setText("0");
+					    txtcoinmanagercoinin10.setText("0");
+					    txtcoinmanagercoinin11.setText("0");
+					    txtcoinmanagercoinin12.setText("0");
+					    txtcoinmanagercoinin13.setText("0");
+					    txtcoinmanagercoinin14.setText("0");
+					    txtcoinmanagercoinin15.setText("0");
+					    txtcoinmanagercoinin16.setText("0");
 					    //找零通道面值
 					    spinhopper.setSelection((Integer)Set.get("dispenser"));
 					    str2="";
@@ -697,12 +703,16 @@ public class AddInaccount extends TabActivity
 					  	ToolClass.setCoin_err(coin_errstatus);
 					  	
 					  	String hopperString=null;
-					  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))
-					  				+"[[3]:"+ToolClass.gethopperstats((Integer)Set.get("hopper3"))+"[4]:"+ToolClass.gethopperstats((Integer)Set.get("hopper4"))
-						  			+"[5]:"+ToolClass.gethopperstats((Integer)Set.get("hopper5"))+"[6]:"+ToolClass.gethopperstats((Integer)Set.get("hopper6"))
-						  			+"[7]:"+ToolClass.gethopperstats((Integer)Set.get("hopper7"))+"[8]:"+ToolClass.gethopperstats((Integer)Set.get("hopper8"));
+					  	if(Set.containsKey("hopper1"))
+					  	{
+						  	hopperString="[1]:"+ToolClass.gethopperstats((Integer)Set.get("hopper1"))+"[2]:"+ToolClass.gethopperstats((Integer)Set.get("hopper2"))
+						  				+"[[3]:"+ToolClass.gethopperstats((Integer)Set.get("hopper3"))+"[4]:"+ToolClass.gethopperstats((Integer)Set.get("hopper4"))
+							  			+"[5]:"+ToolClass.gethopperstats((Integer)Set.get("hopper5"))+"[6]:"+ToolClass.gethopperstats((Integer)Set.get("hopper6"))
+							  			+"[7]:"+ToolClass.gethopperstats((Integer)Set.get("hopper7"))+"[8]:"+ToolClass.gethopperstats((Integer)Set.get("hopper8"));
+					  	}
 					  	txthopperincount.setText(hopperString);
-						break;	
+						break;
+					default:break;	
 				}
 				break;			
 			}			
@@ -956,43 +966,63 @@ public class AddInaccount extends TabActivity
 	    				public void onClick(DialogInterface dialog, int which) 
 	    				{
 	    					// TODO Auto-generated method stub	
-	    					Map<Integer, Integer>ch_r=new HashMap<Integer, Integer>();
-	    			    	Map<Integer, Integer>ch_d=new HashMap<Integer, Integer>();
-	    			    	ch_r.put(1, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin1.getText().toString())));
-	    			    	ch_r.put(2, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin2.getText().toString())));
-	    			    	ch_r.put(3, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin3.getText().toString())));
-	    			    	ch_r.put(4, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin4.getText().toString())));
-	    			    	ch_r.put(5, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin5.getText().toString())));
-	    			    	ch_r.put(6, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin6.getText().toString())));
-	    			    	ch_r.put(7, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin7.getText().toString())));
-	    			    	ch_r.put(8, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin8.getText().toString())));
-	    			    	ch_r.put(9, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin9.getText().toString())));
-	    			    	ch_r.put(10, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin10.getText().toString())));
-	    			    	ch_r.put(11, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin11.getText().toString())));
-	    			    	ch_r.put(12, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin12.getText().toString())));
-	    			    	ch_r.put(13, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin13.getText().toString())));
-	    			    	ch_r.put(14, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin14.getText().toString())));
-	    			    	ch_r.put(15, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin15.getText().toString())));
-	    			    	ch_r.put(16, ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin16.getText().toString())));
+	    					Map<String, Integer>ch_r=new HashMap<String, Integer>();
+	    			    	Map<String, Integer>ch_d=new HashMap<String, Integer>();
+	    			    	ch_r.put("1", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin1.getText().toString())));
+	    			    	ch_r.put("2", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin2.getText().toString())));
+	    			    	ch_r.put("3", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin3.getText().toString())));
+	    			    	ch_r.put("4", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin4.getText().toString())));
+	    			    	ch_r.put("5", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin5.getText().toString())));
+	    			    	ch_r.put("6", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin6.getText().toString())));
+	    			    	ch_r.put("7", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin7.getText().toString())));
+	    			    	ch_r.put("8", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin8.getText().toString())));
+	    			    	ch_r.put("9", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin9.getText().toString())));
+	    			    	ch_r.put("10", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin10.getText().toString())));
+	    			    	ch_r.put("11", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin11.getText().toString())));
+	    			    	ch_r.put("12", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin12.getText().toString())));
+	    			    	ch_r.put("13", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin13.getText().toString())));
+	    			    	ch_r.put("14", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin14.getText().toString())));
+	    			    	ch_r.put("15", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin15.getText().toString())));
+	    			    	ch_r.put("16", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin16.getText().toString())));
 	    			    	
-	    			    	ch_d.put(1, ToolClass.MoneySend(Float.parseFloat(txthopperin1.getText().toString())));
-	    			    	ch_d.put(2, ToolClass.MoneySend(Float.parseFloat(txthopperin2.getText().toString())));
-	    			    	ch_d.put(3, ToolClass.MoneySend(Float.parseFloat(txthopperin3.getText().toString())));
-	    			    	ch_d.put(4, ToolClass.MoneySend(Float.parseFloat(txthopperin4.getText().toString())));
-	    			    	ch_d.put(5, ToolClass.MoneySend(Float.parseFloat(txthopperin5.getText().toString())));
-	    			    	ch_d.put(6, ToolClass.MoneySend(Float.parseFloat(txthopperin6.getText().toString())));
-	    			    	ch_d.put(7, ToolClass.MoneySend(Float.parseFloat(txthopperin7.getText().toString())));
-	    			    	ch_d.put(8, ToolClass.MoneySend(Float.parseFloat(txthopperin8.getText().toString())));
-	    			    	ch_d.put(9, 0);
-	    			    	ch_d.put(10, 0);
-	    			    	ch_d.put(11, 0);
-	    			    	ch_d.put(12, 0);
-	    			    	ch_d.put(13, 0);
-	    			    	ch_d.put(14, 0);
-	    			    	ch_d.put(15, 0);
-	    			    	ch_d.put(16, 0);
-	    			    	EVprotocolAPI.EV_mdbCoinConfig(ToolClass.getCom_id(),spincoinmanagercoin.getSelectedItemPosition(),spinhopper.getSelectedItemPosition(),ch_r,ch_d);
-	    					// 弹出信息提示
+	    			    	ch_d.put("1", ToolClass.MoneySend(Float.parseFloat(txthopperin1.getText().toString())));
+	    			    	ch_d.put("2", ToolClass.MoneySend(Float.parseFloat(txthopperin2.getText().toString())));
+	    			    	ch_d.put("3", ToolClass.MoneySend(Float.parseFloat(txthopperin3.getText().toString())));
+	    			    	ch_d.put("4", ToolClass.MoneySend(Float.parseFloat(txthopperin4.getText().toString())));
+	    			    	ch_d.put("5", ToolClass.MoneySend(Float.parseFloat(txthopperin5.getText().toString())));
+	    			    	ch_d.put("6", ToolClass.MoneySend(Float.parseFloat(txthopperin6.getText().toString())));
+	    			    	ch_d.put("7", ToolClass.MoneySend(Float.parseFloat(txthopperin7.getText().toString())));
+	    			    	ch_d.put("8", ToolClass.MoneySend(Float.parseFloat(txthopperin8.getText().toString())));
+	    			    	ch_d.put("9", 0);
+	    			    	ch_d.put("10", 0);
+	    			    	ch_d.put("11", 0);
+	    			    	ch_d.put("12", 0);
+	    			    	ch_d.put("13", 0);
+	    			    	ch_d.put("14", 0);
+	    			    	ch_d.put("15", 0);
+	    			    	ch_d.put("16", 0);
+	    			    	//EVprotocolAPI.EV_mdbCoinConfig(ToolClass.getCom_id(),spincoinmanagercoin.getSelectedItemPosition(),spinhopper.getSelectedItemPosition(),ch_r,ch_d);
+	    			    	//ToolClass.Log(ToolClass.INFO,"EV_COM","cointype="+spincoinmanagercoin.getSelectedItemPosition()+"hoppertype="+spinhopper.getSelectedItemPosition(),"com.txt");
+	    			    	Intent intent2=new Intent();
+	    			    	intent2.putExtra("EVWhat", COMService.EV_MDB_C_CON);
+	    			    	intent2.putExtra("acceptor", spincoinmanagercoin.getSelectedItemPosition());
+	    			    	intent2.putExtra("dispenser", spinhopper.getSelectedItemPosition());
+	    			    	//传递数据
+					        SerializableMap myMap=new SerializableMap();
+					        myMap.setMap(ch_r);//将map数据添加到封装的myMap<span></span>中
+					        Bundle bundle=new Bundle();
+					        bundle.putSerializable("ch_r", myMap);
+					        intent2.putExtras(bundle);
+					        //传递数据
+					        SerializableMap myMap2=new SerializableMap();
+					        myMap2.setMap(ch_d);//将map数据添加到封装的myMap<span></span>中
+					        Bundle bundle2=new Bundle();
+					        bundle2.putSerializable("ch_d", myMap2);
+					        intent2.putExtras(bundle2);
+	    			    	intent2.setAction("android.intent.action.comsend");//action与接收器相同
+	    					comBroadreceiver.sendBroadcast(intent2);
+	    					devopt=COMService.EV_MDB_B_CON;
+	    			    	// 弹出信息提示
 				            Toast.makeText(AddInaccount.this, "配置硬币器找零器成功！", Toast.LENGTH_SHORT).show();
 				     }
     		      }

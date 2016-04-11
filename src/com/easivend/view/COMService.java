@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -351,6 +352,46 @@ public class COMService extends Service {
 	    		child9.obj=ev9;
         		childhand.sendMessage(child9);	
 				break;
+			//纸币配置	
+			case EV_MDB_B_CON:
+				Message child12=childhand.obtainMessage();
+				child12.what=COMThread.EV_MDB_B_CON;
+				
+				JSONObject jsonObject12 = new JSONObject(); 
+				JSONObject EV_json12 = new JSONObject(); 
+				JSONArray ch_r12=new JSONArray();
+				JSONArray ch_d12=new JSONArray();
+				try {
+					jsonObject12.put("EV_type", EV_MDB_B_CON);
+					jsonObject12.put("port_id", ToolClass.getCom_id());
+					jsonObject12.put("acceptor", bundle.getInt("billtype"));
+					jsonObject12.put("dispenser", bundle.getInt("billtype"));
+					for(int i=1;i<=16;i++)
+					{
+						JSONObject ch12 = new JSONObject(); 
+						ch12.put("ch", i);
+						ch12.put("value", 0);
+						ch_r12.put(ch12);
+					}
+					jsonObject12.put("ch_r", ch_r12);
+					for(int i=1;i<=16;i++)
+					{
+						JSONObject ch12 = new JSONObject(); 
+						ch12.put("ch", i);
+						ch12.put("value", 0);
+						ch_d12.put(ch12);
+					}
+					jsonObject12.put("ch_d", ch_d12);
+					EV_json12.put("EV_json", jsonObject12);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+EV_json12.toString(),"com.txt");
+				        		
+	    		child12.obj=EV_json12;
+        		childhand.sendMessage(child12);	
+				break;
 				//硬币器查询接口
 			case EV_MDB_C_INFO:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 硬币器查询接口","com.txt");
@@ -361,8 +402,63 @@ public class COMService extends Service {
 				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev10.toString(),"com.txt");
 	    		child10.obj=ev10;
         		childhand.sendMessage(child10);	
-				break;		
-				//硬币器查询接口
+				break;	
+			case EV_MDB_C_CON:
+				Message child13=childhand.obtainMessage();
+				child13.what=COMThread.EV_MDB_C_CON;
+				
+				JSONObject jsonObject13 = new JSONObject(); 
+				JSONObject EV_json13 = new JSONObject(); 
+				JSONArray ch_r13=new JSONArray();
+				JSONArray ch_d13=new JSONArray();
+				try {
+					jsonObject13.put("EV_type", EV_MDB_C_CON);
+					jsonObject13.put("port_id", ToolClass.getCom_id());
+					jsonObject13.put("acceptor", bundle.getInt("acceptor"));
+					jsonObject13.put("dispenser", bundle.getInt("dispenser"));
+					jsonObject13.put("hight_en", 0);
+					//输出内容
+					SerializableMap serializableMap = (SerializableMap) bundle.get("ch_r");
+					Map<String, Integer> Set=serializableMap.getMap();
+			        Set<Map.Entry<String,Integer>> allset=Set.entrySet();  //实例化
+			        Iterator<Map.Entry<String,Integer>> iter=allset.iterator();
+			        while(iter.hasNext())
+			        {
+			            Map.Entry<String,Integer> me=iter.next();
+			            //System.out.println(me.getKey()+"--"+me.getValue());
+			            JSONObject ch = new JSONObject(); 
+						ch.put("ch", me.getKey());
+						ch.put("value",me.getValue());
+						ch_r13.put(ch);
+			        } 	        
+					jsonObject13.put("ch_r", ch_r13);
+					
+					//输出内容
+					SerializableMap serializableMap2 = (SerializableMap) bundle.get("ch_d");
+					Map<String, Integer> Set2=serializableMap2.getMap();
+			        Set<Map.Entry<String,Integer>> allset2=Set2.entrySet();  //实例化
+			        Iterator<Map.Entry<String,Integer>> iter2=allset2.iterator();
+			        while(iter2.hasNext())
+			        {
+			            Map.Entry<String,Integer> me2=iter2.next();
+			            //System.out.println(me.getKey()+"--"+me.getValue());
+			            JSONObject ch = new JSONObject(); 
+						ch.put("ch", me2.getKey());
+						ch.put("value",me2.getValue());
+						ch_d13.put(ch);
+			        } 	   
+					jsonObject13.put("ch_d", ch_d13);
+					EV_json13.put("EV_json", jsonObject13);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+EV_json13.toString(),"com.txt");
+				        		
+	    		child13.obj=EV_json13;
+        		childhand.sendMessage(child13);
+				break;
+				//心跳查询接口
 			case EV_MDB_HEART:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService EV_MDB_HEART接口","com.txt");
 				Message child11=childhand.obtainMessage();

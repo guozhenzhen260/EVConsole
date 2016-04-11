@@ -726,7 +726,16 @@ public class COMThread implements Runnable
 					    	}
 					    	else
 					    	{
-					    		
+					    		//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_B_INFO);
+								allSet.put("acceptor", 0);
+								allSet.put("dispenser", 0);
+								allSet.put("code", 0);
+								allSet.put("sn", 0);
+								allSet.put("model", 0);
+								allSet.put("ver", 0);
+								allSet.put("capacity", 0);
 							}
 						}
 					} catch (JSONException e1) {
@@ -738,6 +747,54 @@ public class COMThread implements Runnable
 	  				tomain11.what=EV_BENTO_OPTMAIN;							
 	  				tomain11.obj=allSet;
 	  				mainhand.sendMessage(tomain11); // 发送消息
+					
+					break;
+					//纸币配置	
+				case EV_MDB_B_CON:
+					//1.得到信息
+					JSONObject ev14=null;
+					try {
+						ev14 = new JSONObject(msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2="+ev14,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec14=EVprotocol.EVmdbBillConfig(ev14.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+ev14.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject14 = new JSONObject(rec14); 
+						//根据key取出内容
+						JSONObject ev_head14 = (JSONObject) jsonObject14.getJSONObject("EV_json");
+						int str_evType14 =  ev_head14.getInt("EV_type");
+						if(str_evType14==EVprotocol.EV_MDB_B_CON)
+						{
+							if(ev_head14.getInt("is_success")>0)
+					    	{
+					    		allSet.clear();
+					    		allSet.put("EV_TYPE", EV_MDB_B_CON);
+					    		allSet.put("acceptor", ev_head14.getInt("acceptor"));
+					    		allSet.put("dispenser", ev_head14.getInt("dispenser"));
+					    	}
+					    	else
+					    	{
+					    		allSet.clear();
+					    		allSet.put("EV_TYPE", EV_MDB_B_CON);
+					    		allSet.put("acceptor", 0);
+					    		allSet.put("dispenser", 0);
+					    	}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain14=mainhand.obtainMessage();
+	  				tomain14.what=EV_BENTO_OPTMAIN;							
+	  				tomain14.obj=allSet;
+	  				mainhand.sendMessage(tomain14); // 发送消息
 					
 					break;
 				case EV_MDB_C_INFO://子线程接收主线程现金设备
@@ -795,6 +852,54 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain12); // 发送消息
 					
 					break;
+					//硬币配置	
+				case EV_MDB_C_CON:
+					//1.得到信息
+					JSONObject ev15=null;
+					try {
+						ev15 = new JSONObject(msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2="+ev15,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec15=EVprotocol.EVmdbCoinConfig(ev15.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+ev15.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject15 = new JSONObject(rec15); 
+						//根据key取出内容
+						JSONObject ev_head15 = (JSONObject) jsonObject15.getJSONObject("EV_json");
+						int str_evType15 =  ev_head15.getInt("EV_type");
+						if(str_evType15==EVprotocol.EV_MDB_C_CON)
+						{
+							if(ev_head15.getInt("is_success")>0)
+					    	{
+					    		allSet.clear();
+					    		allSet.put("EV_TYPE", EV_MDB_C_CON);
+					    		allSet.put("acceptor", ev_head15.getInt("acceptor"));
+					    		allSet.put("dispenser", ev_head15.getInt("dispenser"));
+					    	}
+					    	else
+					    	{
+					    		allSet.clear();
+					    		allSet.put("EV_TYPE", EV_MDB_C_CON);
+					    		allSet.put("acceptor", 0);
+					    		allSet.put("dispenser", 0);
+					    	}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain15=mainhand.obtainMessage();
+	  				tomain15.what=EV_BENTO_OPTMAIN;							
+	  				tomain15.obj=allSet;
+	  				mainhand.sendMessage(tomain15); // 发送消息
+					
+					break;	
 				case EV_MDB_HEART://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec13=EVprotocol.EVmdbHeart(ToolClass.getCom_id());

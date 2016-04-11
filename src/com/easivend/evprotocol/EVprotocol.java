@@ -389,7 +389,7 @@ public class EVprotocol {
 	
 	/*********************************************************************************************************
 	** Function name	:		EVmdbCoinConfig
-	** Descriptions		:		MDB纸币器配置  [同步]
+	** Descriptions		:		MDB硬币器配置  [同步]
 	** input parameters	:       port_id:串口编号;req:配置参数 json包
  								EV_JSON={"EV_json":{"EV_type":30,"port_id":0,"acceptor":2,"dispenser":2,"hight_en":0,
  								"ch_r":[{"ch":1,"value":100},{"ch":2,"value":500},{"ch":3,"value":1000},{"ch":4,"value":2000},
