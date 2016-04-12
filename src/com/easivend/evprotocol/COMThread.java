@@ -1012,6 +1012,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain17); // 发送消息
 					
 					break;
+				//交易页面使用	
 				case EV_MDB_HEART://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec13=EVprotocol.EVmdbHeart(ToolClass.getCom_id());
@@ -1084,6 +1085,114 @@ public class COMThread implements Runnable
 	  				tomain13.what=EV_BENTO_OPTMAIN;							
 	  				tomain13.obj=allSet;
 	  				mainhand.sendMessage(tomain13); // 发送消息
+					
+					break;
+				case EV_MDB_COST:
+					int cost18=0;
+					//1.得到信息
+					JSONObject ev18=null;
+					try {
+						ev18 = new JSONObject(msg.obj.toString());
+						cost18=ev18.getInt("cost");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cost="+cost18,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec18=EVprotocol.EVmdbCost(ToolClass.getCom_id(),cost18);
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec18.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject18 = new JSONObject(rec18); 
+						//根据key取出内容
+						JSONObject ev_head18 = (JSONObject) jsonObject18.getJSONObject("EV_json");
+						int str_evType18 =  ev_head18.getInt("EV_type");
+						if(str_evType18==EVprotocol.EV_MDB_COST)
+						{
+							if(ev_head18.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_COST);
+								allSet.put("result", ev_head18.getInt("result"));
+								allSet.put("bill_recv", ev_head18.getInt("bill_recv"));
+								allSet.put("coin_recv", ev_head18.getInt("coin_recv"));
+							}	
+					    	else
+					    	{
+					    		//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_COST);
+								allSet.put("result", 0);
+					    		allSet.put("bill_recv", 0);
+								allSet.put("coin_recv", 0);								
+							}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain18=mainhand.obtainMessage();
+	  				tomain18.what=EV_BENTO_OPTMAIN;							
+	  				tomain18.obj=allSet;
+	  				mainhand.sendMessage(tomain18); // 发送消息
+					
+					break;
+				case EV_MDB_PAYBACK:
+					int bill19=0;
+					int coin19=0;
+					//1.得到信息
+					JSONObject ev19=null;
+					try {
+						ev19 = new JSONObject(msg.obj.toString());
+						bill19=ev19.getInt("bill");
+						coin19=ev19.getInt("coin");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bill="+bill19+"coin="+coin19,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					String rec19=EVprotocol.EVmdbPayback(ToolClass.getCom_id(),bill19,coin19);
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec19.toString(),"log.txt");
+					
+					//2.重新组包
+					try {
+						JSONObject jsonObject19 = new JSONObject(rec19); 
+						//根据key取出内容
+						JSONObject ev_head19 = (JSONObject) jsonObject19.getJSONObject("EV_json");
+						int str_evType19 =  ev_head19.getInt("EV_type");
+						if(str_evType19==EVprotocol.EV_MDB_PAYBACK)
+						{
+							if(ev_head19.getInt("is_success")>0)
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_PAYBACK);
+								allSet.put("result", ev_head19.getInt("result"));
+								allSet.put("bill_changed", ev_head19.getInt("bill_changed"));
+								allSet.put("coin_changed", ev_head19.getInt("coin_changed"));	
+					    	}
+					    	else
+					    	{
+								//往接口回调信息
+								allSet.clear();
+								allSet.put("EV_TYPE", EV_MDB_PAYBACK);
+								allSet.put("result", 0);
+								allSet.put("bill_changed", 0);
+								allSet.put("coin_changed", 0);
+					    	}
+						}
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//3.向主线程返回信息
+	  				Message tomain19=mainhand.obtainMessage();
+	  				tomain19.what=EV_BENTO_OPTMAIN;							
+	  				tomain19.obj=allSet;
+	  				mainhand.sendMessage(tomain19); // 发送消息
 					
 					break;	
 				default:

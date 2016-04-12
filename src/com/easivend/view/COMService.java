@@ -503,6 +503,37 @@ public class COMService extends Service {
 				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev11.toString(),"com.txt");
 	    		child11.obj=ev11;
         		childhand.sendMessage(child11);	
+				break;
+			case EV_MDB_COST:
+				Message child16=childhand.obtainMessage();
+				child16.what=COMThread.EV_MDB_COST;
+        		JSONObject ev16=null;
+	    		try {
+	    			ev16=new JSONObject();	
+	    			ev16.put("cost", bundle.getInt("cost"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev16.toString(),"com.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		child16.obj=ev16;
+        		childhand.sendMessage(child16);
+				break;
+			case EV_MDB_PAYBACK://ÍË±Ò°´Å¥½Ó¿Ú
+				Message child17=childhand.obtainMessage();
+				child17.what=COMThread.EV_MDB_PAYBACK;
+        		JSONObject ev17=null;
+	    		try {
+	    			ev17=new JSONObject();	
+	    			ev17.put("bill", bundle.getInt("bill"));
+	    			ev17.put("coin", bundle.getInt("coin"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev17.toString(),"com.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		child17.obj=ev17;
+        		childhand.sendMessage(child17);
 				break;	
 			}			
 		}
