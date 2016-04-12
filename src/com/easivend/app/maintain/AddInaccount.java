@@ -1102,12 +1102,15 @@ public class AddInaccount extends TabActivity
 	protected void onDestroy() {
 		//扣钱
 	    //EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend((float)amount));
-		Intent intent=new Intent();
-    	intent.putExtra("EVWhat", COMService.EV_MDB_COST);	
-		intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
-		intent.setAction("android.intent.action.comsend");//action与接收器相同
-		comBroadreceiver.sendBroadcast(intent);
-		devopt=COMService.EV_MDB_COST;
+		if(amount>0)
+		{
+			Intent intent=new Intent();
+	    	intent.putExtra("EVWhat", COMService.EV_MDB_COST);	
+			intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
+			intent.setAction("android.intent.action.comsend");//action与接收器相同
+			comBroadreceiver.sendBroadcast(intent);
+			devopt=COMService.EV_MDB_COST;
+		}
 		//=============
   		//COM服务相关
   		//=============
