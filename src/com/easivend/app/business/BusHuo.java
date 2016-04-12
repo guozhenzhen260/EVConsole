@@ -45,7 +45,7 @@ import android.widget.TextView;
 
 public class BusHuo extends Activity 
 {
-	private final int SPLASH_DISPLAY_LENGHT = 3000; // ÑÓ³Ù2Ãë	
+	private final int SPLASH_DISPLAY_LENGHT = 500; // ÑÓ³Ù2Ãë	
 	//½ø¶È¶Ô»°¿ò
 	ProgressDialog dialog= null;
 	private String proID = null;
@@ -371,7 +371,7 @@ public class BusHuo extends Activity
                     	finish();	
                     }
 
-				}, SPLASH_DISPLAY_LENGHT);
+				}, 3000);
 				break;
 			}			
 		}
