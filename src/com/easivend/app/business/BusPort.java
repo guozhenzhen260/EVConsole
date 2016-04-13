@@ -1194,7 +1194,7 @@ BushuoFragInteraction
 			     * 步骤二、activity向fragment发送回调信息
 			     * @param activity
 			     */
-				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
+				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	 
 					//打开
 					if((Integer)Set.get("opt")==1)
 					{

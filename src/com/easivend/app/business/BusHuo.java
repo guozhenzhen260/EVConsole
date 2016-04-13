@@ -59,7 +59,6 @@ public class BusHuo extends Activity
     private TextView txtbushuoname = null;
     private ImageView ivbushuoquhuo=null;
     private int tempx=0;
-    private String draw=null,info=null;
     private int cabinetvar=0,huodaoNo=0,cabinetTypevar=0;
     private vmc_columnDAO columnDAO =null; 
     //出货结果
@@ -95,99 +94,7 @@ public class BusHuo extends Activity
 		IntentFilter comfilter=new IntentFilter();
 		comfilter.addAction("android.intent.action.comrec");
 		comBroadreceiver.registerReceiver(comreceiver,comfilter);
-		//注册出货监听器
-  	    EVprotocolAPI.setCallBack(new JNIInterface() {
-			
-			@Override
-			public void jniCallback(Map<String, Object> allSet) {
-				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<bushuo货道相关","log.txt");
-				Map<String, Object> Set= allSet;
-				int jnirst=(Integer)Set.get("EV_TYPE");
-				switch (jnirst)
-				{
-					case EVprotocolAPI.EV_COLUMN_OPEN://主柜出货
-					case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
-						status=(Integer)allSet.get("result");//出货结果
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
-						dialog.dismiss();
-						//1.更新出货结果
-						//扣除存货余量
-						chuhuoupdate(cabinetvar,huodaoNo);
-						//出货成功
-						if(status==1)
-						{
-							txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
-							txtbushuoname.setTextColor(android.graphics.Color.BLUE);
-							chuhuoLog(1);//记录日志
-						}
-						else
-						{
-							txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
-							txtbushuoname.setTextColor(android.graphics.Color.RED);
-							chuhuoLog(0);//记录日志
-						}
-												
-						//3.退回找零页面
-						ivbushuoquhuo.setVisibility(View.VISIBLE);
-			 	    	new Handler().postDelayed(new Runnable() 
-						{
-	                        @Override
-	                        public void run() 
-	                        {	   
-	                        	//退出时，返回intent
-                	            Intent intent=new Intent();
-                	            intent.putExtra("status", status);//出货结果
-	                        	if(zhifutype==0)//现金支付
-	                        	{                        			
-                    	            setResult(BusZhiAmount.RESULT_CANCELED,intent);                    	            
-                        		}
-	                        	else if(zhifutype==3)//支付宝二维码
-	                        	{
-                    	            setResult(BusZhier.RESULT_CANCELED,intent);                    	            
-                        		}
-	                        	else if(zhifutype==4)//微信扫描
-	                        	{                        			
-                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);                    	            
-                        		}
-	                        	else if(zhifutype==5)//提货码
-	                        	{                        			
-                    	            setResult(BusZhitihuo.RESULT_CANCELED,intent);                    	            
-                        		}
-	                        	finish();
-//	                        	//出货完成,把非现金模块去掉
-//	                        	if(status==0)
-//	                        	{
-//	                        		if(BusZhier.BusZhierAct!=null)
-//	                        			BusZhier.BusZhierAct.finish(); 
-//	                        		if(BusZhiwei.BusZhiweiAct!=null)
-//	                        			BusZhiwei.BusZhiweiAct.finish(); 
-//	                        		OrderDetail.addLog(BusHuo.this);
-//	                        	}
-//	                        	//出货失败，退到非现金模块进行退币操作
-//	                        	else
-//	                        	{
-//	                        		if(BusZhier.BusZhierAct!=null)
-//	                        		{
-//	                        			//退出时，返回intent
-//	                    	            Intent intent=new Intent();
-//	                    	            setResult(BusZhier.RESULT_CANCELED,intent);
-//	                        		}
-//	                        		if(BusZhiwei.BusZhiweiAct!=null)
-//	                        		{
-//	                        			//退出时，返回intent
-//	                    	            Intent intent=new Intent();
-//	                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
-//	                        		}
-//								}		                        	
-	                            
-	                        }
-
-						}, SPLASH_DISPLAY_LENGHT);
-						break;										
-				}
-			}
-		}); 
+		 
   	    
 		//从商品页面中取得锁选中的商品
 //		Intent intent=getIntent();
@@ -219,8 +126,7 @@ public class BusHuo extends Activity
 	//出货,返回值0失败,1出货指令成功，等待返回结果,2出货完成
 	private void chuhuoopt(int huox)
 	{
-		int huorst=0;
-		int rst=0;
+		
 		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
  	    columnDAO = new vmc_columnDAO(this);
  	    txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");

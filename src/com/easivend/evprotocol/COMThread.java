@@ -101,21 +101,7 @@ public class COMThread implements Runnable
 		// TODO Auto-generated method stub
 		Looper.prepare();//用户自己定义的类，创建线程需要自己准备loop
 		ToolClass.Log(ToolClass.INFO,"EV_COM","Thread start["+Thread.currentThread().getId()+"]","com.txt");
-//		//打开格子柜串口
-//		if(ToolClass.getBentcom()!=null)
-//		{
-//			try {  
-//				sp=new SerialPort(new File(ToolClass.getBentcom()),9600,0); 
-//				bentInputStream=(FileInputStream) sp.getInputStream();
-//				bentOutputStream=(FileOutputStream) sp.getOutputStream();
-//	        } catch (SecurityException e) {  
-//	            // TODO Auto-generated catch block  
-//	            e.printStackTrace();  
-//	        } catch (IOException e) {  
-//	            // TODO Auto-generated catch block  
-//	            e.printStackTrace();  
-//	        }
-//		}
+
 		//打开格子柜串口
 		if(ToolClass.getBentcom().equals("")==false)
 		{

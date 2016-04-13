@@ -137,11 +137,7 @@ public class BusZhiAmount  extends Activity
 		IntentFilter comfilter=new IntentFilter();
 		comfilter.addAction("android.intent.action.comrec");
 		comBroadreceiver.registerReceiver(comreceiver,comfilter);
-		//*****************
-		//注册投币找零监听器
-		//*****************
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());
-		
+				
 		//打开纸币硬币器
 		//延时1s
 	    new Handler().postDelayed(new Runnable() 
@@ -319,167 +315,7 @@ public class BusZhiAmount  extends Activity
 		}
 
 	}
-	//创建一个专门处理单击接口的子类
-	private class jniInterfaceImp implements JNIInterface
-	{
-		int con=0;
-		@Override
-		public void jniCallback(Map<String, Object> allSet) {
-			float payin_amount=0,reamin_amount=0,payout_amount=0;
-			// TODO Auto-generated method stub	
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<mdb设备结果","log.txt");
-			Map<String, Object> Set= allSet;
-			int jnirst=(Integer)Set.get("EV_TYPE");
-			switch (jnirst)
-			{
-				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
-					//打开失败,等待重新打开
-					if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
-					{
-						txtbuszhiamounttsxx.setText("提示信息：重试"+con);
-						if((Integer)Set.get("bill_result")==0)
-							ToolClass.setBill_err(2);
-						if((Integer)Set.get("coin_result")==0)
-							ToolClass.setCoin_err(2);
-						con++;
-					}
-					//打开成功
-					else
-					{
-						//第一次打开才发送coninfo，以后就不再操作这个了
-						if(iszhienable==0)
-							EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
-						ToolClass.setBill_err(0);
-						ToolClass.setCoin_err(0);
-					}										
-					break;
-				case EVprotocolAPI.EV_MDB_B_INFO:	
-					break;
-				case EVprotocolAPI.EV_MDB_C_INFO:
-					dispenser=(Integer)Set.get("dispenser");
-					EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-					break;	
-				case EVprotocolAPI.EV_MDB_HEART://心跳查询
-//					iszhienable=1;					
-//					String bill_enable="";
-//					String coin_enable="";
-//					String hopperString="";
-//					int bill_err=ToolClass.getvmcStatus(Set,1);
-//					int coin_err=ToolClass.getvmcStatus(Set,2);
-//					ToolClass.setBill_err(bill_err);
-//					ToolClass.setCoin_err(coin_err);
-//					int hopper1=ToolClass.getvmcStatus(Set,3);
-//					if(bill_err>0)
-//						bill_enable="[纸币器]无法使用";
-//					if(coin_err>0)
-//						coin_enable="[硬币器]无法使用";					
-//					if(hopper1>0)
-//						hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
-//				  	txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable+hopperString);
-//				  	billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
-//				  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));
-//				  	money=billmoney+coinmoney;
-//				  	//如果缺币,就把纸币硬币器关闭
-//				  	if(dispenser==1)//hopper
-//				  	{
-//				  		if(hopper1>0)//hopper缺币
-//				  		{
-//					  		if(isempcoin==false)//第一次关闭纸币硬币器
-//					  		{
-//					  			//关闭纸币硬币器
-//					  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-//					  			Intent intent=new Intent();
-//						    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
-//								intent.putExtra("bill", 1);	
-//								intent.putExtra("coin", 1);	
-//								intent.putExtra("opt", 0);	
-//								intent.setAction("android.intent.action.comsend");//action与接收器相同
-//								comBroadreceiver.sendBroadcast(intent);	
-//					  			isempcoin=true;
-//					  		}
-//				  		}
-//				  	}
-//				  	else if(dispenser==2)//mdb
-//				  	{
-//				  		//当前存币金额小于5元
-//				  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
-//				  		{
-//				  			if(isempcoin==false)//第一次关闭纸币硬币器
-//					  		{
-//					  			//关闭纸币硬币器
-//					  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-//				  				Intent intent=new Intent();
-//						    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
-//								intent.putExtra("bill", 1);	
-//								intent.putExtra("coin", 1);	
-//								intent.putExtra("opt", 0);	
-//								intent.setAction("android.intent.action.comsend");//action与接收器相同
-//								comBroadreceiver.sendBroadcast(intent);	
-//					  			isempcoin=true;
-//					  		}
-//				  		}
-//				  	}
-//				  	
-//				  	if(money>0)
-//				  	{
-//				  		iszhiamount=1;
-//				  		recLen = 180;//有投币后倒计时不用计算了
-//				  		txtbuszhiamountbillAmount.setText(String.valueOf(money));
-//				  		OrderDetail.setSmallNote(billmoney);
-//				  		OrderDetail.setSmallConi(coinmoney);
-//				  		OrderDetail.setSmallAmount(money);
-//				  		if(money>=amount)
-//				  		{
-//				  			timer.shutdown(); 
-//				  			tochuhuo();
-//				  		}
-//				  	}
-					break;
-				case EVprotocolAPI.EV_MDB_PAYOUT://找零
-					break;
-				case EVprotocolAPI.EV_MDB_PAYBACK://退币
-					RealNote=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));	
-					RealCoin=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));	
-					RealAmount=RealNote+RealCoin;						
-					OrderDetail.setRealNote(RealNote);
-			    	OrderDetail.setRealCoin(RealCoin);
-			    	OrderDetail.setRealAmount(RealAmount);
-			    	//退币完成
-			    	if(RealAmount==money)
-			    	{
-			    		OrderDetail.setRealStatus(1);//退款完成				    		
-			    	}
-			    	//欠款
-			    	else
-			    	{
-			    		OrderDetail.setRealStatus(3);//退款失败
-			    		OrderDetail.setDebtAmount(money-RealAmount);//欠款金额
-			    	}
-			    	if(ischuhuo==true)
-			    	{
-			    		OrderDetail.addLog(BusZhiAmount.this);
-			    	}
-			    	else
-			    	{
-			    		OrderDetail.cleardata();
-					}
-					//关闭纸币硬币器
-		  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-			    	Intent intent=new Intent();
-			    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
-					intent.putExtra("bill", 1);	
-					intent.putExtra("coin", 1);	
-					intent.putExtra("opt", 0);	
-					intent.setAction("android.intent.action.comsend");//action与接收器相同
-					comBroadreceiver.sendBroadcast(intent);	
-		  	    	dialog.dismiss();
-		  	    	finish();
-					break; 	
-			}				
-		}
 		
-	}
-	
 	//调用倒计时定时器
 	TimerTask task = new TimerTask() { 
         @Override 
@@ -593,7 +429,7 @@ public class BusZhiAmount  extends Activity
   				else 
   				{
   					dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
-  					EVprotocolAPI.setCallBack(new jniInterfaceImp());
+  					
   					//退币
   	  	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
   					Intent intent=new Intent();
