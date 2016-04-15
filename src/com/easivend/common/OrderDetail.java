@@ -17,10 +17,7 @@ package com.easivend.common;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import android.content.Context;
-
-import com.easivend.app.business.BusHuo;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_order_product;

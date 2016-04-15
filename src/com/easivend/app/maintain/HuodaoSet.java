@@ -3,9 +3,7 @@ package com.easivend.app.maintain;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
-import com.easivend.common.Vmc_ProductAdapter;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.http.EVServerhttp;
@@ -23,20 +21,15 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class HuodaoSet extends Activity 
 {

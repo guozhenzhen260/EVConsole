@@ -1,25 +1,11 @@
 package com.easivend.app.business;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import com.easivend.app.business.BusPort.COMReceiver;
-import com.easivend.app.maintain.GoodsManager;
-import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.dao.vmc_orderDAO;
-import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.http.EVServerhttp;
-import com.easivend.model.Tb_vmc_order_pay;
-import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
@@ -29,7 +15,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -37,8 +22,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class BusHuo extends Activity 

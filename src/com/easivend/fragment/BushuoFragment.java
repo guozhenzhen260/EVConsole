@@ -2,21 +2,16 @@ package com.easivend.fragment;
 
 import java.util.List;
 
-import com.easivend.app.business.BusHuo;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
 import com.example.evconsole.R;
-
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,8 +124,6 @@ public class BushuoFragment extends Fragment
     //出货,返回值0失败,1出货指令成功，等待返回结果,2出货完成
   	private void chuhuoopt(int huox)
   	{
-  		int huorst=0;
-  		int rst=0;
   		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
    	    columnDAO = new vmc_columnDAO(context);
    	    txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");

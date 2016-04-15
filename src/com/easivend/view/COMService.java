@@ -15,9 +15,6 @@
 
 package com.easivend.view;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,16 +28,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
-import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
-import com.easivend.view.EVServerService.ActivityReceiver;
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;

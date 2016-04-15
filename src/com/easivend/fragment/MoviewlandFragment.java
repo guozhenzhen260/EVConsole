@@ -13,8 +13,6 @@ import com.easivend.view.MyVideoView;
 import  com.example.evconsole.R;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
@@ -27,8 +25,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.VideoView;
 
 public class MoviewlandFragment extends Fragment {
 	//VideoView

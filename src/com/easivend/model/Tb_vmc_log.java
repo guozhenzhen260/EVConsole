@@ -15,7 +15,6 @@
 
 package com.easivend.model;
 
-import java.util.Date;
 
 public class Tb_vmc_log 
 {

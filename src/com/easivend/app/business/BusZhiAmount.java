@@ -1,27 +1,15 @@
 package com.easivend.app.business;
 
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.easivend.app.maintain.AddInaccount.COMReceiver;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
-import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.http.EVServerhttp;
-import com.easivend.http.Zhifubaohttp;
-import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
@@ -33,9 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -58,7 +44,6 @@ public class BusZhiAmount  extends Activity
 	float RealNote=0,RealCoin=0,RealAmount=0;//退币金额
 	private int recLen = 180; 
 	private int queryLen = 0; 
-    private TextView txtView; 
     ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令

@@ -18,8 +18,6 @@ package com.easivend.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.widget.ArrayAdapter;
-
 public class ShowSortAdapter
 {
 	private List<String> dataSortID = null,dataSortName=null;	

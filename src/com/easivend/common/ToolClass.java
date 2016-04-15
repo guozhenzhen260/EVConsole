@@ -52,13 +52,10 @@ import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.ParamManager;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
-import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
-import com.easivend.model.Tb_vmc_order_pay;
-import com.easivend.model.Tb_vmc_order_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.weixing.WeiConfig;
 import com.easivend.weixing.WeiConfigAPI;
@@ -69,9 +66,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-
-import android.R.bool;
-import android.R.integer;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -80,9 +74,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class ToolClass 

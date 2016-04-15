@@ -1,19 +1,12 @@
 package com.easivend.fragment;
 
-import java.util.Timer;
-
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
-import com.easivend.app.business.BusZhiAmount;
-import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
-import com.easivend.common.ToolClass;
-import com.easivend.fragment.BusgoodsselectFragment.BusgoodsselectFragInteraction;
 import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;

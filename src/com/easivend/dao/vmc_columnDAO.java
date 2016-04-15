@@ -16,16 +16,9 @@
 package com.easivend.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_column;
-import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_product;
-import com.easivend.model.Tb_vmc_system_parameter;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;

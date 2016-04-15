@@ -3,9 +3,6 @@ package com.easivend.common;
 import java.util.List;
 
 import android.content.Context;
-import android.widget.Toast;
-
-import com.easivend.app.maintain.Order;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.model.Tb_vmc_order_pay;

@@ -1,9 +1,5 @@
 package com.easivend.app.business;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_productDAO;

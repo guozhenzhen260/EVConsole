@@ -1,23 +1,15 @@
 package com.easivend.fragment;
 
-import java.util.Map;
-
 import com.easivend.app.business.BusPort;
-import com.easivend.app.business.BusZhiAmount;
-import com.easivend.app.business.BusZhier;
-import com.easivend.app.business.BusZhiwei;
-import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.fragment.BusgoodsFragment.BusgoodsFragInteraction;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;

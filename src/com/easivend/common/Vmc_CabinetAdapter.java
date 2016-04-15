@@ -5,9 +5,7 @@ import java.util.List;
 import android.content.Context;
 
 import com.easivend.dao.vmc_cabinetDAO;
-import com.easivend.dao.vmc_classDAO;
 import com.easivend.model.Tb_vmc_cabinet;
-import com.easivend.model.Tb_vmc_class;
 
 public class Vmc_CabinetAdapter
 {

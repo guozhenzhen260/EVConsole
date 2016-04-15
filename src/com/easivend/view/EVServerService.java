@@ -34,16 +34,10 @@ import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.http.EVServerhttp;
-import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
-import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_product;
-import com.example.evconsole.R;
-
-import android.app.ActivityManager;
 import android.app.Service;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -53,9 +47,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 public class EVServerService extends Service {
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // —”≥Ÿ3√Î

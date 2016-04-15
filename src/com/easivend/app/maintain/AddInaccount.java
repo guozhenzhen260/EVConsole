@@ -16,17 +16,11 @@
 package com.easivend.app.maintain;
 
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-
-import com.easivend.dao.vmc_columnDAO;
-import com.easivend.model.Tb_vmc_column;
 import com.easivend.view.COMService;
-import com.easivend.app.maintain.HuodaoTest.COMReceiver;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
@@ -42,10 +36,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

@@ -16,22 +16,11 @@
 package com.easivend.view;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.easivend.app.maintain.MaintainActivity;
-import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
-import com.easivend.http.EVServerhttp;
-import com.easivend.view.EVServerService.ActivityReceiver;
-
-import android.R.integer;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -39,12 +28,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 public class DogService extends Service {
 
@@ -113,8 +98,7 @@ public class DogService extends Service {
 		ToolClass.Log(ToolClass.INFO,"EV_DOG","dog start","dog.txt");
 		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
-	        public void run() { 
-	        	String str=null;	        	
+	        public void run() { 	        	
 	        	if(allopen==1)
         		{
 	        		//判断应用是否在运行 

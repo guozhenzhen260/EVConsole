@@ -1,38 +1,21 @@
 package com.easivend.app.business;
 
-import java.util.Map;
-
-import com.easivend.app.maintain.GoodsManager;
-import com.easivend.app.maintain.HuodaoTest;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
-import com.easivend.dao.vmc_cabinetDAO;
-import com.easivend.dao.vmc_columnDAO;
 import com.example.evconsole.R;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Busgoods extends Activity 

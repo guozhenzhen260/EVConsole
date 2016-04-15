@@ -21,7 +21,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.easivend.model.Tb_vmc_machineset;
-import com.easivend.model.Tb_vmc_system_parameter;
 
 public class vmc_machinesetDAO 
 {

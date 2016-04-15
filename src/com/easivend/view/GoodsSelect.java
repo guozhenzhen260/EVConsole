@@ -15,9 +15,7 @@
 
 package com.easivend.view;
 
-import com.easivend.app.maintain.GoodsManager;
 import com.easivend.app.maintain.HuodaoSet;
-import com.easivend.app.maintain.HuodaoTest;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
@@ -25,8 +23,6 @@ import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;

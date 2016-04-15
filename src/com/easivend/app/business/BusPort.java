@@ -1,12 +1,7 @@
 package com.easivend.app.business;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -15,9 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.MaintainActivity;
-import com.easivend.app.maintain.HuodaoTest.COMReceiver;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -30,7 +23,6 @@ import com.easivend.fragment.BusgoodsselectFragment;
 import com.easivend.fragment.BusgoodsselectFragment.BusgoodsselectFragInteraction;
 import com.easivend.fragment.BushuoFragment;
 import com.easivend.fragment.BushuoFragment.BushuoFragInteraction;
-import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinessportFragment;
 import com.easivend.fragment.BusinessportFragment.BusportFragInteraction;
 import com.easivend.fragment.BuszhiamountFragment;
@@ -39,16 +31,12 @@ import com.easivend.fragment.BuszhierFragment;
 import com.easivend.fragment.BuszhierFragment.BuszhierFragInteraction;
 import com.easivend.fragment.BuszhiweiFragment;
 import com.easivend.fragment.BuszhiweiFragment.BuszhiweiFragInteraction;
-import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
-import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.view.COMService;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
-
-import android.R.bool;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -63,7 +51,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 

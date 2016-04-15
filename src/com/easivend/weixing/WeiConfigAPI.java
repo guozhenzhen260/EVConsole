@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,9 +20,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Log;
 import android.util.Xml;
-
-import com.easivend.alipay.AlipayConfig;
-import com.easivend.alipay.AlipaySubmit;
 import com.easivend.common.ToolClass;
 
 public class WeiConfigAPI 

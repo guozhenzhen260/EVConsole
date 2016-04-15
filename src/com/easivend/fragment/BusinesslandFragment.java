@@ -1,41 +1,17 @@
 package com.easivend.fragment;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.easivend.app.business.BusZhitihuo;
-import com.easivend.app.business.Busgoods;
-import com.easivend.app.business.BusgoodsClass;
-import com.easivend.app.business.BusgoodsSelect;
-import com.easivend.app.maintain.MaintainActivity;
-import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.model.Tb_vmc_product;
-import com.easivend.model.Tb_vmc_system_parameter;
-import com.easivend.view.DogService;
 import com.example.evconsole.R;
-
-import android.R.bool;
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -548,24 +524,5 @@ public class BusinesslandFragment extends Fragment
     	listterner.finishBusiness();
     }
     
-    //ÃÜÂë¿ò±È¶Ô
-    private boolean passcmp(String pwd,String value)
-    {
-    	boolean istrue=false;
-    	if((pwd==null)||(pwd.equals("")==true))
-    	{
-    		if(value.equals("83718557"))
-    		{
-    			istrue=true;
-    		}
-    	}
-    	else
-    	{
-    		if(value.equals(pwd))
-    		{
-    			istrue=true;
-    		}
-    	}
-    	return istrue;
-    }
+   
 }

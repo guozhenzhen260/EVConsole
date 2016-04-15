@@ -14,22 +14,6 @@
 ********************************************************************************************************/
 
 package com.easivend.evprotocol;
-import java.util.Collection;
-import java.util.EventListener;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.easivend.common.ToolClass;
-import com.google.gson.JsonArray;
 
 
 
