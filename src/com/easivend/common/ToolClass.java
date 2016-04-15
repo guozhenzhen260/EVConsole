@@ -42,6 +42,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.conn.ssl.SSLContexts;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.easivend.alipay.AlipayConfig;
@@ -53,6 +54,7 @@ import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
@@ -1856,6 +1858,27 @@ public class ToolClass
 	    	res.append("[").append(hex.toUpperCase()).append("]");				    	
 	    }
 		return res;
+	}
+	
+	//提取出portid
+	public static int Resetportid(String bentcom)
+	{
+		int bentcom_id=0;
+		//2.重新组包
+		try {
+			JSONObject jsonObject = new JSONObject(bentcom); 
+			//根据key取出内容
+			JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
+			int str_evType =  ev_head.getInt("EV_type");
+			if(str_evType==EVprotocol.EV_REGISTER)
+			{
+				bentcom_id=ev_head.getInt("port_id");				
+			}
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return bentcom_id;
 	}
 	
 }

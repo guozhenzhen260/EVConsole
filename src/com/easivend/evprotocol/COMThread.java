@@ -101,29 +101,6 @@ public class COMThread implements Runnable
 		// TODO Auto-generated method stub
 		Looper.prepare();//用户自己定义的类，创建线程需要自己准备loop
 		ToolClass.Log(ToolClass.INFO,"EV_COM","Thread start["+Thread.currentThread().getId()+"]","com.txt");
-
-		//打开格子柜串口
-		if(ToolClass.getBentcom().equals("")==false)
-		{
-			String bentcom = EVprotocol.EVPortRegister(ToolClass.getBentcom());
-			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadbentcom="+bentcom,"com.txt");
-			ToolClass.setBentcom_id(Resetportid(bentcom));
-		}
-		//打开弹簧柜串口
-		if(ToolClass.getColumncom().equals("")==false)
-		{
-			String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
-			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadcolumncom="+columncom,"com.txt");
-			ToolClass.setColumncom_id(Resetportid(columncom));
-		}
-		//打开现金设备串口
-		if(ToolClass.getCom().equals("")==false)
-		{
-			String com = EVprotocol.EVPortRegister(ToolClass.getCom());
-			ToolClass.Log(ToolClass.INFO,"EV_COM","Threadcolumncom="+com,"com.txt");
-			ToolClass.setCom_id(Resetportid(com));
-		}
-		
 				
 		childhand=new Handler()
 		{
@@ -1191,25 +1168,6 @@ public class COMThread implements Runnable
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop
 	}
 	
-	//提取出portid
-	private int Resetportid(String bentcom)
-	{
-		int bentcom_id=0;
-		//2.重新组包
-		try {
-			JSONObject jsonObject = new JSONObject(bentcom); 
-			//根据key取出内容
-			JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
-			int str_evType =  ev_head.getInt("EV_type");
-			if(str_evType==EVprotocol.EV_REGISTER)
-			{
-				bentcom_id=ev_head.getInt("port_id");				
-			}
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		return bentcom_id;
-	}
+	
 
 }

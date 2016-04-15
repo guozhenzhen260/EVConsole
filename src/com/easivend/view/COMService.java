@@ -133,13 +133,7 @@ public class COMService extends Service {
 			        localBroadreceiver.sendBroadcast(recintent);
 			    }
 			    else
-				{
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+				{					
 			    	childhand=comserial.obtainHandler();
 	        		Message childrec=childhand.obtainMessage();
 	        		//查找货道类型
@@ -690,7 +684,9 @@ public class COMService extends Service {
 	public void onDestroy() {
 		// TODO Auto-generated method stub		
 		ToolClass.Log(ToolClass.INFO,"EV_COM","COMService destroy","com.txt");
-		EVprotocol.EVPortRelease(ToolClass.getBentcom_id());
+		EVprotocol.EVPortRelease(ToolClass.getBentcom());
+		EVprotocol.EVPortRelease(ToolClass.getColumncom());
+		EVprotocol.EVPortRelease(ToolClass.getCom());
 		//解除注册接收器
 		localBroadreceiver.unregisterReceiver(receiver);
 		super.onDestroy();

@@ -222,13 +222,25 @@ public class BusZhiAmount  extends Activity
 						int coin_err=ToolClass.getvmcStatus(obj,2);
 						ToolClass.setBill_err(bill_err);
 						ToolClass.setCoin_err(coin_err);
-						int hopper1=ToolClass.getvmcStatus(obj,3);
 						if(bill_err>0)
 							bill_enable="[纸币器]无法使用";
 						if(coin_err>0)
-							coin_enable="[硬币器]无法使用";					
-						if(hopper1>0)
-							hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
+							coin_enable="[硬币器]无法使用";
+						int hopper1=0;
+						if(dispenser==1)//hopper
+					  	{
+							hopper1=ToolClass.getvmcStatus(obj,3);
+							if(hopper1>0)
+								hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
+					  	}
+						else if(dispenser==2)//mdb
+					  	{
+					  		//当前存币金额小于5元
+					  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
+					  		{
+					  			hopperString="[找零器]:缺币";
+					  		}
+					  	}
 					  	txtbuszhiamounttsxx.setText("提示信息："+bill_enable+coin_enable+hopperString);
 					  	billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
 					  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));

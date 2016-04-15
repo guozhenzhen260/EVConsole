@@ -190,6 +190,33 @@ public class MaintainActivity extends Activity
             @Override
             public void run() 
             {      
+    			//打开格子柜串口
+    			if(ToolClass.getBentcom().equals("")==false)
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcomSend="+ToolClass.getBentcom(),"com.txt");
+    				EVprotocol.EVPortRelease(ToolClass.getBentcom());
+    				String bentcom = EVprotocol.EVPortRegister(ToolClass.getBentcom());
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcom="+bentcom,"com.txt");
+    				ToolClass.setBentcom_id(ToolClass.Resetportid(bentcom));
+    			}
+    			//打开弹簧柜串口
+    			if(ToolClass.getColumncom().equals("")==false)
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","columncomSend="+ToolClass.getColumncom(),"com.txt");
+    				EVprotocol.EVPortRelease(ToolClass.getColumncom());
+    				String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom="+columncom,"com.txt");
+    				ToolClass.setColumncom_id(ToolClass.Resetportid(columncom));
+    			}
+    			//打开现金设备串口
+    			if(ToolClass.getCom().equals("")==false) 
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","comSend="+ToolClass.getCom(),"com.txt");
+    				EVprotocol.EVPortRelease(ToolClass.getCom());
+    				String com = EVprotocol.EVPortRegister(ToolClass.getCom());
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","com="+com,"com.txt");
+    				ToolClass.setCom_id(ToolClass.Resetportid(com));
+    			}
             	//7.发送指令广播给COMService
         		Intent intent=new Intent();
         		intent.putExtra("EVWhat", COMService.EV_CHECKALLCHILD);	
@@ -223,7 +250,8 @@ public class MaintainActivity extends Activity
 	        }
 	        ToolClass.setCom(com);
 	        ToolClass.setBentcom(bentcom);
-	        ToolClass.setColumncom(columncom);	        
+	        ToolClass.setColumncom(columncom);	
+
 		}
 		else
 		{

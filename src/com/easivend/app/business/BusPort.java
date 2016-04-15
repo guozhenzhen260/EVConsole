@@ -21,6 +21,7 @@ import com.easivend.app.maintain.HuodaoTest.COMReceiver;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.evprotocol.JNIInterface;
 import com.easivend.fragment.BusgoodsFragment;
@@ -1343,7 +1344,7 @@ BushuoFragInteraction
 		  	    		recLen=10;
 		  	    	}
 					break;
-				case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货					
+				case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货 					
 				case EVprotocolAPI.EV_COLUMN_OPEN://主柜出货
 					status=(Integer)allSet.get("result");//出货结果
 					dialog.dismiss();
@@ -1484,7 +1485,7 @@ BushuoFragInteraction
 			case COMService.EV_OPTMAIN: 
 				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();
-				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 现金设备操作="+Set,"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 综合设备操作="+Set,"com.txt");
 				int EV_TYPE=Set.get("EV_TYPE");
 				switch(EV_TYPE)
 				{
@@ -1541,7 +1542,9 @@ BushuoFragInteraction
 							String coin_enable="";
 							String hopperString="";
 							int bill_err=ToolClass.getvmcStatus(obj,1);
-							int coin_err=ToolClass.getvmcStatus(obj,2);							
+							int coin_err=ToolClass.getvmcStatus(obj,2);		
+							ToolClass.setBill_err(bill_err);
+							ToolClass.setCoin_err(coin_err);
 							if(bill_err>0)
 								bill_enable="[纸币器]无法使用";
 							if(coin_err>0)
@@ -1552,6 +1555,14 @@ BushuoFragInteraction
 								hopper1=ToolClass.getvmcStatus(obj,3);
 								if(hopper1>0)
 									hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
+						  	}
+							else if(dispenser==2)//mdb
+						  	{
+						  		//当前存币金额小于5元
+						  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
+						  		{
+						  			hopperString="[找零器]:缺币";
+						  		}
 						  	}
 							listterner.BusportTsxx("提示信息："+bill_enable+coin_enable+hopperString);
 							billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
@@ -1599,16 +1610,7 @@ BushuoFragInteraction
 						  			tochuhuo();
 						  		}
 						  	}
-						}
-						//首页或者其他页面
-						else
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-							int bill_err=ToolClass.getvmcStatus(obj,1);
-							int coin_err=ToolClass.getvmcStatus(obj,2);
-							ToolClass.setBill_err(bill_err);
-							ToolClass.setCoin_err(coin_err);
-						}
+						}						
 						break;
 					case COMService.EV_MDB_PAYOUT://找零			
 						break;	
@@ -1652,18 +1654,17 @@ BushuoFragInteraction
 			  	    	{
 			  	    		recLen=10;
 			  	    	}
-						break; 	
+						break; 
+					//是出货操作	
+					case EVprotocol.EV_BENTO_OPEN://格子柜出货 					
+					case EVprotocol.EV_COLUMN_OPEN://主柜出货
+						status=Set.get("result");//出货结果
+						dialog.dismiss();
+						listterner.BusportChjg(status);
 					default:break;	
 				}
 				break;				
 			}
-//			//是出货操作
-//			if(gotoswitch==BUSHUO)
-//			{
-//				status=Set.get("result");//出货结果
-//				dialog.dismiss();
-//				listterner.BusportChjg(status);
-//			}
 		}
 
 	}

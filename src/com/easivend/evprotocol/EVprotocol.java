@@ -106,13 +106,13 @@ public class EVprotocol {
 	/*********************************************************************************************************
 	** Function name	:		EVPortRelease 
 	** Descriptions		:		串口释放接口  [同步]
-	** input parameters	:       port_id 串口编号
+	** input parameters	:       portName 串口号 例如"COM1"
 	** output parameters:		无
 	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":2,"result":1}}
 	*							"EV_type"= EV_RELEASE = 2； 表示串口释放包类型
 	*							"result":表示操作结果    1:表示成功释放   0:表示释放失败
 	*********************************************************************************************************/
-	public  native static String EVPortRelease(int port_id);
+	public  native static String EVPortRelease(String portName);
 	
 	
 	
