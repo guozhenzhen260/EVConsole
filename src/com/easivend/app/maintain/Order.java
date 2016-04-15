@@ -20,7 +20,6 @@ import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_orderDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_order_pay;

@@ -17,8 +17,6 @@ import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_system_parameter;

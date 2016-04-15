@@ -34,8 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.EVprotocol;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.view.COMService;

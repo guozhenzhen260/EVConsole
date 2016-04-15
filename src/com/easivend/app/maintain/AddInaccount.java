@@ -24,8 +24,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.view.COMService;
 import com.easivend.app.maintain.HuodaoTest.COMReceiver;

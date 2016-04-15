@@ -9,8 +9,6 @@ import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.example.evconsole.R;
 
 import android.app.Activity;

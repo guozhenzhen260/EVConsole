@@ -8,7 +8,6 @@ import com.easivend.app.business.BusZhiAmount;
 import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.fragment.BusgoodsselectFragment.BusgoodsselectFragInteraction;
 import com.example.evconsole.R;
 

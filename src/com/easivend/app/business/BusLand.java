@@ -9,8 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.ToolClass;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;

@@ -35,18 +35,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.Request.Method;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.easivend.common.ToolClass;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.http.EVServerhttp;
-import com.google.gson.Gson;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;

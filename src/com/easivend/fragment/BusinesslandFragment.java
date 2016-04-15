@@ -16,7 +16,6 @@ import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;

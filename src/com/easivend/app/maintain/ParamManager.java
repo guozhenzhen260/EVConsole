@@ -7,7 +7,6 @@ import java.util.List;
 import com.easivend.dao.vmc_machinesetDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.common.MachineExpanseListAdapter;
 import com.easivend.common.ShowSortAdapter;
 import com.easivend.common.ToolClass;

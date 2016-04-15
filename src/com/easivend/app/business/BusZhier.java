@@ -17,7 +17,6 @@ import com.easivend.common.OrderDetail;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_system_parameter;

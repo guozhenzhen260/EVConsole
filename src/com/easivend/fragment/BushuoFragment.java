@@ -8,7 +8,6 @@ import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
 import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
 import com.example.evconsole.R;
 

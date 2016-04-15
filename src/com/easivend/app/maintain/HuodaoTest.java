@@ -33,8 +33,6 @@ import org.json.JSONObject;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
