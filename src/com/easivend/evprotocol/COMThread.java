@@ -234,39 +234,52 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					String rec2=EVprotocol.EVBentoOpen(ToolClass.getBentcom_id(), cabinet,column);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec2.toString(),"log.txt");
-
-					//2.重新组包
-					try {
-						JSONObject jsonObject2 = new JSONObject(rec2); 
-						//根据key取出内容
-						JSONObject ev_head2 = (JSONObject) jsonObject2.getJSONObject("EV_json");
-						int str_evType2 =  ev_head2.getInt("EV_type");
-						if(str_evType2==EVprotocol.EV_BENTO_OPEN)
-						{
-							if(ev_head2.getInt("is_success")>0)
-					    	{
-								//往接口回调信息
-								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_OPEN);
-								allSet.put("addr", ev_head2.getInt("addr"));//柜子地址
-								allSet.put("box", ev_head2.getInt("box"));//格子地址
-								allSet.put("result", ev_head2.getInt("result"));								
-					    	}
-					    	else
-					    	{
-								//往接口回调信息
-								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_OPEN);
-								allSet.put("addr", 0);//柜子地址
-								allSet.put("box", 0);//格子地址
-								allSet.put("result", 0);								
-					    	}
+					//重试5次
+					for(int i=0;i<5;i++)
+					{
+						String rec2=EVprotocol.EVBentoOpen(ToolClass.getBentcom_id(), cabinet,column);
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec2.toString(),"log.txt");
+	
+						//2.重新组包
+						try {
+							JSONObject jsonObject2 = new JSONObject(rec2); 
+							//根据key取出内容
+							JSONObject ev_head2 = (JSONObject) jsonObject2.getJSONObject("EV_json");
+							int str_evType2 =  ev_head2.getInt("EV_type");
+							if(str_evType2==EVprotocol.EV_BENTO_OPEN)
+							{
+								if(ev_head2.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EVprotocol.EV_BENTO_OPEN);
+									allSet.put("addr", ev_head2.getInt("addr"));//柜子地址
+									allSet.put("box", ev_head2.getInt("box"));//格子地址
+									allSet.put("result", ev_head2.getInt("result"));								
+									
+									break;
+						    	}
+						    	else
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EVprotocol.EV_BENTO_OPEN);
+									allSet.put("addr", 0);//柜子地址
+									allSet.put("box", 0);//格子地址 
+									allSet.put("result", 0);	 
+									ToolClass.ResstartPort(2);
+									try {
+										Thread.sleep(5000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+						    	}
+							}
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-					} catch (JSONException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 					//3.向主线程返回信息
 	  				Message tomain2=mainhand.obtainMessage();
@@ -528,39 +541,52 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec9.toString(),"log.txt");
-
-					//2.重新组包
-					try {
-						JSONObject jsonObject9 = new JSONObject(rec9); 
-						//根据key取出内容
-						JSONObject ev_head9 = (JSONObject) jsonObject9.getJSONObject("EV_json");
-						int str_evType9 =  ev_head9.getInt("EV_type");
-						if(str_evType9==EVprotocol.EV_COLUMN_OPEN)
-						{
-							if(ev_head9.getInt("is_success")>0)
-					    	{
-								//往接口回调信息
-								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
-								allSet.put("addr", ev_head9.getInt("addr"));//柜子地址
-								allSet.put("box", ev_head9.getInt("box"));//格子地址
-								allSet.put("result", ToolClass.colChuhuorst(ev_head9.getInt("result")));								
-					    	}
-					    	else
-					    	{
-								//往接口回调信息
-								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
-								allSet.put("addr", 0);//柜子地址
-								allSet.put("box", 0);//格子地址
-								allSet.put("result", ToolClass.colChuhuorst(11));							
-					    	}
+					//重试5次
+					for(int i=0;i<5;i++)
+					{
+						String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec9.toString(),"log.txt");
+	
+						//2.重新组包
+						try {
+							JSONObject jsonObject9 = new JSONObject(rec9); 
+							//根据key取出内容
+							JSONObject ev_head9 = (JSONObject) jsonObject9.getJSONObject("EV_json");
+							int str_evType9 =  ev_head9.getInt("EV_type");
+							if(str_evType9==EVprotocol.EV_COLUMN_OPEN)
+							{
+								if(ev_head9.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
+									allSet.put("addr", ev_head9.getInt("addr"));//柜子地址
+									allSet.put("box", ev_head9.getInt("box"));//格子地址
+									allSet.put("result", ToolClass.colChuhuorst(ev_head9.getInt("result")));								
+									
+									break;
+						    	}
+						    	else
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
+									allSet.put("addr", 0);//柜子地址
+									allSet.put("box", 0);//格子地址
+									allSet.put("result", ToolClass.colChuhuorst(11));
+									ToolClass.ResstartPort(3);
+									try {
+										Thread.sleep(5000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+						    	}
+							}
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-					} catch (JSONException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 					//3.向主线程返回信息
 	  				Message tomain9=mainhand.obtainMessage();
@@ -583,41 +609,53 @@ public class COMThread implements Runnable
 						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bill="+bill+"coin="+coin+"opt="+opt,"com.txt");
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						e1.printStackTrace(); 
 					}
-					String rec10=EVprotocol.EVmdbEnable(ToolClass.getCom_id(),bill,coin,opt);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec10.toString(),"log.txt");
-					
-					//2.重新组包
-					try {
-						JSONObject jsonObject10 = new JSONObject(rec10); 
-						//根据key取出内容
-						JSONObject ev_head10 = (JSONObject) jsonObject10.getJSONObject("EV_json");
-						int str_evType10 =  ev_head10.getInt("EV_type");
-						if(str_evType10==EVprotocol.EV_MDB_ENABLE)
-						{
-							if(ev_head10.getInt("is_success")>0)
-					    	{
-								//往接口回调信息
-								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_ENABLE);
-								allSet.put("opt", ev_head10.getInt("opt"));
-								allSet.put("bill_result", ev_head10.getInt("bill_result"));
-								allSet.put("coin_result", ev_head10.getInt("coin_result"));								
-					    	}
-					    	else
-					    	{
-					    		//往接口回调信息
-								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_ENABLE);
-								allSet.put("opt", ev_head10.getInt("opt"));
-					    		allSet.put("bill_result", 0);
-								allSet.put("coin_result", 0);								
+					//重试5次
+					for(int i=0;i<5;i++)
+					{
+						String rec10=EVprotocol.EVmdbEnable(ToolClass.getCom_id(),bill,coin,opt);
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec10.toString(),"log.txt");
+						
+						//2.重新组包
+						try {
+							JSONObject jsonObject10 = new JSONObject(rec10); 
+							//根据key取出内容
+							JSONObject ev_head10 = (JSONObject) jsonObject10.getJSONObject("EV_json");
+							int str_evType10 =  ev_head10.getInt("EV_type");
+							if(str_evType10==EVprotocol.EV_MDB_ENABLE)
+							{
+								if(ev_head10.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("opt", ev_head10.getInt("opt"));
+									allSet.put("bill_result", ev_head10.getInt("bill_result"));
+									allSet.put("coin_result", ev_head10.getInt("coin_result"));								
+									break;
+						    	}
+						    	else
+						    	{
+						    		//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("opt", ev_head10.getInt("opt"));
+						    		allSet.put("bill_result", 0);
+									allSet.put("coin_result", 0);
+									ToolClass.ResstartPort(1);
+									try {
+										Thread.sleep(2000);
+									} catch (InterruptedException e) { 
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
 							}
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-					} catch (JSONException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 					//3.向主线程返回信息
 	  				Message tomain10=mainhand.obtainMessage();

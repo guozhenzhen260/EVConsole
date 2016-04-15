@@ -188,7 +188,7 @@ public class WeiConfigAPI
     {
     	Map<String, String>list=new HashMap<String, String>();
     	
-    	XmlPullParser parser = Xml.newPullParser();
+    	XmlPullParser parser = Xml.newPullParser(); 
         try {
             //parser.setInput(new ByteArrayInputStream(string.substring(1)
             //        .getBytes("UTF-8")), "UTF-8");
