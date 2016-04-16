@@ -2,11 +2,9 @@ package com.easivend.fragment;
 
 
 import com.easivend.app.business.BusPort;
-import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
-import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
 import com.easivend.http.Zhifubaohttp;
 import com.example.evconsole.R;
 
@@ -14,7 +12,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

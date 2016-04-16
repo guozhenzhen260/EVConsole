@@ -19,8 +19,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 
 public class vmc_system_parameterDAO

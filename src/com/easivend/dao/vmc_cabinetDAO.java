@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.easivend.model.Tb_vmc_cabinet;
-import com.easivend.model.Tb_vmc_class;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -59,6 +57,31 @@ public class vmc_cabinetDAO
         {	
             // 将遍历到的收入信息添加到集合中
             tb_inaccount.add(new Tb_vmc_cabinet(cursor.getString(cursor.getColumnIndex("cabID")),cursor.getInt(cursor.getColumnIndex("cabType"))));
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
+        return tb_inaccount;// 返回集合
+    }
+    
+    /**
+     * 获取本柜信息
+     *     
+     * @return
+     */
+    public Tb_vmc_cabinet findScrollData(String cabID) 
+    {
+        Tb_vmc_cabinet tb_inaccount = null;
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        // 获取所有收入信息
+        Cursor cursor = db.rawQuery("select cabID,cabType from vmc_cabinet where cabID=?", new String[] { cabID});
+        //遍历所有的收入信息
+        if (cursor.moveToNext()) 
+        {	
+            // 将遍历到的收入信息添加到集合中
+            tb_inaccount=new Tb_vmc_cabinet(cursor.getString(cursor.getColumnIndex("cabID")),cursor.getInt(cursor.getColumnIndex("cabType")));
         }
         if (!cursor.isClosed()) 
  		{  

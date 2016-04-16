@@ -18,10 +18,6 @@ package com.easivend.common;
 import java.util.List;
 
 import android.content.Context;
-import android.widget.ArrayAdapter;
-
-import com.easivend.app.maintain.GoodsManager;
-import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.model.Tb_vmc_class;
 

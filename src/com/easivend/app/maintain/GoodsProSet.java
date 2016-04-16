@@ -3,26 +3,19 @@ package com.easivend.app.maintain;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
-import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ClassAdapter;
-import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_product;
 import com.example.evconsole.R;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;

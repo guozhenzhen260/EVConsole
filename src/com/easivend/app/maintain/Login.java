@@ -19,12 +19,9 @@ package com.easivend.app.maintain;
 
 import java.util.Map;
 
-import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
-import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
-import com.easivend.weixing.WeiConfigAPI;
 import com.example.evconsole.R;
 
 import android.app.Activity;

@@ -1,8 +1,7 @@
 package com.easivend.app.business;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,12 +10,11 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusgoodsFragment;
 import com.easivend.fragment.BusgoodsFragment.BusgoodsFragInteraction;
 import com.easivend.fragment.BusgoodsclassFragment;
@@ -25,7 +23,6 @@ import com.easivend.fragment.BusgoodsselectFragment;
 import com.easivend.fragment.BusgoodsselectFragment.BusgoodsselectFragInteraction;
 import com.easivend.fragment.BushuoFragment;
 import com.easivend.fragment.BushuoFragment.BushuoFragInteraction;
-import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinessportFragment;
 import com.easivend.fragment.BusinessportFragment.BusportFragInteraction;
 import com.easivend.fragment.BuszhiamountFragment;
@@ -34,28 +31,26 @@ import com.easivend.fragment.BuszhierFragment;
 import com.easivend.fragment.BuszhierFragment.BuszhierFragInteraction;
 import com.easivend.fragment.BuszhiweiFragment;
 import com.easivend.fragment.BuszhiweiFragment.BuszhiweiFragInteraction;
-import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
-import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
+import com.easivend.view.COMService;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
-
-import android.R.bool;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -140,7 +135,11 @@ BushuoFragInteraction
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
-    
+    //=================
+    //COM服务相关
+    //=================
+  	LocalBroadcastManager comBroadreceiver;
+  	COMReceiver comreceiver;
     
     //=========================
     //activity与fragment回调相关
@@ -204,8 +203,12 @@ BushuoFragInteraction
 		setContentView(R.layout.busport);		
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
-		//注册串口监听器
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());
+		//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
 		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -257,7 +260,12 @@ BushuoFragInteraction
 		                    if(queryLen>=1)
 		                    {
 		                    	queryLen=0;
-		                    	EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		                    	//Heart操作
+							    Intent intent2=new Intent();
+						    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+								intent2.setAction("android.intent.action.comsend");//action与接收器相同
+								comBroadreceiver.sendBroadcast(intent2);
 		                    }
 	                    }
 	                    //发送打开纸币硬币器指令
@@ -267,7 +275,8 @@ BushuoFragInteraction
 		                    if(queryLen>=10)
 		                    {
 		                    	queryLen=0;
-		                    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
+		                    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
+		                    	BillEnable(1);
 		                    }
 	                    }
 		        	}
@@ -554,14 +563,21 @@ BushuoFragInteraction
   			dialog= ProgressDialog.show(BusPort.this,"正在退币中","请稍候...");
   			OrderDetail.setPayStatus(2);//支付失败
   			//退币
-  	    	EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+  			Intent intent=new Intent();
+	    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+			intent.putExtra("bill", 1);	
+			intent.putExtra("coin", 1);	
+			intent.setAction("android.intent.action.comsend");//action与接收器相同
+			comBroadreceiver.sendBroadcast(intent);
   		} 
   		else 
   		{
   			clearamount();
   			//关闭纸币硬币器
-  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);   
-  	    	viewSwitch(BUSPORT, null);
+  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);   
+  			BillEnable(0);
+  			viewSwitch(BUSPORT, null);
 		} 	    
 	    
 	}
@@ -823,17 +839,17 @@ BushuoFragInteraction
 		// TODO Auto-generated method stub
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<busport商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt");
 		dialog= ProgressDialog.show(BusPort.this,"正在出货中","请稍候...");
-		//格子柜
-		if(cabinetTypevar==5)
-		{
-			EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huodaoNo);							
-			
-		}
-		//普通柜
-		else 
-		{
-			ToolClass.columnChuhuo(huodaoNo);
-		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" column="+huodaoNo		    	
+		    	,"log.txt");
+		Intent intent = new Intent();
+		//4.发送指令广播给COMService
+		intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
+		intent.putExtra("cabinet", cabinetvar);	
+		intent.putExtra("column", huodaoNo);	
+		intent.setAction("android.intent.action.comsend");//action与接收器相同
+		comBroadreceiver.sendBroadcast(intent);
     }
     
     //步骤三、实现Bushuo接口,结束出货页面
@@ -850,8 +866,13 @@ BushuoFragInteraction
 				if(status==1)
 				{
 					//扣钱
-		  	    	EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
-		  	    	money-=amount;
+		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
+					Intent intent=new Intent();
+			    	intent.putExtra("EVWhat", COMService.EV_MDB_COST);	
+					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
+					intent.setAction("android.intent.action.comsend");//action与接收器相同
+					comBroadreceiver.sendBroadcast(intent);
+					money-=amount;
 				}
 				//出货失败,不扣钱
 				else
@@ -865,7 +886,8 @@ BushuoFragInteraction
 			    	OrderDetail.addLog(BusPort.this);
 			    	clearamount();
 		  			//关闭纸币硬币器
-		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);   
+		  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
+			    	BillEnable(0);
 		  	    	recLen=10;
   				}
   				//退币
@@ -873,7 +895,13 @@ BushuoFragInteraction
   				{
   					dialog= ProgressDialog.show(BusPort.this,"正在退币中,金额"+money,"请稍候...");
 	    			//退币
-	    	    	EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+	    	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+  					Intent intent=new Intent();
+  			    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+  					intent.putExtra("bill", 1);	
+  					intent.putExtra("coin", 1);	
+  					intent.setAction("android.intent.action.comsend");//action与接收器相同
+  					comBroadreceiver.sendBroadcast(intent);
 				} 
     			break;
     		//支付宝页面	
@@ -1082,7 +1110,8 @@ BushuoFragInteraction
 				break;
 			case BUSZHIAMOUNT://现金支付
 				isbus=false;
-				EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);  
+				//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
+				BillEnable(1);
 				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo(); 
 				zhifutype="0";
 				out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
@@ -1132,274 +1161,10 @@ BushuoFragInteraction
 	}
 		
 	
-	//创建一个专门处理单击接口的子类
-	private class jniInterfaceImp implements JNIInterface
-	{
-		@Override
-		public void jniCallback(Map<String, Object> allSet) {
-			// TODO Auto-generated method stub
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<business监听到","log.txt");	
-			Map<String, Object> Set= allSet;
-			int jnirst=(Integer) Set.get("EV_TYPE");
-			//txtcom.setText(String.valueOf(jnirst));
-			switch (jnirst)
-			{
-				/**
-			     * 用来与其他fragment交互的,
-			     * 步骤二、activity向fragment发送回调信息
-			     * @param activity
-			     */
-				case EVprotocolAPI.EV_MDB_ENABLE://接收子线程投币金额消息	
-					//打开
-					if((Integer)Set.get("opt")==1)
-					{
-						//打开失败,等待重新打开
-						if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
-						{
-							listterner.BusportTsxx("提示信息：重试"+con);
-							if((Integer)Set.get("bill_result")==0)
-								ToolClass.setBill_err(2);
-							if((Integer)Set.get("coin_result")==0)
-								ToolClass.setCoin_err(2);
-							con++;
-						}
-						//打开成功
-						else
-						{
-							//第一次打开才发送coninfo，以后就不再操作这个了
-							if(iszhienable==0)
-								EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
-							ToolClass.setBill_err(0);
-							ToolClass.setCoin_err(0);
-						}		
-					}
-					break;
-				case EVprotocolAPI.EV_MDB_B_INFO:	
-					break;
-				case EVprotocolAPI.EV_MDB_C_INFO:
-					dispenser=(Integer)Set.get("acceptor");
-					EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-					iszhienable=1;	
-					break;	
-				//现金设备状态查询
-				case EVprotocolAPI.EV_MDB_HEART://心跳查询
-					//纸币器页面
-					if(iszhienable==1)
-					{
-						String bill_enable="";
-						String coin_enable="";
-						String hopperString="";
-						int bill_err=ToolClass.getvmcStatus(Set,1);
-						int coin_err=ToolClass.getvmcStatus(Set,2);
-						int hopper1=ToolClass.getvmcStatus(Set,3);
-						if(bill_err>0)
-							bill_enable="[纸币器]无法使用";
-						if(coin_err>0)
-							coin_enable="[硬币器]无法使用";					
-						if(hopper1>0)
-							hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
-						listterner.BusportTsxx("提示信息："+bill_enable+coin_enable+hopperString);
-						billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
-					  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));
-					  	money=billmoney+coinmoney;
-					  	//如果缺币,就把纸币硬币器关闭
-					  	if(dispenser==1)//hopper
-					  	{
-					  		if(hopper1>0)//hopper缺币
-					  		{
-						  		if(isempcoin==false)//第一次关闭纸币硬币器
-						  		{
-						  			//关闭纸币硬币器
-						  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-						  			isempcoin=true;
-						  		}
-					  		}
-					  	}
-					  	else if(dispenser==2)//mdb
-					  	{
-					  		//当前存币金额小于5元
-					  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
-					  		{
-					  			if(isempcoin==false)//第一次关闭纸币硬币器
-						  		{
-						  			//关闭纸币硬币器
-						  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-						  			isempcoin=true;
-						  		}
-					  		}
-					  	}
-					  	
-					  	if(money>0)
-					  	{
-					  		iszhiamount=1;
-					  		recLen = 180;
-					  		listterner.BusportTbje(String.valueOf(money));
-					  		OrderDetail.setSmallNote(billmoney);
-					  		OrderDetail.setSmallConi(coinmoney);
-					  		OrderDetail.setSmallAmount(money);
-					  		if(money>=amount)
-					  		{
-					  			tochuhuo();
-					  		}
-					  	}
-					}
-					//首页或者其他页面
-					else
-					{
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现金设备状态:","log.txt");	
-						int bill_err=ToolClass.getvmcStatus(Set,1);
-						int coin_err=ToolClass.getvmcStatus(Set,2);
-						ToolClass.setBill_err(bill_err);
-						ToolClass.setCoin_err(coin_err);
-					}
-					break; 	
-				case EVprotocolAPI.EV_MDB_PAYOUT://找零
-					break;
-				case EVprotocolAPI.EV_MDB_PAYBACK://退币
-					RealNote=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));	
-					RealCoin=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));	
-					RealAmount=RealNote+RealCoin;						
-					OrderDetail.setRealNote(RealNote);
-			    	OrderDetail.setRealCoin(RealCoin);
-			    	OrderDetail.setRealAmount(RealAmount);
-			    	//退币完成
-			    	if(RealAmount==money)
-			    	{
-			    		OrderDetail.setRealStatus(1);//退款完成				    		
-			    	}
-			    	//欠款
-			    	else
-			    	{
-			    		OrderDetail.setRealStatus(3);//退款失败
-			    		OrderDetail.setDebtAmount(money-RealAmount);//欠款金额
-			    	}
-			    	if(ischuhuo==true)
-			    	{
-			    		OrderDetail.addLog(BusPort.this);
-			    	}
-			    	else
-			    	{
-			    		OrderDetail.cleardata();
-					}
-			    	dialog.dismiss();
-					//清数据
-			    	clearamount();
-		  			//关闭纸币硬币器
-		  	    	EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
-		  	    	if(gotoswitch==BUSZHIAMOUNT)
-		  	    	{
-		  	    		viewSwitch(BUSPORT, null);	
-		  	    	}
-		  	    	else
-		  	    	{
-		  	    		recLen=10;
-		  	    	}
-					break;
-				case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货					
-				case EVprotocolAPI.EV_COLUMN_OPEN://主柜出货
-					status=(Integer)allSet.get("result");//出货结果
-					dialog.dismiss();
-					listterner.BusportChjg(status);
-//					device=allSet.get("device");//出货柜号
-//					status=allSet.get("status");//出货结果
-//					hdid=allSet.get("hdid");//货道id
-//					hdtype=allSet.get("type");//出货类型
-//					cost=ToolClass.MoneyRec(allSet.get("cost"));//扣钱
-//					totalvalue=ToolClass.MoneyRec(allSet.get("totalvalue"));//剩余金额
-//					huodao=allSet.get("huodao");//剩余存货数量
-//					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],status=["+status+"],hdid=["+hdid+"],type=["+hdtype+"],cost=["
-//							+cost+"],totalvalue=["+totalvalue+"],huodao=["+huodao+"]");	
-//					if(status==0)
-//					{
-//						data[tempx][0]=String.valueOf(R.drawable.yes);
-//						data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-//						//扣除存货余量
-//						chuhuoupdate(cabinetvar,huodaoNo);
-//						chuhuoLog(0);//记录日志
-//					}
-//					else
-//					{
-//						data[tempx][0]=String.valueOf(R.drawable.no);
-//						data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-//						//扣除存货余量
-//						chuhuoupdate(cabinetvar,huodaoNo);
-//						chuhuoLog(1);//记录日志
-//					}
-//					updateListview();
-//					tempx++;
-//					huorst=0;
-//					while((huorst!=1)&&(tempx<count))
-//			 	    {
-//			 	    	huorst=chuhuoopt(tempx);
-//			 	    	if(huorst==2)
-//						{
-//							data[tempx][0]=String.valueOf(R.drawable.yes);
-//							data[tempx][1]=proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品";
-//							updateListview();
-//							tempx++;
-//							//扣除存货余量
-//							chuhuoupdate(cabinetvar,huodaoNo);
-//							chuhuoLog(0);//记录日志
-//						}
-//						else if(huorst==0)
-//						{
-//							data[tempx][0]=String.valueOf(R.drawable.no);
-//							data[tempx][1]=proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱";
-//							updateListview();
-//							tempx++;
-//							//扣除存货余量
-//							chuhuoupdate(cabinetvar,huodaoNo);
-//							chuhuoLog(1);//记录日志
-//						}
-//			 	    }
-//					if(tempx>=count)
-//			 	    {
-//						ivbushuoquhuo.setVisibility(View.VISIBLE);
-//			 	    	new Handler().postDelayed(new Runnable() 
-//						{
-//	                        @Override
-//	                        public void run() 
-//	                        {
-//	                        	//出货完成,把非现金模块去掉
-//	                        	if(status==0)
-//	                        	{
-//	                        		if(BusZhier.BusZhierAct!=null)
-//	                        			BusZhier.BusZhierAct.finish(); 
-//	                        		if(BusZhiwei.BusZhiweiAct!=null)
-//	                        			BusZhiwei.BusZhiweiAct.finish(); 
-//	                        		OrderDetail.addLog(BusHuo.this);
-//	                        	}
-//	                        	//出货失败，退到非现金模块进行退币操作
-//	                        	else
-//	                        	{
-//	                        		if(BusZhier.BusZhierAct!=null)
-//	                        		{
-//	                        			//退出时，返回intent
-//	                    	            Intent intent=new Intent();
-//	                    	            setResult(BusZhier.RESULT_CANCELED,intent);
-//	                        		}
-//	                        		if(BusZhiwei.BusZhiweiAct!=null)
-//	                        		{
-//	                        			//退出时，返回intent
-//	                    	            Intent intent=new Intent();
-//	                    	            setResult(BusZhiwei.RESULT_CANCELED,intent);
-//	                        		}
-//								}		                        	
-//	                            finish();
-//	                        }
-//
-//						}, SPLASH_DISPLAY_LENGHT);
-//			 	    }
-					break;		
-			}
-		}
-	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
-		//注册串口监听器
-		EVprotocolAPI.setCallBack(new jniInterfaceImp());	
 		if(requestCode==PWD_CODE)
 		{
 			if(resultCode==PassWord.RESULT_OK)
@@ -1420,9 +1185,224 @@ BushuoFragInteraction
 			}			
 		}
 	}
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//操作返回	
+			case COMService.EV_OPTMAIN: 
+				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 综合设备操作="+Set,"com.txt");
+				int EV_TYPE=Set.get("EV_TYPE");
+				switch(EV_TYPE)
+				{
+					case COMService.EV_MDB_ENABLE:	
+						//打开
+						if((Integer)Set.get("opt")==1)
+						{
+							//打开失败,等待重新打开
+							if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
+							{
+								listterner.BusportTsxx("提示信息：重试"+con);
+								if((Integer)Set.get("bill_result")==0)
+									ToolClass.setBill_err(2);
+								if((Integer)Set.get("coin_result")==0)
+									ToolClass.setCoin_err(2);
+								con++;
+							}
+							//打开成功
+							else
+							{
+								//第一次打开才发送coninfo，以后就不再操作这个了
+								if(iszhienable==0)
+								{
+									//EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+									//硬币器查询接口
+									Intent intent3=new Intent();
+							    	intent3.putExtra("EVWhat", COMService.EV_MDB_C_INFO);	
+									intent3.setAction("android.intent.action.comsend");//action与接收器相同
+									comBroadreceiver.sendBroadcast(intent3);
+								}
+								ToolClass.setBill_err(0);
+								ToolClass.setCoin_err(0);
+							}		
+						}												
+						break;
+					case COMService.EV_MDB_B_INFO:
+						break;
+					case COMService.EV_MDB_C_INFO:
+						dispenser=(Integer)Set.get("dispenser");						
+					    //Heart操作
+					    Intent intent4=new Intent();
+				    	intent4.putExtra("EVWhat", COMService.EV_MDB_HEART);
+						intent4.setAction("android.intent.action.comsend");//action与接收器相同
+						comBroadreceiver.sendBroadcast(intent4);
+						iszhienable=1;
+						break;	
+					case COMService.EV_MDB_HEART://心跳查询
+						Map<String,Object> obj=new LinkedHashMap<String, Object>();
+						obj.putAll(Set);
+						//纸币器页面
+						if(iszhienable==1)
+						{
+							String bill_enable="";
+							String coin_enable="";
+							String hopperString="";
+							int bill_err=ToolClass.getvmcStatus(obj,1);
+							int coin_err=ToolClass.getvmcStatus(obj,2);		
+							ToolClass.setBill_err(bill_err);
+							ToolClass.setCoin_err(coin_err);
+							if(bill_err>0)
+								bill_enable="[纸币器]无法使用";
+							if(coin_err>0)
+								coin_enable="[硬币器]无法使用";	
+							int hopper1=0;
+							if(dispenser==1)//hopper
+						  	{
+								hopper1=ToolClass.getvmcStatus(obj,3);
+								if(hopper1>0)
+									hopperString="[找零器]:"+ToolClass.gethopperstats(hopper1);
+						  	}
+							else if(dispenser==2)//mdb
+						  	{
+						  		//当前存币金额小于5元
+						  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
+						  		{
+						  			hopperString="[找零器]:缺币";
+						  		}
+						  	}
+							listterner.BusportTsxx("提示信息："+bill_enable+coin_enable+hopperString);
+							billmoney=ToolClass.MoneyRec((Integer)Set.get("bill_recv"));	
+						  	coinmoney=ToolClass.MoneyRec((Integer)Set.get("coin_recv"));
+						  	money=billmoney+coinmoney;
+						  	//如果缺币,就把纸币硬币器关闭
+						  	if(dispenser==1)//hopper
+						  	{
+						  		if(hopper1>0)//hopper缺币
+						  		{
+							  		if(isempcoin==false)//第一次关闭纸币硬币器
+							  		{
+							  			//关闭纸币硬币器
+							  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
+							  			BillEnable(0);
+							  			isempcoin=true;
+							  		}
+						  		}
+						  	}
+						  	else if(dispenser==2)//mdb
+						  	{
+						  		//当前存币金额小于5元
+						  		if(ToolClass.MoneyRec((Integer)Set.get("coin_remain"))<5)
+						  		{
+						  			if(isempcoin==false)//第一次关闭纸币硬币器
+							  		{
+							  			//关闭纸币硬币器
+							  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
+						  				BillEnable(0);
+							  			isempcoin=true;
+							  		}
+						  		}
+						  	}
+						  	
+						  	if(money>0)
+						  	{
+						  		iszhiamount=1;
+						  		recLen = 180;
+						  		listterner.BusportTbje(String.valueOf(money));
+						  		OrderDetail.setSmallNote(billmoney);
+						  		OrderDetail.setSmallConi(coinmoney);
+						  		OrderDetail.setSmallAmount(money);
+						  		if(money>=amount)
+						  		{
+						  			tochuhuo();
+						  		}
+						  	}
+						}						
+						break;
+					case COMService.EV_MDB_PAYOUT://找零			
+						break;	
+					case COMService.EV_MDB_PAYBACK://退币
+						RealNote=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));	
+						RealCoin=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));	
+						RealAmount=RealNote+RealCoin;						
+						OrderDetail.setRealNote(RealNote);
+				    	OrderDetail.setRealCoin(RealCoin);
+				    	OrderDetail.setRealAmount(RealAmount);
+				    	//退币完成
+				    	if(RealAmount==money)
+				    	{
+				    		OrderDetail.setRealStatus(1);//退款完成				    		
+				    	}
+				    	//欠款
+				    	else
+				    	{
+				    		OrderDetail.setRealStatus(3);//退款失败
+				    		OrderDetail.setDebtAmount(money-RealAmount);//欠款金额
+				    	}
+				    	if(ischuhuo==true)
+				    	{
+				    		OrderDetail.addLog(BusPort.this);
+				    	}
+				    	else
+				    	{
+				    		OrderDetail.cleardata();
+						}
+				    	dialog.dismiss();
+						//清数据
+				    	clearamount();
+			  			//关闭纸币硬币器
+			  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
+				    	BillEnable(0);
+			  	    	if(gotoswitch==BUSZHIAMOUNT)
+			  	    	{
+			  	    		viewSwitch(BUSPORT, null);	
+			  	    	}
+			  	    	else
+			  	    	{
+			  	    		recLen=10;
+			  	    	}
+						break; 
+					//是出货操作	
+					case EVprotocol.EV_BENTO_OPEN://格子柜出货 					
+					case EVprotocol.EV_COLUMN_OPEN://主柜出货
+						status=Set.get("result");//出货结果
+						dialog.dismiss();
+						listterner.BusportChjg(status);
+					default:break;	
+				}
+				break;				
+			}
+		}
+
+	}
+	//1打开,0关闭关闭纸币硬币器   
+  	private void BillEnable(int opt)
+  	{  		 	
+		Intent intent=new Intent();
+		intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+		intent.putExtra("bill", 1);	
+		intent.putExtra("coin", 1);	
+		intent.putExtra("opt", opt);	
+		intent.setAction("android.intent.action.comsend");//action与接收器相同
+		comBroadreceiver.sendBroadcast(intent);	
+  	}
 	@Override
 	protected void onDestroy() {
 		timer.shutdown(); 
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);	
 		//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

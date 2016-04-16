@@ -1,14 +1,6 @@
 package com.easivend.app.business;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.easivend.app.maintain.GoodsManager;
-import com.easivend.app.maintain.HuodaoTest;
-import com.easivend.app.maintain.MaintainActivity;
-import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.ClassPictureAdapter;
-import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.Vmc_ClassAdapter;
 import com.example.evconsole.R;
 
@@ -24,7 +16,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class BusgoodsClass extends Activity
@@ -99,7 +90,7 @@ public class BusgoodsClass extends Activity
 		protected Vmc_ClassAdapter doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
-		    String[] strInfos = vmc_classAdapter.showSpinInfo(BusgoodsClass.this);
+		    vmc_classAdapter.showSpinInfo(BusgoodsClass.this);
 		    return vmc_classAdapter;
 		}
 

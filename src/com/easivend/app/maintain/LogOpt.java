@@ -8,14 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.easivend.common.ToolClass;
-import com.easivend.common.Vmc_OrderAdapter;
 import com.easivend.dao.vmc_logDAO;
-import com.easivend.dao.vmc_orderDAO;
-import com.easivend.dao.vmc_productDAO;
 import com.easivend.model.Tb_vmc_log;
-import com.easivend.model.Tb_vmc_order_pay;
-import com.easivend.model.Tb_vmc_order_product;
-import com.easivend.model.Tb_vmc_product;
 import com.example.evconsole.R;
 
 import android.app.Activity;

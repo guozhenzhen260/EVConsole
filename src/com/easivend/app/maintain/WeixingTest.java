@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import com.easivend.common.ToolClass;
 import com.easivend.http.Weixinghttp;
-import com.easivend.http.Zhifubaohttp;
 import com.example.evconsole.R;
 
 import android.app.Activity;

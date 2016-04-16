@@ -42,6 +42,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.conn.ssl.SSLContexts;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.easivend.alipay.AlipayConfig;
@@ -51,13 +52,10 @@ import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.ParamManager;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
-import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
-import com.easivend.model.Tb_vmc_order_pay;
-import com.easivend.model.Tb_vmc_order_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.weixing.WeiConfig;
 import com.easivend.weixing.WeiConfigAPI;
@@ -68,9 +66,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-
-import android.R.bool;
-import android.R.integer;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -79,9 +74,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore.Images.ImageColumns;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class ToolClass 
@@ -91,17 +84,43 @@ public class ToolClass
 	public final static int INFO=2;
 	public final static int WARN=3;
 	public final static int ERROR=4;
-	public static String EV_DIR=null;
-	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;
-	private static int bill_err=0,coin_err=0;
-	public static String vmc_no="";
+	public static String EV_DIR=null;//ev包的地址
+	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;//串口id号
+	private static String bentcom="",com="",columncom="";//串口描述符
+	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
+	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
 	public static int goc=0;//是否使用出货确认板1是
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
-	public static SSLSocketFactory ssl=null;
-	public static Context context=null;
+	public static SSLSocketFactory ssl=null;//ssl网络加密
+	public static Context context=null;//本应用context
 	
+	
+	public static String getBentcom() {
+		return bentcom;
+	}
+
+	public static void setBentcom(String bentcom) {
+		ToolClass.bentcom = bentcom;
+	}
+
+	public static String getCom() {
+		return com;
+	}
+
+	public static void setCom(String com) {
+		ToolClass.com = com;
+	}
+
+	public static String getColumncom() {
+		return columncom;
+	}
+
+	public static void setColumncom(String columncom) {
+		ToolClass.columncom = columncom;
+	}
+
 	public static Context getContext() {
 		return context;
 	}
@@ -362,8 +381,20 @@ public class ToolClass
             	{
             		updatefile(fileName,sDir);
             	}
-    	    } 
-        	//5.将目录下的所有文件，如果有超出半个月的，全部删除
+    	    }
+        	//5.如果存在com文件，则判断
+        	fileName=new File(sDir+File.separator+"com.txt"); 
+        	if(fileName.exists())
+        	{  
+        		System.out.println(" 判断重命名文件com.txt");
+        		String logdatetime = getFileCreated(fileName);
+            	int inter=getInterval(logdatetime,datetime); 
+            	if(inter>=4)
+            	{
+            		updatefile(fileName,sDir);
+            	}
+    	    }
+        	//6.将目录下的所有文件，如果有超出半个月的，全部删除
         	delFiles(dirName,datetime);
         	
         } catch (Exception e) {
@@ -844,7 +875,7 @@ public class ToolClass
 	  	          {
 	  	           	str=scan.next()+"\n";
 	  	          }
-	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
 	  	         huodaolist=new HashMap<Integer,Integer>(); 
@@ -860,7 +891,7 @@ public class ToolClass
 	            	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
 		        } 			
 				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+huodaolist.toString(),"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
         	  }
         	             
         } catch (Exception e) {
@@ -879,19 +910,20 @@ public class ToolClass
     /**
      * 弹簧出货
      */
-    public static void columnChuhuo(Integer logic)
+    public static int columnChuhuo(Integer logic)
     {
+    	int val=0;
     	if(huodaolist!=null)
     	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]huodaolist="+huodaolist,"log.txt");
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]huodaolist="+huodaolist,"com.txt");
     		if(huodaolist.containsKey(logic))
     		{
     			//根据key取出内容
-    		    Integer val=huodaolist.get(logic); 
-    		    ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]logic="+logic+"physic="+val,"log.txt");
-    		    EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,val,ToolClass.getGoc());	
+    		    val=huodaolist.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
     		}
     	}
+    	return val;
     }
     /**
      * 弹簧返回出货结果
@@ -917,12 +949,12 @@ public class ToolClass
     	int DRV_GOCERR_BIT   =(1 << 7);   //bit7出货检测模块状态(GOC故障)
     	if(Rst == 0x00)
     	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_OK","log.txt");
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_OK","com.txt");
     		return 1;	
     	}
     	else if(Rst == 0xff)
     	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_COMERR","log.txt");
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_COMERR","com.txt");
     		return 5;
     	}	
     	//1.判断GOC是否故障bit7:  GOC故障->扣钱
@@ -934,18 +966,18 @@ public class ToolClass
     			//没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障  
     			if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_3","com.txt");
     				return 3;								
     			}
     			else
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_4","com.txt");
     				return 4;	
     			}
     		}
     		else
     		{
-    			ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_1","log.txt");
+    			ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_1","com.txt");
     			return 1;
     		}
     	}
@@ -977,7 +1009,7 @@ public class ToolClass
     			//1.电机未转动,不扣钱
     			if((Rst&MOTO_NOTMOVE_BIT)>0)
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_0","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_0","com.txt");
     				return 0;
     			}			
     			//2.先判断GOC是否检测到bit5,  ==0说明出货确认检测到商品出货 			
@@ -985,7 +1017,7 @@ public class ToolClass
     			{				
     				//有检测到->出货成功扣钱  
     				/*************************************************************************/
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_1","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_1","com.txt");
     				return 1;		
     			}
     			else
@@ -995,12 +1027,12 @@ public class ToolClass
     				   //没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障	
     				   if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
     				   {
-    						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    						ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_3","com.txt");
     						return 3;
     				   }
     				   else
     				   {
-    						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    						ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_4","com.txt");
     						return 4;
     				   }				   
     			}
@@ -1013,12 +1045,12 @@ public class ToolClass
     		   //没转到位等其他状况bit1,bit2,bit3,bit4->货道置故障	
     		   if( (Rst & (GOODS_SOLDOUT_BIT|MOTO_MISPLACE_BIT|MOTO_NOTMOVE_BIT|MOTO_NOTRETURN_BIT))>0) 
     		   {
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_3","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_3","com.txt");
     				return 3;								
     		   }
     		   else
     		   {
-    				ToolClass.Log(ToolClass.INFO,"EV_JNI","[APPcolumn>>]rst=OutGoods_4","log.txt");
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]rst=OutGoods_4","com.txt");
     				return 4;	
     		   }
     		}
@@ -1767,6 +1799,118 @@ public class ToolClass
 			}	
 		}
 		return istrue;
+	}
+	/*********************************************************************************************************
+	** Function name:     	CrcCheck
+	** Descriptions:	    CRC校验和
+	** input parameters:    msg需要检验的数据;len数据长度
+	** output parameters:   无
+	** Returned value:      CRC检验结果
+	*********************************************************************************************************/
+	public static int crcCheck(byte msg[], int len){
+        int i, j, crc = 0, current;
+        for(i = 0;i < len;i++)
+        {
+            current = ((msg[i] & 0x000000FF) << 8);
+            for (j = 0;j < 8;j++)
+            {
+                if((short)(crc ^ current) < 0)
+                {
+                    crc =  ((crc << 1) ^ 0x1021) & 0x0000FFFF;
+                }
+                else
+                {
+                    crc = (crc << 1) & 0x0000FFFF;
+                }
+                current = (current << 1) & 0x0000FFFF;
+            }
+        }
+
+        return crc;
+    }
+
+	/*********************************************************************************************************
+	** Function name:     	printHex
+	** Descriptions:	    打印十六进制信息
+	** input parameters:    bentrecv需要打印的数据;bentindex数据长度
+	** output parameters:   无
+	** Returned value:      打印的十六进制信息
+	*********************************************************************************************************/
+	public static StringBuilder printHex(byte[] bentrecv,int bentindex)
+	{
+		StringBuilder res=new StringBuilder();
+		for(int i=0;i<bentindex;i++)
+	    {
+	    	String hex = Integer.toHexString(bentrecv[i] & 0xFF);
+            if (hex.length() == 1)
+            {
+                hex = '0' + hex;
+            }	
+	    	res.append("[").append(hex.toUpperCase()).append("]");				    	
+	    }
+		return res;
+	}
+	
+	//提取出portid
+	public static int Resetportid(String bentcom)
+	{
+		int bentcom_id=0;
+		//2.重新组包
+		try {
+			JSONObject jsonObject = new JSONObject(bentcom); 
+			//根据key取出内容
+			JSONObject ev_head = (JSONObject) jsonObject.getJSONObject("EV_json");
+			int str_evType =  ev_head.getInt("EV_type");
+			if(str_evType==EVprotocol.EV_REGISTER)
+			{
+				bentcom_id=ev_head.getInt("port_id");				
+			}
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return bentcom_id;
+	}
+	
+	//type=1是现金,2是格子柜，3是弹簧柜
+	public static void ResstartPort(int type)
+	{
+		if(type==1)//现金
+		{
+			//打开现金设备串口
+			if(ToolClass.getCom().equals("")==false) 
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_COM","comSend="+ToolClass.getCom(),"com.txt");
+				EVprotocol.EVPortRelease(ToolClass.getCom());
+				String com = EVprotocol.EVPortRegister(ToolClass.getCom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","com="+com,"com.txt");
+				ToolClass.setCom_id(ToolClass.Resetportid(com));
+			}			
+		}
+		else if(type==2)
+		{
+			//打开格子柜串口
+			if(ToolClass.getBentcom().equals("")==false)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcomSend="+ToolClass.getBentcom(),"com.txt");
+				EVprotocol.EVPortRelease(ToolClass.getBentcom());
+				String bentcom = EVprotocol.EVPortRegister(ToolClass.getBentcom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcom="+bentcom,"com.txt");
+				ToolClass.setBentcom_id(ToolClass.Resetportid(bentcom));
+			}
+		}
+		else if(type==3)
+		{
+			//打开弹簧柜串口
+			if(ToolClass.getColumncom().equals("")==false)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncomSend="+ToolClass.getColumncom(),"com.txt");
+				EVprotocol.EVPortRelease(ToolClass.getColumncom());
+				String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom="+columncom,"com.txt");
+				ToolClass.setColumncom_id(ToolClass.Resetportid(columncom));
+			}
+		}
 	}
 	
 }

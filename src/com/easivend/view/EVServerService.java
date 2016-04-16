@@ -33,19 +33,11 @@ import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_productDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
-import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
-import com.easivend.model.Tb_vmc_order_pay;
 import com.easivend.model.Tb_vmc_product;
-import com.example.evconsole.R;
-
-import android.app.ActivityManager;
 import android.app.Service;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,9 +47,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 public class EVServerService extends Service {
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
@@ -117,30 +106,7 @@ public class EVServerService extends Service {
 	    		childmsg.obj=ev;
 	    		childhand.sendMessage(childmsg);
 	    		ischeck=false;
-	    		break;
-    		//设备状态上报	
-			case EVServerhttp.SETDEVSTATUCHILD:
-				int bill_err=bundle.getInt("bill_err");
-				int coin_err=bundle.getInt("coin_err");
-    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备bill_err="+bill_err
-						+" coin_err="+coin_err,"server.txt");				
-    			//
-	        	childhand=serverhttp.obtainHandler();
-	    		Message childmsg3=childhand.obtainMessage();
-	    		childmsg3.what=EVServerhttp.SETDEVSTATUCHILD;
-	    		JSONObject ev3=null;
-	    		try {
-	    			ev3=new JSONObject();
-	    			ev3.put("bill_err", bill_err);
-	    			ev3.put("coin_err", coin_err);	    			  			
-	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev3.toString(),"server.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		childmsg3.obj=ev3;
-	    		childhand.sendMessage(childmsg3);
-    			break;	
+	    		break;    			
     		//发送交易记录命令到子线程中
 			case EVServerhttp.SETRECORDCHILD://子线程接收主线程消息获取心跳信息
 				childhand=serverhttp.obtainHandler();
@@ -425,7 +391,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg3);
 	        	}
 	        } 
-	    },15,15,TimeUnit.SECONDS);       // timeTask 
+	    },15,10*60,TimeUnit.SECONDS);       // timeTask 
 	}	
 	
 	//更新商品分类信息

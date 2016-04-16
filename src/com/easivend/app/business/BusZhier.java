@@ -1,7 +1,5 @@
 package com.easivend.app.business;
 
-import java.text.SimpleDateFormat;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,18 +9,10 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.easivend.app.maintain.GoodsManager;
-import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.OrderDetail;
-import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
-import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.http.EVServerhttp;
 import com.easivend.http.Zhifubaohttp;
-import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -51,7 +41,6 @@ public class BusZhier extends Activity
 	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60—”≥Ÿ5∑÷÷”
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
-    private TextView txtView; 
     ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 //	private String proID = null;
 //	private String productID = null;

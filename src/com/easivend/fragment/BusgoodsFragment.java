@@ -3,19 +3,13 @@ package com.easivend.fragment;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.easivend.app.business.Busgoods;
-import com.easivend.app.business.BusgoodsClass;
-import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
-import com.easivend.fragment.BusgoodsclassFragment.BusgoodsclassFragInteraction;
 import com.example.evconsole.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

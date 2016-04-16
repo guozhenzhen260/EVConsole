@@ -31,33 +31,25 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 
 import com.easivend.dao.vmc_cabinetDAO;
-import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
-import com.easivend.model.Tb_vmc_class;
-import com.easivend.model.Tb_vmc_column;
-import com.easivend.app.business.BusLand;
+import com.easivend.view.COMService;
 import com.easivend.common.HuoPictureAdapter;
-import com.easivend.common.ProPictureAdapter;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_CabinetAdapter;
-import com.easivend.common.Vmc_ClassAdapter;
 import com.easivend.common.Vmc_HuoAdapter;
-import com.easivend.common.Vmc_ProductAdapter;
 import com.example.evconsole.R;
-
-import android.R.color;
-import android.R.integer;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -77,19 +69,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.SimpleAdapter;
-import android.widget.SlidingDrawer;
 import android.widget.Switch;
-import android.widget.SlidingDrawer.OnDrawerCloseListener;
-import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,6 +92,7 @@ public class HuodaoTest extends TabActivity
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0,cabinetTypesetvar=0;
+	private int devopt=0;//操作类型，出货，照明，制冷，加热	
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
 	private int huonno=0;//循环出货第几个格子了
@@ -157,7 +142,9 @@ public class HuodaoTest extends TabActivity
 	//测试进度对话框
 	ProgressDialog dialog= null;
 	private Handler myhHandler=null;
-	//EVprotocolAPI ev=null;
+	//COM服务相关
+	LocalBroadcastManager comBroadreceiver;
+	COMReceiver comreceiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -183,8 +170,13 @@ public class HuodaoTest extends TabActivity
     	myTabhuodaoset.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabhuodaoset); 
     	
-    	//注册出货监听器
-  	    EVprotocolAPI.setCallBack(new jniInterfaceImp());
+    	//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+    	
     	//===============
     	//货道设置页面
     	//===============
@@ -229,12 +221,12 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub cabinetID[0],
 				String huo[]=huoAdapter.getHuoID();
 				String huoID = huo[arg2];// 记录收入信息               
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID+"status="+huoSet.get(huoID),"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道ID="+cabinetsetvar+huoID,"log.txt");
 				Intent intent = new Intent();
 		    	intent.setClass(HuodaoTest.this, HuodaoSet.class);// 使用AddInaccount窗口初始化Intent
                 intent.putExtra("huoID", huoID);
                 intent.putExtra("cabID", String.valueOf(cabinetsetvar));
-                intent.putExtra("huoStatus", String.valueOf(huoSet.get(huoID)));
+                intent.putExtra("huoStatus", "1");
 		    	startActivityForResult(intent, REQUEST_CODE);// 打开AddInaccount	
 			}// 为GridView设置项单击事件
     		
@@ -322,32 +314,11 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub
 				if(isChecked)
 				{
-					//格子柜
-					if(cabinetTypevar==5)
-					{
-						EVprotocolAPI.EV_bentoLight(ToolClass.getBentcom_id(),cabinetvar,1);						
-					}
-					//普通柜
-					else 
-					{
-						//rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-				    	//		ToolClass.MoneySend(price));	
-					}
+					comsend(COMService.EV_LIGHTCHILD,1);
 				}
 				else 
 				{
-					//格子柜
-					if(cabinetTypevar==5)
-					{
-						EVprotocolAPI.EV_bentoLight(ToolClass.getBentcom_id(),cabinetvar,0);						
-					}
-					//普通柜
-					else 
-					{
-						//rst=EVprotocolAPI.trade(cabinetvar,Integer.parseInt(edtcolumn.getText().toString()),typevar,
-				    	//		ToolClass.MoneySend(price));	
-					}
-					
+					comsend(COMService.EV_LIGHTCHILD,0);					
 				}
 			}  
 			
@@ -361,7 +332,14 @@ public class HuodaoTest extends TabActivity
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				
+				if(isChecked)
+				{
+					comsend(COMService.EV_COOLCHILD,1);
+				}
+				else 
+				{
+					comsend(COMService.EV_COOLCHILD,0);					
+				}
 			}  
 			
 			
@@ -373,7 +351,14 @@ public class HuodaoTest extends TabActivity
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				// TODO Auto-generated method stub
-				
+				if(isChecked)
+				{
+					comsend(COMService.EV_HOTCHILD,1);
+				}
+				else 
+				{
+					comsend(COMService.EV_HOTCHILD,0);					
+				}
 			}  
 			
 			
@@ -402,62 +387,18 @@ public class HuodaoTest extends TabActivity
 		
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {		    	  
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
-		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-		    	+" cabType="+String.valueOf(cabinetTypevar)
-		    	+" column="+String.valueOf(Integer.parseInt(edtcolumn.getText().toString())),"log.txt"		    	
-		    	);
+		    public void onClick(View arg0) {
 		    	if (edtcolumn.getText().toString().isEmpty()!=true)	
 		    	{
-		    		float price=0;
-		    		int typevar=0;
-		    		if(price>0)
-		    			typevar=0;
-		    		else 
-		    			typevar=2;
-		    		int rst=0;
-		    		//格子柜
-					if(cabinetTypevar==5)
-					{
-						EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,Integer.parseInt(edtcolumn.getText().toString()));						
-					}
-					//普通柜
-					else 
-					{
-						ToolClass.columnChuhuo(Integer.parseInt(edtcolumn.getText().toString()));	
-					}
-			    	   	
-		    	}
+		    		comsend(COMService.EV_CHUHUOCHILD,Integer.parseInt(edtcolumn.getText().toString()));
+			    }
 		    }
 		});
 		btnhuochuall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {		    	  
-		    	   		    		
-	    		int rst=0;
-	    		//格子柜
-				if(cabinetTypevar==5)
-				{
-					huonno=1;
-					ToolClass.Log(ToolClass.INFO,"EV_JNI",
-					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-					    	+" cabType="+String.valueOf(cabinetTypevar)
-					    	+" column="+huonno,"log.txt"		    	
-					    	);	 
-					EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
-				}
-				//普通柜
-				else 
-				{
-					huonno=1;
-					ToolClass.Log(ToolClass.INFO,"EV_JNI",
-					    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-					    	+" cabType="+String.valueOf(cabinetTypevar)
-					    	+" column="+huonno,"log.txt"		    	
-					    	);	
-					ToolClass.columnChuhuo(huonno);	
-				}
+		    public void onClick(View arg0) {	    	  
+		    	huonno=1;
+		    	comsend(COMService.EV_CHUHUOCHILD,huonno);
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
@@ -1459,8 +1400,33 @@ public class HuodaoTest extends TabActivity
 		btnhuosetsethuo.setOnClickListener(new OnClickListener() {
 				    @Override
 				    public void onClick(View arg0) {
-				    	sethuofile();	
-				    	gethuofile();
+				    	//创建警告对话框
+				    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+				    		.setTitle("对话框")//标题
+				    		.setMessage("您确定要手动配置货道吗？")//表示对话框中得内容
+				    		.setIcon(R.drawable.ic_launcher)//设置logo
+				    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+				    			{				
+					    				@Override
+					    				public void onClick(DialogInterface dialog, int which) 
+					    				{
+					    					// TODO Auto-generated method stub	
+					    					sethuofile();	
+									    	gethuofile();
+					    				}
+				    		      }
+				    			)		    		        
+						        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+						        	{			
+										@Override
+										public void onClick(DialogInterface dialog, int which) 
+										{
+											// TODO Auto-generated method stub				
+										}
+						        	}
+						        )
+						        .create();//创建一个对话框
+						        alert.show();//显示对话框				    	
 				    }
 				});
 		btnhuosetautohuo = (Button) findViewById(R.id.btnhuosetautohuo);
@@ -1468,9 +1434,34 @@ public class HuodaoTest extends TabActivity
 				    @Override
 				    public void onClick(View arg0) {
 				    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<hello","log.txt");	
-				    	dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
-				    	autochu=true;
-				    	EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				    	//创建警告对话框
+				    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+				    		.setTitle("对话框")//标题
+				    		.setMessage("您确定要自动配置货道吗？")//表示对话框中得内容
+				    		.setIcon(R.drawable.ic_launcher)//设置logo
+				    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+				    			{				
+					    				@Override
+					    				public void onClick(DialogInterface dialog, int which) 
+					    				{
+					    					// TODO Auto-generated method stub	
+					    					HuodaoTest.this.dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
+									    	autochu=true;
+									    	comsend(COMService.EV_CHUHUOCHILD,autophysic);
+					    				}
+				    		      }
+				    			)		    		        
+						        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+						        	{			
+										@Override
+										public void onClick(DialogInterface dialog, int which) 
+										{
+											// TODO Auto-generated method stub				
+										}
+						        	}
+						        )
+						        .create();//创建一个对话框
+						        alert.show();//显示对话框				    	
 				    }
 				});
 		btnhuosetclose = (Button) findViewById(R.id.btnhuosetclose);
@@ -1482,24 +1473,153 @@ public class HuodaoTest extends TabActivity
 				});
 	}
 	//===============
-	//货道设置页面
-	//===============
-	private class jniInterfaceImp implements JNIInterface
+	//串口发送和监听模块
+	//===============	
+	//发送模块type发送类型,opt参数
+	private void comsend(int type,int opt)
 	{
+		Intent intent=new Intent();
 		
+		devopt=type;
+		//7.发送指令广播给COMService	
+		switch(type)
+		{
+			case COMService.EV_CHECKCHILD:	
+				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+				    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+				    	,"log.txt");
+				intent.putExtra("EVWhat", COMService.EV_CHECKCHILD);	
+				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				break;
+			case COMService.EV_CHUHUOCHILD:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" column="+opt		    	
+		    	,"log.txt");
+				//4.发送指令广播给COMService
+				if(autochu)
+					intent.putExtra("EVWhat", COMService.EV_SETHUOCHILD);	
+				else
+					intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);
+				
+				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.putExtra("column", opt);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				break;
+			case COMService.EV_LIGHTCHILD:
+			case COMService.EV_COOLCHILD:
+			case COMService.EV_HOTCHILD:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	+" opt="+opt		    	
+		    	,"log.txt");
+				//4.发送指令广播给COMService
+				intent.putExtra("EVWhat", type);	
+				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.putExtra("opt", opt);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+				break;
+		}
+
+	}
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
 		@Override
-		public void jniCallback(Map<String, Object> allSet) {
+		public void onReceive(Context context, Intent intent) 
+		{
 			// TODO Auto-generated method stub
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao货道相关","log.txt");
-			Map<String, Object> Set= allSet;
-			int jnirst=(Integer)Set.get("EV_TYPE");
-			switch (jnirst)
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
 			{
-				case EVprotocolAPI.EV_COLUMN_OPEN://主柜出货
-					device=(Integer)allSet.get("addr");//出货柜号						
-					hdid=(Integer)allSet.get("box");//货道id
-					status=(Integer)allSet.get("result");
+			//货道查询
+			case COMService.EV_CHECKMAIN:
+				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询="+Set,"com.txt");
+				
+				ishuoquery=0;
+				String tempno=null;
+				
+				cool=(Integer)Set.get("cool");
+				hot=(Integer)Set.get("hot");
+				light=(Integer)Set.get("light");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
+				if(light>0)
+				{
+					txtlight.setText("支持");
+					switchlight.setEnabled(true);
+					
+				}
+				else
+				{
+					txtlight.setText("不支持");
+					switchlight.setEnabled(false);
+				}
+				if(cool>0)
+				{
+					txtcold.setText("支持");
+					switcold.setEnabled(true);
+				}
+				else
+				{
+					txtcold.setText("不支持");
+					switcold.setEnabled(false);
+				}
+				if(hot>0)
+				{
+					txthot.setText("支持");
+					switchhot.setEnabled(true);
+				}
+				else
+				{
+					txthot.setText("不支持");
+					switchhot.setEnabled(false);
+				}
+
+				huoSet.clear();
+				//输出内容
+				Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
+				Iterator<Entry<String, Integer>> iter=allmap.iterator();
+				while(iter.hasNext())
+				{
+					Entry<String, Integer> me=iter.next();
+					if(
+					   (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
+					   &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
+					)   
+					{
+						if(Integer.parseInt(me.getKey())<10)
+							tempno="0"+me.getKey();
+						else 
+							tempno=me.getKey();
+						
+						huoSet.put(tempno, (Integer)me.getValue());
+					}
+				} 
+				huonum=huoSet.size();
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
+				showhuodao();
+				break;
+			//操作返回	
+			case COMService.EV_OPTMAIN: 
+				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set2=serializableMap2.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
+				//是出货操作
+				if(devopt==COMService.EV_CHUHUOCHILD)
+				{
+					device=(Integer)Set2.get("addr");//出货柜号						
+					hdid=(Integer)Set2.get("box");//货道id
+					status=Set2.get("result");//出货结果
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
+							
 					txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
 					//循环继续做货道配置操作
 					if(autochu)
@@ -1512,162 +1632,22 @@ public class HuodaoTest extends TabActivity
 					if((huonno>0)&&(huonno<huonum))
 					{							
 						huonno++;
-						//格子柜
-						if(cabinetTypevar!=5)
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI",
-							    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-							    	+" cabType="+String.valueOf(cabinetTypevar)
-							    	+" column="+huonno		    	
-							    	,"log.txt");	 
-							ToolClass.columnChuhuo(huonno);		
-						}
+						comsend(COMService.EV_CHUHUOCHILD,huonno);
 					}
 					else if(huonno>=huonum)
 					{
 						huonno=0;
 					}
-					break;
-				case EVprotocolAPI.EV_COLUMN_CHECK://主柜查询	
-					ishuoquery=0;
-					String tempno3=null;
-					huoSet.clear();
-					Map<Integer, Integer> tempSet= new TreeMap<Integer,Integer>();
-					//输出内容
-			        Set<Entry<String, Object>> allmap2=Set.entrySet();  //实例化
-			        Iterator<Entry<String, Object>> iter2=allmap2.iterator();
-			        while(iter2.hasNext())
-			        {
-			            Entry<String, Object> me=iter2.next();
-			            if(
-			               (me.getKey().equals("EV_TYPE")!=true)
-			            )   
-			            {
-			            	tempSet.put(Integer.parseInt(me.getKey()), (Integer)me.getValue());
-			            }
-			        } 
-			        
-			        //输出内容
-			        Set<Entry<Integer, Integer>> allmap3=tempSet.entrySet();  //实例化
-			        Iterator<Entry<Integer, Integer>> iter3=allmap3.iterator();
-			        while(iter3.hasNext())
-			        {
-			            Entry<Integer, Integer> me=iter3.next();
-			            
-		            	if(me.getKey()<10)
-		    				tempno3="0"+me.getKey().toString();
-		    			else 
-		    				tempno3=me.getKey().toString();
-		            	
-		            	huoSet.put(tempno3, (Integer)me.getValue());				            
-			        } 
-			        huonum=huoSet.size();
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
-					showhuodao();
-					break;
-				case EVprotocolAPI.EV_BENTO_CHECK://格子柜查询
-					ishuoquery=0;
-					String tempno=null;
-					
-					cool=(Integer)Set.get("cool");
-					hot=(Integer)Set.get("hot");
-					light=(Integer)Set.get("light");
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
-					if(light>0)
-					{
-						txtlight.setText("支持");
-						switchlight.setEnabled(true);
-						
-					}
-					else
-					{
-						txtlight.setText("不支持");
-						switchlight.setEnabled(false);
-					}
-					if(cool>0)
-					{
-						txtcold.setText("支持");
-						switcold.setEnabled(true);
-					}
-					else
-					{
-						txtcold.setText("不支持");
-						switcold.setEnabled(false);
-					}
-					if(hot>0)
-					{
-						txthot.setText("支持");
-						switchhot.setEnabled(true);
-					}
-					else
-					{
-						txthot.setText("不支持");
-						switchhot.setEnabled(false);
-					}
-					
-					huoSet.clear();
-					//输出内容
-			        Set<Entry<String, Object>> allmap=Set.entrySet();  //实例化
-			        Iterator<Entry<String, Object>> iter=allmap.iterator();
-			        while(iter.hasNext())
-			        {
-			            Entry<String, Object> me=iter.next();
-			            if(
-			               (me.getKey().equals("EV_TYPE")!=true)&&(me.getKey().equals("cool")!=true)
-			               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
-			            )   
-			            {
-			            	if(Integer.parseInt(me.getKey())<10)
-			    				tempno="0"+me.getKey();
-			    			else 
-			    				tempno=me.getKey();
-			            	
-			            	huoSet.put(tempno, (Integer)me.getValue());
-			            }
-			        } 
-			        huonum=huoSet.size();
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
-					showhuodao();						
-					break;	
-				case EVprotocolAPI.EV_BENTO_OPEN://格子柜出货
-					device=(Integer)allSet.get("addr");//出货柜号						
-					hdid=(Integer)allSet.get("box");//货道id
-					status=(Integer)allSet.get("result");//出货结果
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
-					
-					txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
-					sethuorst(status);
-					//循环继续做出货操作
-					if((huonno>0)&&(huonno<huonum))
-					{							
-						huonno++;
-						//格子柜
-						if(cabinetTypevar==5)
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_JNI",
-							    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-							    	+" cabType="+String.valueOf(cabinetTypevar)
-							    	+" column="+huonno		    	
-							    	,"log.txt");	 
-							EVprotocolAPI.EV_bentoOpen(ToolClass.getBentcom_id(),cabinetvar,huonno);						
-						}
-					}
-					else if(huonno>=huonum)
-					{
-						huonno=0;
-					}
-					break;	
-				case EVprotocolAPI.EV_BENTO_LIGHT://格子柜开灯
-					device=(Integer)allSet.get("addr");//柜号						
-					int opt=(Integer)allSet.get("opt");//货道id
-					status=(Integer)allSet.get("result");//结果
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货柜操作结果"+"device=["+device+"],opt=["+opt+"],status=["+status+"]","log.txt");	
-					txthuorst.setText("device=["+device+"],opt=["+opt+"],status=["+status+"]");						
-					break;
-			}
+				}
+				break;
+			}			
 		}
+
 	}
-	
+	//===============
+	//货道设置页面
+	//===============
+		
 	//调用倒计时定时器
 	Runnable task = new Runnable() { 
         @Override 
@@ -1686,19 +1666,8 @@ public class HuodaoTest extends TabActivity
 	private void queryhuodao()
 	{
 		txthuosetrst.setText("查询次数:"+(con++));		
-		ishuoquery=1;
-		//格子柜
-		if(cabinetTypesetvar==5)
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao格子柜相关","log.txt");
-			EVprotocolAPI.EV_bentoCheck(ToolClass.getBentcom_id(),cabinetsetvar);
-		}
-		//普通柜
-		else 
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<huodao普通柜查询","log.txt");
-			EVprotocolAPI.getColumn(ToolClass.getColumncom_id(),1,1);
-		}
+		ishuoquery=1;		
+		comsend(COMService.EV_CHECKCHILD,0);
 	}
 	//接收GoodsProSet返回信息
 	@Override
@@ -1717,6 +1686,11 @@ public class HuodaoTest extends TabActivity
 	@Override
 	protected void onDestroy() {
 		timer.shutdown();
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);		
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);
@@ -2163,8 +2137,8 @@ public class HuodaoTest extends TabActivity
 				{
 					btnhuoset11.setChecked(false);	
 				}
-				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				autophysic++;				
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 58:
 				if((result==1)||(result==4))
@@ -2176,7 +2150,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset12.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 59:
 				if((result==1)||(result==4))
@@ -2188,7 +2162,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset13.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 60:
 				if((result==1)||(result==4))
@@ -2200,7 +2174,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset14.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 61:
 				if((result==1)||(result==4))
@@ -2212,7 +2186,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset15.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 62:
 				if((result==1)||(result==4))
@@ -2224,7 +2198,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset16.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 63:
 				if((result==1)||(result==4))
@@ -2236,7 +2210,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset17.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 64:
 				if((result==1)||(result==4))
@@ -2248,7 +2222,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset18.setChecked(false);	
 				}
 				autophysic=49;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第二层	
 			case 49:
@@ -2261,7 +2235,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset21.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 50:
 				if((result==1)||(result==4))
@@ -2273,7 +2247,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset22.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 51:
 				if((result==1)||(result==4))
@@ -2285,7 +2259,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset23.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 52:
 				if((result==1)||(result==4))
@@ -2297,7 +2271,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset24.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 53:
 				if((result==1)||(result==4))
@@ -2309,7 +2283,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset25.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 54:
 				if((result==1)||(result==4))
@@ -2321,7 +2295,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset26.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 55:
 				if((result==1)||(result==4))
@@ -2333,7 +2307,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset27.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 56:
 				if((result==1)||(result==4))
@@ -2345,7 +2319,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset28.setChecked(false);	
 				}
 				autophysic=41;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			//第三层	
 			case 41:
@@ -2358,7 +2332,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset31.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 42:
 				if((result==1)||(result==4))
@@ -2370,7 +2344,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset32.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 43:
 				if((result==1)||(result==4))
@@ -2382,7 +2356,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset33.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 44:
 				if((result==1)||(result==4))
@@ -2394,7 +2368,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset34.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 45:
 				if((result==1)||(result==4))
@@ -2406,7 +2380,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset35.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 46:
 				if((result==1)||(result==4))
@@ -2418,7 +2392,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset36.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 47:
 				if((result==1)||(result==4))
@@ -2430,7 +2404,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset37.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 48:
 				if((result==1)||(result==4))
@@ -2442,7 +2416,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset38.setChecked(false);	
 				}
 				autophysic=33;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第四层	
 			case 33:
@@ -2455,7 +2429,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset41.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 34:
 				if((result==1)||(result==4))
@@ -2467,7 +2441,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset42.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 35:
 				if((result==1)||(result==4))
@@ -2479,7 +2453,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset43.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 36:
 				if((result==1)||(result==4))
@@ -2491,7 +2465,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset44.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 37:
 				if((result==1)||(result==4))
@@ -2503,7 +2477,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset45.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 38:
 				if((result==1)||(result==4))
@@ -2515,7 +2489,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset46.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 39:
 				if((result==1)||(result==4))
@@ -2527,7 +2501,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset47.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 40:
 				if((result==1)||(result==4))
@@ -2539,7 +2513,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset48.setChecked(false);	
 				}
 				autophysic=25;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			//第五层	
 			case 25:
@@ -2552,7 +2526,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset51.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 26:
 				if((result==1)||(result==4))
@@ -2564,7 +2538,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset52.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 27:
 				if((result==1)||(result==4))
@@ -2576,7 +2550,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset53.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 28:
 				if((result==1)||(result==4))
@@ -2588,7 +2562,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset54.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 29:
 				if((result==1)||(result==4))
@@ -2600,7 +2574,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset55.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 30:
 				if((result==1)||(result==4))
@@ -2612,7 +2586,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset56.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 31:
 				if((result==1)||(result==4))
@@ -2624,7 +2598,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset57.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 32:
 				if((result==1)||(result==4))
@@ -2636,7 +2610,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset58.setChecked(false);	
 				}
 				autophysic=17;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第六层	
 			case 17:
@@ -2649,7 +2623,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset61.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 18:
 				if((result==1)||(result==4))
@@ -2661,7 +2635,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset62.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 19:
 				if((result==1)||(result==4))
@@ -2673,7 +2647,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset63.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 20:
 				if((result==1)||(result==4))
@@ -2685,7 +2659,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset64.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 21:
 				if((result==1)||(result==4))
@@ -2697,7 +2671,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset65.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 22:
 				if((result==1)||(result==4))
@@ -2709,7 +2683,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset66.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 23:
 				if((result==1)||(result==4))
@@ -2721,7 +2695,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset67.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 24:
 				if((result==1)||(result==4))
@@ -2733,7 +2707,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset68.setChecked(false);	
 				}
 				autophysic=9;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;	
 			//第七层
 			case 9:
@@ -2746,7 +2720,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset71.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 10:
 				if((result==1)||(result==4))
@@ -2758,7 +2732,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset72.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 11:
 				if((result==1)||(result==4))
@@ -2770,7 +2744,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset73.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 12:
 				if((result==1)||(result==4))
@@ -2782,7 +2756,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset74.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 13:
 				if((result==1)||(result==4))
@@ -2794,7 +2768,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset75.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 14:
 				if((result==1)||(result==4))
@@ -2806,7 +2780,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset76.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 15:
 				if((result==1)||(result==4))
@@ -2818,7 +2792,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset77.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 16:
 				if((result==1)||(result==4))
@@ -2830,7 +2804,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset78.setChecked(false);	
 				}
 				autophysic=1;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			//第八层
 			case 1:
@@ -2843,7 +2817,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset81.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 2:
 				if((result==1)||(result==4))
@@ -2855,7 +2829,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset82.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 3:
 				if((result==1)||(result==4))
@@ -2867,7 +2841,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset83.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 4:
 				if((result==1)||(result==4))
@@ -2879,7 +2853,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset84.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 5:
 				if((result==1)||(result==4))
@@ -2891,7 +2865,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset85.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 6:
 				if((result==1)||(result==4))
@@ -2903,7 +2877,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset86.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 7:
 				if((result==1)||(result==4))
@@ -2915,7 +2889,7 @@ public class HuodaoTest extends TabActivity
 					btnhuoset87.setChecked(false);	
 				}
 				autophysic++;
-				EVprotocolAPI.trade(ToolClass.getColumncom_id(),1,1,autophysic,ToolClass.getGoc());	
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
 				break;
 			case 8:
 				if((result==1)||(result==4))

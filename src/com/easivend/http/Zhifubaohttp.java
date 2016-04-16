@@ -1,28 +1,19 @@
 package com.easivend.http;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-
 import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipayConfigAPI;
-import com.easivend.alipay.AlipaySubmit;
 import com.easivend.common.ToolClass;
-import com.easivend.weixing.WeixingSubmit;
 import com.easivend.alipay.HttpRequester;
 import com.easivend.alipay.HttpRespons;
 

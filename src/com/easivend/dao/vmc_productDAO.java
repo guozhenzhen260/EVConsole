@@ -17,15 +17,12 @@ package com.easivend.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import android.R.id;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.easivend.common.ToolClass;
-import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_product;
 
 

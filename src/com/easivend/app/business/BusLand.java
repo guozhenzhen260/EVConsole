@@ -1,36 +1,26 @@
 package com.easivend.app.business;
 
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.ToolClass;
-import com.easivend.evprotocol.EVprotocolAPI;
-import com.easivend.evprotocol.JNIInterface;
 import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
-import com.easivend.http.EVServerhttp;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
-
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.Toast;
 
 public class BusLand extends Activity implements MovieFragInteraction,BusFragInteraction{	

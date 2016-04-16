@@ -212,6 +212,8 @@
             android:name="com.easivend.view.DogService"/>
 	    <service
             android:name="com.easivend.view.EVServerService"/>
+	    <service
+            android:name="com.easivend.view.COMService"/>
     </application>
     <!--允许改变配置信息的权限 -->
     <uses-permission android:name = "android.permission.CHANGE_CONFIGURATION"></uses-permission>

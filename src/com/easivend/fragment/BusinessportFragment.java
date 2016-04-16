@@ -2,33 +2,19 @@ package com.easivend.fragment;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.easivend.app.business.BusPort;
-import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
-import com.easivend.dao.vmc_system_parameterDAO;
-import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
-import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.model.Tb_vmc_product;
-import com.easivend.model.Tb_vmc_system_parameter;
-import com.easivend.view.GoodsSelect;
-import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
