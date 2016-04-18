@@ -1504,7 +1504,7 @@ public class HuodaoTest extends TabActivity
 				else
 					intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);
 				
-				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.putExtra("cabinet", cabinetvar);	
 				intent.putExtra("column", opt);	
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
@@ -1518,7 +1518,7 @@ public class HuodaoTest extends TabActivity
 		    	,"log.txt");
 				//4.发送指令广播给COMService
 				intent.putExtra("EVWhat", type);	
-				intent.putExtra("cabinet", cabinetsetvar);	
+				intent.putExtra("cabinet", cabinetvar);	
 				intent.putExtra("opt", opt);	
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);

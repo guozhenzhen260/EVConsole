@@ -6,6 +6,7 @@ import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
@@ -209,57 +210,61 @@ public class BusHuo extends Activity
 				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set2=serializableMap2.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
-				status=Set2.get("result");//出货结果
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
-				dialog.dismiss();
-				//1.更新出货结果
-				//扣除存货余量
-				chuhuoupdate(cabinetvar,huodaoNo);
-				//出货成功
-				if(status==1)
+				int EV_TYPE=Set2.get("EV_TYPE");
+				if((EV_TYPE==EVprotocol.EV_BENTO_OPEN)||(EV_TYPE==EVprotocol.EV_COLUMN_OPEN))
 				{
-					txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
-					txtbushuoname.setTextColor(android.graphics.Color.BLUE);
-					chuhuoLog(1);//记录日志
+					status=Set2.get("result");//出货结果
+					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<BusHuo出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","com.txt");	
+					dialog.dismiss();
+					//1.更新出货结果
+					//扣除存货余量
+					chuhuoupdate(cabinetvar,huodaoNo);
+					//出货成功
+					if(status==1)
+					{
+						txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
+						txtbushuoname.setTextColor(android.graphics.Color.BLUE);
+						chuhuoLog(1);//记录日志
+					}
+					else
+					{
+						txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
+						txtbushuoname.setTextColor(android.graphics.Color.RED);
+						chuhuoLog(0);//记录日志
+					}
+											
+					//3.退回找零页面
+					ivbushuoquhuo.setVisibility(View.VISIBLE);
+		 	    	new Handler().postDelayed(new Runnable() 
+					{
+	                    @Override
+	                    public void run() 
+	                    {	   
+	                    	//退出时，返回intent
+	        	            Intent intentrec=new Intent();
+	        	            intentrec.putExtra("status", status);//出货结果
+	                    	if(zhifutype==0)//现金支付
+	                    	{                        			
+	            	            BusHuo.this.setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
+	                		}
+	                    	else if(zhifutype==3)//支付宝二维码
+	                    	{
+	                    		BusHuo.this.setResult(BusZhier.RESULT_CANCELED,intentrec);                    	            
+	                		}
+	                    	else if(zhifutype==4)//微信扫描
+	                    	{                        			
+	                    		BusHuo.this.setResult(BusZhiwei.RESULT_CANCELED,intentrec);                    	            
+	                		}
+	                    	else if(zhifutype==5)//提货码
+	                    	{                        			
+	                    		BusHuo.this.setResult(BusZhitihuo.RESULT_CANCELED,intentrec);                    	            
+	                		}
+	                    	finish();	
+	                    }
+	
+					}, 3000);
+					break;
 				}
-				else
-				{
-					txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
-					txtbushuoname.setTextColor(android.graphics.Color.RED);
-					chuhuoLog(0);//记录日志
-				}
-										
-				//3.退回找零页面
-				ivbushuoquhuo.setVisibility(View.VISIBLE);
-	 	    	new Handler().postDelayed(new Runnable() 
-				{
-                    @Override
-                    public void run() 
-                    {	   
-                    	//退出时，返回intent
-        	            Intent intentrec=new Intent();
-        	            intentrec.putExtra("status", status);//出货结果
-                    	if(zhifutype==0)//现金支付
-                    	{                        			
-            	            BusHuo.this.setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
-                		}
-                    	else if(zhifutype==3)//支付宝二维码
-                    	{
-                    		BusHuo.this.setResult(BusZhier.RESULT_CANCELED,intentrec);                    	            
-                		}
-                    	else if(zhifutype==4)//微信扫描
-                    	{                        			
-                    		BusHuo.this.setResult(BusZhiwei.RESULT_CANCELED,intentrec);                    	            
-                		}
-                    	else if(zhifutype==5)//提货码
-                    	{                        			
-                    		BusHuo.this.setResult(BusZhitihuo.RESULT_CANCELED,intentrec);                    	            
-                		}
-                    	finish();	
-                    }
-
-				}, 3000);
-				break;
 			}			
 		}
 

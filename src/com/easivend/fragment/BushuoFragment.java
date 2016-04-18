@@ -211,7 +211,7 @@ public class BushuoFragment extends Fragment
 		public void BusportChjg(int sta) {
 			// TODO Auto-generated method stub
 			status=sta;//出货结果	
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Fragment出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
 			//1.更新出货结果
 			//扣除存货余量
 			chuhuoupdate(cabinetvar,huodaoNo);

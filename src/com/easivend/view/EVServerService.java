@@ -391,7 +391,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg3);
 	        	}
 	        } 
-	    },15,10*60,TimeUnit.SECONDS);       // timeTask 
+	    },15,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}	
 	
 	//更新商品分类信息

@@ -806,7 +806,8 @@ BushuoFragInteraction
 	  		weixingchildhand.sendMessage(childmsg);
   		}
   	}
-  	//撤销交易
+  	
+	//撤销交易
   	private void deletezhiwei()
   	{
   		if(ercheckopt())
@@ -958,6 +959,7 @@ BushuoFragInteraction
     private void tochuhuo()
     {        
     	ischuhuo=true;
+    	BillEnable(0);
 //    	Intent intent = null;// 创建Intent对象                
 //    	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
 ////    	intent.putExtra("out_trade_no", out_trade_no);

@@ -391,7 +391,7 @@ public class vmc_columnDAO
      * 
      * @return
      */
-    public int getproductCount(String productID) {
+    public int getproductCount(String productID) { 
     	int count=0;
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select pathRemain from vmc_column where (tihuoPwd is null or tihuoPwd=='') and  productID=?", 

@@ -377,7 +377,7 @@ public class MaintainActivity extends Activity
 		    	//*******
 				//服务器同步
 				//*******
-				Intent intent2=new Intent();
+				Intent intent2=new Intent(); 
 				intent2.putExtra("EVWhat", EVServerhttp.SETCHILD);
 				intent2.putExtra("vmc_no", vmcmap.get("vmc_no"));
 				intent2.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));

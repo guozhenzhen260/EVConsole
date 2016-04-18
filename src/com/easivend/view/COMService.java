@@ -191,6 +191,7 @@ public class COMService extends Service {
 				break;
 			//货道出货	
 			case EV_CHUHUOCHILD:		
+				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMService cabinet="+bundle.getInt("cabinet"),"com.txt");
 				Message child3=childhand.obtainMessage();
 				//查找货道类型
         		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
@@ -560,7 +561,7 @@ public class COMService extends Service {
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道全部查询返回="+msg.obj,"com.txt");
 						String tempno6=null; 
 						Map<String, Object> Set6= (Map<String, Object>) msg.obj;
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回=2","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回解析...","com.txt");
 						//输出内容
 				        Set<Entry<String, Object>> allmap6=Set6.entrySet();  //实例化
 				        Iterator<Entry<String, Object>> iter6=allmap6.iterator();
