@@ -239,9 +239,10 @@ public class EVServerService extends Service {
 							e.printStackTrace();
 						}
 						//有不存在的商品
-						if(isspempty)
+						if((isspempty)&&(isspretry<4))
 						{
 							isspempty=false;
+							isspretry++;
 							//初始化三:获取商品信息
 							childhand=serverhttp.obtainHandler();
 			        		Message childmsg4=childhand.obtainMessage();
@@ -503,14 +504,7 @@ public class EVServerService extends Service {
     			{
     				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
     						+"不存在","server.txt");	
-    				isspempty=true;
-    				isspretry++;
-    				//连续4次后，不再循环判断了
-    				if(isspretry>=4)
-    				{
-    					isspretry=0;
-    					isspempty=false;
-    				}
+    				isspempty=true;    				
     			}
 			}
 			//更新货道失败
