@@ -1,0 +1,32 @@
+diff a/src/com/easivend/app/business/BusPort.java b/src/com/easivend/app/business/BusPort.java	(rejected hunks)
+@@ -807,6 +807,30 @@
+   		}
+   	}
+   	//��������
++	private void deletezhiwei()
++	{
++		if(ercheckopt())
++		{
++	  		// ����Ϣ���͵����߳���
++	  		weixingchildhand=weixinghttp.obtainHandler();
++	  		Message childmsg=weixingchildhand.obtainMessage();
++	  		childmsg.what=Weixinghttp.SETDELETECHILD;
++	  		JSONObject ev=null;
++	  		try {
++	  			ev=new JSONObject();
++	  			ev.put("out_trade_no", out_trade_no);		
++	  			//ev.put("out_trade_no", "000120150301092857698");	
++	  			Log.i("EV_JNI","Send0.1="+ev.toString());
++	  		} catch (JSONException e) {
++	  			// TODO Auto-generated catch block
++	  			e.printStackTrace();
++	  		}
++	  		childmsg.obj=ev;
++	  		weixingchildhand.sendMessage(childmsg);
++		}
++	}
++
++	//��������
+   	private void deletezhiwei()
+   	{
+   		if(ercheckopt())

@@ -685,8 +685,11 @@ public class EVServerhttp implements Runnable {
 					//第二步，获取图片名字ATTID
 					JSONObject jsonObject3 = new JSONObject(result); 
 					JSONArray arr3=jsonObject3.getJSONArray("ProductImageList");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]1","server.txt");
 					JSONObject object3=arr3.getJSONObject(0);
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]2","server.txt");
 					final String ATT_ID=object3.getString("ATT_ID");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]3","server.txt");
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]ATT_ID="+ATT_ID,"server.txt");
 					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]zhuheobj="+zhuheobj+"zhuheproductArray="+zhuheproductArray,"server.txt");
 					//第三步，把图片名字保存到json中
@@ -740,6 +743,14 @@ public class EVServerhttp implements Runnable {
 				catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+						try {
+							zhuheobj.put("AttImg", "");
+							zhuheproductArray.put(zhuheobj);
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}	
 					}
 				
 				
@@ -776,23 +787,44 @@ public class EVServerhttp implements Runnable {
 			@Override  
 			public void onErrorResponse(VolleyError error) {  
 				result = "请求失败！";
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10]"+result,"server.txt");
 				//第三步，把图片名字保存到json中
 				try {
 					zhuheobj.put("AttImg", "");
-					zhuheproductArray.put(zhuheobj);
-					zhuheproductjson.put("ProductList", zhuheproductArray);
+					zhuheproductArray.put(zhuheobj);					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}				
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10]"+result,"server.txt");
+				}	
 				
-				//上传给server
-				//向主线程返回信息
-				Message tomain4=mainhand.obtainMessage();
-				tomain4.what=SETRODUCTMAIN;
-				tomain4.obj=zhuheproductjson.toString();
-				mainhand.sendMessage(tomain4); // 发送消息
+				//第五步：进行下一个商品信息
+				productint++;
+				if(productint<productarr.length())
+				{
+					try {
+						updateproduct(productint);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else
+				{
+					try {
+						zhuheproductjson.put("ProductList", zhuheproductArray);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
+
+					//上传给server
+					//向主线程返回信息
+					Message tomain4=mainhand.obtainMessage();
+					tomain4.what=SETRODUCTMAIN;
+					tomain4.obj=zhuheproductjson.toString();
+					mainhand.sendMessage(tomain4); // 发送消息
+				}
 			}  
 		}) 
 		{  
@@ -809,9 +841,6 @@ public class EVServerhttp implements Runnable {
 		//5.加载信息并发送到网络上
 		mQueue.add(stringRequest6);	
 		
-		//zhuheproductjson.put("ProductList", zhuheproductArray);
-		//ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
-		//return zhuheproductjson.toString();
 		return "";
 	}
 	
@@ -1015,27 +1044,29 @@ public class EVServerhttp implements Runnable {
 						retj.put("orderno", ret[0]);
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok7]["+retj.toString()+"]","server.txt");
 						retjson.put(retj);
-					}
+					}			
 					
-					//第五步：进行下一个记录信息
-					retint++;
-					if(retint<recordarr.length())
-					{
-						updaterecord(retint);
-					}
-					else
-					{					
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2="+retjson.toString(),"server.txt");
-						//上传给server
-						//向主线程返回信息
-						tomain3.what=SETRECORDMAIN;
-						tomain3.obj=retjson;
-						mainhand.sendMessage(tomain3); // 发送消息
-					}
 				} catch (JSONException e) {
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail7-1]","server.txt");
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}										   
+				}
+				
+				//第五步：进行下一个记录信息
+				retint++;
+				if(retint<recordarr.length())
+				{
+					updaterecord(retint);
+				}
+				else
+				{					
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2="+retjson.toString(),"server.txt");
+					//上传给server
+					//向主线程返回信息
+					tomain3.what=SETRECORDMAIN;
+					tomain3.obj=retjson;
+					mainhand.sendMessage(tomain3); // 发送消息
+				}
 			}  
 		}, new Response.ErrorListener() {  
 			@Override  
@@ -1171,7 +1202,7 @@ public class EVServerhttp implements Runnable {
 			@Override  
 			public void onResponse(String response) {  
 			   
-			  //如果请求成功
+			    //如果请求成功
 				result = response;	//获取返回的字符串
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
 				JSONObject object;
@@ -1190,26 +1221,28 @@ public class EVServerhttp implements Runnable {
 						retj.put("pathName", pathNameVal[0]);
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok8]["+retj.toString()+"]","server.txt");
 						columnjson.put(retj);
-					}
+					}				
 					
-					//第五步：进行下一个货道信息
-					columnint++;
-					if(columnint<columnarr.length())
-					{
-						updatecolumn(columnint);
-					}
-					else
-					{						
-						//上传给server
-						//向主线程返回信息
-						tomain3.what=SETHUODAOSTATUMAIN;
-						tomain3.obj=columnjson;
-						mainhand.sendMessage(tomain3); // 发送消息
-					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8-1]","server.txt");
 					e.printStackTrace();
-				}										   
+				}	
+				
+				//第五步：进行下一个货道信息
+				columnint++;
+				if(columnint<columnarr.length())
+				{
+					updatecolumn(columnint);
+				}
+				else
+				{						
+					//上传给server
+					//向主线程返回信息
+					tomain3.what=SETHUODAOSTATUMAIN;
+					tomain3.obj=columnjson;
+					mainhand.sendMessage(tomain3); // 发送消息
+				}
 			}  
 		}, new Response.ErrorListener() {  
 			@Override  

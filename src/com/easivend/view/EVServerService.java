@@ -62,6 +62,7 @@ public class EVServerService extends Service {
     private String LAST_EDIT_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
+    private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -250,6 +251,7 @@ public class EVServerService extends Service {
 						}
 						else
 						{
+							isspretry=0;
 							//初始化五、发送心跳命令到子线程中
 			            	childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg=childhand.obtainMessage();
@@ -502,6 +504,13 @@ public class EVServerService extends Service {
     				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
     						+"不存在","server.txt");	
     				isspempty=true;
+    				isspretry++;
+    				//连续4次后，不再循环判断了
+    				if(isspretry>=4)
+    				{
+    					isspretry=0;
+    					isspempty=false;
+    				}
     			}
 			}
 			//更新货道失败
