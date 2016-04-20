@@ -155,6 +155,32 @@ public class EVprotocol {
 	*********************************************************************************************************/
 	public  native static String EVBentoLight(int port_id,int addr,int opt);
 	
+	/*********************************************************************************************************
+	** Function name	:		EVBentoCool
+	** Descriptions		:		快递柜制冷控制接口  [同步]
+	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16,opt:开制冷控制 1:开  0:关
+	** output parameters:		无
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":13,"port_id":0,"addr":0,"opt":1,"is_success":1,"result":1}}
+	*							"EV_type"= EV_BENTO_LIGHT = 13: 表照明结果回应包类型
+	*							"port_id":原样返回,"addr":原样返回柜子地址,"opt":原样返回操作.
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 表示处理结果	1:成功   0:失败
+	*********************************************************************************************************/
+	public  native static String EVBentoCool(int port_id,int addr,int opt);
+	
+	/*********************************************************************************************************
+	** Function name	:		EVBentoHot
+	** Descriptions		:		快递柜加热控制接口  [同步]
+	** input parameters	:       port_id:串口编号,addr:柜子地址 01-16,opt:开加热控制 1:开  0:关
+	** output parameters:		无
+	** Returned value	:		返回json包     例如： EV_JSON={"EV_json":{"EV_type":13,"port_id":0,"addr":0,"opt":1,"is_success":1,"result":1}}
+	*							"EV_type"= EV_BENTO_LIGHT = 13: 表照明结果回应包类型
+	*							"port_id":原样返回,"addr":原样返回柜子地址,"opt":原样返回操作.
+	*							"is_success":表示指令是否发送成功,1:发送成功。 0:发送失败（通信超时）
+	*							"result": 表示处理结果	1:成功   0:失败
+	*********************************************************************************************************/
+	public  native static String EVBentoHot(int port_id,int addr,int opt);
+	
 	
 	/*********************************************************************************************************
 	** Function name	:		trade

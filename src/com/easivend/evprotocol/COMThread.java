@@ -321,7 +321,7 @@ public class COMThread implements Runnable
 						ev3 = new JSONObject(msg.obj.toString());
 						cabinet=ev3.getInt("cabinet");
 						opt=ev3.getInt("opt");
-						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cabinet="+cabinet+"opt="+opt,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2light=cabinet="+cabinet+"opt="+opt,"com.txt");
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -374,12 +374,12 @@ public class COMThread implements Runnable
 						ev4 = new JSONObject(msg.obj.toString());
 						cabinet=ev4.getInt("cabinet");
 						opt=ev4.getInt("opt");
-						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cabinet="+cabinet+"opt="+opt,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2cool=cabinet="+cabinet+"opt="+opt,"com.txt");
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					String rec4=EVprotocol.EVBentoLight(ToolClass.getBentcom_id(), cabinet,opt);
+					String rec4=EVprotocol.EVBentoCool(ToolClass.getBentcom_id(), cabinet,opt);
 					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec4.toString(),"log.txt");
 
 					//2.重新组包
@@ -388,13 +388,13 @@ public class COMThread implements Runnable
 						//根据key取出内容
 						JSONObject ev_head4 = (JSONObject) jsonObject4.getJSONObject("EV_json");
 						int str_evType4 =  ev_head4.getInt("EV_type");
-						if(str_evType4==EVprotocol.EV_BENTO_LIGHT)
+						if(str_evType4==EVprotocol.EV_BENTO_COOL)
 						{
 							if(ev_head4.getInt("is_success")>0)
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_LIGHT);
+								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_COOL);
 								allSet.put("addr", ev_head4.getInt("addr"));//柜子地址
 								allSet.put("opt", ev_head4.getInt("opt"));//开还是关
 								allSet.put("result", ev_head4.getInt("result"));								
@@ -403,7 +403,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_LIGHT);
+								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_COOL);
 								allSet.put("addr", 0);//柜子地址
 								allSet.put("opt", 0);//开还是关
 								allSet.put("result", 0);								
@@ -426,12 +426,12 @@ public class COMThread implements Runnable
 						ev5 = new JSONObject(msg.obj.toString());
 						cabinet=ev5.getInt("cabinet");
 						opt=ev5.getInt("opt");
-						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cabinet="+cabinet+"opt="+opt,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2hot=cabinet="+cabinet+"opt="+opt,"com.txt");
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					String rec5=EVprotocol.EVBentoLight(ToolClass.getBentcom_id(), cabinet,opt);
+					String rec5=EVprotocol.EVBentoHot(ToolClass.getBentcom_id(), cabinet,opt);
 					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec5.toString(),"log.txt");
 
 					//2.重新组包
@@ -440,13 +440,13 @@ public class COMThread implements Runnable
 						//根据key取出内容
 						JSONObject ev_head5 = (JSONObject) jsonObject5.getJSONObject("EV_json");
 						int str_evType5 =  ev_head5.getInt("EV_type");
-						if(str_evType5==EVprotocol.EV_BENTO_LIGHT)
+						if(str_evType5==EVprotocol.EV_BENTO_HOT)
 						{
 							if(ev_head5.getInt("is_success")>0)
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_LIGHT);
+								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_HOT);
 								allSet.put("addr", ev_head5.getInt("addr"));//柜子地址
 								allSet.put("opt", ev_head5.getInt("opt"));//开还是关
 								allSet.put("result", ev_head5.getInt("result"));								
@@ -455,7 +455,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_LIGHT);
+								allSet.put("EV_TYPE", EVprotocol.EV_BENTO_HOT);
 								allSet.put("addr", 0);//柜子地址
 								allSet.put("opt", 0);//开还是关
 								allSet.put("result", 0);								

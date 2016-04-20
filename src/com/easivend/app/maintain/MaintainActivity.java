@@ -55,7 +55,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MaintainActivity extends Activity
 {
-	TextView txtcom=null,txtbentcom=null,txtcolumncom=null;
 	private GridView gvInfo;// 创建GridView对象
 	//跳转页面对话框
 	private ProgressDialog barmaintain= null;
@@ -100,9 +99,7 @@ public class MaintainActivity extends Activity
 		}
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
-				
-		dialog= ProgressDialog.show(MaintainActivity.this,"同步服务器","请稍候...");
-				
+						
 		//==========
 		//Dog服务相关
 		//==========
@@ -157,6 +154,7 @@ public class MaintainActivity extends Activity
             @Override
             public void run() 
             {      
+            	dialog= ProgressDialog.show(MaintainActivity.this,"同步服务器","请稍候...");
             	ToolClass.ResstartPort(1);
             	ToolClass.ResstartPort(2);
             	ToolClass.ResstartPort(3);
@@ -174,9 +172,6 @@ public class MaintainActivity extends Activity
 		//================
 		//串口配置和注册相关
 		//================
-		txtcom=(TextView)super.findViewById(R.id.txtcom);
-		txtbentcom=(TextView)super.findViewById(R.id.txtbentcom);
-		txtcolumncom=(TextView)super.findViewById(R.id.txtcolumncom);
 		ToolClass.SetDir();	
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
@@ -195,7 +190,7 @@ public class MaintainActivity extends Activity
 	        }
 	        ToolClass.setCom(com);
 	        ToolClass.setBentcom(bentcom);
-	        ToolClass.setColumncom(columncom);	
+	        ToolClass.setColumncom(columncom);		        
 
 		}
 		else

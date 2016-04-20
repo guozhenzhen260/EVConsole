@@ -91,7 +91,7 @@ public class HuodaoTest extends TabActivity
 	private Spinner spinhuosetCab=null,spinhuotestCab=null,spinhuopeiCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
-	private int cabinetsetvar=0,cabinetTypesetvar=0;
+	private int cabinetsetvar=0;//当前柜号
 	private int devopt=0;//操作类型，出货，照明，制冷，加热	
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
@@ -113,8 +113,7 @@ public class HuodaoTest extends TabActivity
 	private Button btnhuoexit=null;// 创建Button对象“退出”
 	private EditText edtcolumn=null;
 	private TextView txtlight=null,txtcold=null,txthot=null;
-	private Switch switchlight = null,switcold = null,switchhot = null;
-	private int cabinetvar=0,cabinetTypevar=0;
+	private Switch switchlight = null,switcold = null,switchhot = null;	
 	//货道配置页面
 	private int cabinetpeivar=0,cabinetTypepeivar=0;
 	private Switch btnhuosetc1=null,btnhuosetc2=null,btnhuosetc3=null,btnhuosetc4=null,
@@ -201,7 +200,7 @@ public class HuodaoTest extends TabActivity
 				{
 					barhuomanager.setVisibility(View.VISIBLE); 
 					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
-					cabinetTypesetvar=cabinetType[arg2]; 
+					spinhuotestCab.setSelection(arg2);
 					queryhuodao();					
 				}				
 			}
@@ -372,8 +371,9 @@ public class HuodaoTest extends TabActivity
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
-					cabinetvar=Integer.parseInt(cabinetID[arg2]); 
-					cabinetTypevar=cabinetType[arg2]; 
+					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+					spinhuosetCab.setSelection(arg2);
+					queryhuodao();	
 				}				
 			}
 
@@ -1486,7 +1486,7 @@ public class HuodaoTest extends TabActivity
 		{
 			case COMService.EV_CHECKCHILD:	
 				ToolClass.Log(ToolClass.INFO,"EV_JNI",
-				    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+				    	"[APPsend>>]cabinet="+String.valueOf(cabinetsetvar)
 				    	,"log.txt");
 				intent.putExtra("EVWhat", COMService.EV_CHECKCHILD);	
 				intent.putExtra("cabinet", cabinetsetvar);	
@@ -1495,7 +1495,7 @@ public class HuodaoTest extends TabActivity
 				break;
 			case COMService.EV_CHUHUOCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI",
-		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetsetvar)
 		    	+" column="+opt		    	
 		    	,"log.txt");
 				//4.发送指令广播给COMService
@@ -1504,7 +1504,7 @@ public class HuodaoTest extends TabActivity
 				else
 					intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);
 				
-				intent.putExtra("cabinet", cabinetvar);	
+				intent.putExtra("cabinet", cabinetsetvar);	
 				intent.putExtra("column", opt);	
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
@@ -1513,12 +1513,12 @@ public class HuodaoTest extends TabActivity
 			case COMService.EV_COOLCHILD:
 			case COMService.EV_HOTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI",
-		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
+		    	"[APPsend>>]cabinet="+String.valueOf(cabinetsetvar)
 		    	+" opt="+opt		    	
 		    	,"log.txt");
 				//4.发送指令广播给COMService
 				intent.putExtra("EVWhat", type);	
-				intent.putExtra("cabinet", cabinetvar);	
+				intent.putExtra("cabinet", cabinetsetvar);	
 				intent.putExtra("opt", opt);	
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
@@ -1788,7 +1788,6 @@ public class HuodaoTest extends TabActivity
 //		if(cabinetID!=null)
 //		{
 //		    cabinetsetvar=Integer.parseInt(cabinetID[0]); 
-//		    cabinetTypesetvar=cabinetType[0]; 
 //		}
 	}
 	//导入本柜全部货道信息

@@ -8,27 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context=".MaintainActivity" >
-    
-    <LinearLayout
-         android:layout_width="wrap_content"
-   		 android:layout_height="wrap_content"
-   		 android:orientation="horizontal">
-   		 <TextView
-	        android:id="@+id/txtcom"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="主串口未配置," />
-   		 <TextView
-	        android:id="@+id/txtbentcom"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="格子柜串口未配置" /> 
-	    <TextView
-	        android:id="@+id/txtcolumncom"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="主柜串口未配置" />      		 
-   	</LinearLayout>
+        
 	<GridView 
 	    android:id="@+id/gvInfo"
 	    android:layout_width="fill_parent"
