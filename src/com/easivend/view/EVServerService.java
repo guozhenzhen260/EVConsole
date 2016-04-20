@@ -393,8 +393,31 @@ public class EVServerService extends Service {
 		    		childmsg3.obj=ev3;
 		    		childhand.sendMessage(childmsg3);
 	        	}
+	        	//重试签到指令
+	        	else
+	        	{
+	        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","checkretry:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+							+"huoSet="+huoSet.toString(),"server.txt");					
+					//处理接收到的内容,发送签到命令到子线程中
+					//初始化一:发送签到指令
+		        	childhand=serverhttp.obtainHandler();
+		    		Message childmsg=childhand.obtainMessage();
+		    		childmsg.what=EVServerhttp.SETCHILD;
+		    		JSONObject ev=null;
+		    		try {
+		    			ev=new JSONObject();
+		    			ev.put("vmc_no", vmc_no);
+		    			ev.put("vmc_auth_code", vmc_auth_code);
+		    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev.toString(),"server.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		childmsg.obj=ev;
+		    		childhand.sendMessage(childmsg);
+	        	}
 	        } 
-	    },15,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },40,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}	
 	
 	//更新商品分类信息
