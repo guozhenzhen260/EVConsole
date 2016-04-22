@@ -197,23 +197,13 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
-						//初始化八、返回给activity广播,初始化完成
-						if(ischeck==false)
-						{
-							intent=new Intent();
-							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
-							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-							localBroadreceiver.sendBroadcast(intent);
-							ischeck=true;
-							LAST_EDIT_TIME=ToolClass.getLasttime();
-						}
-//						//初始化三:获取商品信息
-//						childhand=serverhttp.obtainHandler();
-//		        		Message childmsg2=childhand.obtainMessage();
-//		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
-//		        		childmsg2.obj=LAST_EDIT_TIME;
-//		        		childhand.sendMessage(childmsg2);
+						}						
+						//初始化三:获取商品信息
+						childhand=serverhttp.obtainHandler();
+		        		Message childmsg2=childhand.obtainMessage();
+		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
+		        		childmsg2.obj=LAST_EDIT_TIME;
+		        		childhand.sendMessage(childmsg2);
 						break;
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
@@ -228,12 +218,22 @@ public class EVServerService extends Service {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//初始化四:获取货道配置信息
-						childhand=serverhttp.obtainHandler();
-		        		Message childmsg3=childhand.obtainMessage();
-		        		childmsg3.what=EVServerhttp.SETHUODAOCHILD;
-		        		childmsg3.obj=LAST_EDIT_TIME;
-		        		childhand.sendMessage(childmsg3);
+						//初始化八、返回给activity广播,初始化完成
+						if(ischeck==false)
+						{
+							intent=new Intent();
+							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
+							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+							localBroadreceiver.sendBroadcast(intent);
+							ischeck=true;
+							LAST_EDIT_TIME=ToolClass.getLasttime();
+						}
+//						//初始化四:获取货道配置信息
+//						childhand=serverhttp.obtainHandler();
+//		        		Message childmsg3=childhand.obtainMessage();
+//		        		childmsg3.what=EVServerhttp.SETHUODAOCHILD;
+//		        		childmsg3.obj=LAST_EDIT_TIME;
+//		        		childhand.sendMessage(childmsg3);
 						break;	
 					//获取货道信息	
 					case EVServerhttp.SETERRFAILHUODAOMAIN://子线程接收主线程消息获取货道信息失败

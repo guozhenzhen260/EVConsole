@@ -800,18 +800,36 @@ public class EVServerhttp implements Runnable {
 	//分解商品信息
 	private void productArray(String classrst) throws JSONException
 	{
-		JSONObject jsonObject = new JSONObject(classrst); 
-		productarr=jsonObject.getJSONArray("ProductList");
-		productint=0;
-		zhuheproductArray=new JSONArray();
-		zhuheproductjson = new JSONObject(); 
-		if(productarr.length()==0)
+		JSONObject jsonObject = new JSONObject(classrst);
+		if(ToolClass.getServerVer()==0)//旧的后台
 		{
-			//向主线程返回信息
-			Message tomain=mainhand.obtainMessage();
-			tomain.what=SETRODUCTMAIN;
-			tomain.obj=zhuheproductjson.toString();
-			mainhand.sendMessage(tomain); // 发送消息	
+			productarr=jsonObject.getJSONArray("ProductList");
+			productint=0;
+			zhuheproductArray=new JSONArray();
+			zhuheproductjson = new JSONObject(); 
+			if(productarr.length()==0)
+			{
+				//向主线程返回信息
+				Message tomain=mainhand.obtainMessage();
+				tomain.what=SETRODUCTMAIN;
+				tomain.obj=zhuheproductjson.toString();
+				mainhand.sendMessage(tomain); // 发送消息	
+			}
+		}
+		else if(ToolClass.getServerVer()==1)//一期后台
+		{
+			productarr=jsonObject.getJSONArray("List");
+			productint=0;
+			zhuheproductArray=new JSONArray();
+			zhuheproductjson = new JSONObject(); 
+			if(productarr.length()==0)
+			{
+				//向主线程返回信息
+				Message tomain=mainhand.obtainMessage();
+				tomain.what=SETRODUCTMAIN;
+				tomain.obj=zhuheproductjson.toString();
+				mainhand.sendMessage(tomain); // 发送消息	
+			}
 		}
 	}
 	//更新商品和图片信息
@@ -843,7 +861,15 @@ public class EVServerhttp implements Runnable {
 				{
 					//第二步，获取图片名字ATTID
 					JSONObject jsonObject3 = new JSONObject(result); 
-					JSONArray arr3=jsonObject3.getJSONArray("ProductImageList");
+					JSONArray arr3=null;
+					if(ToolClass.getServerVer()==0)//旧的后台
+					{
+						arr3=jsonObject3.getJSONArray("ProductImageList");
+					}
+					else if(ToolClass.getServerVer()==1)//一期后台
+					{
+						arr3=jsonObject3.getJSONArray("List");
+					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]1","server.txt");
 					JSONObject object3=arr3.getJSONObject(0);
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]2","server.txt");
