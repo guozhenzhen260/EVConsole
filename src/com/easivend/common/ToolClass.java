@@ -95,8 +95,17 @@ public class ToolClass
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
+	private static int ServerVer=0;//0旧的后台，1一期的后台
 	
 	
+	public static int getServerVer() {
+		return ServerVer;
+	}
+
+	public static void setServerVer(int serverVer) {
+		ServerVer = serverVer;
+	}
+
 	public static String getBentcom() {
 		return bentcom;
 	}

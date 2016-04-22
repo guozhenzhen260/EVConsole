@@ -108,8 +108,14 @@ public class vmc_classDAO
   		// 开启一个事务
 	    db.beginTransaction();
 	    try {
-	  		// 没有关联商品，可以删除
-	  		if (!cursor.moveToLast()) 
+	  		// 有关联商品，删除商品分类关联表相关	    	
+	  		if (cursor.moveToLast()) 
+	  		{
+		        // 执行删除收入信息操作
+		        db.execSQL("delete from vmc_classproduct where classID = ?", 
+		        		new Object[] { tb_vmc_class.getClassID()});
+	        }	
+	  		//删除分类表相关	
 	        {
 		        // 执行删除收入信息操作
 		        db.execSQL("delete from vmc_class where classID = ?", 

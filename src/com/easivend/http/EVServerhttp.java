@@ -263,19 +263,38 @@ public class EVServerhttp implements Runnable {
 								{
 									tomain3.what=SETERRFAILCLASSMAIN;
 									tomain3.obj=object.getString("Message");
+									mainhand.sendMessage(tomain3); // 发送消息
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail3]SETERRFAILCLASSMAIN","server.txt");
 								}
 								else
 								{
-									tomain3.what=SETCLASSMAIN;
-									tomain3.obj=result;
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok3]","server.txt");
+									JSONObject jsonObject = new JSONObject(result); 
+									if(jsonObject.has("ProductClassList")==true)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","旧的后台","server.txt");
+										ToolClass.setServerVer(0);
+										tomain3.what=SETCLASSMAIN;
+										tomain3.obj=result;	
+										mainhand.sendMessage(tomain3); // 发送消息
+									}
+									else if(jsonObject.has("List")==true)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","一期的后台","server.txt");
+										ToolClass.setServerVer(1);
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok4]准备更新商品分类...","server.txt");
+										classArray(result);
+										if(classarr.length()>0)
+										{
+											updateclass(0);
+										}
+									}
 								}
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
-							}										    	    
-				    	    mainhand.sendMessage(tomain3); // 发送消息
+							}									    	    
+				    	    
                         }  
                     }, new Response.ErrorListener() {  
                         @Override  
@@ -630,6 +649,146 @@ public class EVServerhttp implements Runnable {
 		};
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop
 	}
+	
+	//==============
+	//==商品分类管理模块
+	//==============
+	JSONArray classarr=null;
+	JSONArray zhuheclassArray=null;
+	JSONObject zhuheclassjson = null; 
+	int classint=0;
+	//分解分类信息
+	private void classArray(String classrst) throws JSONException
+	{
+		JSONObject jsonObject = new JSONObject(classrst); 
+		classarr=jsonObject.getJSONArray("List");
+		classint=0;
+		zhuheclassArray=new JSONArray();
+		zhuheclassjson = new JSONObject(); 
+		if(classarr.length()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETCLASSMAIN;
+			tomain.obj=zhuheclassjson.toString();
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
+	}
+	
+	//更新分类和图片信息
+	private String updateclass(int i) throws JSONException
+	{
+		final JSONObject object2=classarr.getJSONObject(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新分类和图片="+object2.toString(),"server.txt");										
+		final JSONObject zhuheobj=object2;
+		//第一步，获取图片名字ATTID
+		final String CLS_URL=object2.getString("CLS_URL");
+		String ATT_ID="";
+		if(CLS_URL.equals("null")!=true)
+		{
+			String a[] = CLS_URL.split("/");  
+			ATT_ID=a[a.length-1];
+			ATT_ID=ATT_ID.substring(0,ATT_ID.indexOf(".jpg"));
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","图片ATT_ID="+ATT_ID,"server.txt");										
+			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+		}
+		else
+		{
+			zhuheobj.put("AttImg", "");
+		}
+		
+		
+		try
+		{	
+			if(ATT_ID.equals("")==true)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]无图片","server.txt");
+			}
+			else
+			{
+				if(ToolClass.isImgFile(ATT_ID))
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片已存在","server.txt");
+				}
+				else 
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片...","server.txt");
+					//第二步.准备下载	
+					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+					String url= serip+CLS_URL;	//要提交的目标地址
+					final String ATTIDS=ATT_ID;
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+					ImageRequest imageRequest = new ImageRequest(  
+							url,  
+					        new Response.Listener<Bitmap>() {  
+					            @Override  
+					            public void onResponse(Bitmap response) {  
+					            	ToolClass.saveBitmaptofile(response,ATTIDS);
+					            	try {
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片完成","server.txt");
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+					            }  
+					        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+					            @Override  
+					            public void onErrorResponse(VolleyError error) {  
+									result = "请求失败！";
+									try {
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片失败","server.txt");
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+					            }  
+					        });
+					mQueue.add(imageRequest); 
+				}
+				
+			}
+		}
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+		}
+		
+		//第三步，把图片名字保存到json中		
+		zhuheclassArray.put(zhuheobj);
+		
+		
+		//第四步：进行下一个分类信息
+		classint++;
+		if(classint<classarr.length())
+		{
+			try {
+				updateclass(classint);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				zhuheclassjson.put("List", zhuheclassArray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheclassjson.toString(),"server.txt");
+
+			//上传给server
+			//向主线程返回信息
+			Message tomain4=mainhand.obtainMessage();
+			tomain4.what=SETCLASSMAIN;
+			tomain4.obj=zhuheclassjson.toString();
+			mainhand.sendMessage(tomain4); // 发送消息
+		}		
+		return "";
+	}
+	
 	
 	//==========
 	//==商品管理模块

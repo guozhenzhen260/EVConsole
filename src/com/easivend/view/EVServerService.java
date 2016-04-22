@@ -198,12 +198,22 @@ public class EVServerService extends Service {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//初始化三:获取商品信息
-						childhand=serverhttp.obtainHandler();
-		        		Message childmsg2=childhand.obtainMessage();
-		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
-		        		childmsg2.obj=LAST_EDIT_TIME;
-		        		childhand.sendMessage(childmsg2);
+						//初始化八、返回给activity广播,初始化完成
+						if(ischeck==false)
+						{
+							intent=new Intent();
+							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
+							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+							localBroadreceiver.sendBroadcast(intent);
+							ischeck=true;
+							LAST_EDIT_TIME=ToolClass.getLasttime();
+						}
+//						//初始化三:获取商品信息
+//						childhand=serverhttp.obtainHandler();
+//		        		Message childmsg2=childhand.obtainMessage();
+//		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
+//		        		childmsg2.obj=LAST_EDIT_TIME;
+//		        		childhand.sendMessage(childmsg2);
 						break;
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
@@ -417,24 +427,52 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },40,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}	
 	
 	//更新商品分类信息
 	private void updatevmcClass(String classrst) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject(classrst); 
-		JSONArray arr1=jsonObject.getJSONArray("ProductClassList");
-		for(int i=0;i<arr1.length();i++)
+		if(ToolClass.getServerVer()==0)//旧的后台
 		{
-			JSONObject object2=arr1.getJSONObject(i);
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品分类CLASS_CODE="+object2.getString("CLASS_CODE")
-					+"CLASS_NAME="+object2.getString("CLASS_NAME"),"server.txt");										
-			// 创建InaccountDAO对象
-        	vmc_classDAO classDAO = new vmc_classDAO(EVServerService.this);
-            // 创建Tb_inaccount对象
-        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(object2.getString("CLASS_CODE"), object2.getString("CLASS_NAME"),object2.getString("LAST_EDIT_TIME"),"");
-        	classDAO.addorupdate(tb_vmc_class);// 修改
+			JSONArray arr1=jsonObject.getJSONArray("ProductClassList");
+			for(int i=0;i<arr1.length();i++)
+			{
+				JSONObject object2=arr1.getJSONObject(i);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品分类CLASS_CODE="+object2.getString("CLASS_CODE")
+						+"CLASS_NAME="+object2.getString("CLASS_NAME"),"server.txt");										
+				// 创建InaccountDAO对象
+	        	vmc_classDAO classDAO = new vmc_classDAO(EVServerService.this);
+	            // 创建Tb_inaccount对象
+	        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(object2.getString("CLASS_CODE"), object2.getString("CLASS_NAME"),object2.getString("LAST_EDIT_TIME"),"");
+	        	classDAO.addorupdate(tb_vmc_class);// 修改
+			}
+		}
+		else if(ToolClass.getServerVer()==1)//一期后台
+		{
+			JSONArray arr1=jsonObject.getJSONArray("List");
+			for(int i=0;i<arr1.length();i++)
+			{
+				JSONObject object2=arr1.getJSONObject(i);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品分类CLASS_CODE="+object2.getString("CLASS_CODE")
+						+"CLASS_NAME="+object2.getString("CLASS_NAME")+"IS_DELETE="+object2.getInt("IS_DELETE")
+						+"AttImg="+object2.getString("AttImg"),"server.txt");										
+				// 创建InaccountDAO对象
+	        	vmc_classDAO classDAO = new vmc_classDAO(EVServerService.this);
+	            // 创建Tb_inaccount对象
+	        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(object2.getString("CLASS_CODE"), object2.getString("CLASS_NAME"),object2.getString("LAST_EDIT_TIME"),object2.getString("AttImg"));
+	        	//删除商品分类
+	        	if(object2.getInt("IS_DELETE")==1) 
+	        	{
+	        		classDAO.detele(tb_vmc_class);
+	        	}
+	        	else
+	        	{
+	        		classDAO.addorupdate(tb_vmc_class);// 修改
+	        	}
+			}
+			
 		}
 	}
 	
