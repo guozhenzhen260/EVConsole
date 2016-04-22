@@ -237,7 +237,35 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+						}						
+						//有不存在的商品
+						if((isspempty)&&(isspretry<4))
+						{
+							isspempty=false;
+							isspretry++;
+							//初始化三:获取商品信息
+							childhand=serverhttp.obtainHandler();
+			        		Message childmsg4=childhand.obtainMessage();
+			        		childmsg4.what=EVServerhttp.SETPRODUCTCHILD;
+			        		childmsg4.obj="";
+			        		childhand.sendMessage(childmsg4);
 						}
+						else 
+						{
+							isspretry=0;
+							//初始化五、发送心跳命令到子线程中
+			            	childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg=childhand.obtainMessage();
+			        		childheartmsg.what=EVServerhttp.SETHEARTCHILD;
+			        		childhand.sendMessage(childheartmsg);	
+						}
+						break;					
+					//获取心跳信息	
+					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息失败，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
 						//初始化八、返回给activity广播,初始化完成
 						if(ischeck==false)
 						{
@@ -248,40 +276,12 @@ public class EVServerService extends Service {
 							ischeck=true;
 							LAST_EDIT_TIME=ToolClass.getLasttime();
 						}
-//						//有不存在的商品
-//						if((isspempty)&&(isspretry<4))
-//						{
-//							isspempty=false;
-//							isspretry++;
-//							//初始化三:获取商品信息
-//							childhand=serverhttp.obtainHandler();
-//			        		Message childmsg4=childhand.obtainMessage();
-//			        		childmsg4.what=EVServerhttp.SETPRODUCTCHILD;
-//			        		childmsg4.obj="";
-//			        		childhand.sendMessage(childmsg4);
-//						}
-//						else 
-//						{
-//							isspretry=0;
-//							//初始化五、发送心跳命令到子线程中
-//			            	childhand=serverhttp.obtainHandler();
-//			        		Message childheartmsg=childhand.obtainMessage();
-//			        		childheartmsg.what=EVServerhttp.SETHEARTCHILD;
-//			        		childhand.sendMessage(childheartmsg);	
-//						}
-						break;					
-					//获取心跳信息	
-					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息失败，原因="+msg.obj.toString(),"server.txt");
-						break;
-					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
-						//初始化六、发送交易记录命令到子线程中
-		            	childhand=serverhttp.obtainHandler();
-		        		Message childheartmsg2=childhand.obtainMessage();
-		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
-		        		childheartmsg2.obj=grid();
-		        		childhand.sendMessage(childheartmsg2);						
+//						//初始化六、发送交易记录命令到子线程中
+//		            	childhand=serverhttp.obtainHandler();
+//		        		Message childheartmsg2=childhand.obtainMessage();
+//		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
+//		        		childheartmsg2.obj=grid();
+//		        		childhand.sendMessage(childheartmsg2);						
 						break;
 					//获取上报交易记录返回	
 					case EVServerhttp.SETERRFAILRECORDMAIN://子线程接收主线程消息上报交易记录失败
