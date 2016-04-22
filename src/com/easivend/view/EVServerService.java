@@ -266,6 +266,21 @@ public class EVServerService extends Service {
 						break;
 					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
+						
+						//初始化六、发送交易记录命令到子线程中
+		            	childhand=serverhttp.obtainHandler();
+		        		Message childheartmsg2=childhand.obtainMessage();
+		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
+		        		childheartmsg2.obj=grid();
+		        		childhand.sendMessage(childheartmsg2);						
+						break;
+					//获取上报交易记录返回	
+					case EVServerhttp.SETERRFAILRECORDMAIN://子线程接收主线程消息上报交易记录失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录失败","server.txt");
+						break;
+					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
+						//修改交易数据上报状态为已上报
+						updategrid(msg.obj.toString());
 						//初始化八、返回给activity广播,初始化完成
 						if(ischeck==false)
 						{
@@ -276,27 +291,12 @@ public class EVServerService extends Service {
 							ischeck=true;
 							LAST_EDIT_TIME=ToolClass.getLasttime();
 						}
-//						//初始化六、发送交易记录命令到子线程中
-//		            	childhand=serverhttp.obtainHandler();
-//		        		Message childheartmsg2=childhand.obtainMessage();
-//		        		childheartmsg2.what=EVServerhttp.SETRECORDCHILD;
-//		        		childheartmsg2.obj=grid();
-//		        		childhand.sendMessage(childheartmsg2);						
-						break;
-					//获取上报交易记录返回	
-					case EVServerhttp.SETERRFAILRECORDMAIN://子线程接收主线程消息上报交易记录失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录失败","server.txt");
-						break;
-					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
-						//修改交易数据上报状态为已上报
-						updategrid(msg.obj.toString());
-						
-						//初始化七、发送货道上传命令到子线程中
-						childhand=serverhttp.obtainHandler();
-		        		Message childheartmsg3=childhand.obtainMessage();
-		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
-		        		childheartmsg3.obj=columngrid();
-		        		childhand.sendMessage(childheartmsg3);
+//						//初始化七、发送货道上传命令到子线程中
+//						childhand=serverhttp.obtainHandler();
+//		        		Message childheartmsg3=childhand.obtainMessage();
+//		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+//		        		childheartmsg3.obj=columngrid();
+//		        		childhand.sendMessage(childheartmsg3);
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
