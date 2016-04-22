@@ -281,22 +281,13 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
 						//修改交易数据上报状态为已上报
 						updategrid(msg.obj.toString());
-						//初始化八、返回给activity广播,初始化完成
-						if(ischeck==false)
-						{
-							intent=new Intent();
-							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
-							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-							localBroadreceiver.sendBroadcast(intent);
-							ischeck=true;
-							LAST_EDIT_TIME=ToolClass.getLasttime();
-						}
-//						//初始化七、发送货道上传命令到子线程中
-//						childhand=serverhttp.obtainHandler();
-//		        		Message childheartmsg3=childhand.obtainMessage();
-//		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
-//		        		childheartmsg3.obj=columngrid();
-//		        		childhand.sendMessage(childheartmsg3);
+						
+						//初始化七、发送货道上传命令到子线程中
+						childhand=serverhttp.obtainHandler();
+		        		Message childheartmsg3=childhand.obtainMessage();
+		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+		        		childheartmsg3.obj=columngrid();
+		        		childhand.sendMessage(childheartmsg3);
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
