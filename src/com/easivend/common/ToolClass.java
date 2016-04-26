@@ -96,8 +96,16 @@ public class ToolClass
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
 	private static int ServerVer=0;//0旧的后台，1一期的后台
+	public static double version=0;//本机版本号
 	
-	
+	public static double getVersion() {
+		return version;
+	}
+
+	public static void setVersion(double version) {
+		ToolClass.version = version;
+	}
+
 	public static int getServerVer() {
 		return ServerVer;
 	}
@@ -543,6 +551,39 @@ public class ToolClass
 		}    
     }
     
+    /**
+     * 使用isAPKFile,判断这个程序是已经存在目录中,true存在,false不存在
+     */
+    public static boolean isAPKFile(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR();
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename);         	
+        	//如果不存在，则创建文件
+        	if(!fileName.exists())
+        	{  
+        		fileext=false; 
+    	    }  
+        	else
+        		fileext=true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileext; 
+    }
+    
+     
     /**
      * 使用isImgFile,判断这个商品图片是已经存在目录中,true存在,false不存在
      */

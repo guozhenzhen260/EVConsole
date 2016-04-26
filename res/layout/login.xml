@@ -17,7 +17,7 @@
 			        android:layout_height="wrap_content"
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
-			        android:text="版本号：3.00"
+			        android:text="版本号："
 			        android:textColor="#8C6931"
 			        android:textSize="25dp" />
 			    <TextView

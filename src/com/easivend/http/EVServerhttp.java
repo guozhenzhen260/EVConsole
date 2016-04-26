@@ -60,6 +60,10 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILRECORDMAIN=24;//what标记,发送给主线程上报交易故障
 	public final static int SETRECORDMAIN=25;//what标记,发送给主线程获取上报交易返回
 	
+	public final static int SETPVERSIONCHILD=27;//what标记,发送给子线程获取版本信息
+	public final static int SETERRFAILVERSIONMAIN=28;//what标记,发送给主线程获取版本故障
+	public final static int SETVERSIONMAIN=29;//what标记,发送给主线程获取版本返回
+	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
@@ -474,7 +478,12 @@ public class EVServerhttp implements Runnable {
 					parammap7.put("COINS_STATUS",coin_err);
 					parammap7.put("NOTE_STATUS",bill_err);	
 					parammap7.put("DOOR_STATUS","0");	
-					parammap7.put("WAREHOUSE_TEMPERATURE","0");					
+					parammap7.put("WAREHOUSE_TEMPERATURE","0");		
+					if(ToolClass.getServerVer()==1)//一期后台
+					{
+						parammap7.put("CLIENT_VERSION",ToolClass.getVersion());	
+						parammap7.put("CLIENT_DESC","本机版本号");	
+					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap7.toString(),"server.txt");
 					//将2.map类集转为json格式
 					Gson gson7=new Gson();
@@ -640,7 +649,73 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest11);						
-					break;		
+					break;	
+				case SETPVERSIONCHILD://获取版本信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target12 = httpStr+"/api/clientVersion";	//要提交的目标地址
+					
+					
+					//向主线程返回信息
+					final Message tomain12=mainhand.obtainMessage();
+					//4.准备加载信息设置
+					StringRequest stringRequest12 = new StringRequest(Method.POST, target12,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						  //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain12.what=SETERRFAILVERSIONMAIN;
+									tomain12.obj=object.getString("Message");
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail12]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok12]","server.txt");
+									versionArray(result);
+									if(versionarr.length()>0)
+									{
+										updateversion(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										    	    
+							mainhand.sendMessage(tomain12); // 发送消息
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain12.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain12); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail12]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							//map.put("LAST_EDIT_TIME", ToolClass.getLasttime());
+							map.put("LAST_EDIT_TIME", "2016-04-26T14:11:42");
+							map.put("VMC_NO", vmc_no);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest12);					
+					break;	
 				default:
 					break;
 				}
@@ -1069,6 +1144,10 @@ public class EVServerhttp implements Runnable {
 		int orderStatus=0;
 		String productName="";
 		String RefundAmount="";
+		//一期后台
+		String NOTE_AMOUNT="",COIN_AMOUNT="",CASH_AMOUNT="",REFUND_NOTE_AMOUNT="",
+				REFUND_COIN_AMOUNT="",REFUND_CASH_AMOUNT="",AMOUNT_OWED="",Amount="",
+				Cab="",PATH_NO="";
 		int Status=0;
 		try {
 			jsonObject =recordarr.getJSONObject(i);
@@ -1088,10 +1167,30 @@ public class EVServerhttp implements Runnable {
 			productName=jsonObject.getString("productName");
 			RefundAmount=jsonObject.getString("RefundAmount");
 			Status=jsonObject.getInt("Status");
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
-				+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
-				"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName,"server.txt");			
-			    	
+			if(ToolClass.getServerVer()==0)//旧的后台
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
+					+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
+					"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName,"server.txt");			
+			}
+			else if(ToolClass.getServerVer()==1)//一期后台
+			{
+				NOTE_AMOUNT=jsonObject.getString("NOTE_AMOUNT");
+				COIN_AMOUNT=jsonObject.getString("COIN_AMOUNT");
+				CASH_AMOUNT=jsonObject.getString("CASH_AMOUNT");
+				REFUND_NOTE_AMOUNT=jsonObject.getString("REFUND_NOTE_AMOUNT");
+				REFUND_COIN_AMOUNT=jsonObject.getString("REFUND_COIN_AMOUNT");
+				REFUND_CASH_AMOUNT=jsonObject.getString("REFUND_CASH_AMOUNT");
+				AMOUNT_OWED=jsonObject.getString("AMOUNT_OWED");
+				Amount=jsonObject.getString("Amount");
+				Cab=jsonObject.getString("Cab");
+				PATH_NO=jsonObject.getString("PATH_NO");
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
+						+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
+						"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName+"NOTE_AMOUNT="+NOTE_AMOUNT+"COIN_AMOUNT="+COIN_AMOUNT
+						+"CASH_AMOUNT="+CASH_AMOUNT+"REFUND_NOTE_AMOUNT="+REFUND_NOTE_AMOUNT+"REFUND_COIN_AMOUNT="+REFUND_COIN_AMOUNT+"REFUND_CASH_AMOUNT="+REFUND_CASH_AMOUNT
+						+"AMOUNT_OWED="+AMOUNT_OWED+"Amount="+Amount+"Cab="+Cab+"PATH_NO="+PATH_NO,"server.txt");			
+			}
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -1137,7 +1236,14 @@ public class EVServerhttp implements Runnable {
 			orderpay.put("payType", payType);//0现金,1支付宝声波,2银联,3支付宝二维码,4微信
 			orderpay.put("shouldPay", shouldPay);//交易金额,如2.5元
 			orderpay.put("realPay", 2);
-			orderpay.put("RefundAmount", RefundAmount);//退款金额,如1.5元
+			if(ToolClass.getServerVer()==0)//旧的后台
+			{
+				orderpay.put("RefundAmount", RefundAmount);//退款金额,如1.5元
+			}
+			else if(ToolClass.getServerVer()==1)//一期后台
+			{
+				orderpay.put("RefundAmount", 0);//退款金额,如1.5元
+			}
 			orderpay.put("smallChange", 0);
 			orderpay.put("realNote", 1);
 			orderpay.put("realCoins", 0);
@@ -1146,15 +1252,34 @@ public class EVServerhttp implements Runnable {
 			orderpay.put("integre", 0);
 			orderpay.put("payDesc", "test");
 			orderpay.put("payTime", orderTime);	//支付时间
+			if(ToolClass.getServerVer()==1)//一期后台
+			{
+				orderpay.put("NOTE_AMOUNT", NOTE_AMOUNT);
+				orderpay.put("COIN_AMOUNT", COIN_AMOUNT);
+				orderpay.put("CASH_AMOUNT", CASH_AMOUNT);
+				orderpay.put("REFUND_NOTE_AMOUNT", REFUND_NOTE_AMOUNT);
+				orderpay.put("REFUND_COIN_AMOUNT", REFUND_COIN_AMOUNT);
+				orderpay.put("REFUND_CASH_AMOUNT", REFUND_CASH_AMOUNT);
+				orderpay.put("AMOUNT_OWED", AMOUNT_OWED);
+				orderpay.put("Status", Status);//0：未退款；1：正在退款；2：退款成功；3：退款失败'
+			}
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderpay="+orderpay.toString(),"server.txt");
 			
 			JSONObject orderrefund=new JSONObject();
 			orderrefund.put("RefundId", 122);
 			orderrefund.put("orderNo", orderNo);//商品id
 			orderrefund.put("Reason", "test");
-			orderrefund.put("Amount", 1);
-			orderrefund.put("Refund", 0);
-			orderrefund.put("Debt", 0);
+			if(ToolClass.getServerVer()==0)//旧的后台
+			{
+				orderrefund.put("Amount", 0);
+				orderrefund.put("Debt", 0);
+			}
+			else if(ToolClass.getServerVer()==1)//一期后台			
+			{
+				orderrefund.put("Amount", Amount);
+				orderrefund.put("Debt", AMOUNT_OWED);
+			}
+			orderrefund.put("Refund", 0);			
 			orderrefund.put("ResultCode", "test");
 			orderrefund.put("TradeNo", "test");
 			orderrefund.put("Description", "test");
@@ -1176,6 +1301,11 @@ public class EVServerhttp implements Runnable {
 			orderproduct.put("productIntegre", 1);
 			orderproduct.put("IntegreAmount", 1);
 			orderproduct.put("firstpurchaseprice", 1);
+			if(ToolClass.getServerVer()==1)//一期后台
+			{
+				orderproduct.put("Cab", Cab);
+				orderproduct.put("PATH_NO", PATH_NO);
+			}
 			JSONArray orderpro=new JSONArray();
 			orderpro.put(orderproduct);
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderproduct="+orderpro.toString(),"server.txt");
@@ -1464,6 +1594,123 @@ public class EVServerhttp implements Runnable {
 		//5.加载信息并发送到网络上
 		mQueue.add(stringRequest3);				
 	}
+	
+	
+	//==========
+	//==版本更新模块
+	//==========
+	JSONArray versionarr=null;
+	JSONArray zhuheversionArray=null;
+	JSONObject zhuheversionjson = null; 
+	int versionint=0;
+	//分解商品信息
+	private void versionArray(String classrst) throws JSONException
+	{
+		JSONObject jsonObject = new JSONObject(classrst);
+		if(ToolClass.getServerVer()==1)//一期后台
+		{
+			versionarr=jsonObject.getJSONArray("List");
+			versionint=0;
+			zhuheversionArray=new JSONArray();
+			zhuheversionjson = new JSONObject(); 
+			if(versionarr.length()==0)
+			{
+				//向主线程返回信息
+				Message tomain=mainhand.obtainMessage();
+				tomain.what=SETVERSIONMAIN;
+				tomain.obj=zhuheversionjson.toString();
+				mainhand.sendMessage(tomain); // 发送消息	
+			}
+		}
+	}
+	//更新程序信息
+	private String updateversion(int i) throws JSONException
+	{
+		final JSONObject object2=versionarr.getJSONObject(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新版本="+object2.toString(),"server.txt");										
+		final JSONObject zhuheobj=object2;
+		//第一步.获取商品图片名字
+		final String FILE_URL=object2.getString("FILE_URL");
+		String ATT_ID="";
+		if(FILE_URL.equals("null")!=true)
+		{
+			String a[] = FILE_URL.split("/");  
+			ATT_ID=a[a.length-1];
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载ATT_ID="+ATT_ID,"server.txt");										
+			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+		}
+		else
+		{
+			zhuheobj.put("AttImg", "");
+		}
+		
+		try
+		{	
+			if(ATT_ID.equals("")==true)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATT_ID+"]不存在","server.txt");
+			}
+			else
+			{
+				if(ToolClass.isAPKFile(ATT_ID))
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATT_ID+"]已存在","server.txt");
+				}
+				else 
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATT_ID+"]开始下载...","server.txt");
+					//第二步.准备下载	
+					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+					String url= serip+FILE_URL;	//要提交的目标地址
+					final String ATTIDS=ATT_ID;
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+					 
+				}
+				
+			}
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+		}
+		
+		//第三步，把图片名字保存到json中		
+		zhuheversionArray.put(zhuheobj);
+		
+		
+		//第四步：进行下一个分类信息
+		versionint++;
+		if(versionint<versionarr.length())
+		{
+			try {
+				updateversion(versionint);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				zhuheversionjson.put("List", zhuheversionArray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheversionjson.toString(),"server.txt");
+
+			//上传给server
+			//向主线程返回信息
+			Message tomain4=mainhand.obtainMessage();
+			tomain4.what=SETVERSIONMAIN;
+			tomain4.obj=zhuheversionjson.toString();
+			mainhand.sendMessage(tomain4); // 发送消息
+		}		
+		return "";
+		
+	}
+	
 
 	
 }

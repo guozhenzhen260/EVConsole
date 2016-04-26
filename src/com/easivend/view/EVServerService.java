@@ -281,13 +281,38 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
 						//修改交易数据上报状态为已上报
 						updategrid(msg.obj.toString());
-						
-						//初始化七、发送货道上传命令到子线程中
-						childhand=serverhttp.obtainHandler();
-		        		Message childheartmsg3=childhand.obtainMessage();
-		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
-		        		childheartmsg3.obj=columngrid();
-		        		childhand.sendMessage(childheartmsg3);
+						if(ToolClass.getServerVer()==0)//旧的后台
+						{
+							//初始化七、发送货道上传命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+			        		childheartmsg3.obj=columngrid();
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						else if(ToolClass.getServerVer()==1)//一期后台
+						{
+							//初始化七.1、获取版本下载
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETPVERSIONCHILD;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;	
+						//获取货道信息	
+					case EVServerhttp.SETERRFAILVERSIONMAIN://子线程接收主线程消息获取版本失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本失败，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETVERSIONMAIN://子线程接收主线程消息获取版本信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本信息成功","server.txt");
+						{
+							//初始化七、发送货道上传命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+			        		childheartmsg3.obj=columngrid();
+			        		childhand.sendMessage(childheartmsg3);
+						}
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
@@ -418,7 +443,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },1*60,1*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}	
 	
 	//更新商品分类信息
@@ -558,16 +583,8 @@ public class EVServerService extends Service {
 	            //创建Tb_inaccount对象
     			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,"",object2.getString("PRODUCT_NO"),
     					Integer.parseInt(object2.getString("PATH_COUNT")),Integer.parseInt(object2.getString("PATH_REMAINING")),
-    					status,"",PATH_ID,0);  
-    			if(ToolClass.getServerVer()==1)//一期后台
-    			{
-    				//删除货道
-    				if(IS_DELETE==1)
-    				{
-    					columnDAO.detele(tb_vmc_column);
-    				}
-    			}
-    			else
+    					status,"",PATH_ID,0); 
+    			if(ToolClass.getServerVer()==0)//旧的后台
     			{
 	    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息
 	    			//查看本货道对应的商品是否存在
@@ -581,7 +598,30 @@ public class EVServerService extends Service {
 	    						+"不存在","server.txt");	
 	    				isspempty=true;    				
 	    			}
-    			}
+    			}	
+    			else if(ToolClass.getServerVer()==1)//一期后台
+    			{
+    				//删除货道
+    				if(IS_DELETE==1)
+    				{
+    					columnDAO.detele(tb_vmc_column);
+    				}
+    				else
+        			{
+    	    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息
+    	    			//查看本货道对应的商品是否存在
+    	    			// 创建InaccountDAO对象
+    	    			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
+    	    			//创建Tb_inaccount对象
+    	    			Tb_vmc_product tb_vmc_product = productDAO.find(object2.getString("PRODUCT_NO"));
+    	    			if(tb_vmc_product==null)
+    	    			{
+    	    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
+    	    						+"不存在","server.txt");	
+    	    				isspempty=true;    				
+    	    			}
+        			}
+    			}    			
 			}
 			//更新货道失败
 			else
@@ -771,23 +811,39 @@ public class EVServerService extends Service {
 		    	RefundAmount=String.valueOf(realAmountvalue[x]+realCardvalue[x]);
 		    	//ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售payStatus="+payStatusvalue[x]+"payType="+payTypevalue[x],"server.txt");
 				
-		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+ToolClass.getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
-				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productID[x]+"quantity="+1+
-				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
+//		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+ToolClass.getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
+//				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productID[x]+"quantity="+1+
+//				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
 		    	JSONObject object=new JSONObject();
 		    	object.put("orderNo", ordereID[x]);
 		    	object.put("orderTime", ToolClass.getStrtime(payTime[x]));
-		    	object.put("orderStatus", orderStatus);
-		    	object.put("payStatus", payStatue);
-		    	object.put("payType", payTyp);
-		    	object.put("shouldPay", shouldPay[x]);
-		    	object.put("RefundAmount", RefundAmount);
-		    	object.put("Status", Status);
+		    	object.put("orderStatus", orderStatus);//1未支付,2出货成功,3出货未完成
+		    	object.put("payStatus", payStatue);//0未付款,1正在付款,2付款完成,3付款失败
+		    	object.put("payType", payTyp);//支付类型:0=现金1=支付宝2=银联3=二维码4=微支付
+		    	object.put("shouldPay", shouldPay[x]);//商品总金额		    	
+		    	object.put("RefundAmount", RefundAmount);//退款总金额
+		    	object.put("Status", Status);//退款状态:0：未退款；1：正在退款；2：退款成功；3：退款失败
 		    	object.put("productNo", productID[x]);		    	
 		    	object.put("quantity", 1);
 		    	object.put("actualQuantity", actualQuantity);
 		    	object.put("customerPrice", salesPrice[x]);
 		    	object.put("productName", productName[x]);	
+		    	
+		    	//一期后台
+		    	if(ToolClass.getServerVer()==1)//一期后台
+		    	{
+		    		object.put("NOTE_AMOUNT", smallNotevalue[x]);//纸币总金额
+		    		object.put("COIN_AMOUNT", smallConivalue[x]);//硬币总金额
+		    		object.put("CASH_AMOUNT", smallAmountvalue[x]);//现金总金额
+		    		object.put("REFUND_NOTE_AMOUNT", realNotevalue[x]);//退款纸币总金额
+		    		object.put("REFUND_COIN_AMOUNT", realCoinvalue[x]);//退款硬币总金额
+		    		object.put("REFUND_CASH_AMOUNT", realAmountvalue[x]);//退款总金额
+		    		object.put("AMOUNT_OWED", debtAmountvalue[x]);//欠款金额
+		    		object.put("Amount", realCardvalue[x]);//非现金退款金额
+		    		object.put("Cab", cabID[x]);//柜号
+		    		object.put("PATH_NO", columnID[x]);//货道号
+		    	}
+		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售="+object.toString(),"server.txt");	
 		    	
 		    	array.put(object);
 			}

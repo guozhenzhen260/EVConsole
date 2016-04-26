@@ -66,7 +66,7 @@ public class vmc_productDAO
 	 						tb_vmc_product.getAttBatch3(), max+1,tb_vmc_product.getIsdelete()});
 	 		
 	 		// 执行添加商品与类别关联表	
-	 		if(Integer.parseInt(classID)>0)
+	 		if(classID.equals("")!=true)
 	 		{
 			db.execSQL(
 					"insert into vmc_classproduct" +
@@ -118,7 +118,7 @@ public class vmc_productDAO
 	    db.beginTransaction();
 	    try {
 	 		//如果需要进行商品分类
-	 		if(Integer.parseInt(classID)>0)
+	 		if(classID.equals("")!=true)
 	 		{
 	 			if(clsID.isEmpty()==true)//如果原先没有商品分类
 	 			{
