@@ -1,5 +1,9 @@
 package com.easivend.view;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.MaintainActivity;
@@ -42,6 +47,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -299,7 +305,7 @@ public class EVServerService extends Service {
 			        		childhand.sendMessage(childheartmsg3);
 						}
 						break;	
-						//获取货道信息	
+						//获取版本信息	
 					case EVServerhttp.SETERRFAILVERSIONMAIN://子线程接收主线程消息获取版本失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本失败，原因="+msg.obj.toString(),"server.txt");
 						break;
@@ -313,6 +319,11 @@ public class EVServerService extends Service {
 			        		childheartmsg3.obj=columngrid();
 			        		childhand.sendMessage(childheartmsg3);
 						}
+						break;	
+						//获取版本安装信息	
+					case EVServerhttp.SETINSTALLMAIN://子线程接收主线程消息获取版本失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本安装信息成功="+msg.obj.toString(),"server.txt");
+						installApk(msg.obj.toString());		        		
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
@@ -987,4 +998,59 @@ public class EVServerService extends Service {
 		}		  	
 	}
 
+	/**
+     * 后台静默安装apk文件
+     */
+    private void installApk(String ATTIDS)
+    {        	
+    	//1.静默安装
+    	Process process = null;  
+        OutputStream out = null;
+        boolean result = false;  
+        
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
+        //1.有提示的安装
+        File fileName = new File(  
+		ToolClass.getEV_DIR()+File.separator+ATTIDS);
+        Intent intent = new Intent();  
+        //执行动作  
+        intent.setAction(Intent.ACTION_VIEW); 
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+        //执行的数据类型  
+        intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
+        startActivity(intent); 
+        
+//        File fileName = new File(  
+//        		ToolClass.getEV_DIR()+File.separator+ATTIDS);
+//        try {  
+//            process = Runtime.getRuntime().exec("su");  
+//            out = process.getOutputStream();  
+//            DataOutputStream dataOutputStream = new DataOutputStream(out);  
+//            dataOutputStream.writeBytes("chmod 777 " + fileName.getPath() + "\n");  
+//            dataOutputStream.writeBytes("LD_LIBRARY_PATH=/vendor/lib:/system/lib pm install -r " +  
+//            		fileName.getPath());  
+//            // 提交命令  
+//            dataOutputStream.flush();  
+//            // 关闭流操作  
+//            dataOutputStream.close();  
+//            out.close();  
+//            int value = process.waitFor();  
+//              
+//            // 代表成功  
+//            if (value == 0) 
+//            {  
+//                result = true;  
+//                //2.杀死本进程
+//	            //android.os.Process.killProcess(android.os.Process.myPid());
+//            } else if (value == 1) { // 失败  
+//                result = false;  
+//            } else { // 未知情况  
+//                result = false;  
+//            }  
+//        } catch (IOException e) {  
+//            e.printStackTrace();  
+//        } catch (InterruptedException e) {  
+//            e.printStackTrace();  
+//        }
+    }
 }

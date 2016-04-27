@@ -1,8 +1,21 @@
 package com.easivend.http;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +31,10 @@ import com.android.volley.toolbox.Volley;
 import com.easivend.common.ToolClass;
 import com.google.gson.Gson;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -63,6 +78,7 @@ public class EVServerhttp implements Runnable {
 	public final static int SETPVERSIONCHILD=27;//what标记,发送给子线程获取版本信息
 	public final static int SETERRFAILVERSIONMAIN=28;//what标记,发送给主线程获取版本故障
 	public final static int SETVERSIONMAIN=29;//what标记,发送给主线程获取版本返回
+	public final static int SETINSTALLMAIN=30;//what标记,发送给主线程重新安装程序
 	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
@@ -1664,7 +1680,8 @@ public class EVServerhttp implements Runnable {
 					String url= serip+FILE_URL;	//要提交的目标地址
 					final String ATTIDS=ATT_ID;
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
-					 
+					downloadApk(ATTIDS,url);//下载程序
+										
 				}
 				
 			}
@@ -1672,7 +1689,7 @@ public class EVServerhttp implements Runnable {
 		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]"+e,"server.txt");
 		}
 		
 		//第三步，把图片名字保存到json中		
@@ -1711,6 +1728,76 @@ public class EVServerhttp implements Runnable {
 		
 	}
 	
+	private String url=null;
+	private String ATTIDS=null;
+	/**
+     * 下载apk文件
+     */
+    private void downloadApk(String ATT,String str)
+    {    	
+    	ATTIDS=ATT;
+    	url=str;
+        // 启动新线程下载软件
+        new downloadApkThread().start();
+    }
 
+    /**
+     * 下载文件线程
+     * 
+     * @author coolszy
+     *@date 2012-4-26
+     *@blog http://blog.92coding.com
+     */
+    private class downloadApkThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+            	HttpClient client = new DefaultHttpClient();  
+                HttpGet get = new HttpGet(url);  
+                HttpResponse response;  
+                try {  
+                    response = client.execute(get);  
+                    HttpEntity entity = response.getEntity();  
+                    long length = entity.getContentLength();  
+                    InputStream is = entity.getContent();  
+                    FileOutputStream fileOutputStream = null;  
+                    if (is != null) {  
+                        File file = new File(  
+                        		ToolClass.getEV_DIR()+File.separator+ATTIDS);  
+                        fileOutputStream = new FileOutputStream(file);  
+                        byte[] buf = new byte[1024];  
+                        int ch = -1;  
+                        int count = 0;  
+                        while ((ch = is.read(buf)) != -1) {  
+                            fileOutputStream.write(buf, 0, ch);  
+                            count += ch;  
+                            if (length > 0) {  
+                            }  
+                        }  
+                    }  
+                    fileOutputStream.flush();  
+                    if (fileOutputStream != null) {  
+                        fileOutputStream.close();  
+                    }   
+                    //上传给server
+        			//向主线程返回信息
+        			Message tomain4=mainhand.obtainMessage();
+        			tomain4.what=SETINSTALLMAIN;
+        			tomain4.obj=ATTIDS;
+        			mainhand.sendMessage(tomain4); // 发送消息
+                } catch (IOException e) {  
+                    e.printStackTrace();  
+                } 
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+	
+    
 	
 }
