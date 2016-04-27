@@ -1630,12 +1630,13 @@ public class EVServerhttp implements Runnable {
 			zhuheversionjson = new JSONObject(); 
 			if(versionarr.length()==0)
 			{
+				ToolClass.deleteAPKFile();
 				//向主线程返回信息
 				Message tomain=mainhand.obtainMessage();
 				tomain.what=SETVERSIONMAIN;
 				tomain.obj=zhuheversionjson.toString();
 				mainhand.sendMessage(tomain); // 发送消息	
-			}
+			}			
 		}
 	}
 	//更新程序信息
@@ -1762,9 +1763,9 @@ public class EVServerhttp implements Runnable {
                 long length = entity.getContentLength();  
                 InputStream is = entity.getContent();  
                 FileOutputStream fileOutputStream = null;  
-                if (is != null) {  
-                    File file = new File(  
-                    		ToolClass.getEV_DIR()+File.separator+ATTIDS);  
+                if (is != null)
+                {  
+                    File file = ToolClass.setAPKFile(ATTIDS);  
                     fileOutputStream = new FileOutputStream(file);  
                     byte[] buf = new byte[1024];  
                     int ch = -1;  

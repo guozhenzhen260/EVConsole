@@ -1017,8 +1017,7 @@ public class EVServerService extends Service {
         
         ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
         //1.有提示的安装
-        File fileName = new File(  
-		ToolClass.getEV_DIR()+File.separator+ATTIDS);
+        File fileName = ToolClass.setAPKFile(ATTIDS);
         Intent intent = new Intent();  
         //执行动作  
         intent.setAction(Intent.ACTION_VIEW); 

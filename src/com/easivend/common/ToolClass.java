@@ -571,7 +571,7 @@ public class ToolClass
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  sDir = ToolClass.getEV_DIR();
+        	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -592,6 +592,75 @@ public class ToolClass
             e.printStackTrace();
         }
         return fileext; 
+    }
+    /**
+     * 使用isAPKFile,保存这个程序到目录中
+     */
+    public static File setAPKFile(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
+    }
+    /**
+     * 递归删除APK文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteAPKFile()
+    {
+    	String  sDir =null;
+    	 try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static void deleteAllFile(File file)
+    {
+        if(file.isFile())
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","删除本="+file.toString(),"server.txt");										
+            file.delete();
+            return;
+        }
+        if(file.isDirectory())
+        {
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0){
+                return;
+            }
+            for(File f : childFile)
+            {
+            	deleteAllFile(f);
+            }
+            file.delete();
+        }
     }
     
      
