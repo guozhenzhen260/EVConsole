@@ -68,6 +68,8 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -96,14 +98,23 @@ public class ToolClass
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
 	private static int ServerVer=0;//0旧的后台，1一期的后台
-	public static double version=0;//本机版本号
+	public static String version="";//本机版本号
 	
-	public static double getVersion() {
+	public static String getVersion() {
+		String curVersion=null;
+		int curVersionCode=0;
+		 try {
+	            PackageInfo pInfo = context.getPackageManager().getPackageInfo(
+	            		context.getPackageName(), 0);
+	            curVersion = pInfo.versionName;
+	            curVersionCode = pInfo.versionCode;
+	        } catch (NameNotFoundException e) {
+	            Log.e("update", e.getMessage());
+	            curVersion = "1.1.1000";
+	            curVersionCode = 111000;
+	        }
+		 version=(curVersion+curVersionCode).toString();
 		return version;
-	}
-
-	public static void setVersion(double version) {
-		ToolClass.version = version;
 	}
 
 	public static int getServerVer() {

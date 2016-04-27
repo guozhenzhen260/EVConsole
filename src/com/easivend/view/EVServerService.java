@@ -65,7 +65,7 @@ public class EVServerService extends Service {
     LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
-    private String LAST_EDIT_TIME="";
+    private String LAST_EDIT_TIME="",LAST_VERSION_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
@@ -302,6 +302,12 @@ public class EVServerService extends Service {
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETPVERSIONCHILD;
+			        		//刚开机时的时间
+			        		if(LAST_VERSION_TIME.isEmpty())
+			        		{
+			        			LAST_VERSION_TIME=ToolClass.getLasttime();
+			        		}
+			        		childheartmsg3.obj=LAST_VERSION_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
 						break;	
@@ -322,7 +328,8 @@ public class EVServerService extends Service {
 						break;	
 						//获取版本安装信息	
 					case EVServerhttp.SETINSTALLMAIN://子线程接收主线程消息获取版本失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本安装信息成功="+msg.obj.toString(),"server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取安装信息成功="+msg.obj.toString(),"server.txt");
+						LAST_VERSION_TIME=ToolClass.getLasttime();
 						installApk(msg.obj.toString());		        		
 						break;	
 					//获取上报货道信息返回	

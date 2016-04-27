@@ -172,7 +172,6 @@ public class MaintainActivity extends Activity
 		//================
 		//串口配置和注册相关
 		//================
-	    ToolClass.setVersion(3.00);//设置版本号
 		ToolClass.SetDir();	//设置根目录
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据

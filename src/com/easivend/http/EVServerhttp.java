@@ -669,7 +669,7 @@ public class EVServerhttp implements Runnable {
 				case SETPVERSIONCHILD://获取版本信息
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target12 = httpStr+"/api/clientVersion";	//要提交的目标地址
-					
+					final String LAST_EDIT_TIME12=msg.obj.toString();
 					
 					//向主线程返回信息
 					final Message tomain12=mainhand.obtainMessage();
@@ -678,7 +678,7 @@ public class EVServerhttp implements Runnable {
 						@Override  
 						public void onResponse(String response) {  
 						   
-						  //如果请求成功
+						    //如果请求成功
 							result = response;	//获取返回的字符串
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
 							JSONObject object;
@@ -722,8 +722,7 @@ public class EVServerhttp implements Runnable {
 							//3.添加params
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
-							//map.put("LAST_EDIT_TIME", ToolClass.getLasttime());
-							map.put("LAST_EDIT_TIME", "2016-04-26T14:11:42");
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME12);
 							map.put("VMC_NO", vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
@@ -1755,45 +1754,111 @@ public class EVServerhttp implements Runnable {
         {
             try
             {
+            	//1.下载
             	HttpClient client = new DefaultHttpClient();  
                 HttpGet get = new HttpGet(url);  
-                HttpResponse response;  
-                try {  
-                    response = client.execute(get);  
-                    HttpEntity entity = response.getEntity();  
-                    long length = entity.getContentLength();  
-                    InputStream is = entity.getContent();  
-                    FileOutputStream fileOutputStream = null;  
-                    if (is != null) {  
-                        File file = new File(  
-                        		ToolClass.getEV_DIR()+File.separator+ATTIDS);  
-                        fileOutputStream = new FileOutputStream(file);  
-                        byte[] buf = new byte[1024];  
-                        int ch = -1;  
-                        int count = 0;  
-                        while ((ch = is.read(buf)) != -1) {  
-                            fileOutputStream.write(buf, 0, ch);  
-                            count += ch;  
-                            if (length > 0) {  
-                            }  
+                HttpResponse response = client.execute(get);  
+                HttpEntity entity = response.getEntity();  
+                long length = entity.getContentLength();  
+                InputStream is = entity.getContent();  
+                FileOutputStream fileOutputStream = null;  
+                if (is != null) {  
+                    File file = new File(  
+                    		ToolClass.getEV_DIR()+File.separator+ATTIDS);  
+                    fileOutputStream = new FileOutputStream(file);  
+                    byte[] buf = new byte[1024];  
+                    int ch = -1;  
+                    int count = 0;  
+                    while ((ch = is.read(buf)) != -1) {  
+                        fileOutputStream.write(buf, 0, ch);  
+                        count += ch;  
+                        if (length > 0) {  
                         }  
                     }  
-                    fileOutputStream.flush();  
-                    if (fileOutputStream != null) {  
-                        fileOutputStream.close();  
-                    }   
-                    //上传给server
-        			//向主线程返回信息
-        			Message tomain4=mainhand.obtainMessage();
-        			tomain4.what=SETINSTALLMAIN;
-        			tomain4.obj=ATTIDS;
-        			mainhand.sendMessage(tomain4); // 发送消息
-                } catch (IOException e) {  
-                    e.printStackTrace();  
+                }  
+                fileOutputStream.flush();  
+                if (fileOutputStream != null) {  
+                    fileOutputStream.close();  
                 } 
+                //2.上传更新版本状态
+                String target3 = httpStr+"/api/updateClientVersion";	//要提交的目标地址
+                StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
+        			@Override  
+        			public void onResponse(String response) {              			   
+        			    //如果请求成功
+        				result = response;	//获取返回的字符串
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+        				
+        			}  
+        		}, new Response.ErrorListener() {  
+        			@Override  
+        			public void onErrorResponse(VolleyError error) {  
+        				result = "请求失败！";
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8]"+result,"server.txt");            				
+        			}  
+        		}) 
+        		{  
+        			@Override  
+        			protected Map<String, String> getParams() throws AuthFailureError {  
+        				//3.添加params
+        				Map<String, String> map = new HashMap<String, String>();  
+        				map.put("Token", Tok);  
+        				map.put("VMC_NO", vmc_no);
+        				map.put("OPEN_DOOR_ID", ATTIDS);
+        				map.put("EXEC_RESULT", "9");
+        				map.put("EXEC_TIME", "");
+        				map.put("VERSION_STATUS", "2");
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载完成version="+map.toString(),"server.txt");
+        				return map;  
+        		   }  
+        		}; 	
+        		//3.加载信息并发送到网络上
+        		mQueue.add(stringRequest3);
+               
+        		
+        		//4.上传给server
+    			//向主线程返回信息
+    			Message tomain4=mainhand.obtainMessage();
+    			tomain4.what=SETINSTALLMAIN;
+    			tomain4.obj=ATTIDS;
+    			mainhand.sendMessage(tomain4); // 发送消息                
             } catch (Exception e)
             {
                 e.printStackTrace();
+                //2.上传更新版本状态
+                String target3 = httpStr+"/api/updateClientVersion";	//要提交的目标地址
+                StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
+        			@Override  
+        			public void onResponse(String response) {              			   
+        			    //如果请求成功
+        				result = response;	//获取返回的字符串
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+        				
+        			}  
+        		}, new Response.ErrorListener() {  
+        			@Override  
+        			public void onErrorResponse(VolleyError error) {  
+        				result = "请求失败！";
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8]"+result,"server.txt");            				
+        			}  
+        		}) 
+        		{  
+        			@Override  
+        			protected Map<String, String> getParams() throws AuthFailureError {  
+        				//3.添加params
+        				Map<String, String> map = new HashMap<String, String>();  
+        				map.put("Token", Tok);  
+        				map.put("VMC_NO", vmc_no);
+        				map.put("OPEN_DOOR_ID", ATTIDS);
+        				map.put("EXEC_RESULT", "2");
+        				map.put("EXEC_TIME", "");
+        				map.put("VERSION_STATUS", "0");
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载完成version="+map.toString(),"server.txt");
+        				return map;  
+        		   }  
+        		}; 	
+        		//3.加载信息并发送到网络上
+        		mQueue.add(stringRequest3);
             }
         }
     };
