@@ -2,9 +2,9 @@
 <resources>
     <string-array name="cabinet_Type">  
         <item>1弹簧货道</item>            
-        <item>2老式升降台</item>
-        <item>3升降台+传送带</item>
-        <item>4升降台+弹簧</item>
+        <item>2升降机</item>
+        <item>3升降机</item>
+        <item>4升降机</item>
         <item>5格子柜</item>
     </string-array>
 </resources>

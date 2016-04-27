@@ -1383,9 +1383,15 @@ public class HuodaoTest extends TabActivity
 				{
 					cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
 					cabinetTypepeivar=cabinetType[arg2]; 
-					if(cabinetTypepeivar!=5)
+					//弹簧货道
+					if(cabinetTypepeivar==1)
 					{
 						gethuofile();
+					}
+					//升降机货道
+					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+					{
+						getelevatorfile();
 					}
 				}				
 			}
@@ -1410,9 +1416,19 @@ public class HuodaoTest extends TabActivity
 					    				@Override
 					    				public void onClick(DialogInterface dialog, int which) 
 					    				{
-					    					// TODO Auto-generated method stub	
-					    					sethuofile();	
-									    	gethuofile();
+					    					// TODO Auto-generated method stub
+					    					//弹簧货道
+					    					if(cabinetTypepeivar==1)
+					    					{
+						    					sethuofile();	
+										    	gethuofile();
+					    					}
+					    					//升降机货道
+					    					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+					    					{
+					    						setelevatorfile();
+					    						getelevatorfile();
+					    					}
 					    				}
 				    		      }
 				    			)		    		        
@@ -4004,5 +4020,1105 @@ public class HuodaoTest extends TabActivity
 		}
 	}
 	
+	
+	//保存逻辑货道实际对应物理货道的升降机文件
+	private void setelevatorfile()
+	{
+		int logic=1,physic;
+		JSONObject allSet=new JSONObject();
+		try {
+			//第一层
+			physic=11;
+			if(btnhuoset11.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset12.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset13.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset14.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset15.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset16.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset17.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset18.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第二层
+			physic=21;
+			if(btnhuoset21.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset22.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset23.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset24.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset25.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset26.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset27.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset28.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第三层
+			physic=31;
+			if(btnhuoset31.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset32.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset33.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset34.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset35.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset36.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset37.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset38.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第四层
+			physic=41;
+			if(btnhuoset41.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset42.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset43.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset44.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset45.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset46.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset47.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset48.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第五层
+			physic=51;
+			if(btnhuoset51.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset52.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset53.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset54.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset55.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset56.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset57.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset58.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第六层
+			physic=61;
+			if(btnhuoset61.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset62.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset63.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset64.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset65.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset66.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset67.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset68.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第七层
+			physic=71;
+			if(btnhuoset71.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset72.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset73.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset74.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset75.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset76.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset77.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset78.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第八层
+			physic=81;
+			if(btnhuoset81.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset82.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset83.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset84.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset85.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset86.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset87.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset88.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
+		ToolClass.WriteElevatorFile(allSet.toString());
+		ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
+        // 弹出信息提示
+        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+	}
+	
+	//读取逻辑货道实际对应物理货道的文件
+	private void getelevatorfile()
+	{
+		int logic=1,physic;
+		Map<String, Integer> allset=ToolClass.ReadElevatorFile();  
+		if(allset!=null)
+		{
+			//第一层
+			physic=11;
+			//如果判断有这个Value值
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset11.setChecked(true);
+			}
+			else
+			{
+				btnhuoset11.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset12.setChecked(true);
+			}
+			else
+			{
+				btnhuoset12.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset13.setChecked(true);
+			}
+			else
+			{
+				btnhuoset13.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset14.setChecked(true);
+			}
+			else
+			{
+				btnhuoset14.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset15.setChecked(true);
+			}
+			else
+			{
+				btnhuoset15.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset16.setChecked(true);
+			}
+			else
+			{
+				btnhuoset16.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset17.setChecked(true);
+			}
+			else
+			{
+				btnhuoset17.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset18.setChecked(true);
+			}
+			else
+			{
+				btnhuoset18.setChecked(false);
+			}
+			
+			//第二层
+			physic=21;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset21.setChecked(true);
+			}
+			else
+			{
+				btnhuoset21.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset22.setChecked(true);
+			}
+			else
+			{
+				btnhuoset22.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset23.setChecked(true);
+			}
+			else
+			{
+				btnhuoset23.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset24.setChecked(true);
+			}
+			else
+			{
+				btnhuoset24.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset25.setChecked(true);
+			}
+			else
+			{
+				btnhuoset25.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset26.setChecked(true);
+			}
+			else
+			{
+				btnhuoset26.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset27.setChecked(true);
+			}
+			else
+			{
+				btnhuoset27.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset28.setChecked(true);
+			}
+			else
+			{
+				btnhuoset28.setChecked(false);
+			}
+			
+			//第三层
+			physic=31;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset31.setChecked(true);
+			}
+			else
+			{
+				btnhuoset31.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset32.setChecked(true);
+			}
+			else
+			{
+				btnhuoset32.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset33.setChecked(true);
+			}
+			else
+			{
+				btnhuoset33.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset34.setChecked(true);
+			}
+			else
+			{
+				btnhuoset34.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset35.setChecked(true);
+			}
+			else
+			{
+				btnhuoset35.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset36.setChecked(true);
+			}
+			else
+			{
+				btnhuoset36.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset37.setChecked(true);
+			}
+			else
+			{
+				btnhuoset37.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset38.setChecked(true);
+			}
+			else
+			{
+				btnhuoset38.setChecked(false);
+			}
+			
+			//第四层
+			physic=41;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset41.setChecked(true);
+			}
+			else
+			{
+				btnhuoset41.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset42.setChecked(true);
+			}
+			else
+			{
+				btnhuoset42.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset43.setChecked(true);
+			}
+			else
+			{
+				btnhuoset43.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset44.setChecked(true);
+			}
+			else
+			{
+				btnhuoset44.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset45.setChecked(true);
+			}
+			else
+			{
+				btnhuoset45.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset46.setChecked(true);
+			}
+			else
+			{
+				btnhuoset46.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset47.setChecked(true);
+			}
+			else
+			{
+				btnhuoset47.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset48.setChecked(true);
+			}
+			else
+			{
+				btnhuoset48.setChecked(false);
+			}
+			
+			//第五层
+			physic=51;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset51.setChecked(true);
+			}
+			else
+			{
+				btnhuoset51.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset52.setChecked(true);
+			}
+			else
+			{
+				btnhuoset52.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset53.setChecked(true);
+			}
+			else
+			{
+				btnhuoset53.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset54.setChecked(true);
+			}
+			else
+			{
+				btnhuoset54.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset55.setChecked(true);
+			}
+			else
+			{
+				btnhuoset55.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset56.setChecked(true);
+			}
+			else
+			{
+				btnhuoset56.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset57.setChecked(true);
+			}
+			else
+			{
+				btnhuoset57.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset58.setChecked(true);
+			}
+			else
+			{
+				btnhuoset58.setChecked(false);
+			}
+			
+			//第六层
+			physic=61;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset61.setChecked(true);
+			}
+			else
+			{
+				btnhuoset61.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset62.setChecked(true);
+			}
+			else
+			{
+				btnhuoset62.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset63.setChecked(true);
+			}
+			else
+			{
+				btnhuoset63.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset64.setChecked(true);
+			}
+			else
+			{
+				btnhuoset64.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset65.setChecked(true);
+			}
+			else
+			{
+				btnhuoset65.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset66.setChecked(true);
+			}
+			else
+			{
+				btnhuoset66.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset67.setChecked(true);
+			}
+			else
+			{
+				btnhuoset67.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset68.setChecked(true);
+			}
+			else
+			{
+				btnhuoset68.setChecked(false);
+			}
+			
+			//第七层
+			physic=71;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset71.setChecked(true);
+			}
+			else
+			{
+				btnhuoset71.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset72.setChecked(true);
+			}
+			else
+			{
+				btnhuoset72.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset73.setChecked(true);
+			}
+			else
+			{
+				btnhuoset73.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset74.setChecked(true);
+			}
+			else
+			{
+				btnhuoset74.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset75.setChecked(true);
+			}
+			else
+			{
+				btnhuoset75.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset76.setChecked(true);
+			}
+			else
+			{
+				btnhuoset76.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset77.setChecked(true);
+			}
+			else
+			{
+				btnhuoset77.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset78.setChecked(true);
+			}
+			else
+			{
+				btnhuoset78.setChecked(false);
+			}
+			
+			//第八层
+			physic=81;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset81.setChecked(true);
+			}
+			else
+			{
+				btnhuoset81.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset82.setChecked(true);
+			}
+			else
+			{
+				btnhuoset82.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset83.setChecked(true);
+			}
+			else
+			{
+				btnhuoset83.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset84.setChecked(true);
+			}
+			else
+			{
+				btnhuoset84.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset85.setChecked(true);
+			}
+			else
+			{
+				btnhuoset85.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset86.setChecked(true);
+			}
+			else
+			{
+				btnhuoset86.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset87.setChecked(true);
+			}
+			else
+			{
+				btnhuoset87.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset88.setChecked(true);
+			}
+			else
+			{
+				btnhuoset88.setChecked(false);
+			}
+		}
+	}
+	
+		
 	
 }

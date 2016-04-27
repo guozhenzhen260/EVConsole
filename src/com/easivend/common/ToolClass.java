@@ -1148,6 +1148,85 @@ public class ToolClass
         }        
     }
     
+    /*=============
+     * 升降机模块
+     =============*/
+    /**
+     * 读取货道配置文件
+     */
+    public static Map<String, Integer> ReadElevatorFile() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         huodaolist=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+	            	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    /**
+     * 写入升降机货道配置文件
+     */
+    public static void WriteElevatorFile(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
     //保存操作日志
     public static void addOptLog(Context context, int logType, String logDesc)
 	{
