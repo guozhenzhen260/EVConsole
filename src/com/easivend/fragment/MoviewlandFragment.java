@@ -228,7 +228,7 @@ public class MoviewlandFragment extends Fragment {
     private void show()
     {
     	//视频和图片文件都要有才行
-    	if((mMusicList.size()>0)&&(imgMusicList.size()>0))
+    	if((mMusicList.size()>0)||(imgMusicList.size()>0))
     	{
 	    	//播放视频
 	    	if((viewvideo==false)&&(mMusicList.size()>0))

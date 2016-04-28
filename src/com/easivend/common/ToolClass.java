@@ -57,6 +57,7 @@ import com.easivend.evprotocol.EVprotocol;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_system_parameter;
+import com.easivend.view.XZip;
 import com.easivend.weixing.WeiConfig;
 import com.easivend.weixing.WeiConfigAPI;
 import com.google.gson.Gson;
@@ -657,6 +658,25 @@ public class ToolClass
             }
         }
     }
+    
+    /**
+     * zipFiles压缩日志包
+     * @param 
+     */
+    public static String zipFiles() 
+  	{  
+  		//遍历这个文件夹里的所有文件
+  		String srcFileString=ToolClass.ReadLogFile();
+  		String zipFileString=ToolClass.getEV_DIR()+File.separator+"logzip.zip";
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<srcFileString="+srcFileString+" zipFileString="+zipFileString,"log.txt"); 
+  		try {
+  			XZip.ZipFolder(srcFileString, zipFileString);
+  		} catch (Exception e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		}
+  		return zipFileString;
+  	}
     
      
     /**
