@@ -227,29 +227,33 @@ public class MoviewlandFragment extends Fragment {
     //图片和视频切换显示
     private void show()
     {
-    	//播放视频
-    	if((viewvideo==false)&&(mMusicList.size()>0))
+    	//视频和图片文件都要有才行
+    	if((mMusicList.size()>0)&&(imgMusicList.size()>0))
     	{
-    		viewvideo=true;
-    		ivads.setVisibility(View.GONE);//图片关闭
-    		videoView.setVisibility(View.VISIBLE);//视频打开
-    		play();
+	    	//播放视频
+	    	if((viewvideo==false)&&(mMusicList.size()>0))
+	    	{
+	    		viewvideo=true;
+	    		ivads.setVisibility(View.GONE);//图片关闭
+	    		videoView.setVisibility(View.VISIBLE);//视频打开
+	    		play();
+	    	}
+	    	//播放图片
+	    	else 
+	    	{
+	    		viewvideo=false;
+	    		if(imgMusicList.size()>0)
+	    		{
+		    		videoView.setVisibility(View.GONE);//视频关闭
+		    		ivads.setVisibility(View.VISIBLE);//图片打开
+		    		showImage();
+	    		}
+	    		else
+	    		{
+	    			show();
+	    		}
+			}
     	}
-    	//播放图片
-    	else 
-    	{
-    		viewvideo=false;
-    		if(imgMusicList.size()>0)
-    		{
-	    		videoView.setVisibility(View.GONE);//视频关闭
-	    		ivads.setVisibility(View.VISIBLE);//图片打开
-	    		showImage();
-    		}
-    		else
-    		{
-    			show();
-    		}
-		}
     }
     //显示图片
     private void showImage()
@@ -266,10 +270,7 @@ public class MoviewlandFragment extends Fragment {
                 @Override
                 public void run() 
                 {
-                	viewvideo=true;
-            		ivads.setVisibility(View.GONE);//图片关闭
-            		videoView.setVisibility(View.VISIBLE);//视频打开
-            		show();
+                	show();
                 }
 
 			}, SPLASH_DISPLAY_LENGHT);
