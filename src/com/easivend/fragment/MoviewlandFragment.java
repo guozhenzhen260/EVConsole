@@ -228,7 +228,7 @@ public class MoviewlandFragment extends Fragment {
     private void show()
     {
     	//播放视频
-    	if(viewvideo==false)
+    	if((viewvideo==false)&&(mMusicList.size()>0))
     	{
     		viewvideo=true;
     		ivads.setVisibility(View.GONE);//图片关闭
@@ -239,9 +239,16 @@ public class MoviewlandFragment extends Fragment {
     	else 
     	{
     		viewvideo=false;
-    		videoView.setVisibility(View.GONE);//视频关闭
-    		ivads.setVisibility(View.VISIBLE);//图片打开
-    		showImage();
+    		if(imgMusicList.size()>0)
+    		{
+	    		videoView.setVisibility(View.GONE);//视频关闭
+	    		ivads.setVisibility(View.VISIBLE);//图片打开
+	    		showImage();
+    		}
+    		else
+    		{
+    			show();
+    		}
 		}
     }
     //显示图片
@@ -262,7 +269,7 @@ public class MoviewlandFragment extends Fragment {
                 	viewvideo=true;
             		ivads.setVisibility(View.GONE);//图片关闭
             		videoView.setVisibility(View.VISIBLE);//视频打开
-            		play();
+            		show();
                 }
 
 			}, SPLASH_DISPLAY_LENGHT);

@@ -642,24 +642,19 @@ public class ToolClass
         }
     }
     private static void deleteAllFile(File file)
-    {
-        if(file.isFile())
-        {
-        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","É¾³ý±¾="+file.toString(),"server.txt");										
-            file.delete();
-            return;
-        }
+    {        
         if(file.isDirectory())
         {
             File[] childFile = file.listFiles();
-            if(childFile == null || childFile.length == 0){
+            if(childFile == null || childFile.length == 0)
+            {
                 return;
             }
             for(File f : childFile)
             {
-            	deleteAllFile(f);
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","É¾³ý³ÌÐò="+f.toString(),"server.txt");										
+                f.delete();
             }
-            file.delete();
         }
     }
     
