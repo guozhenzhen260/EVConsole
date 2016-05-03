@@ -998,6 +998,161 @@ public class ToolClass
     }
     
     /**
+     * 重新更新支付宝微信文件,后台服务器下发用
+     */
+    public static void ResetConfigFileServer(JSONObject object2) 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	
+    	    	
+        try {        	  
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      } 
+        	  
+          	  //1.将数据从文件中读入
+    	  	  //打开文件
+    		  FileInputStream input = new FileInputStream(sDir);
+    		  //输出信息
+  	          Scanner scan=new Scanner(input);
+  	          while(scan.hasNext())
+  	          {
+  	           	str=scan.next()+"\n";
+  	          }
+  	         ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config="+str,"server.txt");
+  	         if(str!=null)
+  	         {
+	  	        Map<String, String> list=new HashMap<String,String>();      			
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config2="+list.toString(),"server.txt");
+				Map<String,String> list2=new HashMap<String,String>();
+				//输出内容
+		        Set<Map.Entry<String,String>> allset=list.entrySet();  //实例化
+		        Iterator<Map.Entry<String,String>> iter=allset.iterator();
+		        while(iter.hasNext())
+		        {
+		            Map.Entry<String,String> me=iter.next();
+		            if(
+		            	  //支付宝	
+		            		(me.getKey().equals("alipartner")!=true)
+		            	  &&(me.getKey().equals("aliseller_email")!=true)
+		            	  &&(me.getKey().equals("alikey")!=true)
+		            	  &&(me.getKey().equals("alisubpartner")!=true)
+		            	  &&(me.getKey().equals("isalisub")!=true)
+		            	  //微信	
+		            	  &&(me.getKey().equals("weiappid")!=true)
+		            	  &&(me.getKey().equals("weimch_id")!=true)
+		            	  &&(me.getKey().equals("weikey")!=true)
+		            	  &&(me.getKey().equals("weisubmch_id")!=true)
+		            	  &&(me.getKey().equals("isweisub")!=true)
+		              )
+		            	list2.put(me.getKey(), me.getValue());
+		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
+		        } 	
+		        //支付宝
+		        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
+  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+  	        	if(object2.get("ALI_OTHER_PARTNER").toString().isEmpty())
+  	        	{
+  	        		list2.put("isalisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		list2.put("isalisub", "0.995");
+  	        	}	
+  	        	
+  	        	//微信
+  	        	list2.put("weiappid", object2.get("WX_APP_ID").toString());
+  	        	list2.put("weimch_id", object2.get("WX_MCHID").toString());
+  	        	list2.put("weikey", object2.get("WX_KEY").toString());
+  	        	list2.put("weisubmch_id", object2.get("WX_OTHER_MCHID").toString());
+  	        	if(object2.get("WX_OTHER_MCHID").toString().isEmpty())
+  	        	{
+  	        		list2.put("isweisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		list2.put("isweisub", "1");
+  	        	}
+		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config3="+list2.toString(),"server.txt");
+		        JSONObject jsonObject = new JSONObject(list2);
+		        String mapstrString=jsonObject.toString();
+		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config4="+mapstrString,"server.txt");
+		        //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+	            FileWriter writer = new FileWriter(fileName);
+	            writer.write(mapstrString);
+	            writer.close();
+  	         }
+  	         else
+  	         {  	        	
+  	        	JSONObject jsonObject = new JSONObject();
+  	            //支付宝
+  	        	jsonObject.put("alipartner", object2.get("ALI_PARTNER"));
+  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL"));
+  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY"));
+  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER"));
+  	        	if(object2.get("ALI_OTHER_PARTNER").toString().isEmpty())
+  	        	{
+  	        		jsonObject.put("isalisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		jsonObject.put("isalisub", "0.995");
+  	        	}	
+  	        	
+  	        	//微信
+  	        	jsonObject.put("weiappid", object2.get("WX_APP_ID"));
+  	        	jsonObject.put("weimch_id", object2.get("WX_MCHID"));
+  	        	jsonObject.put("weikey", object2.get("WX_KEY"));
+  	        	jsonObject.put("weisubmch_id", object2.get("WX_OTHER_MCHID"));
+  	        	if(object2.get("WX_OTHER_MCHID").toString().isEmpty())
+  	        	{
+  	        		jsonObject.put("isweisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		jsonObject.put("isweisub", "1");
+  	        	}
+  	        	String mapstrString=jsonObject.toString();
+  	        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config2="+mapstrString,"server.txt");
+  	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	            FileWriter writer = new FileWriter(fileName, true);
+  	            writer.write(mapstrString);
+  	            writer.close();
+			 }
+  	        
+  	        //从配置文件获取数据
+  			Map<String, String> list=ToolClass.ReadConfigFile(); 
+  	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
+	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
+	        //加载微信证书
+			ToolClass.setWeiCertFile();
+//  	         //将json格式解包
+//  	         list=new HashMap<String,String>();      			
+//			JSONObject object=new JSONObject(str);      				
+//			Gson gson=new Gson();
+//			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+//			//Log.i("EV_JNI",perobj.toString());
+//			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+        	//2.写回到文件中  
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
      * 读取货道配置文件
      */
     public static Map<String, Integer> ReadColumnFile() 

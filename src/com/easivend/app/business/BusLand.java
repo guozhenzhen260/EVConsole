@@ -112,9 +112,10 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=打开密码框","log.txt");
-    	Intent intent = new Intent();
-    	intent.setClass(BusLand.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
-        startActivityForResult(intent, PWD_CODE);
+//    	Intent intent = new Intent();
+//    	intent.setClass(BusLand.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
+//        startActivityForResult(intent, PWD_CODE);
+		finish();
 	}
 	//步骤三、实现Business接口,暂停倒计时定时器并且转到商品购物页面
 	//buslevel级别1到商品类别，2到商品导购页面，3到商品详细页面

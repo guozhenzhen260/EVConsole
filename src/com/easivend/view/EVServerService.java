@@ -65,7 +65,8 @@ public class EVServerService extends Service {
     LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
-    private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME="";
+    private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
+    		,LAST_ACCOUNT_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
@@ -321,18 +322,14 @@ public class EVServerService extends Service {
 							//初始化七.2、发送日志上传命令到子线程中
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
-			        		childheartmsg3.what=EVServerhttp.SETLOGCHILD;
-			        		//刚开机时的时间
-			        		if(LAST_LOG_TIME.isEmpty())
-			        		{
-			        			LAST_LOG_TIME=ToolClass.getLasttime();
-			        		}
+			        		childheartmsg3.what=EVServerhttp.SETLOGCHILD;			        		
+			        		LAST_LOG_TIME=ToolClass.getLasttime();			        		
 			        		childheartmsg3.obj=LAST_LOG_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
 						break;						
 						//获取版本安装信息	
-					case EVServerhttp.SETINSTALLMAIN://子线程接收主线程消息获取版本失败
+					case EVServerhttp.SETINSTALLMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取安装信息成功="+msg.obj.toString(),"server.txt");
 						LAST_VERSION_TIME=ToolClass.getLasttime();
 						installApk(msg.obj.toString());		        		
@@ -344,6 +341,26 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETLOGMAIN://子线程接收主线程消息获取日志信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取日志信息成功","server.txt");
 						{
+							//初始化七.3、发送获取支付宝微信命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETACCOUNTCHILD;
+			        		//刚开机时的时间
+			        		if(LAST_ACCOUNT_TIME.isEmpty())
+			        		{
+			        			LAST_ACCOUNT_TIME=ToolClass.getLasttime();
+			        		}			        					        		
+			        		childheartmsg3.obj=LAST_ACCOUNT_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;
+						//获取支付宝微信信息	
+					case EVServerhttp.SETERRFAILACCOUNTMAIN://子线程接收主线程消息获取支付宝微信失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETACCOUNTMAIN://子线程接收主线程消息获取支付宝微信信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信信息成功","server.txt");						
+						{
 							//初始化七、发送货道上传命令到子线程中
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
@@ -351,6 +368,11 @@ public class EVServerService extends Service {
 			        		childheartmsg3.obj=columngrid();
 			        		childhand.sendMessage(childheartmsg3);
 						}
+						break;	
+						//获取支付宝微信账号重新设置
+					case EVServerhttp.SETACCOUNTRESETMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信账号重新设置="+msg.obj.toString(),"server.txt");
+						LAST_ACCOUNT_TIME=ToolClass.getLasttime();	        		
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
@@ -483,7 +505,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },1*60,1*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}	
 	
 	//更新商品分类信息
@@ -589,7 +611,7 @@ public class EVServerService extends Service {
 			int IS_DELETE=0;
 			if(ToolClass.getServerVer()==1)//一期后台
 			{
-				IS_DELETE=Integer.parseInt(object2.getString("PATH_REMAINING"));
+				IS_DELETE=Integer.parseInt(object2.getString("IS_DELETE"));
 			}
 			int status=0;//货道状态
 			int j=0;

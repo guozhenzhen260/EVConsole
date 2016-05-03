@@ -103,6 +103,11 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILLOGMAIN=32;//what标记,发送给主线程获取日志故障
 	public final static int SETLOGMAIN=33;//what标记,发送给主线程获取日志返回
 	
+	public final static int SETACCOUNTCHILD=34;//what标记,发送给子线程获取支付宝微信账号信息
+	public final static int SETERRFAILACCOUNTMAIN=35;//what标记,发送给主线程获取支付宝微信账号故障
+	public final static int SETACCOUNTMAIN=36;//what标记,发送给主线程获取支付宝微信账号返回
+	public final static int SETACCOUNTRESETMAIN=37;//what标记,发送给主线程支付宝微信账号重新设置
+	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
@@ -827,6 +832,71 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest13);					
+					break;
+				case SETACCOUNTCHILD://获取支付宝微信信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取支付宝微信信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target14 = httpStr+"/api/selectAccount";	//要提交的目标地址
+					final String LAST_EDIT_TIME14=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain14=mainhand.obtainMessage();
+					tomain14.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest14 = new StringRequest(Method.POST, target14,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain14.what=SETERRFAILACCOUNTMAIN;
+									tomain14.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain14); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail14]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok14]","server.txt");
+									AccountArray(result);
+									if(Accountarr.length()>0)
+									{
+										updateAccount(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain14.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain14); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail14]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest14);					
 					break;	
 				default:
 					break;
@@ -2007,70 +2077,6 @@ public class EVServerhttp implements Runnable {
   			ToolClass.Log(ToolClass.INFO,"EV_SERVER","日志["+LOG_ID+"]开始上传...","server.txt");
 			//第二步.准备上传	
   			uploadLog(String.valueOf(LOG_ID),f);
-//  		String target13 = httpStr+"/api/uploadClientLog";	//要提交的目标地址
-//			final String LAST_EDIT_TIME13=ToolClass.getLasttime();
-			
-//			//向主线程返回信息
-//			final Message tomain13=mainhand.obtainMessage();
-//			tomain13.what=SETNONE;
-//			//4.准备加载信息设置
-//			StringRequest stringRequest13 = new StringRequest(Method.POST, target13,  new Response.Listener<String>() {  
-//				@Override  
-//				public void onResponse(String response) {  
-//				   
-//				    //如果请求成功
-//					result = response;	//获取返回的字符串
-//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
-////					JSONObject object;
-////					try {
-////						object = new JSONObject(result);
-////						int errType =  object.getInt("Error");
-////						//返回有故障
-////						if(errType>0)
-////						{
-////							tomain13.what=SETERRFAILLOGMAIN;
-////							tomain13.obj=object.getString("Message");							   	    
-////							mainhand.sendMessage(tomain13); // 发送消息
-////							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail13]SETERRFAILHUODAOMAIN","server.txt");
-////						}
-////						else
-////						{
-////							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok13]","server.txt");
-////							logArray(result);
-////							if(logarr.length()>0)
-////							{
-////								updatelog(0);
-////							}
-////						}			    	    
-////					} catch (JSONException e) {
-////						// TODO Auto-generated catch block
-////						e.printStackTrace();
-////					}										 
-//				}  
-//			}, new Response.ErrorListener() {  
-//				@Override  
-//				public void onErrorResponse(VolleyError error) {  
-//					result = "请求失败！";
-//					tomain13.what=SETFAILMAIN;
-//		    	    mainhand.sendMessage(tomain13); // 发送消息
-//		    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail13]SETFAILMAIN"+result,"server.txt");
-//				}  
-//			}) 
-//			{  
-//				@Override  
-//				protected Map<String, String> getParams() throws AuthFailureError {  
-//					//3.添加params
-//					Map<String, String> map = new HashMap<String, String>();  
-//					map.put("Token", Tok);  
-//					map.put("LAST_EDIT_TIME", LAST_EDIT_TIME13);
-//					map.put("CLIENT_LOG_ID", String.valueOf(LOG_ID));
-//					map.put("FILE_CONTENT", Uri.fromFile(f).toString());
-//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
-//					return map;  
-//			   }  
-//			}; 	
-//			//5.加载信息并发送到网络上
-//			mQueue.add(stringRequest13);
   		}
   		catch (Exception e) {
   			// TODO Auto-generated catch block
@@ -2177,12 +2183,12 @@ public class EVServerhttp implements Runnable {
 				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
 					//如果请求成功
 					result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=日志上传完成"+result,"server.txt");					
 				}else{
 					result = "请求失败！";
 					tomain.what=SETFAILMAIN;
 					mainhand.sendMessage(tomain); // 发送消息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETFAILMAIN"+result,"server.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]日志上传"+result,"server.txt");
 				}
 				
 				
@@ -2198,6 +2204,62 @@ public class EVServerhttp implements Runnable {
 	       }
         }
     };
+    
+    //==============
+  	//==支付宝微信更新模块
+  	//==============
+  	JSONArray Accountarr=null;
+  	JSONArray zhuheAccountArray=null;
+  	JSONObject zhuheAccountjson = null; 
+  	int Accountint=0;
+  	//分解商品信息
+  	private void AccountArray(String classrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(classrst);
+  		if(ToolClass.getServerVer()==1)//一期后台
+  		{
+  			Accountarr=jsonObject.getJSONArray("List");
+  			Accountint=0;
+  			zhuheAccountArray=new JSONArray();
+  			zhuheAccountjson = new JSONObject(); 
+  			if(Accountarr.length()==0)
+  			{
+  				//向主线程返回信息
+  				Message tomain=mainhand.obtainMessage();
+  				tomain.what=SETACCOUNTMAIN;
+  				tomain.obj=zhuheAccountjson.toString();
+  				mainhand.sendMessage(tomain); // 发送消息	
+  			}			
+  		}
+  	}
+  	//更新支付宝微信信息
+  	private String updateAccount(int i) throws JSONException
+  	{
+  		final JSONObject object2=Accountarr.getJSONObject(i);
+  		Message tomain14=mainhand.obtainMessage();
+  		tomain14.what=SETACCOUNTMAIN;
+		tomain14.obj="";							   	    
+		mainhand.sendMessage(tomain14); // 发送消息
+		
+		
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新支付宝微信信息="+object2.toString(),"server.txt");										
+		//延时3s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            { 
+			ToolClass.ResetConfigFileServer(object2);
+			Message tomain=mainhand.obtainMessage();
+	  		tomain.what=SETACCOUNTRESETMAIN;
+			tomain.obj="";							   	    
+			mainhand.sendMessage(tomain); // 发送消息
+            }
+
+		}, 1000);
+  		return "";
+  		
+  	}
 	
 	
 }
