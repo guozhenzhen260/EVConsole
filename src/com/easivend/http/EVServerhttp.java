@@ -42,6 +42,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.view.XZip;
 import com.google.gson.Gson;
@@ -1015,7 +1016,7 @@ public class EVServerhttp implements Runnable {
 		{
 			String a[] = CLS_URL.split("/");  
 			ATT_ID=a[a.length-1];
-			ATT_ID=ATT_ID.substring(0,ATT_ID.indexOf(".jpg"));
+			ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","图片ATT_ID="+ATT_ID,"server.txt");										
 			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
 		}
@@ -2364,13 +2365,28 @@ public class EVServerhttp implements Runnable {
   		final JSONObject zhuheobj=object2;
   		//第一步，获取图片名字ATTID
   		final String CLS_URL=object2.getString("ADV_URL");
-  		String ATT_ID="";
+  		String ATT_ID="",TypeStr="";
+  		int FileType=0;//1图片,2视频
   		if(CLS_URL.equals("null")!=true)
   		{
   			String a[] = CLS_URL.split("/");  
-  			ATT_ID=a[a.length-1];
-  			ATT_ID=ATT_ID.substring(0,ATT_ID.indexOf(".jpg"));
-  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告ATT_ID="+ATT_ID,"server.txt");										
+  			ATT_ID=a[a.length-1];  
+  			String tmp = ATT_ID;
+	    	ATT_ID=tmp.substring(0,tmp.lastIndexOf("."));		    	
+	    	TypeStr=tmp.substring(tmp.lastIndexOf(".")+1);
+		    //是否视频文件
+		    if(MediaFileAdapter.isVideoFileType(tmp)==true)
+		    {
+		    	FileType=2;
+		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告视频ATT_ID="+ATT_ID+"."+TypeStr,"server.txt");										
+		    }
+		    //是否图片文件
+		    else if(MediaFileAdapter.isImgFileType(tmp)==true)
+		    {
+		    	FileType=1;
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片ATT_ID="+ATT_ID+"."+TypeStr,"server.txt");										
+	  		}
+  			
   			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
   		}
   		else
@@ -2383,59 +2399,68 @@ public class EVServerhttp implements Runnable {
   		{	
   			if(ATT_ID.equals("")==true)
   			{
-  				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]无图片","server.txt");
+  				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]无","server.txt");
   			}
   			else
   			{
   				int IS_DELETE=object2.getInt("IS_DELETE");
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片,IS_DELETE="+IS_DELETE,"server.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],IS_DELETE="+IS_DELETE,"server.txt");
 					
-  				if(ToolClass.isAdsFile(ATT_ID))
+  				if(ToolClass.isAdsFile(ATT_ID,TypeStr))
   				{
-  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片已存在","server.txt");
+  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]已存在","server.txt");
   					if(IS_DELETE==1)
   					{
-  						ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片删除","server.txt");
-  						ToolClass.delAds(ATT_ID);
+  						ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]删除","server.txt");
+  						ToolClass.delAds(ATT_ID,TypeStr);
   					}
   				}
   				else 
   				{
-  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片,不存在","server.txt");
+  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],不存在","server.txt");
   					if(IS_DELETE==0)
   					{
-	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片,下载图片...","server.txt");
+	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载...","server.txt");
 	  					//第二步.准备下载	
 	  					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
 	  					String url= serip+CLS_URL;	//要提交的目标地址
 	  					final String ATTIDS=ATT_ID;
 	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
-	  					ImageRequest imageRequest = new ImageRequest(  
-	  							url,  
-	  					        new Response.Listener<Bitmap>() {  
-	  					            @Override  
-	  					            public void onResponse(Bitmap response) {  
-	  					            	ToolClass.saveBitmaptoads(response,ATTIDS);
-	  					            	try {
-	  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片,下载图片完成","server.txt");
-	  									} catch (JSONException e) {
-	  										// TODO Auto-generated catch block
-	  										e.printStackTrace();
-	  									}
-	  					            }  
-	  					        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
-	  					            @Override  
-	  					            public void onErrorResponse(VolleyError error) {  
-	  									result = "请求失败！";
-	  									try {
-	  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]图片,下载图片失败","server.txt");
-	  									} catch (JSONException e) {
-	  										// TODO Auto-generated catch block
-	  										e.printStackTrace();
-	  									}
-	  					            }  
-	  					        });
-	  					mQueue.add(imageRequest); 
+	  					//下载图片
+	  					if(FileType==1)
+	  					{
+		  					ImageRequest imageRequest = new ImageRequest(  
+		  							url,  
+		  					        new Response.Listener<Bitmap>() {  
+		  					            @Override  
+		  					            public void onResponse(Bitmap response) {  
+		  					            	ToolClass.saveBitmaptoads(response,ATTIDS);
+		  					            	try {
+		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载完成","server.txt");
+		  									} catch (JSONException e) {
+		  										// TODO Auto-generated catch block
+		  										e.printStackTrace();
+		  									}
+		  					            }  
+		  					        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+		  					            @Override  
+		  					            public void onErrorResponse(VolleyError error) {  
+		  									result = "请求失败！";
+		  									try {
+		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载失败","server.txt");
+		  									} catch (JSONException e) {
+		  										// TODO Auto-generated catch block
+		  										e.printStackTrace();
+		  									}
+		  					            }  
+		  					        });
+		  					mQueue.add(imageRequest); 
+	  					}
+	  				    //下载视频
+	  					else if(FileType==2)
+	  					{
+	  						downloadAds(url,ATTIDS,TypeStr);//下载程序
+	  					}
   					}
   				}
   				
@@ -2447,7 +2472,7 @@ public class EVServerhttp implements Runnable {
   			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
   		}
   		
-  		//第三步，把图片名字保存到json中		
+  		//第三步，把名字保存到json中		
   		zhuheadvArray.put(zhuheobj);
   		
   		
@@ -2495,6 +2520,68 @@ public class EVServerhttp implements Runnable {
   		}		
   		return "";
   	}
-	
+  	
+  	private String adsurl=null;
+  	private String ATTADS=null;
+  	private String TypeStr=null;
+	/**
+     * 下载apk广告视频文件
+     */
+    private void downloadAds(String str,String ATT_ID,String Type)
+    {    	
+    	adsurl=str;
+    	ATTADS=ATT_ID;
+    	TypeStr=Type;
+        // 启动新线程下载软件
+        new downloadAdsThread().start();
+    }
+  	
+    /**
+     * 下载文件线程
+     * 
+     * @author coolszy
+     *@date 2012-4-26
+     *@blog http://blog.92coding.com
+     */
+    private class downloadAdsThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+            	//1.下载
+            	HttpClient client = new DefaultHttpClient();  
+                HttpGet get = new HttpGet(adsurl);  
+                HttpResponse response = client.execute(get);  
+                HttpEntity entity = response.getEntity();  
+                long length = entity.getContentLength();  
+                InputStream is = entity.getContent();  
+                FileOutputStream fileOutputStream = null;  
+                if (is != null)
+                {  
+                    File file = ToolClass.saveAvitoads(ATTADS,TypeStr);  
+                    fileOutputStream = new FileOutputStream(file);  
+                    byte[] buf = new byte[1024];  
+                    int ch = -1;  
+                    int count = 0;  
+                    while ((ch = is.read(buf)) != -1) {  
+                        fileOutputStream.write(buf, 0, ch);  
+                        count += ch;  
+                        if (length > 0) {  
+                        }  
+                    }  
+                }  
+                fileOutputStream.flush();  
+                if (fileOutputStream != null) {  
+                    fileOutputStream.close();  
+                }   
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+ATTADS+"."+TypeStr+"],下载完成","server.txt");
+            } catch (Exception e)
+            {
+                e.printStackTrace();                
+            }
+        }
+    };
 	
 }

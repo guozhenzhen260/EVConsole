@@ -782,7 +782,7 @@ public class ToolClass
     /**
      * 使用isAdsFile,判断这个广告是已经存在目录中,true存在,false不存在
      */
-    public static boolean isAdsFile(String filename) 
+    public static boolean isAdsFile(String filename,String TypeStr) 
     {
     	String  sDir =null;
     	File fileName=null;
@@ -797,7 +797,7 @@ public class ToolClass
         		dirName.mkdirs(); 
              }
         	 
-        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);         	
         	//如果不存在，则创建文件
         	if(!fileName.exists())
         	{  
@@ -845,8 +845,34 @@ public class ToolClass
        return fileext; 
      } 
     
+    /**
+     * 使用saveAvitoads,保存这个视频广告到目录中
+     */
+    public static File saveAvitoads(String filename,String TypeStr) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
+    }
+    
     //将广告文件删除
-    public static boolean  delAds(String filename)
+    public static boolean  delAds(String filename,String TypeStr)
     {      	
     	String  sDir =null;
     	File fileName=null;
@@ -861,7 +887,7 @@ public class ToolClass
         		dirName.mkdirs(); 
              }
         	 
-        	 fileName=new File(sDir+File.separator+filename+".jpg");   
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);   
         	 //如果存在，删除
         	 if(fileName.exists())
         	{  
