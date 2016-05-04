@@ -47,6 +47,11 @@ public class COMThread implements Runnable
 	public static final int EV_COLUMN_CHECKCHILD = 11;	//弹簧柜查询
 	public static final int EV_COLUMN_OPENCHILD 	= 12;	//弹簧柜出货
 	
+	//=====================升降机柜类型==============================================================================
+	public static final int EV_ELEVATOR_CHECKALLCHILD = 13;	//升降机柜全部查询
+	public static final int EV_ELEVATOR_CHECKCHILD = 14;	//升降机柜查询
+	public static final int EV_ELEVATOR_OPENCHILD 	= 15;	//升降机柜出货
+	
 	//=====================现金设备==================================
 	public static final int EV_MDB_ENABLE 	= 22;	//MDB设备使能
 	public static final int EV_MDB_HEART 	= 23;	//MDB设备心跳
@@ -472,7 +477,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain5); // 发送消息
 					break;	
 				//弹簧柜	
-				case EV_COLUMN_CHECKALLCHILD://子线程接收主线程格子查询消息	
+				case EV_COLUMN_CHECKALLCHILD://子线程接收主线程弹簧全部查询消息	
 					//1.得到信息
 					JSONObject ev7=null;
 					try {
@@ -500,7 +505,7 @@ public class COMThread implements Runnable
 	  				tomain7.obj=allSet;
 	  				mainhand.sendMessage(tomain7); // 发送消息
 					break;
-				case EV_COLUMN_CHECKCHILD://子线程接收主线程格子查询消息	
+				case EV_COLUMN_CHECKCHILD://子线程接收主线程弹簧查询消息	
 					//1.得到信息
 					JSONObject ev8=null;
 					try {
@@ -621,6 +626,90 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain9); // 发送消息
 					
 					break;
+					//升降机
+				case EV_ELEVATOR_CHECKALLCHILD://子线程接收主线程升降机全部查询消息	
+					//1.得到信息
+					JSONObject ev21=null;
+					try {
+						ev21 = new JSONObject(msg.obj.toString());
+						cabinet=ev21.getInt("cabinet");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bentid="+ToolClass.getBentcom_id()+" cabinet="+cabinet,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					Map<String, Integer> list21=ToolClass.ReadElevatorFile();				
+										
+					//2.重新组包
+					//往接口回调信息
+					allSet.clear();
+					allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_CHECK);
+					allSet.put("cool", 0);
+					allSet.put("hot", 0);
+					allSet.put("light", 0);
+					allSet.putAll(list21);
+					
+					//3.向主线程返回信息
+	  				Message tomain21=mainhand.obtainMessage();
+	  				tomain21.what=EV_BENTO_CHECKALLMAIN;							
+	  				tomain21.obj=allSet;
+	  				mainhand.sendMessage(tomain21); // 发送消息
+					break;	
+				case EV_ELEVATOR_CHECKCHILD://子线程接收主线程升降机查询消息	
+					//1.得到信息
+					JSONObject ev20=null;
+					try {
+						ev20 = new JSONObject(msg.obj.toString());
+						cabinet=ev20.getInt("cabinet");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=bentid="+ToolClass.getBentcom_id()+" cabinet="+cabinet,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					Map<String, Integer> list20=ToolClass.ReadElevatorFile();				
+										
+					//2.重新组包
+					//往接口回调信息
+					allSet.clear();
+					allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_CHECK);
+					allSet.put("cool", 0);
+					allSet.put("hot", 0);
+					allSet.put("light", 0);
+					//作排序
+					Map<Integer, Integer> tempSet20= new TreeMap<Integer,Integer>();
+					Set<Entry<String, Integer>> allmap20=list20.entrySet();  //实例化
+			        Iterator<Entry<String, Integer>> iter20=allmap20.iterator();
+			        while(iter20.hasNext())
+			        {
+			            Entry<String, Integer> me=iter20.next();
+			            if(
+			               (me.getKey().equals("EV_TYPE")!=true)
+			            )   
+			            {
+			            	tempSet20.put(Integer.parseInt(me.getKey()), (Integer)me.getValue());
+			            }
+			        } 
+			        
+			        //输出内容
+			        Set<Entry<Integer, Integer>> zhuhemap20=tempSet20.entrySet();  //实例化
+			        Iterator<Entry<Integer, Integer>> zhuheiter20=zhuhemap20.iterator();
+			        while(zhuheiter20.hasNext())
+			        {
+			            Entry<Integer, Integer> me=zhuheiter20.next();
+			            if(
+			               (me.getKey().equals("EV_TYPE")!=true)
+			            )   
+			            {
+			            	allSet.put(me.getKey().toString(), me.getValue());
+			            }
+			        } 
+					
+					//3.向主线程返回信息
+	  				Message tomain20=mainhand.obtainMessage();
+	  				tomain20.what=EV_BENTO_CHECKMAIN;							
+	  				tomain20.obj=allSet;
+	  				mainhand.sendMessage(tomain20); // 发送消息
+					break;	
 				case EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
 					int bill=0;
 					int coin=0;

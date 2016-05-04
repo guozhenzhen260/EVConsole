@@ -139,10 +139,17 @@ public class COMService extends Service {
 	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
 	        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
 	        		}
-	        		else
+	        	    //弹簧货道
+	        	    else if(listinfosrec.getCabType()==1)
 	        		{
 	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
 	        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
+	        		}
+	        	    //升降机货道
+	        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3)||(listinfosrec.getCabType()==4))
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
+	        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
 	        		}
 	        		JSONObject evrec=null;
 		    		try {
@@ -172,10 +179,17 @@ public class COMService extends Service {
         			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
         			child2.what=COMThread.EV_BENTO_CHECKCHILD;
         		}
-        		else
+        	    //弹簧货道
+        		else if(listinfos2.getCabType()==1)
         		{
         			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
         			child2.what=COMThread.EV_COLUMN_CHECKCHILD;
+        		}
+        	    //升降机货道
+        		else if((listinfos2.getCabType()==2)||(listinfos2.getCabType()==3)||(listinfos2.getCabType()==4))
+        		{
+        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+        			child2.what=COMThread.EV_ELEVATOR_CHECKCHILD;
         		}
         		JSONObject ev2=null;
 	    		try {
@@ -599,10 +613,17 @@ public class COMService extends Service {
 			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
 			        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
 			        		}
-			        		else
+			        	    //弹簧货道
+			        	    else if(listinfosrec.getCabType()==1)
 			        		{
 			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
 			        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
+			        		}
+			        	    //升降机货道
+			        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3)||(listinfosrec.getCabType()==4))
+			        		{
+			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
+			        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
 			        		}
 			        		JSONObject evrec=null;
 				    		try {
