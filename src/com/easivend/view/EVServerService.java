@@ -66,7 +66,7 @@ public class EVServerService extends Service {
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
     private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
-    		,LAST_ACCOUNT_TIME="";
+    		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
@@ -361,6 +361,26 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETACCOUNTMAIN://子线程接收主线程消息获取支付宝微信信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信信息成功","server.txt");						
 						{
+							//初始化七.4、发送获取广告信息到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETADVCHILD;
+			        		childheartmsg3.obj=LAST_ADV_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;	
+						//获取支付宝微信账号重新设置
+					case EVServerhttp.SETACCOUNTRESETMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信账号重新设置="+msg.obj.toString(),"server.txt");
+						LAST_ACCOUNT_TIME=ToolClass.getLasttime();	        		
+						break;	
+						//获取广告信息	
+					case EVServerhttp.SETERRFAILADVMAIN://子线程接收主线程消息获取广告失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETADVMAIN://子线程接收主线程消息获取广告信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告信息成功","server.txt");						
+						{
 							//初始化七、发送货道上传命令到子线程中
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
@@ -369,10 +389,10 @@ public class EVServerService extends Service {
 			        		childhand.sendMessage(childheartmsg3);
 						}
 						break;	
-						//获取支付宝微信账号重新设置
-					case EVServerhttp.SETACCOUNTRESETMAIN:
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信账号重新设置="+msg.obj.toString(),"server.txt");
-						LAST_ACCOUNT_TIME=ToolClass.getLasttime();	        		
+						//获取广告账号重新设置
+					case EVServerhttp.SETADVRESETMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告重新设置="+msg.obj.toString(),"server.txt");
+						LAST_ADV_TIME=ToolClass.getLasttime();	        		
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败

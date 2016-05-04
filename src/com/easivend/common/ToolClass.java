@@ -780,6 +780,100 @@ public class ToolClass
     }
     
     /**
+     * 使用isAdsFile,判断这个广告是已经存在目录中,true存在,false不存在
+     */
+    public static boolean isAdsFile(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则创建文件
+        	if(!fileName.exists())
+        	{  
+        		fileext=false; 
+    	    }  
+        	else
+        		fileext=true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileext; 
+    }
+    
+    //将Bitmap图片保存在本地
+    public static boolean  saveBitmaptoads(Bitmap bmp,String filename)
+    {      	
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则开始保存图片
+        	if(!fileName.exists())
+        	{  
+        		CompressFormat format= Bitmap.CompressFormat.JPEG;  
+    	        int quality = 100;  
+    	        OutputStream stream = null;  
+    	        stream = new FileOutputStream(fileName);      	         
+    	        fileext=bmp.compress(format, quality, stream); 
+    	    }  
+        	else
+        		fileext=false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     } 
+    
+    //将广告文件删除
+    public static boolean  delAds(String filename)
+    {      	
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+".jpg");   
+        	 //如果存在，删除
+        	 if(fileName.exists())
+        	{  
+        		 fileName.delete();	
+    	    } 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     }
+    
+    /**
      * 读取日志文件
      */
     public static String ReadLogFile() 
