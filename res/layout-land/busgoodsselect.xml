@@ -55,13 +55,14 @@
 	        android:layout_toRightOf="@+id/txtbusgoodselAmount"
 	        android:layout_below="@+id/txtbusgoodselAmount"
 			android:layout_width="wrap_content" 
-	        android:layout_height="wrap_content"
+	        android:layout_height="370dp"
 	        android:text="" />
 	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselzhier"
    	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"	
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@+id/ivbuszhiselweixing"	
 		android:layout_alignParentBottom="true"
 		android:src="@drawable/zhier"			
    	/> 
@@ -70,7 +71,7 @@
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
 		android:layout_alignParentBottom="true"
-		android:layout_toRightOf="@+id/ivbuszhiselzhier"
+		android:layout_toLeftOf="@+id/ivbuszhiselamount"
 		android:src="@drawable/weixing"			
    	/> 	
    	<ImageView 
@@ -78,7 +79,7 @@
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
 		android:layout_alignParentBottom="true"
-		android:layout_toRightOf="@+id/ivbuszhiselweixing"	
+		android:layout_toLeftOf="@+id/ivbuszhiseltihuo"	
 		android:src="@drawable/amount"			
    	/> 
    	<ImageView 
@@ -86,7 +87,7 @@
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
 		android:layout_alignParentBottom="true"
-		android:layout_toRightOf="@+id/ivbuszhiselamount"	
+		android:layout_toLeftOf="@+id/imgbtnbusgoodselback"	
 		android:src="@drawable/tihuopwd"			
    	/> 	
 	<ImageButton

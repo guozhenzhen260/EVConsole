@@ -108,7 +108,7 @@ public class COMThread implements Runnable
 					for(int d=0;d<5;d++)
 					{
 						String rec6=EVprotocol.EVBentoCheck(ToolClass.getBentcom_id(), cabinet);
-						ToolClass.Log(ToolClass.INFO,"EV_COM",d+"API<<"+rec6.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM",d+"API<<"+rec6.toString(),"com.txt");
 						
 						//2.重新组包
 						try {
@@ -188,7 +188,7 @@ public class COMThread implements Runnable
 					for(int d=0;d<5;d++)
 					{
 						String rec=EVprotocol.EVBentoCheck(ToolClass.getBentcom_id(), cabinet);
-						ToolClass.Log(ToolClass.INFO,"EV_COM",d+"API<<"+rec.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM",d+"API<<"+rec.toString(),"com.txt");
 						
 						//2.重新组包
 						try {
@@ -269,7 +269,7 @@ public class COMThread implements Runnable
 					for(int i=0;i<5;i++)
 					{
 						String rec2=EVprotocol.EVBentoOpen(ToolClass.getBentcom_id(), cabinet,column);
-						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec2.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec2.toString(),"com.txt");
 	
 						//2.重新组包
 						try {
@@ -332,7 +332,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec3=EVprotocol.EVBentoLight(ToolClass.getBentcom_id(), cabinet,opt);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec3.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec3.toString(),"com.txt");
 
 					//2.重新组包
 					try {
@@ -385,7 +385,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec4=EVprotocol.EVBentoCool(ToolClass.getBentcom_id(), cabinet,opt);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec4.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec4.toString(),"com.txt");
 
 					//2.重新组包
 					try {
@@ -437,7 +437,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec5=EVprotocol.EVBentoHot(ToolClass.getBentcom_id(), cabinet,opt);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec5.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec5.toString(),"com.txt");
 
 					//2.重新组包
 					try {
@@ -576,7 +576,7 @@ public class COMThread implements Runnable
 					for(int i=0;i<5;i++)
 					{
 						String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
-						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec9.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec9.toString(),"com.txt");
 	
 						//2.重新组包
 						try {
@@ -710,6 +710,72 @@ public class COMThread implements Runnable
 	  				tomain20.obj=allSet;
 	  				mainhand.sendMessage(tomain20); // 发送消息
 					break;	
+				case EV_ELEVATOR_OPENCHILD://子线程接收主线程升降机出货
+					//1.得到信息
+					JSONObject ev22=null;
+					try {
+						ev22 = new JSONObject(msg.obj.toString());
+						cabinet=ev22.getInt("cabinet");
+						column=ev22.getInt("column");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cabinet="+cabinet+"column="+column,"com.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//重试5次
+					for(int i=0;i<5;i++)
+					{
+						String rec22=EVprotocol.EVtrade(ToolClass.getColumncom_id(),3,cabinet,column,ToolClass.getGoc());
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec22.toString(),"com.txt");
+	
+						//2.重新组包
+						try {
+							JSONObject jsonObject22 = new JSONObject(rec22); 
+							//根据key取出内容
+							JSONObject ev_head22 = (JSONObject) jsonObject22.getJSONObject("EV_json");
+							int str_evType22 =  ev_head22.getInt("EV_type");
+							if(str_evType22==EVprotocol.EV_COLUMN_OPEN)
+							{
+								if(ev_head22.getInt("is_success")>0)
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
+									allSet.put("addr", ev_head22.getInt("addr"));//柜子地址
+									allSet.put("box", ev_head22.getInt("box"));//格子地址
+									allSet.put("result", ToolClass.elevatorChuhuorst(ev_head22.getInt("result")));								
+									
+									break;
+						    	}
+						    	else
+						    	{
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", EVprotocol.EV_COLUMN_OPEN);
+									allSet.put("addr", 0);//柜子地址
+									allSet.put("box", 0);//格子地址
+									allSet.put("result", ToolClass.elevatorChuhuorst(0x1F));
+									ToolClass.ResstartPort(3);
+									try {
+										Thread.sleep(2000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+						    	}
+							}
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					//3.向主线程返回信息
+	  				Message tomain22=mainhand.obtainMessage();
+	  				tomain22.what=EV_BENTO_OPTMAIN;							
+	  				tomain22.obj=allSet;
+	  				mainhand.sendMessage(tomain22); // 发送消息
+					
+					break;	
 				case EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
 					int bill=0;
 					int coin=0;
@@ -730,7 +796,7 @@ public class COMThread implements Runnable
 					for(int i=0;i<5;i++)
 					{
 						String rec10=EVprotocol.EVmdbEnable(ToolClass.getCom_id(),bill,coin,opt);
-						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec10.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec10.toString(),"com.txt");
 						
 						//2.重新组包
 						try {
@@ -782,7 +848,7 @@ public class COMThread implements Runnable
 				case EV_MDB_B_INFO://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec11=EVprotocol.EVmdbBillInfoCheck(ToolClass.getCom_id());
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec11.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec11.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -855,7 +921,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec14=EVprotocol.EVmdbBillConfig(ev14.toString());
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+ev14.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+ev14.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -894,7 +960,7 @@ public class COMThread implements Runnable
 				case EV_MDB_C_INFO://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec12=EVprotocol.EVmdbCoinInfoCheck(ToolClass.getCom_id());
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec12.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec12.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -958,7 +1024,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec15=EVprotocol.EVmdbCoinConfig(ev15.toString());
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+ev15.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+ev15.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -1013,7 +1079,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec16=EVprotocol.EVmdbPayout(ToolClass.getCom_id(),bill16,coin16,billPay16,coinPay16);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec16.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec16.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -1068,7 +1134,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec17=EVprotocol.EVmdbHopperPayout(ToolClass.getCom_id(),no17,nums17);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec17.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec17.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -1110,7 +1176,7 @@ public class COMThread implements Runnable
 				case EV_MDB_HEART://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec13=EVprotocol.EVmdbHeart(ToolClass.getCom_id());
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec13.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec13.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -1194,7 +1260,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec18=EVprotocol.EVmdbCost(ToolClass.getCom_id(),cost18);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec18.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec18.toString(),"com.txt");
 					
 					//2.重新组包
 					try {
@@ -1249,7 +1315,7 @@ public class COMThread implements Runnable
 						e1.printStackTrace();
 					}
 					String rec19=EVprotocol.EVmdbPayback(ToolClass.getCom_id(),bill19,coin19);
-					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec19.toString(),"log.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec19.toString(),"com.txt");
 					
 					//2.重新组包
 					try {

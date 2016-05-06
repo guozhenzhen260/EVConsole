@@ -246,7 +246,7 @@ public class EVServerService extends Service {
 							e.printStackTrace();
 						}						
 						//有不存在的商品
-						if((isspempty)&&(isspretry<4))
+						if((isspempty)&&(isspretry<4)) 
 						{
 							isspempty=false;
 							isspretry++;

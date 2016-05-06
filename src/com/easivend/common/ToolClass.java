@@ -1478,6 +1478,8 @@ public class ToolClass
     	return 0;
     }
     
+    
+    
     /**
      * 写入货道配置文件
      */
@@ -1584,6 +1586,50 @@ public class ToolClass
         } catch (Exception e) {
             e.printStackTrace();
         }        
+    }
+    
+    /**
+     * 升降机返回出货结果
+    private static final int LIFT_VENDOUT_COM_ERR	=		0x1F;		//通信故障
+	private static final int LIFT_VENDOUT_FAULT		=		0x12;		//升降机故障
+	private static final int LIFT_VENDOUT_BUSY		=		0x11;		//升降机忙
+	private static final int LIFT_VENDOUT_FAIL		=		0;			//出货失败 通信失败
+	private static final int LIFT_VENDOUT_SUC		=		1;			//出货成功
+	private static final int LIFT_VENDOUT_DATAERR	=		2;			//数据错误
+	private static final int LIFT_VENDOUT_EMPTY		=		3;			//无货
+	private static final int LIFT_VENDOUT_STUCK		=		4 ; 			//卡货
+	private static final int LIFT_VNEDOUT_DOOR_NOT_OPEN	=	5;			//取货门未开启
+	private static final int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
+	private static final int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
+	private static final int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
+	 *  1:成功;4:出货失败8:卡货;其他与故障码一样
+     */    
+    public static int elevatorChuhuorst(int Rst)
+    {    
+    	int LIFT_VENDOUT_COM_ERR	=		0x1F;		//通信故障
+    	int LIFT_VENDOUT_FAULT		=		0x12;		//升降机故障
+    	int LIFT_VENDOUT_BUSY		=		0x11;		//升降机忙
+    	int LIFT_VENDOUT_FAIL		=		0;			//出货失败 通信失败
+    	int LIFT_VENDOUT_SUC		=		1;			//出货成功
+    	int LIFT_VENDOUT_DATAERR	=		2;			//数据错误
+    	int LIFT_VENDOUT_EMPTY		=		3;			//无货
+    	int LIFT_VENDOUT_STUCK		=		4 ; 			//卡货
+    	int LIFT_VNEDOUT_DOOR_NOT_OPEN	=	5;			//取货门未开启
+    	int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
+    	int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
+    	int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
+    	if(Rst==LIFT_VENDOUT_EMPTY)
+    	{
+    		return 4;
+    	}
+    	else if(Rst==LIFT_VENDOUT_STUCK)
+    	{
+    		return 8;
+    	}
+    	else
+    	{
+    		return Rst;
+    	}
     }
     
     //保存操作日志

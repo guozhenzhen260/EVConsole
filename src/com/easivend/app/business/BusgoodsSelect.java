@@ -85,12 +85,20 @@ public class BusgoodsSelect extends Activity
 		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
 		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
 	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
-	    WebSettings settings = webproductDesc.getSettings();
-	    settings.setSupportZoom(true);
-	    settings.setTextSize(WebSettings.TextSize.LARGEST);
-	    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
-	    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
-		
+	    if(tb_vmc_product.getProductDesc().isEmpty()!=true)
+	    {
+		    WebSettings settings = webproductDesc.getSettings();
+		    settings.setSupportZoom(true);
+		    settings.setTextSize(WebSettings.TextSize.LARGEST);
+		    webproductDesc.getSettings().setSupportMultipleWindows(true);
+		    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+		    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+		    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+	    }
+	    else
+	    {
+	    	webproductDesc.setVisibility(View.GONE);
+	    }
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
 		    @Override

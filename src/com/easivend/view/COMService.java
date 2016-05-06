@@ -96,7 +96,7 @@ public class COMService extends Service {
 			int EVWhat=bundle.getInt("EVWhat");
 			switch(EVWhat)
 			{
-			//查询全部柜子状态
+			//查询全部货道状态
 			case EV_CHECKALLCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询全部","com.txt");
 				vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
@@ -223,12 +223,20 @@ public class COMService extends Service {
 	    				child3.what=COMThread.EV_BENTO_OPENCHILD;
 	    				ev3.put("column", bundle.getInt("column"));
 	        		}
-	        		else
+	        	    //弹簧货道
+	        	    else if(listinfos3.getCabType()==1)
 	        		{
 	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
 	    				child3.what=COMThread.EV_COLUMN_OPENCHILD;
 	    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
-	        		}	    			
+	        		}
+	        	    //升降机货道
+	        		else if((listinfos3.getCabType()==2)||(listinfos3.getCabType()==3)||(listinfos3.getCabType()==4))
+	        		{
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机出货","com.txt");
+	    				child3.what=COMThread.EV_ELEVATOR_OPENCHILD;
+	    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
+	        		}	
 	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
 	    		} catch (JSONException e) {
 	    			// TODO Auto-generated catch block
@@ -256,12 +264,20 @@ public class COMService extends Service {
 	    				child7.what=COMThread.EV_BENTO_OPENCHILD;
 	    				ev7.put("column", bundle.getInt("column"));
 	        		}
-	        		else
+	        	    //弹簧货道
+	        	    else if(listinfos7.getCabType()==1)
 	        		{
 	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
 	    				child7.what=COMThread.EV_COLUMN_OPENCHILD;
 	    				ev7.put("column", bundle.getInt("column"));
-	        		}	    			
+	        		}
+	        	    //升降机货道
+	        		else if((listinfos7.getCabType()==2)||(listinfos7.getCabType()==3)||(listinfos7.getCabType()==4))
+	        		{
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机出货","com.txt");
+	    				child7.what=COMThread.EV_ELEVATOR_OPENCHILD;
+	    				ev7.put("column", bundle.getInt("column"));
+	        		}
 	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev7.toString(),"com.txt");
 	    		} catch (JSONException e) {
 	    			// TODO Auto-generated catch block

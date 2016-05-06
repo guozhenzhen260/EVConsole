@@ -1463,6 +1463,16 @@ public class HuodaoTest extends TabActivity
 					    					// TODO Auto-generated method stub	
 					    					HuodaoTest.this.dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
 									    	autochu=true;
+									    	//弹簧货道
+									    	if(cabinetTypepeivar==1)
+									    	{
+									    		autophysic=57;
+									    	}
+									    	//升降机货道
+									    	else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+									    	{
+									    		autophysic=11;
+									    	}
 									    	comsend(COMService.EV_CHUHUOCHILD,autophysic);
 					    				}
 				    		      }
@@ -1640,7 +1650,16 @@ public class HuodaoTest extends TabActivity
 					//循环继续做货道配置操作
 					if(autochu)
 					{
-						autohuofile(status);
+						//弹簧货道
+						if(cabinetTypepeivar==1)
+						{
+							autohuofile(status);
+						}
+						//升降机货道
+						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+						{
+							autoelevatorfile(status);
+						}
 					}
 					
 					sethuorst(status);
@@ -2137,7 +2156,7 @@ public class HuodaoTest extends TabActivity
 				break;	
 		}
 	}
-	//自检逻辑货道开关性能,result==0,或者21货道存在，其他值货道不存在
+	//自检逻辑货道开关性能,result==0,或者0x21货道存在，其他值货道不存在
 	private void autohuofile(int result)
 	{
 		switch(autophysic)
@@ -2922,6 +2941,7 @@ public class HuodaoTest extends TabActivity
 				break;	
 		}
 	}
+	
 	//保存逻辑货道实际对应物理货道的文件
 	private void sethuofile()
 	{
@@ -4020,6 +4040,794 @@ public class HuodaoTest extends TabActivity
 		}
 	}
 	
+	//========
+	//升降机模块
+	//========
+	//自检逻辑货道开关性能,result==0,或者0x21货道存在，其他值货道不存在
+	private void autoelevatorfile(int result)
+	{
+		switch(autophysic)
+		{
+			//第一层
+			case 11:
+				if((result==1)||(result==4))
+				{
+					btnhuoset11.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset11.setChecked(false);	
+				}
+				autophysic++;				
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 12:
+				if((result==1)||(result==4))
+				{
+					btnhuoset12.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset12.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 13:
+				if((result==1)||(result==4))
+				{
+					btnhuoset13.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset13.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 14:
+				if((result==1)||(result==4))
+				{
+					btnhuoset14.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset14.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 15:
+				if((result==1)||(result==4))
+				{
+					btnhuoset15.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset15.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 16:
+				if((result==1)||(result==4))
+				{
+					btnhuoset16.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset16.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 17:
+				if((result==1)||(result==4))
+				{
+					btnhuoset17.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset17.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 18:
+				if((result==1)||(result==4))
+				{
+					btnhuoset18.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset18.setChecked(false);	
+				}
+				autophysic=21;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第二层	
+			case 21:
+				if((result==1)||(result==4))
+				{
+					btnhuoset21.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset21.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 22:
+				if((result==1)||(result==4))
+				{
+					btnhuoset22.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset22.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 23:
+				if((result==1)||(result==4))
+				{
+					btnhuoset23.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset23.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 24:
+				if((result==1)||(result==4))
+				{
+					btnhuoset24.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset24.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 25:
+				if((result==1)||(result==4))
+				{
+					btnhuoset25.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset25.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 26:
+				if((result==1)||(result==4))
+				{
+					btnhuoset26.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset26.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 27:
+				if((result==1)||(result==4))
+				{
+					btnhuoset27.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset27.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 28:
+				if((result==1)||(result==4))
+				{
+					btnhuoset28.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset28.setChecked(false);	
+				}
+				autophysic=31;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			//第三层	
+			case 31:
+				if((result==1)||(result==4))
+				{
+					btnhuoset31.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset31.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 32:
+				if((result==1)||(result==4))
+				{
+					btnhuoset32.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset32.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 33:
+				if((result==1)||(result==4))
+				{
+					btnhuoset33.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset33.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 34:
+				if((result==1)||(result==4))
+				{
+					btnhuoset34.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset34.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 35:
+				if((result==1)||(result==4))
+				{
+					btnhuoset35.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset35.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 36:
+				if((result==1)||(result==4))
+				{
+					btnhuoset36.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset36.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 37:
+				if((result==1)||(result==4))
+				{
+					btnhuoset37.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset37.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 38:
+				if((result==1)||(result==4))
+				{
+					btnhuoset38.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset38.setChecked(false);	
+				}
+				autophysic=41;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第四层	
+			case 41:
+				if((result==1)||(result==4))
+				{
+					btnhuoset41.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset41.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 42:
+				if((result==1)||(result==4))
+				{
+					btnhuoset42.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset42.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 43:
+				if((result==1)||(result==4))
+				{
+					btnhuoset43.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset43.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 44:
+				if((result==1)||(result==4))
+				{
+					btnhuoset44.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset44.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 45:
+				if((result==1)||(result==4))
+				{
+					btnhuoset45.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset45.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 46:
+				if((result==1)||(result==4))
+				{
+					btnhuoset46.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset46.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 47:
+				if((result==1)||(result==4))
+				{
+					btnhuoset47.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset47.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 48:
+				if((result==1)||(result==4))
+				{
+					btnhuoset48.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset48.setChecked(false);	
+				}
+				autophysic=51;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			//第五层	
+			case 51:
+				if((result==1)||(result==4))
+				{
+					btnhuoset51.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset51.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 52:
+				if((result==1)||(result==4))
+				{
+					btnhuoset52.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset52.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 53:
+				if((result==1)||(result==4))
+				{
+					btnhuoset53.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset53.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 54:
+				if((result==1)||(result==4))
+				{
+					btnhuoset54.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset54.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 55:
+				if((result==1)||(result==4))
+				{
+					btnhuoset55.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset55.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 56:
+				if((result==1)||(result==4))
+				{
+					btnhuoset56.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset56.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 57:
+				if((result==1)||(result==4))
+				{
+					btnhuoset57.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset57.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 58:
+				if((result==1)||(result==4))
+				{
+					btnhuoset58.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset58.setChecked(false);	
+				}
+				autophysic=61;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第六层	
+			case 61:
+				if((result==1)||(result==4))
+				{
+					btnhuoset61.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset61.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 62:
+				if((result==1)||(result==4))
+				{
+					btnhuoset62.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset62.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 63:
+				if((result==1)||(result==4))
+				{
+					btnhuoset63.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset63.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 64:
+				if((result==1)||(result==4))
+				{
+					btnhuoset64.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset64.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 65:
+				if((result==1)||(result==4))
+				{
+					btnhuoset65.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset65.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 66:
+				if((result==1)||(result==4))
+				{
+					btnhuoset66.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset66.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 67:
+				if((result==1)||(result==4))
+				{
+					btnhuoset67.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset67.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 68:
+				if((result==1)||(result==4))
+				{
+					btnhuoset68.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset68.setChecked(false);	
+				}
+				autophysic=71;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第七层
+			case 71:
+				if((result==1)||(result==4))
+				{
+					btnhuoset71.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset71.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 72:
+				if((result==1)||(result==4))
+				{
+					btnhuoset72.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset72.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 73:
+				if((result==1)||(result==4))
+				{
+					btnhuoset73.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset73.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 74:
+				if((result==1)||(result==4))
+				{
+					btnhuoset74.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset74.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 75:
+				if((result==1)||(result==4))
+				{
+					btnhuoset75.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset75.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 76:
+				if((result==1)||(result==4))
+				{
+					btnhuoset76.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset76.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 77:
+				if((result==1)||(result==4))
+				{
+					btnhuoset77.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset77.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 78:
+				if((result==1)||(result==4))
+				{
+					btnhuoset78.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset78.setChecked(false);	
+				}
+				autophysic=81;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			//第八层
+			case 81:
+				if((result==1)||(result==4))
+				{
+					btnhuoset81.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset81.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 82:
+				if((result==1)||(result==4))
+				{
+					btnhuoset82.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset82.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 83:
+				if((result==1)||(result==4))
+				{
+					btnhuoset83.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset83.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 84:
+				if((result==1)||(result==4))
+				{
+					btnhuoset84.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset84.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 85:
+				if((result==1)||(result==4))
+				{
+					btnhuoset85.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset85.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 86:
+				if((result==1)||(result==4))
+				{
+					btnhuoset86.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset86.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 87:
+				if((result==1)||(result==4))
+				{
+					btnhuoset87.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset87.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 88:
+				if((result==1)||(result==4))
+				{
+					btnhuoset88.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset88.setChecked(false);	
+				}
+				dialog.dismiss();
+				autochu=false;
+				sethuofile();
+				gethuofile();
+				break;	
+		}
+	}
 	
 	//保存逻辑货道实际对应物理货道的升降机文件
 	private void setelevatorfile()
