@@ -1818,12 +1818,12 @@ public class HuodaoTest extends TabActivity
 	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    spinhuopeiCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
-	    cabinetType=vmc_cabAdapter.getCabinetType();
+	    cabinetType=vmc_cabAdapter.getCabinetType(); 	    
 	    //只有有柜号的时候，才请求加载柜内货道信息
-//		if(cabinetID!=null)
-//		{
-//		    cabinetsetvar=Integer.parseInt(cabinetID[0]); 
-//		}
+		if(cabinetID!=null)
+		{
+			cabinetTypepeivar=cabinetType[0]; 
+		}
 	}
 	//导入本柜全部货道信息
 	private void showhuodao()
@@ -1944,14 +1944,74 @@ public class HuodaoTest extends TabActivity
 	//===============
 	private void sethuorst(int status)
 	{
-		if(status==1)
-		{		
-			txthuotestrst.setText("出货成功");
-		}
-		else 
+		//弹簧货道或者格子柜
+		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5))
 		{
-			txthuotestrst.setText("出货失败");
+			switch(status)
+			{
+				case 1:
+					txthuotestrst.setText("出货成功");
+					break;
+				case 0:
+					txthuotestrst.setText("出货失败");
+					break;	
+				case 2:
+					txthuotestrst.setText("货道不存在");
+					break;
+				case 3:
+					txthuotestrst.setText("电机未到位");
+					break;	
+				case 4:
+					txthuotestrst.setText("出货失败");
+					break;
+				case 5:
+					txthuotestrst.setText("通信故障");
+					break;	
+			}
 		}
+		//升降机货道
+		else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+		{
+			switch(status)
+			{
+				case 1:
+					txthuotestrst.setText("出货成功");
+					break;
+				case 4:
+					txthuotestrst.setText("出货失败");
+					break;
+				case 8:
+					txthuotestrst.setText("卡货");
+					break;
+				case 0x1F:
+					txthuotestrst.setText("通信故障");
+					break;
+				case 0x12:
+					txthuotestrst.setText("升降机故障");
+					break;
+				case 0x11:
+					txthuotestrst.setText("升降机忙");
+					break;
+				case 0:
+					txthuotestrst.setText("出货失败 通信失败");
+					break;
+				case 0x2:
+					txthuotestrst.setText("数据错误");
+					break;
+				case 5:
+					txthuotestrst.setText("取货门未开启");
+					break;
+				case 6:
+					txthuotestrst.setText("货物未取走");
+					break;	
+				case 0x7:
+					txthuotestrst.setText("其他故障");
+					break;
+				case 0x88:
+					txthuotestrst.setText("正在出货");
+					break;	
+			}
+		}	
 	}
 	
 	//===============
