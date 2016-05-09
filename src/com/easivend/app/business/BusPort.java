@@ -969,7 +969,6 @@ BushuoFragInteraction
     private void tochuhuo()
     {        
     	ischuhuo=true;
-    	BillEnable(0);
 //    	Intent intent = null;// 创建Intent对象                
 //    	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
 ////    	intent.putExtra("out_trade_no", out_trade_no);
@@ -986,7 +985,8 @@ BushuoFragInteraction
     	OrderDetail.setOrdereID(out_trade_no);
     	OrderDetail.setPayType(Integer.parseInt(zhifutype));
     	if(gotoswitch==BUSZHIAMOUNT)
-    	{    		
+    	{    	
+        	BillEnable(0);	
     	}
     	else if(gotoswitch==BUSZHIER)
     	{
