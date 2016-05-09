@@ -235,7 +235,7 @@ public class COMService extends Service {
 	        		{
 	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService Éý½µ»ú³ö»õ","com.txt");
 	    				child3.what=COMThread.EV_ELEVATOR_OPENCHILD;
-	    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
+	    				ev3.put("column", ToolClass.elevatorChuhuo(bundle.getInt("column")));
 	        		}	
 	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
 	    		} catch (JSONException e) {

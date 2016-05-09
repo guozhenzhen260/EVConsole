@@ -1524,6 +1524,7 @@ public class HuodaoTest extends TabActivity
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetsetvar)
 		    	+" column="+opt		    	
 		    	,"log.txt");
+				edtcolumn.setText(String.valueOf(opt));
 				//4.发送指令广播给COMService
 				if(autochu)
 					intent.putExtra("EVWhat", COMService.EV_SETHUOCHILD);	
@@ -1944,28 +1945,39 @@ public class HuodaoTest extends TabActivity
 	//===============
 	private void sethuorst(int status)
 	{
+		StringBuilder str=new StringBuilder();
+		str.append("货道");
+		str.append(edtcolumn.getText().toString());
+		if(status==1)
+		{
+			txthuotestrst.setTextColor(android.graphics.Color.BLACK);
+		}
+		else
+		{
+			txthuotestrst.setTextColor(android.graphics.Color.RED);
+		}
 		//弹簧货道或者格子柜
 		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5))
 		{
 			switch(status)
 			{
 				case 1:
-					txthuotestrst.setText("出货成功");
+					str.append("出货成功");
 					break;
 				case 0:
-					txthuotestrst.setText("出货失败");
+					str.append("出货失败");
 					break;	
 				case 2:
-					txthuotestrst.setText("货道不存在");
+					str.append("货道不存在");
 					break;
 				case 3:
-					txthuotestrst.setText("电机未到位");
+					str.append("电机未到位");
 					break;	
 				case 4:
-					txthuotestrst.setText("出货失败");
+					str.append("出货失败");
 					break;
 				case 5:
-					txthuotestrst.setText("通信故障");
+					str.append("通信故障");
 					break;	
 			}
 		}
@@ -1975,43 +1987,44 @@ public class HuodaoTest extends TabActivity
 			switch(status)
 			{
 				case 1:
-					txthuotestrst.setText("出货成功");
+					str.append("出货成功");
 					break;
 				case 4:
-					txthuotestrst.setText("出货失败");
+					str.append("出货失败");
 					break;
 				case 8:
-					txthuotestrst.setText("卡货");
+					str.append("卡货");
 					break;
 				case 0x1F:
-					txthuotestrst.setText("通信故障");
+					str.append("通信故障");
 					break;
 				case 0x12:
-					txthuotestrst.setText("升降机故障");
+					str.append("升降机故障");
 					break;
 				case 0x11:
-					txthuotestrst.setText("升降机忙");
+					str.append("升降机忙");
 					break;
 				case 0:
-					txthuotestrst.setText("出货失败 通信失败");
+					str.append("出货失败 通信失败");
 					break;
 				case 0x2:
-					txthuotestrst.setText("数据错误");
+					str.append("数据错误");
 					break;
 				case 5:
-					txthuotestrst.setText("取货门未开启");
+					str.append("取货门未开启");
 					break;
 				case 6:
-					txthuotestrst.setText("货物未取走");
+					str.append("货物未取走");
 					break;	
 				case 0x7:
-					txthuotestrst.setText("其他故障");
+					str.append("其他故障");
 					break;
 				case 0x88:
-					txthuotestrst.setText("正在出货");
+					str.append("正在出货");
 					break;	
 			}
 		}	
+		txthuotestrst.setText(str);
 	}
 	
 	//===============

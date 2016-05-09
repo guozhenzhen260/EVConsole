@@ -95,6 +95,7 @@ public class ToolClass
 	public static Bitmap mark=null;//售完图片
 	public static int goc=0;//是否使用出货确认板1是
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
+	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
@@ -1538,7 +1539,7 @@ public class ToolClass
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
-	  	         huodaolist=new HashMap<Integer,Integer>(); 
+	  	         elevatorlist=new HashMap<Integer,Integer>(); 
 				JSONObject object=new JSONObject(str);      				
 				Gson gson=new Gson();
 				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
@@ -1548,16 +1549,35 @@ public class ToolClass
 		        while(iter.hasNext())
 		        {
 		            Entry<String, Integer> me=iter.next();	
-	            	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		            elevatorlist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
 		        } 			
 				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+elevatorlist.toString(),"com.txt");
         	  }
         	             
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
+    }
+    
+    /**
+     * 升降机出货
+     */
+    public static int elevatorChuhuo(Integer logic)
+    {
+    	int val=0;
+    	if(elevatorlist!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]elevatorlist="+elevatorlist,"com.txt");
+    		if(elevatorlist.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    val=elevatorlist.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
+    		}
+    	}
+    	return val;
     }
     /**
      * 写入升降机货道配置文件
