@@ -1820,7 +1820,7 @@ public class HuodaoTest extends TabActivity
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
 	    cabinetType=vmc_cabAdapter.getCabinetType(); 	    
 	    //只有有柜号的时候，才请求加载柜内货道信息
-		if(cabinetID!=null)
+		if(cabinetID.length>0)
 		{
 			cabinetTypepeivar=cabinetType[0]; 
 		}
