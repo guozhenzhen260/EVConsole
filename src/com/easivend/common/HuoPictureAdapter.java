@@ -95,13 +95,30 @@ public class HuoPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.huoRemain.setText("余量:"+pictures.get(arg0).getHuoRemain());// 设置图像原价
         viewHolder.huolasttime.setText(pictures.get(arg0).getHuolasttime());
         ToolClass.Log(ToolClass.INFO,"EV_JNI","货道:"+pictures.get(arg0).getHuoID()+"Img2="+pictures.get(arg0).getProImage(),"log.txt");
+        //有对应的商品id
         if((pictures.get(arg0).getProImage()!=null)&&(pictures.get(arg0).getProImage().equals("0")!=true)&&(pictures.get(arg0).getProImage().equals("")!=true))
         {
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<图片pro="+pictures.get(arg0).getHuoID()+","+pictures.get(arg0).getProImage(),"log.txt");
-	        /*为什么图片一定要转化为 Bitmap格式的！！ */
-	        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
-	        if(bitmap!=null)
-	        	viewHolder.huoImage.setImageBitmap(bitmap);// 设置图像的二进制值
+        	String ATT_ID="";
+    		if(pictures.get(arg0).getProImage().equals("null")!=true)
+    		{
+    			String a[] = pictures.get(arg0).getProImage().split("/");  
+    			ATT_ID=a[a.length-1];
+    			ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
+    			ToolClass.Log(ToolClass.INFO,"EV_JNI","图片ATT_ID="+ATT_ID,"log.txt");
+    		}
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<图片pro="+pictures.get(arg0).getHuoID()+",addr="+pictures.get(arg0).getProImage()+",ATT_ID="+ATT_ID,"log.txt");
+        	if(ToolClass.isImgFile(ATT_ID)==false)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","货道["+pictures.get(arg0).getHuoID()+"]图片不存在","log.txt");
+			}
+			else
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","货道["+pictures.get(arg0).getHuoID()+"]显示图片","log.txt");
+		        /*为什么图片一定要转化为 Bitmap格式的！！ */
+		        Bitmap bitmap = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
+		        if(bitmap!=null)
+		        	viewHolder.huoImage.setImageBitmap(bitmap);// 设置图像的二进制值
+			}
         }
         else
         {

@@ -19,6 +19,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -111,11 +112,20 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=打开密码框","log.txt");
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=退出","log.txt");
 //    	Intent intent = new Intent();
 //    	intent.setClass(BusLand.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
 //        startActivityForResult(intent, PWD_CODE);
-		finish();
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	finish(); 
+            }
+
+		}, 500);		
 	}
 	//步骤三、实现Business接口,暂停倒计时定时器并且转到商品购物页面
 	//buslevel级别1到商品类别，2到商品导购页面，3到商品详细页面
