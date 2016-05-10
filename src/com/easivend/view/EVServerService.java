@@ -66,7 +66,7 @@ public class EVServerService extends Service {
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
     private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
-    		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="";
+    		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
@@ -381,11 +381,11 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETADVMAIN://子线程接收主线程消息获取广告信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告信息成功","server.txt");						
 						{
-							//初始化七、发送货道上传命令到子线程中
+							//初始化七.5、发送获取设备信息到子线程中
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
-			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
-			        		childheartmsg3.obj=columngrid();
+			        		childheartmsg3.what=EVServerhttp.SETCLIENTCHILD;
+			        		childheartmsg3.obj=LAST_CLIENT_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
 						break;	
@@ -393,6 +393,22 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETADVRESETMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告重新设置="+msg.obj.toString(),"server.txt");
 						LAST_ADV_TIME=ToolClass.getLasttime();	        		
+						break;
+						//获取设备信息	
+					case EVServerhttp.SETERRFAILCLIENTMAIN://子线程接收主线程消息获取设备失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备，原因="+msg.obj.toString(),"server.txt");
+						break;
+					case EVServerhttp.SETCLIENTMAIN://子线程接收主线程消息获取设备信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");						
+						LAST_CLIENT_TIME=ToolClass.getLasttime();	
+						{
+							//初始化七、发送货道上传命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+			        		childheartmsg3.obj=columngrid();
+			        		childhand.sendMessage(childheartmsg3);
+						}
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败

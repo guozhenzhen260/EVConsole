@@ -42,11 +42,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.XZip;
 import com.google.gson.Gson;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -113,6 +117,10 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILADVMAIN=39;//what标记,发送给主线程获取广告故障
 	public final static int SETADVMAIN=40;//what标记,发送给主线程获取广告返回
 	public final static int SETADVRESETMAIN=41;//what标记,发送给主线程广告更新完成
+	
+	public final static int SETCLIENTCHILD=42;//what标记,发送给子线程获取设备信息
+	public final static int SETERRFAILCLIENTMAIN=43;//what标记,发送给主线程获取设备故障
+	public final static int SETCLIENTMAIN=44;//what标记,发送给主线程获取设备返回
 	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
@@ -968,6 +976,71 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest15);					
+					break;
+				case SETCLIENTCHILD://获取设备信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取设备信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target16 = httpStr+"/api/selectClientSetting";	//要提交的目标地址
+					final String LAST_EDIT_TIME16=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain16=mainhand.obtainMessage();
+					tomain16.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest16 = new StringRequest(Method.POST, target16,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain16.what=SETERRFAILCLIENTMAIN;
+									tomain16.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain16); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail16]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok16]","server.txt");
+									clientArray(result);
+									if(clientarr.length()>0)
+									{
+										updateclient(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain16.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain16); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail16]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME16);							
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest16);					
 					break;	
 				default:
 					break;
@@ -2692,5 +2765,108 @@ public class EVServerhttp implements Runnable {
             }
         }
     };
+    
+    //==============
+  	//==设备状态模块
+  	//==============
+  	JSONArray clientarr=null;
+  	JSONArray zhuheclientArray=null;
+  	JSONObject zhuheclientjson = null; 
+  	int clientint=0;
+  	//分解设备信息
+  	private void clientArray(String clientrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(clientrst); 
+  		clientarr=jsonObject.getJSONArray("List");
+  		clientint=0;
+  		zhuheclientArray=new JSONArray();
+  		zhuheclientjson = new JSONObject(); 
+  		if(clientarr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETCLIENTMAIN;
+  			tomain.obj=zhuheclientjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}
+  	    //本地VMC_NO和密码
+  		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		devID=tb_inaccount.getDevID().toString();
+    		mainPwd=tb_inaccount.getMainPwd();
+    		ToolClass.Log(ToolClass.INFO,"EV_SERVER","本地VMC_NO="+devID+",MANAGER_PASSWORD="+mainPwd,"server.txt");	
+    	}
+  	}
+  	
+  	String devID="";
+  	String mainPwd="";
+  	//更新设备信息
+  	private String updateclient(int i) throws JSONException
+  	{  	
+  		final JSONObject object2=clientarr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新设备="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步，获取VMC_NO和密码
+  		final String VMC_NO=object2.getString("VMC_NO");
+  		final String MANAGER_PASSWORD=object2.getString("MANAGER_PASSWORD");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","设备VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD,"server.txt");	
+  		zhuheobj.put("AttImg", "");
+  		  		
+  		try
+  		{	
+  			if((devID.isEmpty()==false)&&(devID.equals(VMC_NO)))
+  			{  				
+  				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+  			    //创建Tb_inaccount对象 
+    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+    					0,0,MANAGER_PASSWORD,0,0,0,0,0,0,0,"",0,
+    					0,0, 0,0,0);
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新设备VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
+    			parameterDAO.updatepwd(tb_vmc_system_parameter); 
+  			}
+  		}
+  		catch (Exception e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+  		}
+  		
+  		//第三步，把名字保存到json中		
+  		zhuheclientArray.put(zhuheobj);
+  		
+  		
+  		//第四步：进行下一个分类信息
+  		clientint++;
+  		if(clientint<clientarr.length())
+  		{
+  			try {
+  				updateclient(clientint);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  		}
+  		else
+  		{
+  			try {
+  				zhuheclientjson.put("List", zhuheclientArray);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheclientjson.toString(),"server.txt");
+
+  			//上传给server
+  			//向主线程返回信息
+  			Message tomain4=mainhand.obtainMessage();
+  			tomain4.what=SETCLIENTMAIN;
+  			tomain4.obj=zhuheclassjson.toString();
+  			mainhand.sendMessage(tomain4); // 发送消息  			
+  		}		
+  		return "";
+  	}
 	
 }
