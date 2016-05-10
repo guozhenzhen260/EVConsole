@@ -96,6 +96,10 @@ public class HuodaoTest extends TabActivity
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
 	private int huonno=0;//循环出货第几个格子了
+	private boolean autohuonno=false;//true表示在进行循环出货
+	private int autohuonum=0;//循环出到第几次了
+	//循环测试结果
+	Map<String, Integer> huoalltest= new LinkedHashMap<String,Integer>();
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
 	GridView gvhuodao=null;
@@ -107,7 +111,7 @@ public class HuodaoTest extends TabActivity
 	private int cool=0;//是否支持制冷 	 	1:支持 0:不支持
 	private int hot=0;//是否支持加热  		1:支持 0:不支持
 	private int light=0;//是否支持照明  	1:支持 0:不支持
-	private TextView txthuorst=null,txthuotestrst=null;
+	private TextView txthuorst=null,txthuotestrst=null,txthuoallrst=null;
 	private Button btnhuochu=null,btnhuochuall=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
@@ -295,6 +299,7 @@ public class HuodaoTest extends TabActivity
 		
     	//spinhuoCab= (Spinner) findViewById(R.id.spinhuoCab); 
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
+		txthuoallrst=(TextView)findViewById(R.id.txthuoallrst);
 		txthuotestrst=(TextView)findViewById(R.id.txthuotestrst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
 		btnhuochuall = (Button) findViewById(R.id.btnhuochuall);
@@ -396,9 +401,22 @@ public class HuodaoTest extends TabActivity
 		});
 		btnhuochuall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {	    	  
-		    	huonno=1;
-		    	comsend(COMService.EV_CHUHUOCHILD,huonno);
+		    public void onClick(View arg0) {	
+		    	if(autohuonno==false)
+		    	{
+		    		autohuonno=true;
+			    	btnhuochuall.setText("结束循环出货");
+			    	autohuonum=1;
+			    	huonno=1;
+			    	comsend(COMService.EV_CHUHUOCHILD,huonno);
+		    	}
+		    	else
+		    	{
+		    		autohuonno=false;
+		    		autohuonum=0;
+		    		huoalltest.clear();
+			    	btnhuochuall.setText("开始循环出货");
+		    	}
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
@@ -1611,6 +1629,7 @@ public class HuodaoTest extends TabActivity
 				}
 
 				huoSet.clear();
+				huoalltest.clear();
 				//输出内容
 				Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
 				Iterator<Entry<String, Integer>> iter=allmap.iterator();
@@ -1628,6 +1647,7 @@ public class HuodaoTest extends TabActivity
 							tempno=me.getKey();
 						
 						huoSet.put(tempno, (Integer)me.getValue());
+						huoalltest.put(tempno, 0);
 					}
 				} 
 				huonum=huoSet.size();
@@ -1665,14 +1685,21 @@ public class HuodaoTest extends TabActivity
 					
 					sethuorst(status);
 					//循环继续做出货操作
-					if((huonno>0)&&(huonno<huonum))
-					{							
-						huonno++;
-						comsend(COMService.EV_CHUHUOCHILD,huonno);
-					}
-					else if(huonno>=huonum)
+					if(autohuonno)
 					{
-						huonno=0;
+						setallhuorst();
+						//出货下一个货道
+						if((huonno>0)&&(huonno<huonum))
+						{							
+							huonno++;
+							comsend(COMService.EV_CHUHUOCHILD,huonno);
+						}
+						else if(huonno>=huonum)
+						{							
+							huonno=1;
+							autohuonum++;
+							comsend(COMService.EV_CHUHUOCHILD,huonno);
+						}
 					}
 				}
 				break;
@@ -1948,6 +1975,12 @@ public class HuodaoTest extends TabActivity
 		StringBuilder str=new StringBuilder();
 		str.append("货道");
 		str.append(edtcolumn.getText().toString());
+		String tempno="";
+		if(Integer.parseInt(edtcolumn.getText().toString())<10)
+			tempno="0"+edtcolumn.getText().toString();
+		else 
+			tempno=edtcolumn.getText().toString();
+		
 		if(status==1)
 		{
 			txthuotestrst.setTextColor(android.graphics.Color.BLACK);
@@ -1955,7 +1988,14 @@ public class HuodaoTest extends TabActivity
 		else
 		{
 			txthuotestrst.setTextColor(android.graphics.Color.RED);
+			if(huoalltest.containsKey(tempno))
+			{
+				int value=huoalltest.get(tempno);
+				value++;
+				huoalltest.put(tempno, value);
+			}
 		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","huoalltest="+huoalltest.toString(),"log.txt");	
 		//弹簧货道或者格子柜
 		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5))
 		{
@@ -2025,6 +2065,26 @@ public class HuodaoTest extends TabActivity
 			}
 		}	
 		txthuotestrst.setText(str);
+	}
+	//循环出货返回结果
+	private void setallhuorst()
+	{
+		StringBuilder str=new StringBuilder();
+		str.append("出货次数:[").append(autohuonum).append("]");
+		Map<String, String> huodaolist= new LinkedHashMap<String,String>();
+		//输出内容
+		Set<Entry<String, Integer>> allmap=huoalltest.entrySet();  //实例化
+		Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		while(iter.hasNext())
+		{
+			Entry<String, Integer> me=iter.next();
+			if(me.getValue()>0)
+			{
+				huodaolist.put("货道"+me.getKey(),"故障"+me.getValue());
+			}
+		} 
+		str.append("故障货道:").append(huodaolist.toString());
+		txthuoallrst.setText(str);
 	}
 	
 	//===============
