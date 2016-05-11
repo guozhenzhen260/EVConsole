@@ -3,18 +3,25 @@ package com.easivend.fragment;
 import java.util.HashMap;
 import java.util.Map;
 import com.easivend.app.business.BusPort;
+import com.easivend.app.business.BusZhitihuo;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_product;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class BusinessportFragment extends Fragment {
 	EditText txtadsTip=null;
@@ -31,11 +39,11 @@ public class BusinessportFragment extends Fragment {
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
-	//¶¨Ê±Æ÷Çå³ıµ÷³öÃÜÂë¿òµÄ¹¦ÄÜ
+	//å®šæ—¶å™¨æ¸…é™¤è°ƒå‡ºå¯†ç æ¡†çš„åŠŸèƒ½
 //	Timer timer = new Timer(true);
-//    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60ÑÓ³Ù5·ÖÖÓ	
+//    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60å»¶è¿Ÿ5åˆ†é’Ÿ	
 //    private int recLen = SPLASH_DISPLAY_LENGHT; 
-	//·¢ËÍ³ö»õÖ¸Áî
+	//å‘é€å‡ºè´§æŒ‡ä»¤
     private String proID = null;
 	private String productID = null;
 	private String proImage = null;
@@ -43,20 +51,18 @@ public class BusinessportFragment extends Fragment {
 	private String huoID = null;
     private String prosales = null; 
     private Context context;
-    //ÃÜÂë¿ò
-    private static int pwdcount=0;
-    private static boolean pwdMode=false;//trueÎ¬»¤Ä£Ê½ÉèÖÃ
-    private final static int REQUEST_CODE=1;//ÉùÃ÷ÇëÇó±êÊ¶
+    //å¯†ç æ¡†
+    private final static int REQUEST_CODE=1;//å£°æ˜è¯·æ±‚æ ‡è¯†
     
     //=========================
-    //fragmentÓëactivity»Øµ÷Ïà¹Ø
+    //fragmentä¸activityå›è°ƒç›¸å…³
     //=========================
     /**
-     * ÓÃÀ´ÓëÍâ²¿activity½»»¥µÄ
+     * ç”¨æ¥ä¸å¤–éƒ¨activityäº¤äº’çš„
      */
     private BusportFragInteraction listterner;
     /**
-     * ²½ÖèËÄ¡¢µ±ContentFragment±»¼ÓÔØµ½activityµÄÊ±ºò£¬Ö÷¶¯×¢²á»Øµ÷ĞÅÏ¢
+     * æ­¥éª¤å››ã€å½“ContentFragmentè¢«åŠ è½½åˆ°activityçš„æ—¶å€™ï¼Œä¸»åŠ¨æ³¨å†Œå›è°ƒä¿¡æ¯
      * @param activity
      */
     @Override
@@ -73,16 +79,16 @@ public class BusinessportFragment extends Fragment {
 
     }
     /**
-     * ²½ÖèÒ»¡¢¶¨ÒåÁËËùÓĞactivity±ØĞëÊµÏÖµÄ½Ó¿Ú
+     * æ­¥éª¤ä¸€ã€å®šä¹‰äº†æ‰€æœ‰activityå¿…é¡»å®ç°çš„æ¥å£
      */
     public interface BusportFragInteraction
     {
         /**
-         * Fragment ÏòActivity´«µİÖ¸Áî£¬Õâ¸ö·½·¨¿ÉÒÔ¸ù¾İĞèÇóÀ´¶¨Òå
+         * Fragment å‘Activityä¼ é€’æŒ‡ä»¤ï¼Œè¿™ä¸ªæ–¹æ³•å¯ä»¥æ ¹æ®éœ€æ±‚æ¥å®šä¹‰
          * @param str
          */
-        void finishBusiness();//¹Ø±ÕactivityÒ³Ãæ
-        void gotoBusiness(int buslevel,Map<String, String>str);  //Ìø×ªµ½ÉÌÆ·Ò³Ãæ  
+        void finishBusiness();//å…³é—­activityé¡µé¢
+        void gotoBusiness(int buslevel,Map<String, String>str);  //è·³è½¬åˆ°å•†å“é¡µé¢  
     }
     @Override
     public void onDetach() {
@@ -95,8 +101,8 @@ public class BusinessportFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_businessland, container, false);  
-		context=this.getActivity();//»ñÈ¡activityµÄcontext	
-		//¶¨Ê±Æ÷·µ»Ø¹ã¸æÒ³Ãæ
+		context=this.getActivity();//è·å–activityçš„context	
+		//å®šæ—¶å™¨è¿”å›å¹¿å‘Šé¡µé¢
 //		timer.schedule(new TimerTask() { 
 //	        @Override 
 //	        public void run() { 	        	  
@@ -107,16 +113,16 @@ public class BusinessportFragment extends Fragment {
 //	        } 
 //	    }, 1000, 10000);       // timeTask  
 		//=======
-		//²Ù×÷Ä£¿é
+		//æ“ä½œæ¨¡å—
 		//=======
 		txtadsTip = (EditText) view.findViewById(R.id.txtadsTip);
-		txtadsTip.setFocusable(false);//²»ÈÃ¸Ãedittext»ñµÃ½¹µã
+		txtadsTip.setFocusable(false);//ä¸è®©è¯¥edittextè·å¾—ç„¦ç‚¹
 		txtadsTip.setOnTouchListener(new View.OnTouchListener() {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				// ¹Ø±ÕÈí¼üÅÌ£¬ÕâÑùµ±µã»÷¸ÃedittextµÄÊ±ºò£¬²»»áµ¯³öÏµÍ³×Ô´øµÄÊäÈë·¨
+				// å…³é—­è½¯é”®ç›˜ï¼Œè¿™æ ·å½“ç‚¹å‡»è¯¥edittextçš„æ—¶å€™ï¼Œä¸ä¼šå¼¹å‡ºç³»ç»Ÿè‡ªå¸¦çš„è¾“å…¥æ³•
 				txtadsTip.setInputType(InputType.TYPE_NULL);
 				return false;
 			}
@@ -125,14 +131,7 @@ public class BusinessportFragment extends Fragment {
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("1");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("1",1);
-				}
+		    	chuhuo("1",1);
 		    	
 		    }
 		});
@@ -140,126 +139,63 @@ public class BusinessportFragment extends Fragment {
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("2");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("2",1);
-		    	}
+		    	chuhuo("2",1);
 		    }
 		});
 		btnads3 = (ImageButton) view.findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("3");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("3",1);
-		    	}
+		    	chuhuo("3",1);
 		    }
 		});
 		btnads4 = (ImageButton) view.findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("4");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("4",1);
-		    	}
+		    	chuhuo("4",1);
 		    }
 		});
 		btnads5 = (ImageButton) view.findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("5");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("5",1);
-		    	}
+		    	chuhuo("5",1);
 		    }
 		});
 		btnads6 = (ImageButton) view.findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("6");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("6",1);
-		    	}
+		    	chuhuo("6",1);
 		    }
 		});
 		btnads7 = (ImageButton) view.findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("7");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("7",1);
-		    	}
+		    	chuhuo("7",1);
 		    }
 		});
 		btnads8 = (ImageButton) view.findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("8");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("8",1);
-		    	}
+		    	chuhuo("8",1);
 		    }
 		});
 		btnads9 = (ImageButton) view.findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("9");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("9",1);
-		    	}
+		    	chuhuo("9",1);
 		    }
 		});
 		btnads0 = (ImageButton) view.findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("0");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("0",1);
-		    	}
+		    	chuhuo("0",1);
 		    }
 		});
 		btnadscancel = (ImageButton) view.findViewById(R.id.btnadscancel);
@@ -275,8 +211,7 @@ public class BusinessportFragment extends Fragment {
 		    public void onClick(View arg0) {
 		    	if(count==0)
 		    	{
-			    	pwdMode=!pwdMode;
-			    	pwdcount=0;
+			    	passdialog();
 		    	}
 		    }
 		});
@@ -284,20 +219,20 @@ public class BusinessportFragment extends Fragment {
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	vmc_classDAO classdao = new vmc_classDAO(context);// ´´½¨InaccountDAO¶ÔÏó
+		    	vmc_classDAO classdao = new vmc_classDAO(context);// åˆ›å»ºInaccountDAOå¯¹è±¡
 		    	long count=classdao.getCount();
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÉÌÆ·ÀàĞÍÊıÁ¿="+count,"log.txt");
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<å•†å“ç±»å‹æ•°é‡="+count,"log.txt");
 		    	if(count>0)
 		    	{
-			    	//intent = new Intent(context, BusgoodsClass.class);// Ê¹ÓÃAccountflag´°¿Ú³õÊ¼»¯Intent
-			    	//startActivityForResult(intent,REQUEST_CODE);// ´ò¿ªAccountflag
+			    	//intent = new Intent(context, BusgoodsClass.class);// ä½¿ç”¨Accountflagçª—å£åˆå§‹åŒ–Intent
+			    	//startActivityForResult(intent,REQUEST_CODE);// æ‰“å¼€Accountflag
 		    		listterner.gotoBusiness(BusPort.BUSGOODSCLASS,null);
 		    	}
 		    	else
 		    	{
-//				    		intent = new Intent(context, Busgoods.class);// Ê¹ÓÃAccountflag´°¿Ú³õÊ¼»¯Intent
+//				    		intent = new Intent(context, Busgoods.class);// ä½¿ç”¨Accountflagçª—å£åˆå§‹åŒ–Intent
 //		                	intent.putExtra("proclassID", "");
-//		                	startActivityForResult(intent,REQUEST_CODE);// ´ò¿ªAccountflag		    		
+//		                	startActivityForResult(intent,REQUEST_CODE);// æ‰“å¼€Accountflag		    		
                 	listterner.gotoBusiness(BusPort.BUSGOODS,null);
 		    	}
 		    	
@@ -306,7 +241,7 @@ public class BusinessportFragment extends Fragment {
 		return view;
 	}
 	
-	//num³ö»õ¹ñºÅ,type=1ÊäÈëÊı×Ö£¬type=0»ØÍËÊı×Ö
+	//numå‡ºè´§æŸœå·,type=1è¾“å…¥æ•°å­—ï¼Œtype=0å›é€€æ•°å­—
     private void chuhuo(String num,int type)
     {    	
 		if(type==1)
@@ -334,7 +269,7 @@ public class BusinessportFragment extends Fragment {
 		{
 			cabID=huo.substring(0,1);
 		    huoID=huo.substring(1,huo.length());
-		    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// ´´½¨InaccountDAO¶ÔÏó		    
+		    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// åˆ›å»ºInaccountDAOå¯¹è±¡		    
 		    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
 		    if(tb_inaccount!=null)
 		    {
@@ -342,23 +277,23 @@ public class BusinessportFragment extends Fragment {
 			    prosales=String.valueOf(tb_inaccount.getSalesPrice());
 			    proImage=tb_inaccount.getAttBatch1();
 			    proID=productID+"-"+tb_inaccount.getProductName().toString();
-			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÉÌÆ·proID="+proID+" productID="
+			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<å•†å“proID="+proID+" productID="
 						+productID+" proType="
 						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 						+"1","log.txt");
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");
-//				Intent intent = null;// ´´½¨Intent¶ÔÏó                
-//	        	intent = new Intent(context, BusgoodsSelect.class);// Ê¹ÓÃAccountflag´°¿Ú³õÊ¼»¯Intent
+//				Intent intent = null;// åˆ›å»ºIntentå¯¹è±¡                
+//	        	intent = new Intent(context, BusgoodsSelect.class);// ä½¿ç”¨Accountflagçª—å£åˆå§‹åŒ–Intent
 //	        	intent.putExtra("proID", proID);
 //	        	intent.putExtra("productID", productID);
 //	        	intent.putExtra("proImage", proImage);
 //	        	intent.putExtra("prosales", prosales);
 //	        	intent.putExtra("procount", "1");
-//	        	intent.putExtra("proType", "2");//1´ú±íÍ¨¹ıÉÌÆ·ID³ö»õ,2´ú±íÍ¨¹ı»õµÀ³ö»õ
-//	        	intent.putExtra("cabID", cabID);//³ö»õ¹ñºÅ,proType=1Ê±ÎŞĞ§
-//	        	intent.putExtra("huoID", huoID);//³ö»õ»õµÀºÅ,proType=1Ê±ÎŞĞ§
+//	        	intent.putExtra("proType", "2");//1ä»£è¡¨é€šè¿‡å•†å“IDå‡ºè´§,2ä»£è¡¨é€šè¿‡è´§é“å‡ºè´§
+//	        	intent.putExtra("cabID", cabID);//å‡ºè´§æŸœå·,proType=1æ—¶æ— æ•ˆ
+//	        	intent.putExtra("huoID", huoID);//å‡ºè´§è´§é“å·,proType=1æ—¶æ— æ•ˆ
 //
 //
 ////	        	OrderDetail.setProID(proID);
@@ -369,21 +304,21 @@ public class BusinessportFragment extends Fragment {
 ////            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
 ////            	OrderDetail.setShouldNo(1);
 //	        	
-//	        	startActivityForResult(intent,REQUEST_CODE);// ´ò¿ªAccountflag
+//	        	startActivityForResult(intent,REQUEST_CODE);// æ‰“å¼€Accountflag
 	        	Map<String, String>str=new HashMap<String, String>();
 	        	str.put("proID", proID);
 	        	str.put("productID", productID);
 	        	str.put("proImage", proImage);
 	        	str.put("prosales", prosales);
 	        	str.put("procount", "1");
-	        	str.put("proType", "2");//1´ú±íÍ¨¹ıÉÌÆ·ID³ö»õ,2´ú±íÍ¨¹ı»õµÀ³ö»õ
-	        	str.put("cabID", cabID);//³ö»õ¹ñºÅ,proType=1Ê±ÎŞĞ§
-	        	str.put("huoID", huoID);//³ö»õ»õµÀºÅ,proType=1Ê±ÎŞĞ§
+	        	str.put("proType", "2");//1ä»£è¡¨é€šè¿‡å•†å“IDå‡ºè´§,2ä»£è¡¨é€šè¿‡è´§é“å‡ºè´§
+	        	str.put("cabID", cabID);//å‡ºè´§æŸœå·,proType=1æ—¶æ— æ•ˆ
+	        	str.put("huoID", huoID);//å‡ºè´§è´§é“å·,proType=1æ—¶æ— æ•ˆ
 	        	listterner.gotoBusiness(BusPort.BUSGOODSSELECT,str);
 		    }
 		    else
 		    {
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÉÌÆ·proID="+proID+" productID="
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<å•†å“proID="+proID+" productID="
 						+productID+" proType="
 						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 						+"1","log.txt");
@@ -395,128 +330,81 @@ public class BusinessportFragment extends Fragment {
 		}
     } 
     
-    //µ÷³öÃÜÂë¿ò
-    private void IsAdminSet(String NowKey)
-    {
-    	if((NowKey.equals("8"))&&(pwdcount==0))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("3"))&&(pwdcount==1))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		} 
-    	else if((NowKey.equals("7"))&&(pwdcount==2))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("1"))&&(pwdcount==3))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("8"))&&(pwdcount==4))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("5"))&&(pwdcount==5))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("5"))&&(pwdcount==6))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("7"))&&(pwdcount==7))
-		{
-    		pwdcount=0;
-    		pwdMode=false;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-			passdialog();
-		}
-    	else 
-    	{
-    		pwdMode=!pwdMode;
-    		pwdcount=0;
-		}
-    }
     
-    //ÃÜÂë¿ò
+    
+    //å¯†ç æ¡†
     private void passdialog()
     {
-//    	View myview=null;  
-//		// TODO Auto-generated method stub
-//		LayoutInflater factory = LayoutInflater.from(context);
-//		myview=factory.inflate(R.layout.selectinteger, null);
-//		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
-//		dialoginte.setTransformationMethod(PasswordTransformationMethod.getInstance());
-//		Dialog dialog = new AlertDialog.Builder(context)
-//		.setTitle("ÉèÖÃ")
-//		.setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() 	
-//		{
-//				
-//			@Override
-//			public void onClick(DialogInterface dialog, int which)
-//			{
-//				boolean istrue=false;
-//				// TODO Auto-generated method stub
-//				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÊıÖµ="+dialoginte.getText().toString(),"log.txt");
-//				//µ÷³öÎ¬»¤Ò³ÃæÃÜÂë
-//				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// ´´½¨InaccountDAO¶ÔÏó
-//			    // »ñÈ¡ËùÓĞÊÕÈëĞÅÏ¢£¬²¢´æ´¢µ½List·ºĞÍ¼¯ºÏÖĞ
-//		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-//		    	if(tb_inaccount!=null)
-//		    	{
-//		    		String Pwd=tb_inaccount.getMainPwd().toString();
-//		    		if(Pwd==null)
-//		    		{
-//		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÊıÖµ=null","log.txt");
-//		    			istrue=passcmp(null,dialoginte.getText().toString());
-//		    		}
-//		    		else
-//		    		{
-//		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÊıÖµ="+Pwd,"log.txt");
-//		    			istrue=passcmp(Pwd,dialoginte.getText().toString());
-//		    		}
-//		    	}
-//		    	else
-//		    	{
-//		    		istrue=passcmp(null,dialoginte.getText().toString());
-//				}
-//		    	
-//		    	if(istrue)
-//		    	{
-//		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<È·¶¨ÍË³ö","log.txt");
-//		    		//²½Öè¶ş¡¢fragmentÏòactivity·¢ËÍ»Øµ÷ĞÅÏ¢
-//		        	listterner.finishBusiness();
-//		    	}
-//		    	else
-//		    	{
-//		    		
-//				}
-//			}
-//		})
-//		.setNegativeButton("È¡Ïû",  new DialogInterface.OnClickListener()//È¡Ïû°´Å¥£¬µã»÷ºóµ÷ÓÃ¼àÌıÊÂ¼ş
-//    	{			
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) 
-//			{
-//				// TODO Auto-generated method stub	
-//				
-//			}
-//    	})
-//		.setView(myview)//ÕâÀï½«¶Ô»°¿ò²¼¾ÖÎÄ¼ş¼ÓÈëµ½¶Ô»°¿òÖĞ
-//		.create();
-//		dialog.show();  
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<´ò¿ªÃÜÂë¿ò","log.txt");
-		//²½Öè¶ş¡¢fragmentÏòactivity·¢ËÍ»Øµ÷ĞÅÏ¢
-    	listterner.finishBusiness();
+    	View myview=null;  
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(context);
+		myview=factory.inflate(R.layout.selectinteger, null);
+		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+		dialoginte.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		Dialog dialog = new AlertDialog.Builder(context)
+		.setTitle("è®¾ç½®")
+		.setPositiveButton("ç¡®å®š", new DialogInterface.OnClickListener() 	
+		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				boolean istrue=false;
+				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<æ•°å€¼="+dialoginte.getText().toString(),"log.txt");
+				//è°ƒå‡ºç»´æŠ¤é¡µé¢å¯†ç 
+				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// åˆ›å»ºInaccountDAOå¯¹è±¡
+			    // è·å–æ‰€æœ‰æ”¶å…¥ä¿¡æ¯ï¼Œå¹¶å­˜å‚¨åˆ°Listæ³›å‹é›†åˆä¸­
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+                if(tb_inaccount!=null)
+                {
+                    String Pwd=tb_inaccount.getMainPwd().toString();
+                    if(Pwd.isEmpty())
+                    {
+                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<=null","log.txt");
+                        istrue="83718557".equals(dialoginte.getText().toString());
+                    }
+                    else
+                    {
+                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Öµ="+Pwd,"log.txt");
+                        istrue=Pwd.equals(dialoginte.getText().toString());
+                        if(istrue==false)
+                        {
+                        	istrue="83718557".equals(dialoginte.getText().toString());
+                        }
+                    }
+                }
+                else
+                {
+                    istrue="83718557".equals(dialoginte.getText().toString());
+                }
+		    	
+		    	if(istrue)
+		    	{
+		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ç¡®å®šé€€å‡º","log.txt");
+		    		//æ­¥éª¤äºŒã€fragmentå‘activityå‘é€å›è°ƒä¿¡æ¯
+		        	listterner.finishBusiness();
+		    	}
+		    	else
+		    	{
+                	// å¼¹å‡ºä¿¡æ¯æç¤º
+		            Toast.makeText(context, "ã€–ç®¡ç†å‘˜å¯†ç ã€—é”™è¯¯ï¼", Toast.LENGTH_LONG).show();
+		    	}
+			}
+		})
+		.setNegativeButton("å–æ¶ˆ",  new DialogInterface.OnClickListener()//å–æ¶ˆæŒ‰é’®ï¼Œç‚¹å‡»åè°ƒç”¨ç›‘å¬äº‹ä»¶
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub	
+				
+			}
+    	})
+		.setView(myview)//è¿™é‡Œå°†å¯¹è¯æ¡†å¸ƒå±€æ–‡ä»¶åŠ å…¥åˆ°å¯¹è¯æ¡†ä¸­
+		.create();
+		dialog.show();  
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<æ‰“å¼€å¯†ç æ¡†","log.txt");
     }
     
     
