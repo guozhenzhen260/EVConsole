@@ -130,7 +130,16 @@ public class EVServerService extends Service {
         		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
         		childheartmsg3.obj=columngrid();
         		childhand.sendMessage(childheartmsg3);
-				break;	
+				break;
+				//发送取货码到子线程中	
+			case EVServerhttp.SETPICKUPCHILD:	
+				String PICKUP_CODE=bundle.getString("PICKUP_CODE");
+				childhand=serverhttp.obtainHandler();
+        		Message childheartmsg4=childhand.obtainMessage();
+        		childheartmsg4.what=EVServerhttp.SETPICKUPCHILD;
+        		childheartmsg4.obj=PICKUP_CODE;
+        		childhand.sendMessage(childheartmsg4);
+				break;		
 			}			
 		}
 
@@ -468,6 +477,55 @@ public class EVServerService extends Service {
 		        		childheartmsg4.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childheartmsg4);	
 						
+						break;
+						//取货码比较特殊，不能用作复制的例子
+						//获取取货码返回	
+					case EVServerhttp.SETERRFAILPICKUPMAIN://子线程接收主线程上报取货码信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报取货码信息失败","server.txt");
+						Intent intent2=new Intent();
+						intent2.putExtra("EVWhat", EVServerhttp.SETERRFAILPICKUPMAIN);
+						intent2.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent2);
+						break;
+					case EVServerhttp.SETPICKUPMAIN://子线程接收主线程上报取货码出货信息
+//						//修改数据上报状态为已上报
+//						updatecolumns(msg.obj.toString());
+//						//重新更新token的值
+//						if(tokenno>=80)
+//						{
+//							//处理接收到的内容,发送签到命令到子线程中
+//							childhand=serverhttp.obtainHandler();
+//				    		Message childheartmsg4=childhand.obtainMessage();
+//				    		childheartmsg4.what=EVServerhttp.SETCHECKCHILD;
+//				    		JSONObject ev=null;
+//				    		try {
+//				    			ev=new JSONObject();
+//				    			ev.put("vmc_no", vmc_no);
+//				    			ev.put("vmc_auth_code", vmc_auth_code);
+//				    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev.toString(),"server.txt");
+//				    		} catch (JSONException e) {
+//				    			// TODO Auto-generated catch block
+//				    			e.printStackTrace();
+//				    		}
+//				    		childheartmsg4.obj=ev;
+//				    		childhand.sendMessage(childheartmsg4);
+//				    		tokenno=0;
+//						}
+//						else
+//						{
+//							tokenno++;
+//						}
+//						//初始化八、返回给activity广播,初始化完成
+//						if(ischeck==false)
+//						{
+//							intent=new Intent();
+//							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
+//							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+//							localBroadreceiver.sendBroadcast(intent);
+//							ischeck=true;
+//							LAST_EDIT_TIME=ToolClass.getLasttime();
+//						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报取货码信息出货","server.txt");	        		
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败

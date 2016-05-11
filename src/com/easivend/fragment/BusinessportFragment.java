@@ -92,6 +92,7 @@ public class BusinessportFragment extends Fragment {
          */
         void finishBusiness();//关闭activity页面
         void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面  
+        void quhuoBusiness(String PICKUP_CODE);//传递取货码
     }
     @Override
     public void onDetach() {
@@ -449,47 +450,14 @@ public class BusinessportFragment extends Fragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which)
 			{
-				boolean istrue=false;
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码="+dialoginte.getText().toString(),"log.txt");
-//				//调出维护页面密码
-//				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
-//			    // 获取所有收入信息，并存储到List泛型集合中
-//		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-//                if(tb_inaccount!=null)
-//                {
-//                    String Pwd=tb_inaccount.getMainPwd().toString();
-//                    if(Pwd.isEmpty())
-//                    {
-//                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<=null","log.txt");
-//                        istrue="83718557".equals(dialoginte.getText().toString());
-//                    }
-//                    else
-//                    {
-//                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ֵ="+Pwd,"log.txt");
-//                        istrue=Pwd.equals(dialoginte.getText().toString());
-//                        if(istrue==false)
-//                        {
-//                        	istrue="83718557".equals(dialoginte.getText().toString());
-//                        }
-//                    }
-//                }
-//                else
-//                {
-//                    istrue="83718557".equals(dialoginte.getText().toString());
-//                }
-//		    	
-//		    	if(istrue)
-//		    	{
-//		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
-//		    		//步骤二、fragment向activity发送回调信息
-//		        	listterner.finishBusiness();
-//		    	}
-//		    	else
-//		    	{
-//                	// 弹出信息提示
-//		            Toast.makeText(context, "〖管理员密码〗错误！", Toast.LENGTH_LONG).show();
-//		    	}
+				String PICKUP_CODE=dialoginte.getText().toString();
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码="+PICKUP_CODE,"log.txt");
+				if(PICKUP_CODE.isEmpty()!=true)
+				{
+					//步骤二、fragment向activity发送回调信息
+		        	listterner.quhuoBusiness(PICKUP_CODE);
+				}
 			}
 		})
 		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件

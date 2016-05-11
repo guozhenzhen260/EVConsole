@@ -122,6 +122,10 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILCLIENTMAIN=43;//what标记,发送给主线程获取设备故障
 	public final static int SETCLIENTMAIN=44;//what标记,发送给主线程获取设备返回
 	
+	public final static int SETPICKUPCHILD=45;//what标记,发送给子线取货码信息
+	public final static int SETERRFAILPICKUPMAIN=46;//what标记,发送给主线程取货码无效
+	public final static int SETPICKUPMAIN=47;//what标记,发送给主线程取货码出货
+	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
@@ -1041,6 +1045,73 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest16);					
+					break;
+				//取货码比较特殊，不能用作复制的例子
+				case SETPICKUPCHILD://获取取货码
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取取货码信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target17 = httpStr+"/api/getPickupCodeStatus";	//要提交的目标地址
+					final String PICKUP_CODE=msg.obj.toString();
+					final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+					//向主线程返回信息
+					final Message tomain17=mainhand.obtainMessage();
+					tomain17.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain17.what=SETERRFAILPICKUPMAIN;
+									tomain17.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain17); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok17]","server.txt");
+									pickupArray(result);
+									if(pickuparr.length()>0)
+									{
+										updatepickup(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain17.what=SETERRFAILPICKUPMAIN;
+				    	    mainhand.sendMessage(tomain17); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
+							map.put("PICKUP_CODE", PICKUP_CODE);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest17);					
 					break;	
 				default:
 					break;
@@ -2866,6 +2937,98 @@ public class EVServerhttp implements Runnable {
   			tomain4.obj=zhuheclassjson.toString();
   			mainhand.sendMessage(tomain4); // 发送消息  			
   		}		
+  		return "";
+  	}
+  	
+    //==============
+  	//==取货码模块
+    //取货码比较特殊，不能用作复制的例子
+  	//==============
+  	JSONArray pickuparr=null;
+  	JSONArray zhuhepickupArray=null;
+  	JSONObject zhuhepickupjson = null; 
+  	int pickupint=0;
+  	//分解设备信息
+  	private void pickupArray(String pickuprst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(pickuprst); 
+  		pickuparr=jsonObject.getJSONArray("List");
+  		pickupint=0;
+  		zhuhepickupArray=new JSONArray();
+  		zhuhepickupjson = new JSONObject(); 
+  		if(pickuparr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETERRFAILPICKUPMAIN;
+  			tomain.obj=zhuhepickupjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}  	   
+  	}
+  	
+  	//更新取货码信息
+  	private String updatepickup(int i) throws JSONException
+  	{  	
+//  		final JSONObject object2=pickuparr.getJSONObject(i);
+//  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新取货码="+object2.toString(),"server.txt");										
+//  		final JSONObject zhuheobj=object2;
+//  		//第一步，获取VMC_NO和密码
+//  		final String VMC_NO=object2.getString("VMC_NO");
+//  		final String MANAGER_PASSWORD=object2.getString("MANAGER_PASSWORD");
+//  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD,"server.txt");	
+//  		zhuheobj.put("AttImg", "");
+//  		  		
+//  		try
+//  		{	
+//  			if((devID.isEmpty()==false)&&(devID.equals(VMC_NO)))
+//  			{  				
+//  				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+//  			    //创建Tb_inaccount对象 
+//    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+//    					0,0,MANAGER_PASSWORD,0,0,0,0,0,0,0,"",0,
+//    					0,0, 0,0,0);
+//    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新取货码VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
+//    			parameterDAO.updatepwd(tb_vmc_system_parameter); 
+//  			}
+//  		}
+//  		catch (Exception e) {
+//  			// TODO Auto-generated catch block
+//  			e.printStackTrace();
+//  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+//  		}
+//  		
+//  		//第三步，把名字保存到json中		
+//  		zhuhepickupArray.put(zhuheobj);
+//  		
+//  		
+//  		//第四步：进行下一个分类信息
+//  		pickupint++;
+//  		if(pickupint<pickuparr.length())
+//  		{
+//  			try {
+//  				updatepickup(pickupint);
+//  			} catch (JSONException e) {
+//  				// TODO Auto-generated catch block
+//  				e.printStackTrace();
+//  			}
+//  		}
+//  		else
+//  		{
+//  			try {
+//  				zhuhepickupjson.put("List", zhuhepickupArray);
+//  			} catch (JSONException e) {
+//  				// TODO Auto-generated catch block
+//  				e.printStackTrace();
+//  			}
+//  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuhepickupjson.toString(),"server.txt");
+//
+//  			//上传给server
+//  			//向主线程返回信息
+//  			Message tomain4=mainhand.obtainMessage();
+//  			tomain4.what=SETpickupMAIN;
+//  			tomain4.obj=zhuheclassjson.toString();
+//  			mainhand.sendMessage(tomain4); // 发送消息  			
+//  		}		
   		return "";
   	}
 	

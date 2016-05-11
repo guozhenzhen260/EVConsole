@@ -317,11 +317,11 @@ public class MaintainActivity extends Activity
 			switch(EVWhat)
 			{
 			case EVServerhttp.SETMAIN:
-				Log.i("EV_JNI","activity=«©µΩ≥…π¶");					
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=«©µΩ≥…π¶","log.txt");			
 				dialog.dismiss();				
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
-				Log.i("EV_JNI","activity= ß∞‹£¨Õ¯¬Áπ ’œ");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity= ß∞‹£¨Õ¯¬Áπ ’œ","log.txt");	
 				if(dialog.isShowing())
 					dialog.dismiss();
 	    		break;	
