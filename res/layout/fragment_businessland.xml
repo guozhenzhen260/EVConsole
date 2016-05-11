@@ -18,7 +18,7 @@
  			android:layout_height="wrap_content" 
  			android:textStyle="bold"
        	android:textColor="#FF0000"  
- 			android:hint="请输入出货货道号"        
+ 			android:hint="请输入货道号"        
         />
     <ImageButton
         android:id="@+id/btnadsclass"
@@ -28,6 +28,13 @@
         android:textColor="#8C6931"
         android:src="@drawable/shpfl"
         android:textSize="40dp"/>
+    <ImageView 
+   	    android:id = "@+id/ivquhuo"
+   	    android:layout_width="wrap_content"
+		android:layout_height="180dp"	
+		android:layout_toRightOf="@+id/btnadsclass"	
+		android:src="@drawable/quhuopwd"			
+   	/> 	
     <ImageButton
         android:id="@+id/btnads1"
         android:layout_width="310dp"

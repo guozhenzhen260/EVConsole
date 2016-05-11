@@ -79,7 +79,7 @@ public class ParamManager extends TabActivity
     	this.mytabhost.addTab(myTabmachine); 
     	
     	TabSpec myTabdevice=this.mytabhost.newTabSpec("tab1");
-    	myTabdevice.setIndicator("设备参数配置");
+    	myTabdevice.setIndicator("交易参数配置");
     	myTabdevice.setContent(this.layres[1]);
     	this.mytabhost.addTab(myTabdevice); 
     	

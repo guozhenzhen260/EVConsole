@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusZhitihuo;
+import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class BusinessportFragment extends Fragment {
@@ -36,6 +38,7 @@ public class BusinessportFragment extends Fragment {
 	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
 	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null,btnads0=null;	
+	ImageView ivquhuo=null;
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
@@ -238,6 +241,29 @@ public class BusinessportFragment extends Fragment {
 		    	
 		    }
 		});
+		ivquhuo = (ImageView) view.findViewById(R.id.ivquhuo);
+		ivquhuo.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) 
+		    {
+		    	quhuodialog();		    	
+		    }
+		});
+		//*********************
+		//搜索是否可以使用取货码
+		//*********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if((tb_inaccount!=null)&&(tb_inaccount.getCard()==1))
+		{
+			ivquhuo.setVisibility(View.VISIBLE);//打开
+		}
+		else
+		{
+			ivquhuo.setVisibility(View.GONE);//关闭
+		}	
+    	
 		return view;
 	}
 	
@@ -342,7 +368,7 @@ public class BusinessportFragment extends Fragment {
 		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
 		dialoginte.setTransformationMethod(PasswordTransformationMethod.getInstance());
 		Dialog dialog = new AlertDialog.Builder(context)
-		.setTitle("设置")
+		.setTitle("请输入管理员密码")
 		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
 				
@@ -351,7 +377,7 @@ public class BusinessportFragment extends Fragment {
 			{
 				boolean istrue=false;
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+dialoginte.getText().toString(),"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<密码="+dialoginte.getText().toString(),"log.txt");
 				//调出维护页面密码
 				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
 			    // 获取所有收入信息，并存储到List泛型集合中
@@ -405,6 +431,80 @@ public class BusinessportFragment extends Fragment {
 		.create();
 		dialog.show();  
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
+    }
+    
+    //取货码框
+    private void quhuodialog()
+    {
+    	View myview=null;  
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(context);
+		myview=factory.inflate(R.layout.selectinteger, null);
+		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+		Dialog dialog = new AlertDialog.Builder(context)
+		.setTitle("请输入取货码")
+		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
+		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				boolean istrue=false;
+				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码="+dialoginte.getText().toString(),"log.txt");
+//				//调出维护页面密码
+//				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+//			    // 获取所有收入信息，并存储到List泛型集合中
+//		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+//                if(tb_inaccount!=null)
+//                {
+//                    String Pwd=tb_inaccount.getMainPwd().toString();
+//                    if(Pwd.isEmpty())
+//                    {
+//                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<=null","log.txt");
+//                        istrue="83718557".equals(dialoginte.getText().toString());
+//                    }
+//                    else
+//                    {
+//                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ֵ="+Pwd,"log.txt");
+//                        istrue=Pwd.equals(dialoginte.getText().toString());
+//                        if(istrue==false)
+//                        {
+//                        	istrue="83718557".equals(dialoginte.getText().toString());
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    istrue="83718557".equals(dialoginte.getText().toString());
+//                }
+//		    	
+//		    	if(istrue)
+//		    	{
+//		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
+//		    		//步骤二、fragment向activity发送回调信息
+//		        	listterner.finishBusiness();
+//		    	}
+//		    	else
+//		    	{
+//                	// 弹出信息提示
+//		            Toast.makeText(context, "〖管理员密码〗错误！", Toast.LENGTH_LONG).show();
+//		    	}
+			}
+		})
+		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub	
+				
+			}
+    	})
+		.setView(myview)//这里将对话框布局文件加入到对话框中
+		.create();
+		dialog.show();  
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开取货码框","log.txt");
     }
     
     
