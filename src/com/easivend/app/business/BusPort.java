@@ -184,6 +184,8 @@ BushuoFragInteraction
          */
     	//视频页面
         void BusportMovie();      //视频页面轮播
+        //刷新广告页面
+        void BusportAds();      //刷新广告列表
         //现金页面
         void BusportTsxx(String str);      //提示信息
         void BusportTbje(String str);      //投币金额
@@ -575,6 +577,10 @@ BushuoFragInteraction
 				toastView.addView(imageCodeProject, 0);
 				myToast.show();
 	    		break;	
+			case EVServerhttp.SETADVRESETMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=刷新广告","log.txt");
+				listterner.BusportAds();
+				break;
 			}			
 		}
 

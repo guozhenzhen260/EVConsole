@@ -401,7 +401,11 @@ public class EVServerService extends Service {
 						//获取广告账号重新设置
 					case EVServerhttp.SETADVRESETMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告重新设置="+msg.obj.toString(),"server.txt");
-						LAST_ADV_TIME=ToolClass.getLasttime();	        		
+						LAST_ADV_TIME=ToolClass.getLasttime();	 
+						Intent intent3=new Intent();
+						intent3.putExtra("EVWhat", EVServerhttp.SETADVRESETMAIN);
+						intent3.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent3);
 						break;
 						//获取设备信息	
 					case EVServerhttp.SETERRFAILCLIENTMAIN://子线程接收主线程消息获取设备失败
@@ -597,7 +601,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },1*60,1*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}	
 	
 	//更新商品分类信息

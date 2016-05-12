@@ -146,6 +146,16 @@ public class MoviewlandFragment extends Fragment {
 			 viewvideo=true;
 			 show(); 
 		}
+
+		@Override
+		public void BusportAds() {
+			// TODO Auto-generated method stub
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<刷新广告列表重载入","log.txt");
+			mMusicList.clear();
+			imgMusicList.clear();
+			listFiles(); 
+			startVideo();
+		}
 	}
 	
 	/* 播放列表 */  

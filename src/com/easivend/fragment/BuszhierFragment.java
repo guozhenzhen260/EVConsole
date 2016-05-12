@@ -157,5 +157,11 @@ public class BuszhierFragment extends Fragment
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void BusportAds() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

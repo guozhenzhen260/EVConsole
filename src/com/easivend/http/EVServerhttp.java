@@ -45,6 +45,7 @@ import com.android.volley.toolbox.Volley;
 import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.XZip;
@@ -2968,7 +2969,8 @@ public class EVServerhttp implements Runnable {
   	
   	//更新取货码信息
   	private String updatepickup(int i) throws JSONException
-  	{  	
+  	{  	  		
+  		boolean quhuo=false;
   		final JSONObject object2=pickuparr.getJSONObject(i);
   		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码出货="+object2.toString(),"server.txt");										
   		final JSONObject zhuheobj=object2;
@@ -2977,14 +2979,25 @@ public class EVServerhttp implements Runnable {
   		final int STAUTS=object2.getInt("STAUTS");
   		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码PRODUCT_NO="+PRODUCT_NO+",STAUTS="+STAUTS,"server.txt");	
   		zhuheobj.put("AttImg", "");
+  		//返回值表示，可以取货
   		if(STAUTS==0)
+  		{
+  			//本地有货物
+  			vmc_columnDAO columnDAO = new vmc_columnDAO(ToolClass.getContext());// 创建InaccountDAO对象
+  			if(columnDAO.getproductCount(PRODUCT_NO)>0)
+  			{
+  				quhuo=true;
+  			}  			 
+  		}
+  		
+  		if(quhuo)
   		{
   			//上传给server
   			//向主线程返回信息
   			Message tomain4=mainhand.obtainMessage();
   			tomain4.what=SETPICKUPMAIN;
   			tomain4.obj=PRODUCT_NO;
-  			mainhand.sendMessage(tomain4); // 发送消息  
+  			mainhand.sendMessage(tomain4); // 发送消息 
   		}
   		else
   		{
