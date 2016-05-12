@@ -262,19 +262,26 @@ public class MoviewlandFragment extends Fragment {
         try 
 		{
         	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<imageID="+imgMusicList.get(curIndex),"log.txt");
-	        /*为什么图片一定要转化为 Bitmap格式的！！ */
-	        Bitmap bitmap = ToolClass.getLoacalBitmap(imgMusicList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
-	        ivads.setImageBitmap(bitmap);// 设置图像的二进制值
-	        //延时10s
-	        new Handler().postDelayed(new Runnable() 
-			{
-                @Override
-                public void run() 
-                {
-                	show();
-                }
-
-			}, SPLASH_DISPLAY_LENGHT);
+        	if(checkAds(imgMusicList.get(curIndex)))
+        	{
+	        	/*为什么图片一定要转化为 Bitmap格式的！！ */
+		        Bitmap bitmap = ToolClass.getLoacalBitmap(imgMusicList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
+		        ivads.setImageBitmap(bitmap);// 设置图像的二进制值
+		        //延时10s
+		        new Handler().postDelayed(new Runnable() 
+				{
+	                @Override
+	                public void run() 
+	                {
+	                	show();
+	                }
+	
+				}, SPLASH_DISPLAY_LENGHT);
+        	}
+        	else
+        	{
+        		show();
+        	}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -287,14 +294,65 @@ public class MoviewlandFragment extends Fragment {
         curIndex=r.nextInt(mMusicList.size()); 
         try 
 		{
+        	
         	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<videoID="+mMusicList.get(curIndex),"log.txt");
-	        videoView.setVideoPath(mMusicList.get(curIndex));  
-	        videoView.start(); 
+	        if(checkAds(mMusicList.get(curIndex)))
+	        {
+	        	videoView.setVideoPath(mMusicList.get(curIndex));  
+		        videoView.start(); 
+	        }
+	        else
+	        {
+	        	show();
+	        }
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}	
     }  
+    
+    private boolean checkAds(String CLS_URL)
+    {
+    	String ATT_ID="",TypeStr="";
+  		int FileType=0;//1图片,2视频
+  		boolean rst=false;
+  		if(CLS_URL.equals("null")!=true)
+  		{
+  			String a[] = CLS_URL.split("/");  
+  			ATT_ID=a[a.length-1];  
+  			String tmp = ATT_ID;
+	    	ATT_ID=tmp.substring(0,tmp.lastIndexOf("."));		    	
+	    	TypeStr=tmp.substring(tmp.lastIndexOf(".")+1);
+		    //是否视频文件
+		    if(MediaFileAdapter.isVideoFileType(tmp)==true)
+		    {
+		    	FileType=2;
+		        ToolClass.Log(ToolClass.INFO,"EV_JNI","广告视频ATT_ID="+ATT_ID+"."+TypeStr,"log.txt");										
+		    }
+		    //是否图片文件
+		    else if(MediaFileAdapter.isImgFileType(tmp)==true)
+		    {
+		    	FileType=1;
+	  			ToolClass.Log(ToolClass.INFO,"EV_JNI","广告图片ATT_ID="+ATT_ID+"."+TypeStr,"log.txt");										
+	  		}
+  			
+		    if(ATT_ID.equals("")==true)
+  			{
+  				ToolClass.Log(ToolClass.INFO,"EV_JNI","广告["+ATT_ID+"]无","log.txt");
+  			}
+		    else if(ToolClass.isAdsFile(ATT_ID,TypeStr))
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","广告["+ATT_ID+"]已存在","log.txt");
+				rst=true;
+			}
+		    else
+		    {
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","广告["+ATT_ID+"]不存在","log.txt");
+			}
+  		}
+  		return rst;
+    }
+    
     
     //切换到操作fragment
     private void changefragment()
