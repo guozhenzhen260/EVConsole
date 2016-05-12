@@ -488,8 +488,7 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent2);
 						break;
 					case EVServerhttp.SETPICKUPMAIN://子线程接收主线程上报取货码出货信息
-//						//修改数据上报状态为已上报
-//						updatecolumns(msg.obj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 取货码出货="+msg.obj.toString(),"server.txt");
 //						//重新更新token的值
 //						if(tokenno>=80)
 //						{
@@ -524,8 +523,7 @@ public class EVServerService extends Service {
 //							localBroadreceiver.sendBroadcast(intent);
 //							ischeck=true;
 //							LAST_EDIT_TIME=ToolClass.getLasttime();
-//						}
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报取货码信息出货","server.txt");	        		
+//						}						
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败

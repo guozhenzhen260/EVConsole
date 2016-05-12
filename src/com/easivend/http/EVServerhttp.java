@@ -2969,66 +2969,31 @@ public class EVServerhttp implements Runnable {
   	//更新取货码信息
   	private String updatepickup(int i) throws JSONException
   	{  	
-//  		final JSONObject object2=pickuparr.getJSONObject(i);
-//  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新取货码="+object2.toString(),"server.txt");										
-//  		final JSONObject zhuheobj=object2;
-//  		//第一步，获取VMC_NO和密码
-//  		final String VMC_NO=object2.getString("VMC_NO");
-//  		final String MANAGER_PASSWORD=object2.getString("MANAGER_PASSWORD");
-//  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD,"server.txt");	
-//  		zhuheobj.put("AttImg", "");
-//  		  		
-//  		try
-//  		{	
-//  			if((devID.isEmpty()==false)&&(devID.equals(VMC_NO)))
-//  			{  				
-//  				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
-//  			    //创建Tb_inaccount对象 
-//    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-//    					0,0,MANAGER_PASSWORD,0,0,0,0,0,0,0,"",0,
-//    					0,0, 0,0,0);
-//    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新取货码VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
-//    			parameterDAO.updatepwd(tb_vmc_system_parameter); 
-//  			}
-//  		}
-//  		catch (Exception e) {
-//  			// TODO Auto-generated catch block
-//  			e.printStackTrace();
-//  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
-//  		}
-//  		
-//  		//第三步，把名字保存到json中		
-//  		zhuhepickupArray.put(zhuheobj);
-//  		
-//  		
-//  		//第四步：进行下一个分类信息
-//  		pickupint++;
-//  		if(pickupint<pickuparr.length())
-//  		{
-//  			try {
-//  				updatepickup(pickupint);
-//  			} catch (JSONException e) {
-//  				// TODO Auto-generated catch block
-//  				e.printStackTrace();
-//  			}
-//  		}
-//  		else
-//  		{
-//  			try {
-//  				zhuhepickupjson.put("List", zhuhepickupArray);
-//  			} catch (JSONException e) {
-//  				// TODO Auto-generated catch block
-//  				e.printStackTrace();
-//  			}
-//  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuhepickupjson.toString(),"server.txt");
-//
-//  			//上传给server
-//  			//向主线程返回信息
-//  			Message tomain4=mainhand.obtainMessage();
-//  			tomain4.what=SETpickupMAIN;
-//  			tomain4.obj=zhuheclassjson.toString();
-//  			mainhand.sendMessage(tomain4); // 发送消息  			
-//  		}		
+  		final JSONObject object2=pickuparr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码出货="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步，获取PRODUCT_NO和STAUTS
+  		final String PRODUCT_NO=object2.getString("PRODUCT_NO");
+  		final int STAUTS=object2.getInt("STAUTS");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码PRODUCT_NO="+PRODUCT_NO+",STAUTS="+STAUTS,"server.txt");	
+  		zhuheobj.put("AttImg", "");
+  		if(STAUTS==0)
+  		{
+  			//上传给server
+  			//向主线程返回信息
+  			Message tomain4=mainhand.obtainMessage();
+  			tomain4.what=SETPICKUPMAIN;
+  			tomain4.obj=PRODUCT_NO;
+  			mainhand.sendMessage(tomain4); // 发送消息  
+  		}
+  		else
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETERRFAILPICKUPMAIN;
+  			tomain.obj=zhuhepickupjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}	
   		return "";
   	}
 	

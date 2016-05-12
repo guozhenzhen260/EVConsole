@@ -261,6 +261,7 @@ public class MoviewlandFragment extends Fragment {
         curIndex=r.nextInt(imgMusicList.size()); 
         try 
 		{
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<imageID="+imgMusicList.get(curIndex),"log.txt");
 	        /*为什么图片一定要转化为 Bitmap格式的！！ */
 	        Bitmap bitmap = ToolClass.getLoacalBitmap(imgMusicList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
 	        ivads.setImageBitmap(bitmap);// 设置图像的二进制值
@@ -277,6 +278,7 @@ public class MoviewlandFragment extends Fragment {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			show();
 		}	
     }  
     //播放视频
@@ -285,6 +287,7 @@ public class MoviewlandFragment extends Fragment {
         curIndex=r.nextInt(mMusicList.size()); 
         try 
 		{
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<videoID="+mMusicList.get(curIndex),"log.txt");
 	        videoView.setVideoPath(mMusicList.get(curIndex));  
 	        videoView.start(); 
 		} catch (Exception e) {
