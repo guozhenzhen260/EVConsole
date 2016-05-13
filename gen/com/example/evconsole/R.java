@@ -98,6 +98,7 @@ public final class R {
         public static final int zflcfangland=0x7f020043;
         public static final int zhier=0x7f020044;
         public static final int zhifusel=0x7f020045;
+        public static final int zitiland=0x7f020046;
     }
     public static final class id {
         public static final int ItemImage=0x7f0900a4;

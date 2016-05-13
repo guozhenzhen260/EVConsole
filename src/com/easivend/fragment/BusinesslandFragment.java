@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,8 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class BusinesslandFragment extends Fragment 
@@ -34,6 +37,7 @@ public class BusinesslandFragment extends Fragment
 	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
 	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null,btnads0=null;	
+	ImageView ivquhuo=null;
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
@@ -86,6 +90,7 @@ public class BusinesslandFragment extends Fragment
         void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面     
         void stoptimer();//关闭定时器
         void restarttimer();//重新打开定时器
+        void quhuoBusiness(String PICKUP_CODE);//传递取货码
     }
     @Override
     public void onDetach() {
@@ -235,6 +240,29 @@ public class BusinesslandFragment extends Fragment
 		    	
 		    }
 		});
+		ivquhuo = (ImageView) view.findViewById(R.id.ivquhuo);
+		ivquhuo.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) 
+		    {
+		    	quhuodialog();		    	
+		    }
+		});
+		//*********************
+		//搜索是否可以使用取货码
+		//*********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if((tb_inaccount!=null)&&(tb_inaccount.getCard()==1))
+		{
+			ivquhuo.setVisibility(View.VISIBLE);//打开
+		}
+		else
+		{
+			ivquhuo.setVisibility(View.GONE);//关闭
+		}
+    	
 		return view;  
 	}
 	//num出货柜号,type=1输入数字，type=0回退数字
@@ -322,8 +350,14 @@ public class BusinesslandFragment extends Fragment
 			    huo="";
 			    txtadsTip.setText("");
 			    // 弹出信息提示
-		        Toast.makeText(context, "抱歉，本商品已售完！", Toast.LENGTH_LONG).show();
-			}
+				Toast myToast=Toast.makeText(context, "抱歉，本商品已售完！", Toast.LENGTH_LONG);
+				myToast.setGravity(Gravity.CENTER, 0, 0);
+				LinearLayout toastView = (LinearLayout) myToast.getView();
+				ImageView imageCodeProject = new ImageView(context);
+				imageCodeProject.setImageResource(R.drawable.search);
+				toastView.addView(imageCodeProject, 0);
+				myToast.show();
+		    }
 		    
 		}
     } 
@@ -407,5 +441,45 @@ public class BusinesslandFragment extends Fragment
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
     }
     
+    //取货码框
+    private void quhuodialog()
+    {
+    	View myview=null;  
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(context);
+		myview=factory.inflate(R.layout.selectinteger, null);
+		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+		Dialog dialog = new AlertDialog.Builder(context)
+		.setTitle("请输入取货码")
+		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
+		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				// TODO Auto-generated method stub
+				String PICKUP_CODE=dialoginte.getText().toString();
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码="+PICKUP_CODE,"log.txt");
+				if(PICKUP_CODE.isEmpty()!=true)
+				{
+					//步骤二、fragment向activity发送回调信息
+		        	listterner.quhuoBusiness(PICKUP_CODE);
+				}
+			}
+		})
+		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub	
+				
+			}
+    	})
+		.setView(myview)//这里将对话框布局文件加入到对话框中
+		.create();
+		dialog.show();  
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开取货码框","log.txt");
+    }
    
 }

@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +28,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class BusZhitihuo extends Activity 
@@ -175,7 +178,13 @@ public class BusZhitihuo extends Activity
 			    	str.delete(0,str.length()); 
 			    	txtadsTip.setText(str);
 			    	// 弹出信息提示
-		            Toast.makeText(BusZhitihuo.this, "〖提货密码〗错误！", Toast.LENGTH_LONG).show();
+			    	Toast myToast=Toast.makeText(BusZhitihuo.this, "抱歉，〖提货密码〗无效,请联系管理员！", Toast.LENGTH_LONG);
+			    	myToast.setGravity(Gravity.CENTER, 0, 0);
+					LinearLayout toastView = (LinearLayout) myToast.getView();
+					ImageView imageCodeProject = new ImageView(getApplicationContext());
+					imageCodeProject.setImageResource(R.drawable.search);
+					toastView.addView(imageCodeProject, 0);
+					myToast.show();
 		    	}
 		    }
 		});

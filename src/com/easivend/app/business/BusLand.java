@@ -5,23 +5,35 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.easivend.app.business.BusPort.EVServerReceiver;
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
+import com.easivend.http.EVServerhttp;
+import com.easivend.model.Tb_vmc_product;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
+import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class BusLand extends Activity implements MovieFragInteraction,BusFragInteraction{	
@@ -35,6 +47,9 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     Intent intent=null;
     final static int REQUEST_CODE=1; 
     final static int PWD_CODE=2;
+    //Server服务相关
+  	LocalBroadcastManager localBroadreceiver;
+  	EVServerReceiver receiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -47,6 +62,15 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		setContentView(R.layout.busland);		
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
+		//=============
+		//Server服务相关
+		//=============
+		//4.注册接收器
+		localBroadreceiver = LocalBroadcastManager.getInstance(this);
+		receiver=new EVServerReceiver();
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("android.intent.action.vmserverrec");
+		localBroadreceiver.registerReceiver(receiver,filter);
 		//初始化默认fragment
 		initView();		
 		timer.scheduleWithFixedDelay(new Runnable() { 
@@ -168,7 +192,79 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	        	
 	        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 				break;
+			case 4:
+				intent = new Intent(BusLand.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+				break;	
 		}
+	}
+	//步骤三、实现Business接口,传递取货码
+	@Override
+	public void quhuoBusiness(String PICKUP_CODE)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<land取货码="+PICKUP_CODE,"log.txt");
+		Intent intent2=new Intent(); 
+		intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
+		intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
+		intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+		localBroadreceiver.sendBroadcast(intent2);
+	}
+	
+	//=============
+	//Server服务相关
+	//=============	
+	//2.创建EVServerReceiver的接收器广播，用来接收服务器同步的内容
+	public class EVServerReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			case EVServerhttp.SETPICKUPMAIN:
+				String PRODUCT_NO=bundle.getString("PRODUCT_NO");
+				String out_trade_no=bundle.getString("out_trade_no");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码成功PRODUCT_NO="+PRODUCT_NO+"out_trade_no="+out_trade_no,"log.txt");					
+				// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_product表中
+		 	    vmc_productDAO productdao = new vmc_productDAO(context);
+		 	    Tb_vmc_product tb_vmc_product=productdao.find(PRODUCT_NO);
+		 	    //保存到报表表里面
+		 	    //订单总信息
+		 	    OrderDetail.setProID(tb_vmc_product.getProductID()+"-"+tb_vmc_product.getProductName());		 	    
+		 	    OrderDetail.setProType("1");
+		 	    OrderDetail.setOrdereID(out_trade_no);
+		 	    //订单支付表 
+				OrderDetail.setPayType(-1);
+		 	    OrderDetail.setShouldPay(tb_vmc_product.getSalesPrice());
+		 	    OrderDetail.setShouldNo(1);
+		 	    OrderDetail.setCabID("");
+		 		OrderDetail.setColumnID("");
+		 	    //订单详细信息表   
+		 	    OrderDetail.setProductID(PRODUCT_NO);
+		 	    gotoBusiness(4,null);
+				break;
+			case EVServerhttp.SETERRFAILPICKUPMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码失败","log.txt");
+				// 弹出信息提示
+				Toast myToast=Toast.makeText(context, "抱歉，取货码无效,请联系管理员！", Toast.LENGTH_LONG);
+				myToast.setGravity(Gravity.CENTER, 0, 0);
+				LinearLayout toastView = (LinearLayout) myToast.getView();
+				ImageView imageCodeProject = new ImageView(getApplicationContext());
+				imageCodeProject.setImageResource(R.drawable.search);
+				toastView.addView(imageCodeProject, 0);
+				myToast.show();
+	    		break;	
+			case EVServerhttp.SETADVRESETMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=刷新广告","log.txt");
+				//listterner.BusportAds();
+				break;
+			}			
+		}
+
 	}
 	
 	//返回到广告页面
@@ -260,6 +356,15 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 				}
 			}			
 		}
+		else if(requestCode==REQUEST_CODE)
+		{
+			if(resultCode==0x03)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+				OrderDetail.addLog(BusLand.this);	
+				switchMovie();
+			}
+		}
 		else 
 		{
 			switchMovie();	
@@ -268,6 +373,11 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	protected void onDestroy() {
 		timer.shutdown();
+		//=============
+		//Server服务相关
+		//=============
+		//5.解除注册接收器
+		localBroadreceiver.unregisterReceiver(receiver);
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

@@ -108,7 +108,7 @@
         android:layout_toRightOf="@+id/btnads0" 
         android:layout_below="@+id/btnads9"
         android:textColor="#8C6931"
-        android:src="@drawable/enterland" />
+        android:src="@drawable/zitiland" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhitihuoback"
         android:layout_alignParentBottom="true"

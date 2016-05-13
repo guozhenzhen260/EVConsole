@@ -259,6 +259,10 @@ public class BusHuo extends Activity
 	                    	{                        			
 	                    		BusHuo.this.setResult(BusZhitihuo.RESULT_CANCELED,intentrec);                    	            
 	                		}
+	                    	else if(zhifutype==-1)//ШЁЛѕТы
+	                    	{                        			
+	                    		BusHuo.this.setResult(0x03,intentrec);                    	            
+	                		}
 	                    	finish();	
 	                    }
 	
