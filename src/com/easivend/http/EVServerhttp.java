@@ -2470,63 +2470,122 @@ public class EVServerhttp implements Runnable {
         @Override
         public void run()
         {
-        	String target = httpStr+"/api/uploadClientLog";	//要提交的目标地址
-			HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
-			httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
-			httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
-			HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
-			//1.添加params
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("LAST_EDIT_TIME", ToolClass.getLasttime()));
-			params.add(new BasicNameValuePair("Token", Tok));			
-			params.add(new BasicNameValuePair("CLIENT_LOG_ID", LOG_IDS));
-			String bal=null;
-			try {
-				//输入文件流
-				FileInputStream inputFile = new FileInputStream(file);
-				//抓为byte字节
-				byte[] buffer = new byte[(int)file.length()];
-				inputFile.read(buffer);
-				inputFile.close();
-				//压缩为Base64格式
-				bal= Base64.encodeToString(buffer,Base64.DEFAULT);
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			params.add(new BasicNameValuePair("FILE_CONTENT", bal));
-			//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params.toString(),"server.txt");
-			try {
-				httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
-				HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求
-				//向主线程返回信息
-				Message tomain=mainhand.obtainMessage();
-				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
-					//如果请求成功
-					result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=日志上传完成"+result,"server.txt");					
-				}else{
+//        	String target = httpStr+"/api/uploadClientLog";	//要提交的目标地址
+//			HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
+//			httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+//			httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
+//			HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
+//			//1.添加params
+//			List<NameValuePair> params = new ArrayList<NameValuePair>();
+//			params.add(new BasicNameValuePair("LAST_EDIT_TIME", ToolClass.getLasttime()));
+//			params.add(new BasicNameValuePair("Token", Tok));			
+//			params.add(new BasicNameValuePair("CLIENT_LOG_ID", LOG_IDS));
+//			String bal=null;
+//			try {
+//				//输入文件流
+//				FileInputStream inputFile = new FileInputStream(file);
+//				//抓为byte字节
+//				byte[] buffer = new byte[(int)file.length()];
+//				inputFile.read(buffer);
+//				inputFile.close();
+//				//压缩为Base64格式
+//				bal= Base64.encodeToString(buffer,Base64.DEFAULT);
+//			} catch (FileNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			params.add(new BasicNameValuePair("FILE_CONTENT", bal));
+//			//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params.toString(),"server.txt");
+//			try {
+//				httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
+//				HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求
+//				//向主线程返回信息
+//				Message tomain=mainhand.obtainMessage();
+//				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
+//					//如果请求成功
+//					result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=日志上传完成"+result,"server.txt");					
+//				}else{
+//					result = "请求失败！";
+//					tomain.what=SETFAILMAIN;
+//					mainhand.sendMessage(tomain); // 发送消息
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]日志上传"+result,"server.txt");
+//				}
+//				
+//				
+//			} 
+//	       catch (Exception e) 
+//	       {  
+//	           //e.printStackTrace();  
+//	    	   //向主线程返回网络失败信息
+//				Message tomain=mainhand.obtainMessage();
+//	    	    tomain.what=SETFAILMAIN;
+//	    	    mainhand.sendMessage(tomain); // 发送消息
+//	    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail1]SETFAILMAIN","server.txt");
+//	       }
+        	
+        	//第二步：上传给server取货码使用掉
+  			String target17 = httpStr+"/api/uploadClientLog";	//要提交的目标地址
+			final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+        	//向主线程返回信息
+			final Message tomain17=mainhand.obtainMessage();
+			tomain17.what=SETNONE;
+			//4.准备加载信息设置
+			StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
+				@Override  
+				public void onResponse(String response) {  
+				   
+				    //如果请求成功
+					result = response;	//获取返回的字符串
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=日志上传完成"+result,"server.txt");
+															 
+				}  
+			}, new Response.ErrorListener() {  
+				@Override  
+				public void onErrorResponse(VolleyError error) {  
 					result = "请求失败！";
-					tomain.what=SETFAILMAIN;
-					mainhand.sendMessage(tomain); // 发送消息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]日志上传"+result,"server.txt");
-				}
-				
-				
-			} 
-	       catch (Exception e) 
-	       {  
-	           //e.printStackTrace();  
-	    	   //向主线程返回网络失败信息
-				Message tomain=mainhand.obtainMessage();
-	    	    tomain.what=SETFAILMAIN;
-	    	    mainhand.sendMessage(tomain); // 发送消息
-	    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail1]SETFAILMAIN","server.txt");
-	       }
+					tomain17.what=SETFAILMAIN;
+		    	    mainhand.sendMessage(tomain17); // 发送消息
+		    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETFAILMAIN"+result,"server.txt");
+				}  
+			}) 
+			{  
+				@Override  
+				protected Map<String, String> getParams() throws AuthFailureError {  
+					String bal=null;
+					try {
+						//输入文件流
+						FileInputStream inputFile = new FileInputStream(file);
+						//抓为byte字节
+						byte[] buffer = new byte[(int)file.length()];
+						inputFile.read(buffer);
+						inputFile.close();
+						//压缩为Base64格式
+						bal= Base64.encodeToString(buffer,Base64.DEFAULT);
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//3.添加params
+					Map<String, String> map = new HashMap<String, String>();  
+					map.put("Token", Tok);  
+					map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
+					map.put("CLIENT_LOG_ID", LOG_IDS);
+					map.put("FILE_CONTENT", bal);
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1=日志上传...","server.txt");
+					return map;  
+			   }  
+			}; 	
+			//5.加载信息并发送到网络上
+			mQueue.add(stringRequest17);
         }
     };
     
