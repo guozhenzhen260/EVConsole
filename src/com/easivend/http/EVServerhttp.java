@@ -1082,7 +1082,7 @@ public class EVServerhttp implements Runnable {
 									pickupArray(result);
 									if(pickuparr.length()>0)
 									{
-										updatepickup(0);
+										updatepickup(0,PICKUP_CODE);
 									}
 								}			    	    
 							} catch (JSONException e) {
@@ -2966,19 +2966,19 @@ public class EVServerhttp implements Runnable {
   			mainhand.sendMessage(tomain); // 发送消息	
   		}  	   
   	}
-  	
+  	String PICKUP_CODE="";
   	//更新取货码信息
-  	private String updatepickup(int i) throws JSONException
+  	private String updatepickup(int i,String pick) throws JSONException
   	{  	  		
-  		boolean quhuo=false;
+  		boolean quhuo=false; 
+  		PICKUP_CODE=pick;
   		final JSONObject object2=pickuparr.getJSONObject(i);
   		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码出货="+object2.toString(),"server.txt");										
-  		final JSONObject zhuheobj=object2;
+  		final JSONObject zhuheobj=new JSONObject();
   		//第一步，获取PRODUCT_NO和STAUTS
   		final String PRODUCT_NO=object2.getString("PRODUCT_NO");
   		final int STAUTS=object2.getInt("STAUTS");
   		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码PRODUCT_NO="+PRODUCT_NO+",STAUTS="+STAUTS,"server.txt");	
-  		zhuheobj.put("AttImg", "");
   		//返回值表示，可以取货
   		if(STAUTS==0)
   		{
@@ -2989,14 +2989,61 @@ public class EVServerhttp implements Runnable {
   				quhuo=true;
   			}  			 
   		}
-  		
+  		//获取成功
   		if(quhuo)
   		{
-  			//上传给server
-  			//向主线程返回信息
+  			//第一步：确认参数
+  			final String out_trade_no=ToolClass.out_trade_no(ToolClass.getContext());	
+  			zhuheobj.put("PRODUCT_NO", PRODUCT_NO);
+  			zhuheobj.put("out_trade_no", out_trade_no);
+  			
+  			//第二步：上传给server取货码使用掉
+  			String target17 = httpStr+"/api/savePickupCode";	//要提交的目标地址
+			final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+			//向主线程返回信息
+			final Message tomain17=mainhand.obtainMessage();
+			tomain17.what=SETNONE;
+			//4.准备加载信息设置
+			StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
+				@Override  
+				public void onResponse(String response) {  
+				   
+				    //如果请求成功
+					result = response;	//获取返回的字符串
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+															 
+				}  
+			}, new Response.ErrorListener() {  
+				@Override  
+				public void onErrorResponse(VolleyError error) {  
+					result = "请求失败！";
+					tomain17.what=SETFAILMAIN;
+		    	    mainhand.sendMessage(tomain17); // 发送消息
+		    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETFAILMAIN"+result,"server.txt");
+				}  
+			}) 
+			{  
+				@Override  
+				protected Map<String, String> getParams() throws AuthFailureError {  
+					//3.添加params
+					Map<String, String> map = new HashMap<String, String>();  
+					map.put("Token", Tok);  
+					map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
+					map.put("PICKUP_CODE", PICKUP_CODE);
+					map.put("ORDER_NO", out_trade_no);
+					map.put("VMC_NO", vmc_no);
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1=上传取货码完成"+map.toString(),"server.txt");
+					return map;  
+			   }  
+			}; 	
+			//5.加载信息并发送到网络上
+			mQueue.add(stringRequest17);
+			
+			
+  			//第三步：向主线程返回信息
   			Message tomain4=mainhand.obtainMessage();
   			tomain4.what=SETPICKUPMAIN;
-  			tomain4.obj=PRODUCT_NO;
+  			tomain4.obj=zhuheobj;
   			mainhand.sendMessage(tomain4); // 发送消息 
   		}
   		else

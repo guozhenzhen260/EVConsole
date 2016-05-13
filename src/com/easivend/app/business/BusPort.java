@@ -15,6 +15,7 @@ import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusgoodsFragment;
 import com.easivend.fragment.BusgoodsFragment.BusgoodsFragInteraction;
@@ -36,6 +37,7 @@ import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
+import com.easivend.model.Tb_vmc_product;
 import com.easivend.view.COMService;
 import com.easivend.view.EVServerService;
 import com.easivend.view.PassWord;
@@ -104,7 +106,7 @@ BushuoFragInteraction
 	private int con=0;
 	//进度对话框
 	ProgressDialog dialog= null;
-	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,-1取货码
 	private String out_trade_no=null;
 	//Server服务相关
 	LocalBroadcastManager localBroadreceiver;
@@ -563,9 +565,26 @@ BushuoFragInteraction
 			switch(EVWhat)
 			{
 			case EVServerhttp.SETPICKUPMAIN:
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码成功","log.txt");					
-						
-	    		break;
+				String PRODUCT_NO=bundle.getString("PRODUCT_NO");
+				out_trade_no=bundle.getString("out_trade_no");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码成功PRODUCT_NO="+PRODUCT_NO+"out_trade_no="+out_trade_no,"log.txt");					
+				// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_product表中
+		 	    vmc_productDAO productdao = new vmc_productDAO(context);
+		 	    Tb_vmc_product tb_vmc_product=productdao.find(PRODUCT_NO);
+		 	    //保存到报表表里面
+		 	    //订单总信息
+		 	    OrderDetail.setProID(tb_vmc_product.getProductID()+"-"+tb_vmc_product.getProductName());		 	    
+		 	    OrderDetail.setProType("1");
+		 	    //订单支付表 
+		 	    zhifutype="-1";
+		 	    OrderDetail.setShouldPay(tb_vmc_product.getSalesPrice());
+		 	    OrderDetail.setShouldNo(1);
+		 	    OrderDetail.setCabID("");
+		 		OrderDetail.setColumnID("");
+		 	    //订单详细信息表   
+		 	    OrderDetail.setProductID(PRODUCT_NO);
+		 	    tochuhuo();
+				break;
 			case EVServerhttp.SETERRFAILPICKUPMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码失败","log.txt");
 				// 弹出信息提示
@@ -1032,6 +1051,13 @@ BushuoFragInteraction
 					OrderDetail.addLog(BusPort.this);					
 				}
     			break;	
+    		//取货码页面		
+    		case -1:
+    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+				OrderDetail.addLog(BusPort.this);					
+				clearamount();
+				recLen=10;
+    			break;
     	}
     	
 	}

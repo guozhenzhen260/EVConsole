@@ -492,42 +492,21 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent2);
 						break;
 					case EVServerhttp.SETPICKUPMAIN://子线程接收主线程上报取货码出货信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 取货码出货="+msg.obj.toString(),"server.txt");
-//						//重新更新token的值
-//						if(tokenno>=80)
-//						{
-//							//处理接收到的内容,发送签到命令到子线程中
-//							childhand=serverhttp.obtainHandler();
-//				    		Message childheartmsg4=childhand.obtainMessage();
-//				    		childheartmsg4.what=EVServerhttp.SETCHECKCHILD;
-//				    		JSONObject ev=null;
-//				    		try {
-//				    			ev=new JSONObject();
-//				    			ev.put("vmc_no", vmc_no);
-//				    			ev.put("vmc_auth_code", vmc_auth_code);
-//				    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev.toString(),"server.txt");
-//				    		} catch (JSONException e) {
-//				    			// TODO Auto-generated catch block
-//				    			e.printStackTrace();
-//				    		}
-//				    		childheartmsg4.obj=ev;
-//				    		childhand.sendMessage(childheartmsg4);
-//				    		tokenno=0;
-//						}
-//						else
-//						{
-//							tokenno++;
-//						}
-//						//初始化八、返回给activity广播,初始化完成
-//						if(ischeck==false)
-//						{
-//							intent=new Intent();
-//							intent.putExtra("EVWhat", EVServerhttp.SETMAIN);
-//							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-//							localBroadreceiver.sendBroadcast(intent);
-//							ischeck=true;
-//							LAST_EDIT_TIME=ToolClass.getLasttime();
-//						}						
+						JSONObject zhuheobj=null;
+						try {
+							zhuheobj=new JSONObject(msg.obj.toString());
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 取货码出货="+zhuheobj.toString(),"server.txt");
+							
+							Intent intent4=new Intent();
+							intent4.putExtra("EVWhat", EVServerhttp.SETPICKUPMAIN);
+							intent4.putExtra("PRODUCT_NO", zhuheobj.getString("PRODUCT_NO"));
+							intent4.putExtra("out_trade_no", zhuheobj.getString("out_trade_no"));
+							intent4.setAction("android.intent.action.vmserverrec");//action与接收器相同
+							localBroadreceiver.sendBroadcast(intent4);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}						
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败
@@ -932,7 +911,7 @@ public class EVServerService extends Service {
 					payStatue=2;
 					actualQuantity=0;
 				}
-		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描-1取货码
 		    	if(payTypevalue[x]==0)
 				{
 		    		payTyp=0;
@@ -952,6 +931,10 @@ public class EVServerService extends Service {
 				else if(payTypevalue[x]==4)
 				{
 					payTyp=4;
+				}
+				else if(payTypevalue[x]==-1)
+				{
+					payTyp=-1;
 				}
 		    	
 		    	if(RealStatusvalue[x]==0)
