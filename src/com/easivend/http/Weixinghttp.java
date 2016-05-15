@@ -60,7 +60,7 @@ public class Weixinghttp implements Runnable
 				switch (msg.what)
 				{
 					case SETCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>二维码]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev=null;
@@ -74,18 +74,18 @@ public class Weixinghttp implements Runnable
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						Log.i("EV_JNI","Send0.2="+sPara.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara.toString(),"log.txt");
 						//2.生成支付请求消息
-						Map<String, String> map1 = WeiConfigAPI.PostWeiBuy(sPara);
-						//3.发送支付订单信息
-						String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";			            
-						String content= WeiConfigAPI.sendPost(url, map1);
+						Map<String, String> map1 = WeiConfigAPI.PostWeiBuy(sPara);						
 						try {
+							//3.发送支付订单信息
+							String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";			            
+							String content= WeiConfigAPI.sendPost(url, map1);
 				            //4.解包返回的信息
 				            InputStream is = new ByteArrayInputStream(content.getBytes());// 获取返回数据
 					           
 				           Map<String, String> map2=WeiConfigAPI.PendWeiBuy(is);
-					       Log.i("EV_JNI","rec2="+map2.toString());
+					       ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map2.toString(),"log.txt");
 					       //向主线程返回信息
 					        Message tomain=mainhand.obtainMessage();
 					      //协议失败
@@ -109,7 +109,7 @@ public class Weixinghttp implements Runnable
 								   tomain.obj=map2.get("code_url");
 					           }
 				           }
-				           Log.i("EV_JNI","rec3="+tomain.obj);	
+				           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");	
 					       mainhand.sendMessage(tomain); // 发送消息	
 				           
 				        } catch (Exception e) {
@@ -118,13 +118,13 @@ public class Weixinghttp implements Runnable
 				           Message tomain=mainhand.obtainMessage();	
 				    	   tomain.what=SETFAILNETCHILD;
 				    	   tomain.obj="netfail";
-				    	   Log.i("EV_JNI","rec="+tomain.obj);				           
+				    	   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");				           
 						   mainhand.sendMessage(tomain); // 发送消息
 				        } 
 						
 					break;	
 					case SETQUERYCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>查询]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara2 = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev2=null;
@@ -135,18 +135,19 @@ public class Weixinghttp implements Runnable
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						Log.i("EV_JNI","Send0.2="+sPara2.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara2.toString(),"log.txt");
 						//2.生成请求消息
 						Map<String, String> map3 = WeiConfigAPI.PostWeiQuery(sPara2);
-						//3.发送订单信息
-						String url2 = "https://api.mch.weixin.qq.com/pay/orderquery";			            
-						String content2= WeiConfigAPI.sendPost(url2, map3);
 						try {
+							//3.发送订单信息
+							String url2 = "https://api.mch.weixin.qq.com/pay/orderquery";			            
+							String content2= WeiConfigAPI.sendPost(url2, map3);
+							
 				            //4.解包返回的信息
 				            InputStream is = new ByteArrayInputStream(content2.getBytes());// 获取返回数据
 					           
 				           Map<String, String> map4=WeiConfigAPI.PendWeiQuery(is);
-					       Log.i("EV_JNI","rec2="+map4.toString());
+					       ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map4.toString(),"log.txt");
 					       //向主线程返回信息
 					        Message tomain=mainhand.obtainMessage();
 					      //协议失败
@@ -186,16 +187,22 @@ public class Weixinghttp implements Runnable
 				        		   }
 					           }
 				           }
-				           Log.i("EV_JNI","rec3="+tomain.obj);	
+				           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");
 					       mainhand.sendMessage(tomain); // 发送消息	
 				           
 				        } catch (Exception e) {
 				            // TODO Auto-generated catch block
 				            System.out.println(e);
+				          //向主线程返回信息
+				           Message tomain=mainhand.obtainMessage();	
+				    	   tomain.what=SETFAILNETCHILD;
+				    	   tomain.obj="netfail";
+				    	   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");			           
+						   mainhand.sendMessage(tomain); // 发送消息
 				        }
 					break;
 					case SETPAYOUTCHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>退款]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara3 = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev3=null;
@@ -214,18 +221,19 @@ public class Weixinghttp implements Runnable
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						Log.i("EV_JNI","Send0.2="+sPara3.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara3.toString(),"log.txt");
 						//2.生成支付请求消息
 						Map<String, String> map5 = WeiConfigAPI.PostWeiPayout(sPara3);
-						//3.发送支付订单信息
-						String url3 = "https://api.mch.weixin.qq.com/secapi/pay/refund";			            
-						String content3= WeiConfigAPI.sendPost(url3, map5);
 						try {
+							//3.发送支付订单信息
+							String url3 = "https://api.mch.weixin.qq.com/secapi/pay/refund";			            
+							String content3= WeiConfigAPI.sendPost(url3, map5);
+							
 				            //4.解包返回的信息
 				            InputStream is = new ByteArrayInputStream(content3.getBytes());// 获取返回数据
 					           
 				           Map<String, String> map6=WeiConfigAPI.PendWeiPayout(is);
-					       Log.i("EV_JNI","rec2="+map6.toString());
+					       ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map6.toString(),"log.txt");
 					       //向主线程返回信息
 					        Message tomain=mainhand.obtainMessage();
 					      //协议失败
@@ -249,17 +257,23 @@ public class Weixinghttp implements Runnable
 								   tomain.obj=map6.get("trade_state");
 					           }
 				           }
-				           Log.i("EV_JNI","rec3="+tomain.obj);	
+				           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");	
 					       mainhand.sendMessage(tomain); // 发送消息	
 				           
 				        } catch (Exception e) {
 				            // TODO Auto-generated catch block
 				            System.out.println(e);
+				          //向主线程返回信息
+				           Message tomain=mainhand.obtainMessage();	
+				    	   tomain.what=SETFAILNETCHILD;
+				    	   tomain.obj="netfail";
+				    	   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");				           
+						   mainhand.sendMessage(tomain); // 发送消息
 				        } 
 						
 					break;
 					case SETDELETECHILD://子线程接收主线程消息
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>撤销]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
 						Map<String, String> sPara4 = new HashMap<String, String>();
 						//1.添加订单信息
 						JSONObject ev4=null;
@@ -271,18 +285,19 @@ public class Weixinghttp implements Runnable
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}					
-					    Log.i("EV_JNI","Send0.2="+sPara4.toString());
+					    ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara4.toString(),"log.txt");
 					    //2.生成请求消息
 						Map<String, String> map7 = WeiConfigAPI.PostWeiDelete(sPara4);
-						//3.发送订单信息
-						String url4 = "https://api.mch.weixin.qq.com/pay/closeorder";			            
-						String content4= WeiConfigAPI.sendPost(url4, map7);
 						try {
+							//3.发送订单信息
+							String url4 = "https://api.mch.weixin.qq.com/pay/closeorder";			            
+							String content4= WeiConfigAPI.sendPost(url4, map7);
+							
 				            //4.解包返回的信息
 				            InputStream is = new ByteArrayInputStream(content4.getBytes());// 获取返回数据
 					           
 				           Map<String, String> map8=WeiConfigAPI.PendWeiDelete(is);
-					       Log.i("EV_JNI","rec2="+map8.toString());
+					       ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map8.toString(),"log.txt");
 					       //向主线程返回信息
 					        Message tomain=mainhand.obtainMessage();
 					      //协议失败
@@ -308,14 +323,28 @@ public class Weixinghttp implements Runnable
 					        	   
 					           }
 				           }
-				           Log.i("EV_JNI","rec3="+tomain.obj);	
+				           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");
 					       mainhand.sendMessage(tomain); // 发送消息	
 				           
 				        } catch (Exception e) {
 				            // TODO Auto-generated catch block
 				            System.out.println(e);
+				          //向主线程返回信息
+				           Message tomain=mainhand.obtainMessage();	
+				    	   tomain.what=SETFAILNETCHILD;
+				    	   tomain.obj="netfail";
+				    	   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");			           
+						   mainhand.sendMessage(tomain); // 发送消息
 				        }
 							
+					break;
+				default:
+						//向主线程返回信息
+			           Message tomain=mainhand.obtainMessage();	
+			    	   tomain.what=SETFAILNETCHILD;
+			    	   tomain.obj="netfail";
+			    	   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");				           
+					   mainhand.sendMessage(tomain); // 发送消息
 					break;
 				}
 			}
