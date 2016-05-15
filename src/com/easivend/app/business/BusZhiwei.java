@@ -229,7 +229,8 @@ public class BusZhiwei extends Activity
 	//退款交易
 	private void payoutzhiwei()
 	{
-		if(ercheckopt())
+		//if(ercheckopt())
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
 	    	childhand=weixinghttp.obtainHandler();
@@ -250,11 +251,14 @@ public class BusZhiwei extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		timer.shutdown(); 
+		finish();
 	}
 	//撤销交易
 	private void deletezhiwei()
 	{
-		if(ercheckopt())
+		//if(ercheckopt())
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
 			childhand=weixinghttp.obtainHandler();
@@ -273,6 +277,8 @@ public class BusZhiwei extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		timer.shutdown(); 
+		finish();
 	}
 	
 	//调用倒计时定时器

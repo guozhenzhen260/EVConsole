@@ -390,16 +390,16 @@ BushuoFragInteraction
 						con++;
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:退款成功");
-						dialog.dismiss();
-						//清数据
-						clearamount();						
-						recLen=10;						
+//						listterner.BusportTsxx("交易结果:退款成功");
+//						dialog.dismiss();
+//						//清数据
+//						clearamount();						
+//						recLen=10;						
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:撤销成功");
-						clearamount();
-				    	viewSwitch(BUSPORT, null);
+//						listterner.BusportTsxx("交易结果:撤销成功");
+//						clearamount();
+//				    	viewSwitch(BUSPORT, null);
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						listterner.BusportTsxx("交易结果:交易成功");
@@ -421,10 +421,10 @@ BushuoFragInteraction
 			}
 			
 		};
-		//启动用户自己定义的类
+		//创建用户自己定义的类
 		zhifubaohttp=new Zhifubaohttp(zhifubaomainhand);
-		zhifubaothread=Executors.newFixedThreadPool(3);
-		zhifubaothread.execute(zhifubaohttp);
+		zhifubaothread=Executors.newCachedThreadPool();
+		
 		
 		
 		//***********************
@@ -481,7 +481,7 @@ BushuoFragInteraction
 		};
 		//启动用户自己定义的类
 		weixinghttp=new Weixinghttp(weixingmainhand);
-		weixingthread=Executors.newFixedThreadPool(3);
+		weixingthread=Executors.newCachedThreadPool();
 		weixingthread.execute(weixinghttp);
 				
 	}
@@ -706,14 +706,7 @@ BushuoFragInteraction
     //用于超时的结束界面
   	private void timeoutBuszhierFinish()
   	{
-  		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
-  		if((iszhier==1)&&(ercheck==false))
-  			deletezhier();
-  		else 
-  		{
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
-		}
+  		BuszhierFinish();
   	}
     
     //发送订单
@@ -766,7 +759,8 @@ BushuoFragInteraction
   	//撤销交易
   	private void deletezhier()
   	{
-  		if(ercheckopt())
+  		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		zhifubaochildhand=zhifubaohttp.obtainHandler();
@@ -785,11 +779,14 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
+  		clearamount();
+    	viewSwitch(BUSPORT, null);
   	}
     //退款
   	private void payoutzhier()
   	{
-  		if(ercheckopt())
+  		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		zhifubaochildhand=zhifubaohttp.obtainHandler();
@@ -809,6 +806,10 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
+  		dialog.dismiss();
+		//清数据
+		clearamount();						
+		recLen=10;
   	}
     
     //=======================
@@ -1242,10 +1243,21 @@ BushuoFragInteraction
 				if (buszhierFragment == null) {
 					buszhierFragment = new BuszhierFragment();
 	            }
-	            // 使用当前Fragment的布局替代id_content的控件
+				// 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhierFragment);
-	            //发送订单
-        		sendzhier();
+				//新建一个线程并启动
+				zhifubaothread.execute(zhifubaohttp);
+				//延时
+			    new Handler().postDelayed(new Runnable() 
+				{
+		            @Override
+		            public void run() 
+		            {   
+			            //发送订单
+		        		sendzhier();
+		            }
+
+				}, 1500);		            
 				break;
 			case BUSZHIWEI://微信支付
 				isbus=false;

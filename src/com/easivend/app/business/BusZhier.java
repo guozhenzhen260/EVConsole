@@ -228,7 +228,8 @@ public class BusZhier extends Activity
 	//撤销交易
 	private void deletezhier()
 	{
-		if(ercheckopt())
+		//if(ercheckopt())
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
 	    	childhand=zhifubaohttp.obtainHandler();
@@ -247,11 +248,14 @@ public class BusZhier extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		timer.shutdown(); 
+		finish();
 	}
 	//退款
 	private void payoutzhier()
 	{
-		if(ercheckopt())
+		//if(ercheckopt())
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
 	    	childhand=zhifubaohttp.obtainHandler();
@@ -271,6 +275,8 @@ public class BusZhier extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		timer.shutdown(); 
+		finish();
 	}
 	//调用倒计时定时器
 	TimerTask task = new TimerTask() { 
