@@ -2297,9 +2297,9 @@ public class EVServerhttp implements Runnable {
         				Map<String, String> map = new HashMap<String, String>();  
         				map.put("Token", Tok);  
         				map.put("VMC_NO", vmc_no);
-        				map.put("OPEN_DOOR_ID", ATTIDS);
+        				map.put("OPEN_DOOR_ID", "");
         				map.put("EXEC_RESULT", "9");
-        				map.put("EXEC_TIME", "");
+        				map.put("EXEC_TIME", ToolClass.getLasttime());
         				map.put("VERSION_STATUS", "2");
         				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载完成version="+map.toString(),"server.txt");
         				return map;  
@@ -2342,11 +2342,11 @@ public class EVServerhttp implements Runnable {
         				Map<String, String> map = new HashMap<String, String>();  
         				map.put("Token", Tok);  
         				map.put("VMC_NO", vmc_no);
-        				map.put("OPEN_DOOR_ID", ATTIDS);
+        				map.put("OPEN_DOOR_ID", "");
         				map.put("EXEC_RESULT", "2");
-        				map.put("EXEC_TIME", "");
+        				map.put("EXEC_TIME", ToolClass.getLasttime());
         				map.put("VERSION_STATUS", "0");
-        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载完成version="+map.toString(),"server.txt");
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载失败version="+map.toString(),"server.txt");
         				return map;  
         		   }  
         		}; 	
@@ -2528,7 +2528,7 @@ public class EVServerhttp implements Runnable {
 //	    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail1]SETFAILMAIN","server.txt");
 //	       }
         	
-        	//第二步：上传给server取货码使用掉
+        	//第二步：上传给server
   			String target17 = httpStr+"/api/uploadClientLog";	//要提交的目标地址
 			final String LAST_EDIT_TIME17=ToolClass.getLasttime();
         	//向主线程返回信息
@@ -2749,7 +2749,7 @@ public class EVServerhttp implements Runnable {
 		  					            public void onResponse(Bitmap response) {  
 		  					            	ToolClass.saveBitmaptoads(response,ATTIDS);
 		  					            	try {
-		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载完成","server.txt");
+		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片["+object2.getString("ADV_TITLE")+"],下载完成","server.txt");
 		  									} catch (JSONException e) {
 		  										// TODO Auto-generated catch block
 		  										e.printStackTrace();
@@ -2760,7 +2760,7 @@ public class EVServerhttp implements Runnable {
 		  					            public void onErrorResponse(VolleyError error) {  
 		  									result = "请求失败！";
 		  									try {
-		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载失败","server.txt");
+		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片["+object2.getString("ADV_TITLE")+"],下载失败","server.txt");
 		  									} catch (JSONException e) {
 		  										// TODO Auto-generated catch block
 		  										e.printStackTrace();
@@ -2817,6 +2817,7 @@ public class EVServerhttp implements Runnable {
   			tomain4.obj=zhuheclassjson.toString();
   			mainhand.sendMessage(tomain4); // 发送消息
   			
+  			//不管成功或失败，都重新置广告时间
   		    //延时3s
   		    new Handler().postDelayed(new Runnable() 
   			{
@@ -2889,9 +2890,10 @@ public class EVServerhttp implements Runnable {
                 if (fileOutputStream != null) {  
                     fileOutputStream.close();  
                 }   
-                ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+ATTADS+"."+TypeStr+"],下载完成","server.txt");
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告视频["+ATTADS+"."+TypeStr+"],下载完成","server.txt");
             } catch (Exception e)
             {
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告视频["+ATTADS+"."+TypeStr+"],下载失败","server.txt");
                 e.printStackTrace();                
             }
         }
@@ -2955,7 +2957,7 @@ public class EVServerhttp implements Runnable {
     			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
     					0,0,MANAGER_PASSWORD,0,0,0,0,0,0,0,"",0,
     					0,0, 0,0,0);
-    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新设备VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置设备VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
     			parameterDAO.updatepwd(tb_vmc_system_parameter); 
   			}
   		}

@@ -204,6 +204,11 @@ public class EVServerService extends Service {
 					//获取商品分类信息	
 					case EVServerhttp.SETERRFAILCLASSMAIN://子线程接收主线程消息获取商品分类信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETCLASSMAIN://子线程接收主线程消息获取商品分类信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息成功","server.txt");
@@ -224,6 +229,11 @@ public class EVServerService extends Service {
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETRODUCTMAIN://子线程接收主线程消息获取商品信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息成功","server.txt");
@@ -244,6 +254,11 @@ public class EVServerService extends Service {
 					//获取货道信息	
 					case EVServerhttp.SETERRFAILHUODAOMAIN://子线程接收主线程消息获取货道信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取货道信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHUODAOMAIN://子线程接收主线程消息获取货道信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取货道信息成功","server.txt");
@@ -279,6 +294,11 @@ public class EVServerService extends Service {
 					//获取心跳信息	
 					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
@@ -293,6 +313,11 @@ public class EVServerService extends Service {
 					//获取上报交易记录返回	
 					case EVServerhttp.SETERRFAILRECORDMAIN://子线程接收主线程消息上报交易记录失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录失败","server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
 						//修改交易数据上报状态为已上报
@@ -313,8 +338,10 @@ public class EVServerService extends Service {
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETPVERSIONCHILD;
 			        		//刚开机时的时间
+			        		//1>>刚开机只设置一次时间：这样刚开机不会下载一次程序，只有在开机之后，后台设置升级程序，才会下载
+			        		//2>>以后都不会再设置时间
 			        		if(LAST_VERSION_TIME.isEmpty())
-			        		{
+			        		{		
 			        			LAST_VERSION_TIME=ToolClass.getLasttime();
 			        		}
 			        		childheartmsg3.obj=LAST_VERSION_TIME;
@@ -324,6 +351,11 @@ public class EVServerService extends Service {
 						//获取版本信息	
 					case EVServerhttp.SETERRFAILVERSIONMAIN://子线程接收主线程消息获取版本失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETVERSIONMAIN://子线程接收主线程消息获取版本信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本信息成功","server.txt");
@@ -331,7 +363,9 @@ public class EVServerService extends Service {
 							//初始化七.2、发送日志上传命令到子线程中
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
-			        		childheartmsg3.what=EVServerhttp.SETLOGCHILD;			        		
+			        		childheartmsg3.what=EVServerhttp.SETLOGCHILD;
+			        		//1>>每次查询都重新设置一次时间：这样开机后不会马上上传日志，只有在开机之后，后台日志上传请求，才会上传
+			        		//2>>如果上传失败，下一次就不会再上传了
 			        		LAST_LOG_TIME=ToolClass.getLasttime();			        		
 			        		childheartmsg3.obj=LAST_LOG_TIME;
 			        		childhand.sendMessage(childheartmsg3);
@@ -340,12 +374,18 @@ public class EVServerService extends Service {
 						//获取版本安装信息	
 					case EVServerhttp.SETINSTALLMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取安装信息成功="+msg.obj.toString(),"server.txt");
+						//3>>安装完程序后，重置时间
 						LAST_VERSION_TIME=ToolClass.getLasttime();
 						installApk(msg.obj.toString());		        		
 						break;
 						//获取日志信息	
 					case EVServerhttp.SETERRFAILLOGMAIN://子线程接收主线程消息获取日志失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本日志，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETLOGMAIN://子线程接收主线程消息获取日志信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取日志信息成功","server.txt");
@@ -354,11 +394,7 @@ public class EVServerService extends Service {
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETACCOUNTCHILD;
-			        		//刚开机时的时间
-//			        		if(LAST_ACCOUNT_TIME.isEmpty())
-//			        		{
-//			        			LAST_ACCOUNT_TIME=ToolClass.getLasttime();
-//			        		}	
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次账号
 			        		childheartmsg3.obj=LAST_ACCOUNT_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
@@ -366,6 +402,11 @@ public class EVServerService extends Service {
 						//获取支付宝微信信息	
 					case EVServerhttp.SETERRFAILACCOUNTMAIN://子线程接收主线程消息获取支付宝微信失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETACCOUNTMAIN://子线程接收主线程消息获取支付宝微信信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信信息成功","server.txt");						
@@ -374,6 +415,7 @@ public class EVServerService extends Service {
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETADVCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次广告
 			        		childheartmsg3.obj=LAST_ADV_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
@@ -381,11 +423,17 @@ public class EVServerService extends Service {
 						//获取支付宝微信账号重新设置
 					case EVServerhttp.SETACCOUNTRESETMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信账号重新设置="+msg.obj.toString(),"server.txt");
+						//2>>设置账号后，重置时间
 						LAST_ACCOUNT_TIME=ToolClass.getLasttime();	        		
 						break;	
 						//获取广告信息	
 					case EVServerhttp.SETERRFAILADVMAIN://子线程接收主线程消息获取广告失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETADVMAIN://子线程接收主线程消息获取广告信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告信息成功","server.txt");						
@@ -394,6 +442,7 @@ public class EVServerService extends Service {
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETCLIENTCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次本机设置
 			        		childheartmsg3.obj=LAST_CLIENT_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
@@ -401,6 +450,7 @@ public class EVServerService extends Service {
 						//获取广告账号重新设置
 					case EVServerhttp.SETADVRESETMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告重新设置="+msg.obj.toString(),"server.txt");
+						//2>>设置广告后，重置时间
 						LAST_ADV_TIME=ToolClass.getLasttime();	 
 						Intent intent3=new Intent();
 						intent3.putExtra("EVWhat", EVServerhttp.SETADVRESETMAIN);
@@ -410,9 +460,15 @@ public class EVServerService extends Service {
 						//获取设备信息	
 					case EVServerhttp.SETERRFAILCLIENTMAIN://子线程接收主线程消息获取设备失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETCLIENTMAIN://子线程接收主线程消息获取设备信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");						
+						//2>>重置设备后，重置时间
 						LAST_CLIENT_TIME=ToolClass.getLasttime();	
 						{
 							//初始化七、发送货道上传命令到子线程中
@@ -426,6 +482,11 @@ public class EVServerService extends Service {
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道信息失败","server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHUODAOSTATUMAIN://子线程接收主线程上报货道信息
 						//修改数据上报状态为已上报
@@ -470,6 +531,11 @@ public class EVServerService extends Service {
 					//上传设备信息	
 					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
@@ -580,7 +646,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },1*60,1*60,TimeUnit.SECONDS);       // 10*60timeTask   
 	}	
 	
 	//更新商品分类信息
