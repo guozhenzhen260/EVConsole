@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.evconsole"
-    android:versionCode="9"
+    android:versionCode="10"
     android:versionName="3.0" >
 
     <uses-sdk
@@ -68,6 +68,13 @@
             android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
+            android:name="com.easivend.app.maintain.OpendoorTest"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="sensor"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
+        <activity
             android:name="com.easivend.app.maintain.ZhifubaoTest"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateUnspecified|adjustPan"
@@ -80,7 +87,7 @@
             android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation" >
-        </activity>
+        </activity>        
         <activity
             android:name="com.easivend.app.maintain.HuodaoSet"
             android:label="@string/app_name"

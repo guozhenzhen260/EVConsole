@@ -252,6 +252,14 @@ public class ParamManager extends TabActivity
 		});
     	
     	btncard = (Button) findViewById(R.id.btncard);
+    	btncard.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, OpendoorTest.class);// 使用AddInaccount窗口初始化Intent
+		    	intent.putExtra("id", edtdevhCode.getText().toString());
+		    	startActivity(intent);// 打开AddInaccount
+		    }
+		});
     	btnzhifubaofaca = (Button) findViewById(R.id.btnzhifubaofaca);
     	btnzhifubaofaca.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override

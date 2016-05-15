@@ -355,10 +355,10 @@ public class EVServerService extends Service {
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETACCOUNTCHILD;
 			        		//刚开机时的时间
-			        		if(LAST_ACCOUNT_TIME.isEmpty())
-			        		{
-			        			LAST_ACCOUNT_TIME=ToolClass.getLasttime();
-			        		}			        					        		
+//			        		if(LAST_ACCOUNT_TIME.isEmpty())
+//			        		{
+//			        			LAST_ACCOUNT_TIME=ToolClass.getLasttime();
+//			        		}	
 			        		childheartmsg3.obj=LAST_ACCOUNT_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
@@ -580,7 +580,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
 	}	
 	
 	//更新商品分类信息

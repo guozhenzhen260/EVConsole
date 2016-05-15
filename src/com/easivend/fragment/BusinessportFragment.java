@@ -228,6 +228,7 @@ public class BusinessportFragment extends Fragment {
 		    	vmc_classDAO classdao = new vmc_classDAO(context);// 创建InaccountDAO对象
 		    	long count=classdao.getCount();
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count,"log.txt");
+		    	Map<String, String>str=new HashMap<String, String>();
 		    	if(count>0)
 		    	{
 			    	//intent = new Intent(context, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
@@ -239,7 +240,8 @@ public class BusinessportFragment extends Fragment {
 //				    		intent = new Intent(context, Busgoods.class);// 使用Accountflag窗口初始化Intent
 //		                	intent.putExtra("proclassID", "");
 //		                	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag		    		
-                	listterner.gotoBusiness(BusPort.BUSGOODS,null);
+		    		str.put("proclassID", "");
+		    		listterner.gotoBusiness(BusPort.BUSGOODS,str);
 		    	}
 		    	
 		    }

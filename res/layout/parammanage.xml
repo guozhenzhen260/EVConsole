@@ -518,10 +518,10 @@
 							       android:layout_gravity="center_horizontal"/> 
 							   <Button
 						             android:id="@+id/btncard"
-						             android:layout_width="100dp"
+						             android:layout_width="wrap_content"
 									 android:layout_height="70dp"  
 						             android:enabled="false"             
-						             android:text="测试" />         
+						             android:text="第三方出货测试" />         
 				            </LinearLayout>	        
 					    </TableRow> 
 					    <View                              
