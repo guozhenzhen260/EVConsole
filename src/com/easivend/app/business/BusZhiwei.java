@@ -132,14 +132,14 @@ public class BusZhiwei extends Activity
 						con++;
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
-						txtbuszhiweirst.setText("交易结果:退款成功");
-						dialog.dismiss();
-						finish();
+//						txtbuszhiweirst.setText("交易结果:退款成功");
+//						dialog.dismiss();
+//						finish();
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
-						txtbuszhiweirst.setText("交易结果:撤销成功");
-						timer.shutdown(); 
-						finish();
+//						txtbuszhiweirst.setText("交易结果:撤销成功");
+//						timer.shutdown(); 
+//						finish();
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						txtbuszhiweirst.setText("交易结果:交易成功");
@@ -251,7 +251,8 @@ public class BusZhiwei extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
-  		timer.shutdown(); 
+  		txtbuszhiweirst.setText("交易结果:退款成功");
+		dialog.dismiss();
 		finish();
 	}
 	//撤销交易
@@ -277,7 +278,8 @@ public class BusZhiwei extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
-  		timer.shutdown(); 
+  		txtbuszhiweirst.setText("交易结果:撤销成功");
+		timer.shutdown(); 
 		finish();
 	}
 	
@@ -338,14 +340,7 @@ public class BusZhiwei extends Activity
 	//用于超时的结束界面
 	private void timeoutfinishActivity()
 	{
-		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
-		if((iszhiwei==1)&&(ercheck==false))
-			deletezhiwei();
-		else 
-		{
-			timer.shutdown(); 
-			finish();
-		}
+		finishActivity();
 	}
 	
 	//跳到出货页面

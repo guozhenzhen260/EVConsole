@@ -130,14 +130,14 @@ public class BusZhier extends Activity
 						con++;
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
-						txtbuszhierrst.setText("交易结果:退款成功");
-						dialog.dismiss();
-						finish();
+//						txtbuszhierrst.setText("交易结果:退款成功");
+//						dialog.dismiss();
+//						finish();
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
-						txtbuszhierrst.setText("交易结果:撤销成功");
-						timer.shutdown(); 
-						finish();
+//						txtbuszhierrst.setText("交易结果:撤销成功");
+//						timer.shutdown(); 
+//						finish();
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						txtbuszhierrst.setText("交易结果:交易成功");
@@ -248,6 +248,7 @@ public class BusZhier extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		txtbuszhierrst.setText("交易结果:撤销成功");
   		timer.shutdown(); 
 		finish();
 	}
@@ -275,7 +276,8 @@ public class BusZhier extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
-  		timer.shutdown(); 
+  		txtbuszhierrst.setText("交易结果:退款成功");
+		dialog.dismiss();
 		finish();
 	}
 	//调用倒计时定时器
@@ -337,14 +339,7 @@ public class BusZhier extends Activity
 	//用于超时的结束界面
 	private void timeoutfinishActivity()
 	{
-		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
-		if((iszhier==1)&&(ercheck==false))
-			deletezhier();
-		else 
-		{
-			timer.shutdown(); 
-			finish();
-		}
+		finishActivity();
 	}
 	
 	//跳到出货页面
