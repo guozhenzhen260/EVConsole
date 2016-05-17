@@ -2392,22 +2392,31 @@ public class EVServerhttp implements Runnable {
   		final JSONObject zhuheobj=object2;
   		//第一步.获取日志ID
   		final int LOG_ID=object2.getInt("CLIENT_LOG_ID");
-  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","需要上传LOG_ID="+LOG_ID,"server.txt");										
+  		String START_LOG_TIME=object2.getString("START_LOG_TIME");
+  		String END_LOG_TIME=object2.getString("END_LOG_TIME");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","需要上传LOG_ID="+LOG_ID+"START_LOG_TIME="+START_LOG_TIME+"END_LOG_TIME"+END_LOG_TIME,"server.txt");										
 		zhuheobj.put("AttImg", LOG_ID);
 		//第二步.压缩日志包
-		final String f=ToolClass.zipFiles();
-  		
-  		try
-  		{	
-  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","日志["+LOG_ID+"]开始上传...","server.txt");
-			//第二步.准备上传	
-  			uploadLog(String.valueOf(LOG_ID),f);
-  		}
-  		catch (Exception e) {
-  			// TODO Auto-generated catch block
-  			e.printStackTrace();
-  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]"+e,"server.txt");
-  		}
+		final String f=ToolClass.logFileInterval(START_LOG_TIME, END_LOG_TIME);
+		
+		if(f==null)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","日志["+LOG_ID+"]无日志需要上传","server.txt");
+		}
+		else
+		{
+	  		try
+	  		{	
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","日志["+LOG_ID+"]开始上传...","server.txt");
+				//第二步.准备上传	
+	  			uploadLog(String.valueOf(LOG_ID),f);
+	  		}
+	  		catch (Exception e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]"+e,"server.txt");
+	  		}
+		}
   		
   		//第三步，把图片名字保存到json中		
   		zhuhelogArray.put(zhuheobj);

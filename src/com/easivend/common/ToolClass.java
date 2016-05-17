@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.KeyStore;
 import java.text.ParseException;
@@ -533,6 +534,204 @@ public class ToolClass
 		System.out.println(fileName+" 修改文件操作="+newname);            		
 		fileName.renameTo(new File(sDir+File.separator+newname));
 	}
+    
+    //java设定一个日期时间，加几分钟（小时或者天）后得到新的日期
+    //返回的是字符串型的时间，
+    //输入的是String day基准时间, int x天数
+    public static String addDateMinut(String day, int x)
+    {   
+    	// 24小时制  
+    	//引号里面个格式也可以是 HH:mm:ss或者HH:mm等等，很随意的，不过在主函数调用时，要和输入的变
+    	//量day格式一致
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;   
+        try {   
+            date = format.parse(day);   
+        } catch (Exception ex) {   
+            ex.printStackTrace();   
+        }   
+        if (date == null)   
+            return "";   
+        System.out.println("front:" + format.format(date)); //显示输入的日期  
+        Calendar cal = Calendar.getInstance();   
+        cal.setTime(date);   //得到基准时间
+        
+        cal.add(Calendar.DATE, x);// 天 
+        date = cal.getTime();   
+        System.out.println("after:" + format.format(date));  //显示更新后的日期 
+        cal = null;   
+        return format.format(date);   
+  
+    } 
+    /**
+     * 递归删除ZIP文件和文件夹
+     * @param file    要删除的根目录
+     */
+    private static void deleteZIPFile()
+    {
+    	String  sDir =null;
+    	 try {
+        	  sDir = ToolClass.ReadLogFile()+"ZIPFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllZIPFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static void deleteAllZIPFile(File file)
+    {        
+        if(file.isDirectory())
+        {
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0)
+            {
+                return;
+            }
+            for(File f : childFile)
+            {
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","删除log="+f.toString(),"server.txt");										
+                f.delete();
+            }
+        }
+    }
+     /**  
+     * 复制单个文件  
+     * @param oldPath String 原文件路径 如：c:/fqf.txt  
+     * @param newPath String 复制后路径 如：f:/fqf.txt  
+     * @return boolean  
+     */   
+	   private static void copyFile(String oldPath, String newPath) 
+	   {   
+	       try {   
+	           int bytesum = 0;   
+	           int byteread = 0;   
+	           File oldfile = new File(oldPath);   
+	           if (oldfile.exists()) { //文件存在时   
+	               InputStream inStream = new FileInputStream(oldPath); //读入原文件   
+	               FileOutputStream fs = new FileOutputStream(newPath);   
+	               byte[] buffer = new byte[1444];   
+	               int length;   
+	               while ( (byteread = inStream.read(buffer)) != -1) {   
+	                   bytesum += byteread; //字节数 文件大小   
+	                   System.out.println(bytesum);   
+	                   fs.write(buffer, 0, byteread);   
+	               }   
+	               inStream.close();   
+	           }   
+	       }   
+	       catch (Exception e) {   
+	           System.out.println("复制单个文件操作出错");   
+	           e.printStackTrace();   
+	  
+	       }   
+	  
+	   }  
+	   /**
+	     * zipLogFiles压缩需要上传的日志包
+	     * @param 
+	     */
+	    private static String zipLogFiles(String srcFileString) 
+	  	{  
+	  		//遍历这个文件夹里的所有文件
+	  		String zipFileString=ToolClass.getEV_DIR()+File.separator+"logzip.zip";
+	  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<srcFileString="+srcFileString+" zipFileString="+zipFileString,"log.txt"); 
+	  		try {
+	  			XZip.ZipFolder(srcFileString, zipFileString);
+	  		} catch (Exception e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	  		return zipFileString;
+	  	}   
+    /**
+     * 判断与当前时间差距多久,createtime是文件创建时间,datetime是当前时间
+     * 传入的时间格式必须类似于2012-8-21 17:53:20这样的格式  
+     * 返回值：1秒，2分，3时，4天，5半个月
+     */
+    public static String logFileInterval(String starttime,String endtime)
+    {
+    	boolean inter=false;//true表示需要压缩数据包
+        String  sDir =null,zipDir=null,zipFileString=null;
+    	File fileName=null;
+    	
+        //1.设置起始时间和结束时间
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+        
+        ParsePosition pos = new ParsePosition(0);  
+        Date d1 = (Date) sd.parse(starttime, pos); 
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","起始时间="+starttime+",="+d1.getTime(),"server.txt");
+        
+        endtime=addDateMinut(endtime,1);
+        ParsePosition posnow = new ParsePosition(0);  
+        Date dnow = (Date) sd.parse(endtime, posnow);
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","结束时间="+endtime+",="+dnow.getTime(),"server.txt");
+        //2.整理压缩目标目录 
+        deleteZIPFile(); 	
+        zipDir=ToolClass.ReadLogFile()+"ZIPFile"+File.separator;
+        //3.遍历log文件，判断是否是在这个时间之内
+        try {
+        	 sDir = ToolClass.getEV_DIR()+File.separator+"logs";
+  		  
+	  		 File dirName = new File(sDir);
+	  		 //如果目录不存在，则创建目录
+	  		 if (!dirName.exists()) 
+	  		 {  
+	  			//按照指定的路径创建文件夹  
+	  			dirName.mkdirs(); 
+	  		 }   
+	  		//遍历这个文件夹里的所有文件
+	   		File[] files = dirName.listFiles();
+	   		if (files.length > 0) 
+	   		{  
+	   			for (int i = 0; i < files.length; i++) 
+	   			{
+	   			  if(!files[i].isDirectory())
+	   			  {		
+	   				  	ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断日志目录内文件="+files[i].toString(),"server.txt"); 
+	   				   
+	   		        	fileName=new File(files[i].toString()); 
+	   		        	if(fileName.exists())
+	   		        	{  
+	   		        		String logdatetime = getFileCreated(fileName);
+	   		        		ParsePosition poslog = new ParsePosition(0);  
+	   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
+	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
+	   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
+	   		            	{
+	   		            		//4.拷贝文件到压缩目录中
+	   		            		String a[] = files[i].toString().split("/");  
+	   		            		String ATT_ID=a[a.length-1];  
+	   		            		String ZIPFile=zipDir+ATT_ID;
+	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
+	   		            		copyFile(files[i].toString(),ZIPFile);
+	   		            		inter=true;
+	   		            	}
+	   		            	else
+	   		            	{
+	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
+	   		            	}	
+	   		    	    } 
+	   			  }
+	   			}
+	   		}
+	   		//5.压缩数据包
+	   		if(inter)
+	   		{
+	   			zipFileString=zipLogFiles(zipDir);
+	   		}
+	     } catch (Exception e) {
+			e.printStackTrace();
+		 } 
+        return zipFileString;
+    }
 	
 	 /* 遍历目录内文件列表， file是目录名，datetime是当前时间，如果超过半个月，就删除掉这个文件
 	  * */  
