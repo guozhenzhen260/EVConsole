@@ -373,7 +373,7 @@ public class BusinesslandFragment extends Fragment
 		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
 		
 		Dialog dialog = new AlertDialog.Builder(context)
-		.setTitle("修改密码")
+		.setTitle("请输入管理员密码")
 		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
 				

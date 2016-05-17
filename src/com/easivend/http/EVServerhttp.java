@@ -2345,7 +2345,7 @@ public class EVServerhttp implements Runnable {
         				map.put("OPEN_DOOR_ID", "");
         				map.put("EXEC_RESULT", "2");
         				map.put("EXEC_TIME", ToolClass.getLasttime());
-        				map.put("VERSION_STATUS", "0");
+        				map.put("VERSION_STATUS", "1");
         				ToolClass.Log(ToolClass.INFO,"EV_SERVER","œ¬‘ÿ ß∞‹version="+map.toString(),"server.txt");
         				return map;  
         		   }  

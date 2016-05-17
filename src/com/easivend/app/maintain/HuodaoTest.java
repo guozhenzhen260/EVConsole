@@ -1688,18 +1688,27 @@ public class HuodaoTest extends TabActivity
 					if(autohuonno)
 					{
 						setallhuorst();
-						//出货下一个货道
-						if((huonno>0)&&(huonno<huonum))
-						{							
-							huonno++;
-							comsend(COMService.EV_CHUHUOCHILD,huonno);
-						}
-						else if(huonno>=huonum)
-						{							
-							huonno=1;
-							autohuonum++;
-							comsend(COMService.EV_CHUHUOCHILD,huonno);
-						}
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {            	
+				            	//出货下一个货道
+								if((huonno>0)&&(huonno<huonum))
+								{							
+									huonno++;
+									comsend(COMService.EV_CHUHUOCHILD,huonno);
+								}
+								else if(huonno>=huonum)
+								{							
+									huonno=1;
+									autohuonum++;
+									comsend(COMService.EV_CHUHUOCHILD,huonno);
+								}
+				            }
+
+						}, 500);						
 					}
 				}
 				break;

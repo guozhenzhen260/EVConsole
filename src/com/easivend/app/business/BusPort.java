@@ -698,6 +698,7 @@ BushuoFragInteraction
 			deletezhier();
 		else 
 		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 	    	clearamount();
 	    	viewSwitch(BUSPORT, null);
 		}
@@ -759,6 +760,7 @@ BushuoFragInteraction
   	private void deletezhier()
   	{
   		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
@@ -822,6 +824,7 @@ BushuoFragInteraction
 			deletezhiwei();
 		else 
 		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 	    	clearamount();
 	    	viewSwitch(BUSPORT, null);
 		}
@@ -863,7 +866,7 @@ BushuoFragInteraction
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
 	  		Message childmsg=weixingchildhand.obtainMessage();
-	  		childmsg.what=Zhifubaohttp.SETQUERYCHILD;
+	  		childmsg.what=Weixinghttp.SETQUERYCHILD;
 	  		JSONObject ev=null;
 	  		try {
 	  			ev=new JSONObject();
@@ -887,7 +890,7 @@ BushuoFragInteraction
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
 	  		Message childmsg=weixingchildhand.obtainMessage();
-	  		childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
+	  		childmsg.what=Weixinghttp.SETPAYOUTCHILD;
 	  		JSONObject ev=null;
 	  		try {
 	  			ev=new JSONObject();
@@ -913,6 +916,7 @@ BushuoFragInteraction
   	private void deletezhiwei()
   	{
   		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
