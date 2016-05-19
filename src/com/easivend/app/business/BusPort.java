@@ -1304,26 +1304,7 @@ BushuoFragInteraction
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
-		if(requestCode==PWD_CODE)
-		{
-			if(resultCode==PassWord.RESULT_OK)
-			{
-				Bundle bundle=data.getExtras();
-				String pwd = bundle.getString("pwd");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<维护密码pwd="+pwd,"log.txt");
-				boolean istrue=ToolClass.getpwdStatus(BusPort.this,pwd);
-				if(istrue)
-		    	{
-		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
-		    		finish();
-		    	}
-		    	else
-		    	{
-		    		listterner.BusportMovie();
-				}
-			}			
-		}
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");		
 	}
 	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
 	public class COMReceiver extends BroadcastReceiver 

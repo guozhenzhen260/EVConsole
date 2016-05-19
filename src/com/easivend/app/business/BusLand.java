@@ -334,37 +334,13 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");		
-		if(requestCode==PWD_CODE)
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode,"log.txt");		
+		if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
 		{
-			if(resultCode==PassWord.RESULT_OK)
-			{
-				Bundle bundle=data.getExtras();
-				String pwd = bundle.getString("pwd");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<维护密码pwd="+pwd,"log.txt");
-				boolean istrue=ToolClass.getpwdStatus(BusLand.this,pwd);
-				if(istrue)
-		    	{
-		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
-		    		finish();
-		    	}
-		    	else
-		    	{		    		
-		    		switchMovie();
-		    		// 弹出信息提示
-			        Toast.makeText(BusLand.this, "抱歉，维护密码输入错误！", Toast.LENGTH_LONG).show();
-				}
-			}			
-		}
-		else if(requestCode==REQUEST_CODE)
-		{
-			if(resultCode==0x03)
-			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
-				OrderDetail.addLog(BusLand.this);	
-				switchMovie();
-			}
-		}
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+			OrderDetail.addLog(BusLand.this);	
+			switchMovie();
+		}		
 		else 
 		{
 			switchMovie();	

@@ -58,6 +58,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,6 +70,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -262,7 +264,7 @@ public class HuodaoTest extends TabActivity
     	btnhuosetexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	
-		    	finish();
+		    	finishActivity();
 		    }
 		});    	
     	
@@ -428,7 +430,7 @@ public class HuodaoTest extends TabActivity
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	
-		    	finish();
+		    	finishActivity();
 		    }
 		});
 		
@@ -1512,7 +1514,7 @@ public class HuodaoTest extends TabActivity
 		btnhuosetclose.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 				    @Override
 				    public void onClick(View arg0) {				    	
-				    	finish();
+				    	finishActivity();
 				    }
 				});
 	}
@@ -1752,6 +1754,25 @@ public class HuodaoTest extends TabActivity
 				barhuomanager.setVisibility(View.VISIBLE);  
 				showhuodao();
 			}			
+		}
+	}
+	
+	private void finishActivity()
+	{
+		if(autohuonno)
+		{
+			// 弹出信息提示
+			Toast myToast=Toast.makeText(HuodaoTest.this, "请在[本次出货完成]之后，再退出页面！", Toast.LENGTH_LONG);
+			myToast.setGravity(Gravity.CENTER, 0, 0);
+			LinearLayout toastView = (LinearLayout) myToast.getView();
+			ImageView imageCodeProject = new ImageView(getApplicationContext());
+			imageCodeProject.setImageResource(R.drawable.search);
+			toastView.addView(imageCodeProject, 0);
+			myToast.show();
+		}
+		else
+		{
+			finish();
 		}
 	}
 	
