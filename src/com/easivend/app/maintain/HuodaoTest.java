@@ -85,6 +85,7 @@ public class HuodaoTest extends TabActivity
 	private TabHost mytabhost = null;
 	private ProgressBar barhuomanager=null;
 	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest,R.id.tab_huodaoset};//内嵌布局文件的id
+	HuoPictureAdapter adapter=null;
 	private TextView txthuosetrst=null;
 	private int con=1;//查询连接次数
 	private int ishuoquery=0;//是否正在查询1,正在查询,0查询完成
@@ -201,6 +202,7 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
@@ -375,6 +377,7 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
@@ -1398,6 +1401,7 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
@@ -1597,7 +1601,7 @@ public class HuodaoTest extends TabActivity
 				cool=(Integer)Set.get("cool");
 				hot=(Integer)Set.get("hot");
 				light=(Integer)Set.get("light");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","API<<货道cool:"+cool+",hot="+hot+",light="+light,"com.txt");
 				if(light>0)
 				{
 					txtlight.setText("支持");
@@ -1653,8 +1657,21 @@ public class HuodaoTest extends TabActivity
 					}
 				} 
 				huonum=huoSet.size();
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
-				showhuodao();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<"+huonum+"货道状态:"+huoSet.toString(),"com.txt");	
+				//延时
+			    new Handler().postDelayed(new Runnable() 
+				{
+		            @Override
+		            public void run() 
+		            {        
+		            	if(huonum==0)
+		            	{
+		            		ToolClass.failToast("本柜连接失败!");
+		            	}
+		            	showhuodao();//显示货道列表
+		            }
+
+				}, 500);				
 				break;
 			//操作返回	
 			case COMService.EV_OPTMAIN: 
@@ -1762,13 +1779,7 @@ public class HuodaoTest extends TabActivity
 		if(autohuonno)
 		{
 			// 弹出信息提示
-			Toast myToast=Toast.makeText(HuodaoTest.this, "请在[本次出货完成]之后，再退出页面！", Toast.LENGTH_LONG);
-			myToast.setGravity(Gravity.CENTER, 0, 0);
-			LinearLayout toastView = (LinearLayout) myToast.getView();
-			ImageView imageCodeProject = new ImageView(getApplicationContext());
-			imageCodeProject.setImageResource(R.drawable.search);
-			toastView.addView(imageCodeProject, 0);
-			myToast.show();
+			ToolClass.failToast("请在[本次出货完成]之后，再退出页面！");
 		}
 		else
 		{
@@ -1827,7 +1838,7 @@ public class HuodaoTest extends TabActivity
 		    	}
 		    	else
 		        {
-		            Toast.makeText(HuodaoTest.this, "请输入货柜编号和类型！", Toast.LENGTH_SHORT).show();
+		    		ToolClass.failToast("请输入货柜编号和类型！");	
 		        }
 			}
 		})
@@ -1861,7 +1872,7 @@ public class HuodaoTest extends TabActivity
 		} catch (Exception e)
 		{
 			// TODO: handle exception
-			Toast.makeText(HuodaoTest.this, "货柜添加失败！", Toast.LENGTH_SHORT).show();
+			ToolClass.failToast("货柜添加失败！");	
 		}
 	}
 	//显示全部柜信息
@@ -1905,7 +1916,7 @@ public class HuodaoTest extends TabActivity
 		@Override
 		protected void onPostExecute(Vmc_HuoAdapter huoAdapter) {
 			// TODO Auto-generated method stub
-			HuoPictureAdapter adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+			adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
 			gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
 			barhuomanager.setVisibility(View.GONE);
 		}

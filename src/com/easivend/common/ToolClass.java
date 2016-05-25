@@ -61,6 +61,7 @@ import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.XZip;
 import com.easivend.weixing.WeiConfig;
 import com.easivend.weixing.WeiConfigAPI;
+import com.example.evconsole.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -80,6 +81,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class ToolClass 
 {
@@ -2675,6 +2680,19 @@ public class ToolClass
 				ToolClass.setColumncom_id(ToolClass.Resetportid(columncom));
 			}
 		}
+	}
+	
+	//弹出图形界面失败提示
+	public static void failToast(String str)
+	{
+		// 弹出信息提示
+		Toast myToast=Toast.makeText(context, str, Toast.LENGTH_LONG);
+		myToast.setGravity(Gravity.CENTER, 0, 0);
+		LinearLayout toastView = (LinearLayout) myToast.getView();
+		ImageView imageCodeProject = new ImageView(context);
+		imageCodeProject.setImageResource(R.drawable.search);
+		toastView.addView(imageCodeProject, 0);
+		myToast.show();
 	}
 	
 }

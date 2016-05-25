@@ -416,13 +416,13 @@ public class ParamManager extends TabActivity
     		} catch (Exception e)
 			{
 				// TODO: handle exception
-				Toast.makeText(ParamManager.this, "数据添加失败！", Toast.LENGTH_SHORT).show();
+    			ToolClass.failToast("数据添加失败！");	
 			}		    		
             
         } 
         else
         {
-            Toast.makeText(ParamManager.this, "请填写红色部分！", Toast.LENGTH_SHORT).show();
+        	ToolClass.failToast("请填写红色部分！");	
         }
     }
     
@@ -705,7 +705,7 @@ public class ParamManager extends TabActivity
 		} catch (Exception e)
 		{
 			// TODO: handle exception
-			Toast.makeText(ParamManager.this, "数据添加失败！", Toast.LENGTH_SHORT).show();
+			ToolClass.failToast("数据添加失败！");	
 		}	    		    	
 	}
     @Override

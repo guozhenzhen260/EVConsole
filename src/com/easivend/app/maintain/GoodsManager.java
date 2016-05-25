@@ -171,13 +171,13 @@ public class GoodsManager extends TabActivity
 					} catch (Exception e)
 					{
 						// TODO: handle exception
-						Toast.makeText(GoodsManager.this, "类别添加失败！", Toast.LENGTH_SHORT).show();
+						ToolClass.failToast("类别添加失败！");	
 					}			    		
 		            showInfo();
 		        } 
 		        else
 		        {
-		            Toast.makeText(GoodsManager.this, "请输入类别编号和名称！", Toast.LENGTH_SHORT).show();
+		        	ToolClass.failToast("请输入类别编号和名称！");	
 		        }
 		    }
 		});
@@ -203,7 +203,7 @@ public class GoodsManager extends TabActivity
 		        } 
 		        else
 		        {
-		            Toast.makeText(GoodsManager.this, "请输入类别编号和名称！", Toast.LENGTH_SHORT).show();
+		        	ToolClass.failToast("请输入类别编号和名称！");	
 		        }
 		    }
 		});
@@ -253,7 +253,7 @@ public class GoodsManager extends TabActivity
 		    	}			    	 
 		        else
 		        {
-		            Toast.makeText(GoodsManager.this, "请输入类别编号和名称！", Toast.LENGTH_SHORT).show();
+		        	ToolClass.failToast("请输入类别编号和名称！");	
 		        }
 		    }
 		});
@@ -355,7 +355,7 @@ public class GoodsManager extends TabActivity
 		    	}
 		    	else
 		        {
-		            Toast.makeText(GoodsManager.this, "请选择需要删除的商品！", Toast.LENGTH_SHORT).show();
+		    		ToolClass.failToast("请选择需要删除的商品！");	
 		        }
 		    }
 		});

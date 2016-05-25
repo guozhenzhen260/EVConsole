@@ -357,13 +357,7 @@ public class BusinessportFragment extends Fragment {
 			    huo="";
 			    txtadsTip.setText("");
 			    // 弹出信息提示
-				Toast myToast=Toast.makeText(context, "抱歉，本商品已售完！", Toast.LENGTH_LONG);
-				myToast.setGravity(Gravity.CENTER, 0, 0);
-				LinearLayout toastView = (LinearLayout) myToast.getView();
-				ImageView imageCodeProject = new ImageView(context);
-				imageCodeProject.setImageResource(R.drawable.search);
-				toastView.addView(imageCodeProject, 0);
-				myToast.show();
+			    ToolClass.failToast("抱歉，本商品已售完！");	
 			}
 		    
 		}
@@ -427,7 +421,7 @@ public class BusinessportFragment extends Fragment {
 		    	else
 		    	{
                 	// 弹出信息提示
-		            Toast.makeText(context, "〖管理员密码〗错误！", Toast.LENGTH_LONG).show();
+		    		ToolClass.failToast("〖管理员密码〗错误！");
 		    	}
 			}
 		})

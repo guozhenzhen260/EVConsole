@@ -197,13 +197,13 @@ public class HuodaoSet extends Activity
 		    		} catch (Exception e)
 					{
 						// TODO: handle exception
-						Toast.makeText(HuodaoSet.this, "配置货道失败！", Toast.LENGTH_LONG).show();
+		    			ToolClass.failToast("配置货道失败！");	
 					}		    		
 		            
 		        } 
 		        else
 		        {
-		            Toast.makeText(HuodaoSet.this, "请填完参数！", Toast.LENGTH_LONG).show();
+		        	ToolClass.failToast("请填完参数！");
 		        }
 		    }
 		});

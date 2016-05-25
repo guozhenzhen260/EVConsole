@@ -587,13 +587,7 @@ BushuoFragInteraction
 			case EVServerhttp.SETERRFAILPICKUPMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码失败","log.txt");
 				// 弹出信息提示
-				Toast myToast=Toast.makeText(context, "抱歉，取货码无效,请联系管理员！", Toast.LENGTH_LONG);
-				myToast.setGravity(Gravity.CENTER, 0, 0);
-				LinearLayout toastView = (LinearLayout) myToast.getView();
-				ImageView imageCodeProject = new ImageView(getApplicationContext());
-				imageCodeProject.setImageResource(R.drawable.search);
-				toastView.addView(imageCodeProject, 0);
-				myToast.show();
+				ToolClass.failToast("抱歉，取货码无效,请联系管理员！");
 	    		break;	
 			case EVServerhttp.SETADVRESETMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=刷新广告","log.txt");

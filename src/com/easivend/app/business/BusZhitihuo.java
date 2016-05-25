@@ -178,13 +178,7 @@ public class BusZhitihuo extends Activity
 			    	str.delete(0,str.length()); 
 			    	txtadsTip.setText(str);
 			    	// 弹出信息提示
-			    	Toast myToast=Toast.makeText(BusZhitihuo.this, "抱歉，〖提货密码〗无效,请联系管理员！", Toast.LENGTH_LONG);
-			    	myToast.setGravity(Gravity.CENTER, 0, 0);
-					LinearLayout toastView = (LinearLayout) myToast.getView();
-					ImageView imageCodeProject = new ImageView(getApplicationContext());
-					imageCodeProject.setImageResource(R.drawable.search);
-					toastView.addView(imageCodeProject, 0);
-					myToast.show();
+			    	ToolClass.failToast("抱歉，〖提货密码〗无效,请联系管理员！");			    	
 		    	}
 		    }
 		});
@@ -218,12 +212,12 @@ public class BusZhitihuo extends Activity
 						if(newstr.equals("")==true)
 						{
 							// 弹出信息提示
-				            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗错误！", Toast.LENGTH_LONG).show();
+							ToolClass.failToast("〖修改提货密码〗错误！");
 						}
 						else if(newstr.equals(newstr2)==false)
 						{
 							// 弹出信息提示
-				            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗错误！", Toast.LENGTH_LONG).show();
+							ToolClass.failToast("〖修改提货密码〗错误！");
 						}
 						else if(ToolClass.getzhitihuo(BusZhitihuo.this, OrderDetail.getCabID(), OrderDetail.getColumnID(), oldstr))
 						{
