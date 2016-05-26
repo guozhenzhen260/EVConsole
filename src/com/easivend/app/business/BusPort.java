@@ -242,7 +242,7 @@ BushuoFragInteraction
 	        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt");
 	        	  if(isbus==false)
 	        	  {
-		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
+		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 
 		        	  //»Øµ½Ê×Ò³
 		        	  if(recLen == 0)

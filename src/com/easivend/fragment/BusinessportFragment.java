@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
@@ -45,9 +46,8 @@ public class BusinessportFragment extends Fragment {
 	private static int count=0;
 	private static String huo="";
 	//定时器清除调出密码框的功能
-//	Timer timer = new Timer(true);
-//    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60延迟5分钟	
-//    private int recLen = SPLASH_DISPLAY_LENGHT; 
+	Dialog psdialog=null;
+	Dialog quhuodialog=null;
 	//发送出货指令
     private String proID = null;
 	private String productID = null;
@@ -374,7 +374,7 @@ public class BusinessportFragment extends Fragment {
 		myview=factory.inflate(R.layout.selectinteger, null);
 		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
 		dialoginte.setTransformationMethod(PasswordTransformationMethod.getInstance());
-		Dialog dialog = new AlertDialog.Builder(context)
+		psdialog = new AlertDialog.Builder(context)
 		.setTitle("请输入管理员密码")
 		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
@@ -436,8 +436,26 @@ public class BusinessportFragment extends Fragment {
     	})
 		.setView(myview)//这里将对话框布局文件加入到对话框中
 		.create();
-		dialog.show();  
+		psdialog.show();  
+		
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消密码框","log.txt");
+            	if(psdialog!=null)
+            	{
+	            	if(psdialog.isShowing())
+	            	{
+	            		psdialog.dismiss();
+	            	}
+            	}
+            }
+
+		}, 2*60*1000);
     }
     
     //取货码框
@@ -448,7 +466,7 @@ public class BusinessportFragment extends Fragment {
 		LayoutInflater factory = LayoutInflater.from(context);
 		myview=factory.inflate(R.layout.selectinteger, null);
 		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
-		Dialog dialog = new AlertDialog.Builder(context)
+		quhuodialog = new AlertDialog.Builder(context)
 		.setTitle("请输入取货码")
 		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
@@ -477,8 +495,26 @@ public class BusinessportFragment extends Fragment {
     	})
 		.setView(myview)//这里将对话框布局文件加入到对话框中
 		.create();
-		dialog.show();  
+		quhuodialog.show();  
+		
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开取货码框","log.txt");
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消取货码框","log.txt");
+            	if(quhuodialog!=null)
+            	{
+	            	if(quhuodialog.isShowing())
+	            	{
+	            		quhuodialog.dismiss();
+	            	}
+            	}
+            }
+
+		}, 2*60*1000);
     }
     
     

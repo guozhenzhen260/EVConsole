@@ -2,7 +2,11 @@ package com.easivend.fragment;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.easivend.app.maintain.HuodaoTest;
+import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.common.Vmc_HuoAdapter;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
@@ -16,7 +20,9 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,9 +48,8 @@ public class BusinesslandFragment extends Fragment
 	private static int count=0;
 	private static String huo="";
 	//定时器清除调出密码框的功能
-	//Timer timer = new Timer(true);
-//    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60延迟5分钟	
-//    private int recLen = SPLASH_DISPLAY_LENGHT; 
+	Dialog psdialog=null;
+	Dialog quhuodialog=null;
 	//发送出货指令
     private String proID = null;
 	private String productID = null;
@@ -366,7 +371,7 @@ public class BusinesslandFragment extends Fragment
 		myview=factory.inflate(R.layout.selectinteger, null);
 		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
 		
-		Dialog dialog = new AlertDialog.Builder(context)
+		psdialog = new AlertDialog.Builder(context)
 		.setTitle("请输入管理员密码")
 		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
@@ -429,11 +434,30 @@ public class BusinesslandFragment extends Fragment
     	})
 		.setView(myview)//这里将对话框布局文件加入到对话框中
 		.create();
-		dialog.show();
+		psdialog.show();
 		
     	listterner.stoptimer();//关闭定时器
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
+    	//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消密码框","log.txt");
+            	if(psdialog!=null)
+            	{
+	            	if(psdialog.isShowing())
+	            	{
+	            		psdialog.dismiss();
+	            		listterner.restarttimer();//重新打开定时器
+	            	}
+            	}
+            }
+
+		}, 2*60*1000);
     }
+        
     
     //取货码框
     private void quhuodialog()
@@ -443,7 +467,7 @@ public class BusinesslandFragment extends Fragment
 		LayoutInflater factory = LayoutInflater.from(context);
 		myview=factory.inflate(R.layout.selectinteger, null);
 		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
-		Dialog dialog = new AlertDialog.Builder(context)
+		quhuodialog = new AlertDialog.Builder(context)
 		.setTitle("请输入取货码")
 		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
 		{
@@ -459,6 +483,10 @@ public class BusinesslandFragment extends Fragment
 					//步骤二、fragment向activity发送回调信息
 		        	listterner.quhuoBusiness(PICKUP_CODE);
 				}
+				else
+				{
+					listterner.restarttimer();//重新打开定时器
+				}
 			}
 		})
 		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
@@ -467,13 +495,33 @@ public class BusinesslandFragment extends Fragment
 			public void onClick(DialogInterface dialog, int which) 
 			{
 				// TODO Auto-generated method stub	
-				
+				listterner.restarttimer();//重新打开定时器
 			}
     	})
 		.setView(myview)//这里将对话框布局文件加入到对话框中
 		.create();
-		dialog.show();  
+		quhuodialog.show();  
+		
+		listterner.stoptimer();//关闭定时器
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开取货码框","log.txt");
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消取货码框","log.txt");
+            	if(quhuodialog!=null)
+            	{
+	            	if(quhuodialog.isShowing())
+	            	{
+	            		quhuodialog.dismiss();
+	            		listterner.restarttimer();//重新打开定时器
+	            	}
+            	}
+            }
+
+		}, 2*60*1000);	
     }
-   
+      
 }

@@ -79,7 +79,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt"); 
 	        	  if(isbus==false)
 	        	  {
-		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
+		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 		    	      
 		        	  if(recLen == 0)
 		              { 
@@ -220,7 +220,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		@Override
 		public void onReceive(Context context, Intent intent) 
 		{
-			// TODO Auto-generated method stub
+			// TODO Auto-generated method stub			
 			Bundle bundle=intent.getExtras();
 			int EVWhat=bundle.getInt("EVWhat");
 			switch(EVWhat)
@@ -249,6 +249,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 				break;
 			case EVServerhttp.SETERRFAILPICKUPMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码失败","log.txt");
+				restarttimer();//重新打开定时器
 				// 弹出信息提示
 				ToolClass.failToast("抱歉，取货码无效,请联系管理员！");
 				break;	

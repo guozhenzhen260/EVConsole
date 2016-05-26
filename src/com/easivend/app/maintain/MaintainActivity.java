@@ -318,32 +318,51 @@ public class MaintainActivity extends Activity
 			{
 			case EVServerhttp.SETMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=签到成功","log.txt");			
-				dialog.dismiss();				
+				if(dialog.isShowing())
+					dialog.dismiss();
+				if(issale==false)
+				{
+					issale=true;
+					//签到完成，自动开启售货程序
+					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
+					Intent intbus;
+					//横屏
+					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+					{
+						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+					}
+					//竖屏
+					else
+					{
+						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+					}
+					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+				}
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=失败，网络故障","log.txt");	
 				if(dialog.isShowing())
 					dialog.dismiss();
+				if(issale==false)
+				{
+					issale=true;
+					//签到完成，自动开启售货程序
+					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
+					Intent intbus;
+					//横屏
+					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+					{
+						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+					}
+					//竖屏
+					else
+					{
+						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+					}
+					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+				}
 	    		break;	
-			}
-			if(issale==false)
-			{
-				issale=true;
-				//签到完成，自动开启售货程序
-				barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
-				Intent intbus;
-				//横屏
-				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-				{
-					intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-				}
-				//竖屏
-				else
-				{
-					intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-				}
-				startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
-			}
+			}			
 		}
 
 	}

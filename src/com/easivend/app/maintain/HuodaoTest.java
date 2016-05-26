@@ -1658,20 +1658,11 @@ public class HuodaoTest extends TabActivity
 				} 
 				huonum=huoSet.size();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<"+huonum+"货道状态:"+huoSet.toString(),"com.txt");	
-				//延时
-			    new Handler().postDelayed(new Runnable() 
-				{
-		            @Override
-		            public void run() 
-		            {        
-		            	if(huonum==0)
-		            	{
-		            		ToolClass.failToast("本柜连接失败!");
-		            	}
-		            	showhuodao();//显示货道列表
-		            }
-
-				}, 500);				
+				if(huonum==0)
+            	{
+            		ToolClass.failToast("本柜连接失败!");
+            	}
+            	showhuodao();//显示货道列表				
 				break;
 			//操作返回	
 			case COMService.EV_OPTMAIN: 
