@@ -54,7 +54,7 @@
    	    android:id = "@+id/ivbuszhierb"
    	    android:layout_width="329dp"
 		android:layout_height="329dp"	
-		android:layout_toRightOf="@+id/txtbuszhiamerount"
+		android:layout_toLeftOf="@+id/ivbuszhier"
 		android:layout_below="@+id/txtbuszhierrst"	
 		android:src="@drawable/zhier"			
    	/>
@@ -62,7 +62,7 @@
 	    android:id="@+id/ivbuszhier"
 	    android:layout_width="329dp"
         android:layout_height="329dp"
-        android:layout_toRightOf="@+id/ivbuszhierb"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/txtbuszhierrst"	
         android:src="@drawable/wutupian"
         />

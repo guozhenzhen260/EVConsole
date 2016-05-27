@@ -132,14 +132,14 @@ public class BusZhiwei extends Activity
 						con++;
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
-						txtbuszhiweirst.setText("交易结果:退款成功");
-						dialog.dismiss();
-						finish();
+//						txtbuszhiweirst.setText("交易结果:退款成功");
+//						dialog.dismiss();
+//						finish();
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
-						txtbuszhiweirst.setText("交易结果:撤销成功");
-						timer.shutdown(); 
-						finish();
+//						txtbuszhiweirst.setText("交易结果:撤销成功");
+//						timer.shutdown(); 
+//						finish();
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						txtbuszhiweirst.setText("交易结果:交易成功");
@@ -229,7 +229,8 @@ public class BusZhiwei extends Activity
 	//退款交易
 	private void payoutzhiwei()
 	{
-		if(ercheckopt())
+		//if(ercheckopt())
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
 	    	childhand=weixinghttp.obtainHandler();
@@ -250,11 +251,15 @@ public class BusZhiwei extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		txtbuszhiweirst.setText("交易结果:退款成功");
+		dialog.dismiss();
+		finish();
 	}
 	//撤销交易
 	private void deletezhiwei()
 	{
-		if(ercheckopt())
+		//if(ercheckopt())
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
 			childhand=weixinghttp.obtainHandler();
@@ -273,6 +278,9 @@ public class BusZhiwei extends Activity
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
   		}
+  		txtbuszhiweirst.setText("交易结果:撤销成功");
+		timer.shutdown(); 
+		finish();
 	}
 	
 	//调用倒计时定时器
@@ -332,14 +340,7 @@ public class BusZhiwei extends Activity
 	//用于超时的结束界面
 	private void timeoutfinishActivity()
 	{
-		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
-		if((iszhiwei==1)&&(ercheck==false))
-			deletezhiwei();
-		else 
-		{
-			timer.shutdown(); 
-			finish();
-		}
+		finishActivity();
 	}
 	
 	//跳到出货页面

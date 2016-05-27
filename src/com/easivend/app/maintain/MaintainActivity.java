@@ -172,7 +172,7 @@ public class MaintainActivity extends Activity
 		//================
 		//串口配置和注册相关
 		//================
-		ToolClass.SetDir();	
+		ToolClass.SetDir();	//设置根目录
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
@@ -317,33 +317,52 @@ public class MaintainActivity extends Activity
 			switch(EVWhat)
 			{
 			case EVServerhttp.SETMAIN:
-				Log.i("EV_JNI","activity=签到成功");					
-				dialog.dismiss();				
-	    		break;
-			case EVServerhttp.SETFAILMAIN:
-				Log.i("EV_JNI","activity=失败，网络故障");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=签到成功","log.txt");			
 				if(dialog.isShowing())
 					dialog.dismiss();
+				if(issale==false)
+				{
+					issale=true;
+					//签到完成，自动开启售货程序
+					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
+					Intent intbus;
+					//横屏
+					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+					{
+						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+					}
+					//竖屏
+					else
+					{
+						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+					}
+					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+				}
+	    		break;
+			case EVServerhttp.SETFAILMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=失败，网络故障","log.txt");	
+				if(dialog.isShowing())
+					dialog.dismiss();
+				if(issale==false)
+				{
+					issale=true;
+					//签到完成，自动开启售货程序
+					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
+					Intent intbus;
+					//横屏
+					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+					{
+						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+					}
+					//竖屏
+					else
+					{
+						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+					}
+					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+				}
 	    		break;	
-			}
-			if(issale==false)
-			{
-				issale=true;
-				//签到完成，自动开启售货程序
-				barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
-				Intent intbus;
-				//横屏
-				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-				{
-					intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-				}
-				//竖屏
-				else
-				{
-					intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-				}
-				startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
-			}
+			}			
 		}
 
 	}

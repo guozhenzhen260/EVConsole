@@ -41,7 +41,7 @@ import android.widget.Toast;
 public class Login extends Activity 
 {
 	private EditText txtlogin,txtbent,txtcolumn,txtserver,txtip;// 创建EditText对象
-	private TextView tvip=null;
+	private TextView tvip=null,tvVersion=null;
     private Button btnlogin, btnclose,btnGaoji,btnDel;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
@@ -55,7 +55,7 @@ public class Login extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);// 设置布局文件
 		//设置横屏还是竖屏的布局策略
-		this.setRequestedOrientation(ToolClass.getOrientation());
+		this.setRequestedOrientation(ToolClass.getOrientation());		
 		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取串口号文本框
@@ -63,10 +63,12 @@ public class Login extends Activity
         txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
         txtip = (EditText) findViewById(R.id.txtip);// 获取服务端ip地址文本框
         tvip = (TextView) findViewById(R.id.tvip);
+        tvVersion = (TextView) findViewById(R.id.tvVersion);//本机版本号
         btnDel = (Button) findViewById(R.id.btnDel);// 获取清除全部商品货道信息
         tvip.setVisibility(View.GONE);
         txtip.setVisibility(View.GONE);
         btnDel.setVisibility(View.GONE);
+        tvVersion.setText("版本号："+ToolClass.getVersion());
         Map<String, String> list=ToolClass.ReadConfigFile();
         if(list!=null)
         {

@@ -1,8 +1,35 @@
 package com.easivend.http;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,19 +42,32 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.easivend.app.maintain.ParamManager;
+import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
+import com.easivend.view.XZip;
 import com.google.gson.Gson;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Base64;
 
 public class EVServerhttp implements Runnable {
 	RequestQueue mQueue = null; 
 	String vmc_no="";
 	String vmc_auth_code="";
+	public final static int SETNONE=0;//what标记,发送给主线程无效标识
+	
 	public final static int SETCHILD=2;//what标记,发送给子线程签到
 	public final static int SETMAIN=1;//what标记,发送给主线程签到完成返回	
 	public final static int SETERRFAILMAIN=4;//what标记,发送给主线程签到故障失败返回	
@@ -59,6 +99,33 @@ public class EVServerhttp implements Runnable {
 	public final static int SETRECORDCHILD=23;//what标记,发送给子线程上报交易记录
 	public final static int SETERRFAILRECORDMAIN=24;//what标记,发送给主线程上报交易故障
 	public final static int SETRECORDMAIN=25;//what标记,发送给主线程获取上报交易返回
+	
+	public final static int SETPVERSIONCHILD=27;//what标记,发送给子线程获取版本信息
+	public final static int SETERRFAILVERSIONMAIN=28;//what标记,发送给主线程获取版本故障
+	public final static int SETVERSIONMAIN=29;//what标记,发送给主线程获取版本返回
+	public final static int SETINSTALLMAIN=30;//what标记,发送给主线程重新安装程序
+	
+	public final static int SETLOGCHILD=31;//what标记,发送给子线程获取日志信息
+	public final static int SETERRFAILLOGMAIN=32;//what标记,发送给主线程获取日志故障
+	public final static int SETLOGMAIN=33;//what标记,发送给主线程获取日志返回
+	
+	public final static int SETACCOUNTCHILD=34;//what标记,发送给子线程获取支付宝微信账号信息
+	public final static int SETERRFAILACCOUNTMAIN=35;//what标记,发送给主线程获取支付宝微信账号故障
+	public final static int SETACCOUNTMAIN=36;//what标记,发送给主线程获取支付宝微信账号返回
+	public final static int SETACCOUNTRESETMAIN=37;//what标记,发送给主线程支付宝微信账号重新设置
+	
+	public final static int SETADVCHILD=38;//what标记,发送给子线程获取广告信息
+	public final static int SETERRFAILADVMAIN=39;//what标记,发送给主线程获取广告故障
+	public final static int SETADVMAIN=40;//what标记,发送给主线程获取广告返回
+	public final static int SETADVRESETMAIN=41;//what标记,发送给主线程广告更新完成
+	
+	public final static int SETCLIENTCHILD=42;//what标记,发送给子线程获取设备信息
+	public final static int SETERRFAILCLIENTMAIN=43;//what标记,发送给主线程获取设备故障
+	public final static int SETCLIENTMAIN=44;//what标记,发送给主线程获取设备返回
+	
+	public final static int SETPICKUPCHILD=45;//what标记,发送给子线取货码信息
+	public final static int SETERRFAILPICKUPMAIN=46;//what标记,发送给主线程取货码无效
+	public final static int SETPICKUPMAIN=47;//what标记,发送给主线程取货码出货
 	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
@@ -123,6 +190,7 @@ public class EVServerhttp implements Runnable {
 					
 					//向主线程返回信息
 					final Message tomain1=mainhand.obtainMessage();
+					tomain1.what=SETNONE;
 					//4.设备签到
 					StringRequest stringRequest = new StringRequest(Method.POST, target,  new Response.Listener<String>() {  
                         @Override  
@@ -184,6 +252,7 @@ public class EVServerhttp implements Runnable {
 					
 					//向主线程返回信息
 					final Message tomain2=mainhand.obtainMessage();
+					tomain2.what=SETNONE;
 					//4.准备加载信息设置
 					StringRequest stringRequest2 = new StringRequest(Method.POST, target2,  new Response.Listener<String>() {  
 						@Override  
@@ -246,6 +315,7 @@ public class EVServerhttp implements Runnable {
 					
 					//向主线程返回信息
 					final Message tomain3=mainhand.obtainMessage();
+					tomain3.what=SETNONE;
 					//4.准备加载信息设置
 					StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
                         @Override  
@@ -263,19 +333,38 @@ public class EVServerhttp implements Runnable {
 								{
 									tomain3.what=SETERRFAILCLASSMAIN;
 									tomain3.obj=object.getString("Message");
+									mainhand.sendMessage(tomain3); // 发送消息
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail3]SETERRFAILCLASSMAIN","server.txt");
 								}
 								else
 								{
-									tomain3.what=SETCLASSMAIN;
-									tomain3.obj=result;
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok3]","server.txt");
+									JSONObject jsonObject = new JSONObject(result); 
+									if(jsonObject.has("ProductClassList")==true)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","旧的后台","server.txt");
+										ToolClass.setServerVer(0);
+										tomain3.what=SETCLASSMAIN;
+										tomain3.obj=result;	
+										mainhand.sendMessage(tomain3); // 发送消息
+									}
+									else if(jsonObject.has("List")==true)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","一期的后台","server.txt");
+										ToolClass.setServerVer(1);
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok4]准备更新商品分类...","server.txt");
+										classArray(result);
+										if(classarr.length()>0)
+										{
+											updateclass(0);
+										}
+									}
 								}
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
-							}										    	    
-				    	    mainhand.sendMessage(tomain3); // 发送消息
+							}									    	    
+				    	    
                         }  
                     }, new Response.ErrorListener() {  
                         @Override  
@@ -307,6 +396,7 @@ public class EVServerhttp implements Runnable {
 					
 					//向主线程返回信息
 					final Message tomain4=mainhand.obtainMessage();
+					tomain4.what=SETNONE;
 					//4.准备加载信息设置
 					StringRequest stringRequest4 = new StringRequest(Method.POST, target4,  new Response.Listener<String>() {  
 						@Override  
@@ -375,6 +465,7 @@ public class EVServerhttp implements Runnable {
 					
 					//向主线程返回信息
 					final Message tomain5=mainhand.obtainMessage();
+					tomain5.what=SETNONE;
 					//4.准备加载信息设置
 					StringRequest stringRequest5 = new StringRequest(Method.POST, target5,  new Response.Listener<String>() {  
 						@Override  
@@ -455,7 +546,12 @@ public class EVServerhttp implements Runnable {
 					parammap7.put("COINS_STATUS",coin_err);
 					parammap7.put("NOTE_STATUS",bill_err);	
 					parammap7.put("DOOR_STATUS","0");	
-					parammap7.put("WAREHOUSE_TEMPERATURE","0");					
+					parammap7.put("WAREHOUSE_TEMPERATURE","0");		
+					if(ToolClass.getServerVer()==1)//一期后台
+					{
+						parammap7.put("CLIENT_VERSION",ToolClass.getVersion());	
+						parammap7.put("CLIENT_DESC","本机版本号");	
+					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap7.toString(),"server.txt");
 					//将2.map类集转为json格式
 					Gson gson7=new Gson();
@@ -463,6 +559,7 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param7.toString(),"server.txt");
 					//向主线程返回信息
 					final Message tomain7=mainhand.obtainMessage();
+					tomain7.what=SETNONE;
 					//4.准备加载信息设置
 					StringRequest stringRequest7 = new StringRequest(Method.POST, target7,  new Response.Listener<String>() {  
 						@Override  
@@ -572,6 +669,7 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param11.toString(),"server.txt");
 					//向主线程返回信息
 					final Message tomain11=mainhand.obtainMessage();
+					tomain11.what=SETNONE;
 					//4.设备签到
 					StringRequest stringRequest11 = new StringRequest(Method.POST, target11,  new Response.Listener<String>() {  
                         @Override  
@@ -621,7 +719,401 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest11);						
-					break;		
+					break;	
+				case SETPVERSIONCHILD://获取版本信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target12 = httpStr+"/api/clientVersion";	//要提交的目标地址
+					final String LAST_EDIT_TIME12=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain12=mainhand.obtainMessage();
+					tomain12.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest12 = new StringRequest(Method.POST, target12,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain12.what=SETERRFAILVERSIONMAIN;
+									tomain12.obj=object.getString("Message");							 	    
+									mainhand.sendMessage(tomain12); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail12]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok12]","server.txt");
+									versionArray(result);
+									if(versionarr.length()>0)
+									{
+										updateversion(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										   
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain12.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain12); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail12]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME12);
+							map.put("VMC_NO", vmc_no);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest12);					
+					break;
+				case SETLOGCHILD://获取日志信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取日志信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target13 = httpStr+"/api/clientLogInfo";	//要提交的目标地址
+					final String LAST_EDIT_TIME13=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain13=mainhand.obtainMessage();
+					tomain13.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest13 = new StringRequest(Method.POST, target13,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain13.what=SETERRFAILLOGMAIN;
+									tomain13.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain13); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail13]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok13]","server.txt");
+									logArray(result);
+									if(logarr.length()>0)
+									{
+										updatelog(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain13.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain13); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail13]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME13);
+							map.put("VMC_NO", vmc_no);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest13);					
+					break;
+				case SETACCOUNTCHILD://获取支付宝微信信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取支付宝微信信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target14 = httpStr+"/api/selectAccount";	//要提交的目标地址
+					final String LAST_EDIT_TIME14=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain14=mainhand.obtainMessage();
+					tomain14.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest14 = new StringRequest(Method.POST, target14,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain14.what=SETERRFAILACCOUNTMAIN;
+									tomain14.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain14); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail14]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok14]","server.txt");
+									AccountArray(result);
+									if(Accountarr.length()>0)
+									{
+										updateAccount(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain14.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain14); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail14]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest14);					
+					break;
+				case SETADVCHILD://获取广告信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取广告信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target15 = httpStr+"/api/advInfo";	//要提交的目标地址
+					final String LAST_EDIT_TIME15=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain15=mainhand.obtainMessage();
+					tomain15.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest15 = new StringRequest(Method.POST, target15,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain15.what=SETERRFAILADVMAIN;
+									tomain15.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain15); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail15]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok15]","server.txt");
+									advArray(result);
+									if(advarr.length()>0)
+									{
+										updateadv(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain15.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain15); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail15]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME15);							
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest15);					
+					break;
+				case SETCLIENTCHILD://获取设备信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取设备信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target16 = httpStr+"/api/selectClientSetting";	//要提交的目标地址
+					final String LAST_EDIT_TIME16=msg.obj.toString();
+					
+					//向主线程返回信息
+					final Message tomain16=mainhand.obtainMessage();
+					tomain16.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest16 = new StringRequest(Method.POST, target16,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain16.what=SETERRFAILCLIENTMAIN;
+									tomain16.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain16); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail16]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok16]","server.txt");
+									clientArray(result);
+									if(clientarr.length()>0)
+									{
+										updateclient(0);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain16.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain16); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail16]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME16);							
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest16);					
+					break;
+				//取货码比较特殊，不能用作复制的例子
+				case SETPICKUPCHILD://获取取货码
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取取货码信息["+Thread.currentThread().getId()+"]","server.txt");
+					String target17 = httpStr+"/api/getPickupCodeStatus";	//要提交的目标地址
+					final String PICKUP_CODE=msg.obj.toString();
+					final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+					//向主线程返回信息
+					final Message tomain17=mainhand.obtainMessage();
+					tomain17.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain17.what=SETERRFAILPICKUPMAIN;
+									tomain17.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain17); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETERRFAILHUODAOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok17]","server.txt");
+									pickupArray(result);
+									if(pickuparr.length()>0)
+									{
+										updatepickup(0,PICKUP_CODE);
+									}
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain17.what=SETERRFAILPICKUPMAIN;
+				    	    mainhand.sendMessage(tomain17); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
+							map.put("PICKUP_CODE", PICKUP_CODE);
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest17);					
+					break;	
 				default:
 					break;
 				}
@@ -630,6 +1122,146 @@ public class EVServerhttp implements Runnable {
 		};
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop
 	}
+	
+	//==============
+	//==商品分类管理模块
+	//==============
+	JSONArray classarr=null;
+	JSONArray zhuheclassArray=null;
+	JSONObject zhuheclassjson = null; 
+	int classint=0;
+	//分解分类信息
+	private void classArray(String classrst) throws JSONException
+	{
+		JSONObject jsonObject = new JSONObject(classrst); 
+		classarr=jsonObject.getJSONArray("List");
+		classint=0;
+		zhuheclassArray=new JSONArray();
+		zhuheclassjson = new JSONObject(); 
+		if(classarr.length()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETCLASSMAIN;
+			tomain.obj=zhuheclassjson.toString();
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
+	}
+	
+	//更新分类和图片信息
+	private String updateclass(int i) throws JSONException
+	{
+		final JSONObject object2=classarr.getJSONObject(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新分类和图片="+object2.toString(),"server.txt");										
+		final JSONObject zhuheobj=object2;
+		//第一步，获取图片名字ATTID
+		final String CLS_URL=object2.getString("CLS_URL");
+		String ATT_ID="";
+		if(CLS_URL.equals("null")!=true)
+		{
+			String a[] = CLS_URL.split("/");  
+			ATT_ID=a[a.length-1];
+			ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","图片ATT_ID="+ATT_ID,"server.txt");										
+			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+		}
+		else
+		{
+			zhuheobj.put("AttImg", "");
+		}
+		
+		
+		try
+		{	
+			if(ATT_ID.equals("")==true)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]无图片","server.txt");
+			}
+			else
+			{
+				if(ToolClass.isImgFile(ATT_ID))
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片已存在","server.txt");
+				}
+				else 
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片...","server.txt");
+					//第二步.准备下载	
+					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+					String url= serip+CLS_URL;	//要提交的目标地址
+					final String ATTIDS=ATT_ID;
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+					ImageRequest imageRequest = new ImageRequest(  
+							url,  
+					        new Response.Listener<Bitmap>() {  
+					            @Override  
+					            public void onResponse(Bitmap response) {  
+					            	ToolClass.saveBitmaptofile(response,ATTIDS);
+					            	try {
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片完成","server.txt");
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+					            }  
+					        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+					            @Override  
+					            public void onErrorResponse(VolleyError error) {  
+									result = "请求失败！";
+									try {
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片失败","server.txt");
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+					            }  
+					        });
+					mQueue.add(imageRequest); 
+				}
+				
+			}
+		}
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+		}
+		
+		//第三步，把图片名字保存到json中		
+		zhuheclassArray.put(zhuheobj);
+		
+		
+		//第四步：进行下一个分类信息
+		classint++;
+		if(classint<classarr.length())
+		{
+			try {
+				updateclass(classint);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				zhuheclassjson.put("List", zhuheclassArray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheclassjson.toString(),"server.txt");
+
+			//上传给server
+			//向主线程返回信息
+			Message tomain4=mainhand.obtainMessage();
+			tomain4.what=SETCLASSMAIN;
+			tomain4.obj=zhuheclassjson.toString();
+			mainhand.sendMessage(tomain4); // 发送消息
+		}		
+		return "";
+	}
+	
 	
 	//==========
 	//==商品管理模块
@@ -641,18 +1273,36 @@ public class EVServerhttp implements Runnable {
 	//分解商品信息
 	private void productArray(String classrst) throws JSONException
 	{
-		JSONObject jsonObject = new JSONObject(classrst); 
-		productarr=jsonObject.getJSONArray("ProductList");
-		productint=0;
-		zhuheproductArray=new JSONArray();
-		zhuheproductjson = new JSONObject(); 
-		if(productarr.length()==0)
+		JSONObject jsonObject = new JSONObject(classrst);
+		if(ToolClass.getServerVer()==0)//旧的后台
 		{
-			//向主线程返回信息
-			Message tomain=mainhand.obtainMessage();
-			tomain.what=SETRODUCTMAIN;
-			tomain.obj=zhuheproductjson.toString();
-			mainhand.sendMessage(tomain); // 发送消息	
+			productarr=jsonObject.getJSONArray("ProductList");
+			productint=0;
+			zhuheproductArray=new JSONArray();
+			zhuheproductjson = new JSONObject(); 
+			if(productarr.length()==0)
+			{
+				//向主线程返回信息
+				Message tomain=mainhand.obtainMessage();
+				tomain.what=SETRODUCTMAIN;
+				tomain.obj=zhuheproductjson.toString();
+				mainhand.sendMessage(tomain); // 发送消息	
+			}
+		}
+		else if(ToolClass.getServerVer()==1)//一期后台
+		{
+			productarr=jsonObject.getJSONArray("List");
+			productint=0;
+			zhuheproductArray=new JSONArray();
+			zhuheproductjson = new JSONObject(); 
+			if(productarr.length()==0)
+			{
+				//向主线程返回信息
+				Message tomain=mainhand.obtainMessage();
+				tomain.what=SETRODUCTMAIN;
+				tomain.obj=zhuheproductjson.toString();
+				mainhand.sendMessage(tomain); // 发送消息	
+			}
 		}
 	}
 	//更新商品和图片信息
@@ -661,186 +1311,303 @@ public class EVServerhttp implements Runnable {
 		final JSONObject object2=productarr.getJSONObject(i);
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品和图片="+object2.toString(),"server.txt");										
 		final JSONObject zhuheobj=object2;
-		//第一步.获取商品图片名字
-		String target6 = httpStr+"/api/productImage";	//要提交的目标地址
-		JSONObject json=new JSONObject();
-		try {
-			json.put("VmcNo", vmc_no);
-			json.put("attId", object2.getString("att_batch_id"));				
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}					
-		final String param6=json.toString();		
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param6.toString(),"server.txt");
-		//4.准备加载信息设置
-		StringRequest stringRequest6 = new StringRequest(Method.POST, target6,  new Response.Listener<String>() {  
-			@Override  
-			public void onResponse(String response) {  				   
-				//如果请求成功
-				result = response;	//获取返回的字符串
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1[ok10]="+result,"server.txt");
-				try
-				{
-					//第二步，获取图片名字ATTID
-					JSONObject jsonObject3 = new JSONObject(result); 
-					JSONArray arr3=jsonObject3.getJSONArray("ProductImageList");
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]1","server.txt");
-					JSONObject object3=arr3.getJSONObject(0);
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]2","server.txt");
-					final String ATT_ID=object3.getString("ATT_ID");
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]3","server.txt");
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]ATT_ID="+ATT_ID,"server.txt");
-					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]zhuheobj="+zhuheobj+"zhuheproductArray="+zhuheproductArray,"server.txt");
-					//第三步，把图片名字保存到json中
-					zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
-					zhuheproductArray.put(zhuheobj);
-					if(ATT_ID.isEmpty())
+		if(ToolClass.getServerVer()==0)//旧的后台
+		{
+			//第一步.获取商品图片名字
+			String target6 = httpStr+"/api/productImage";	//要提交的目标地址
+			JSONObject json=new JSONObject();
+			try {
+				json.put("VmcNo", vmc_no);
+				json.put("attId", object2.getString("att_batch_id"));				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}					
+			final String param6=json.toString();		
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param6.toString(),"server.txt");
+			//4.准备加载信息设置
+			StringRequest stringRequest6 = new StringRequest(Method.POST, target6,  new Response.Listener<String>() {  
+				@Override  
+				public void onResponse(String response) {  				   
+					//如果请求成功
+					result = response;	//获取返回的字符串
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1[ok10]="+result,"server.txt");
+					try
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]无图片","server.txt");
+						//第二步，获取图片名字ATTID
+						JSONObject jsonObject3 = new JSONObject(result); 
+						JSONArray arr3=null;
+						if(ToolClass.getServerVer()==0)//旧的后台
+						{
+							arr3=jsonObject3.getJSONArray("ProductImageList");
+						}
+						else if(ToolClass.getServerVer()==1)//一期后台
+						{
+							arr3=jsonObject3.getJSONArray("List");
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]1","server.txt");
+						JSONObject object3=arr3.getJSONObject(0);
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]2","server.txt");
+						final String ATT_ID=object3.getString("ATT_ID");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]3","server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]ATT_ID="+ATT_ID,"server.txt");
+						//ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2[ok10]zhuheobj="+zhuheobj+"zhuheproductArray="+zhuheproductArray,"server.txt");
+						//第三步，把图片名字保存到json中
+						zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+						zhuheproductArray.put(zhuheobj);
+						if(ATT_ID.isEmpty())
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]无图片","server.txt");
+						}
+						else
+						{
+							if(ToolClass.isImgFile(ATT_ID))
+							{
+								ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片已存在","server.txt");
+							}
+							else 
+							{
+								ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片...","server.txt");
+								//第四步.准备下载	
+								String url= httpStr+"/topic/getFile/"+ATT_ID + ".jpg";	//要提交的目标地址
+								ImageRequest imageRequest = new ImageRequest(  
+										url,  
+								        new Response.Listener<Bitmap>() {  
+								            @Override  
+								            public void onResponse(Bitmap response) {  
+								            	ToolClass.saveBitmaptofile(response,ATT_ID);
+								            	try {
+													ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片完成","server.txt");
+												} catch (JSONException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+								            }  
+								        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+								            @Override  
+								            public void onErrorResponse(VolleyError error) {  
+												result = "请求失败！";
+												try {
+													ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片失败","server.txt");
+												} catch (JSONException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
+								            }  
+								        });
+								mQueue.add(imageRequest); 
+							}
+							
+						}
+					}
+					catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+							try {
+								zhuheobj.put("AttImg", "");
+								zhuheproductArray.put(zhuheobj);
+							} catch (JSONException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}	
+						}
+					
+					
+					//第五步：进行下一个商品信息
+					productint++;
+					if(productint<productarr.length())
+					{
+						try {
+							updateproduct(productint);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					else
 					{
-						if(ToolClass.isImgFile(ATT_ID))
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片已存在","server.txt");
-						}
-						else 
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片...","server.txt");
-							//第四步.准备下载	
-							String url= httpStr+"/topic/getFile/"+ATT_ID + ".jpg";	//要提交的目标地址
-							ImageRequest imageRequest = new ImageRequest(  
-									url,  
-							        new Response.Listener<Bitmap>() {  
-							            @Override  
-							            public void onResponse(Bitmap response) {  
-							            	ToolClass.saveBitmaptofile(response,ATT_ID);
-							            	try {
-												ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片完成","server.txt");
-											} catch (JSONException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-							            }  
-							        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
-							            @Override  
-							            public void onErrorResponse(VolleyError error) {  
-											result = "请求失败！";
-											try {
-												ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片失败","server.txt");
-											} catch (JSONException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-							            }  
-							        });
-							mQueue.add(imageRequest); 
-						}
-						
-					}
-				}
-				catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
 						try {
-							zhuheobj.put("AttImg", "");
-							zhuheproductArray.put(zhuheobj);
-						} catch (JSONException e1) {
+							zhuheproductjson.put("ProductList", zhuheproductArray);
+						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}	
+							e.printStackTrace();
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
+	
+						//上传给server
+						//向主线程返回信息
+						Message tomain4=mainhand.obtainMessage();
+						tomain4.what=SETRODUCTMAIN;
+						tomain4.obj=zhuheproductjson.toString();
+						mainhand.sendMessage(tomain4); // 发送消息
 					}
-				
-				
-				//第五步：进行下一个商品信息
-				productint++;
-				if(productint<productarr.length())
-				{
+				}  
+			}, new Response.ErrorListener() {  
+				@Override  
+				public void onErrorResponse(VolleyError error) {  
+					result = "请求失败！";
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10]"+result,"server.txt");
+					//第三步，把图片名字保存到json中
 					try {
-						updateproduct(productint);
+						zhuheobj.put("AttImg", "");
+						zhuheproductArray.put(zhuheobj);					
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					}	
+					
+					//第五步：进行下一个商品信息
+					productint++;
+					if(productint<productarr.length())
+					{
+						try {
+							updateproduct(productint);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
+					else
+					{
+						try {
+							zhuheproductjson.put("ProductList", zhuheproductArray);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
+	
+						//上传给server
+						//向主线程返回信息
+						Message tomain4=mainhand.obtainMessage();
+						tomain4.what=SETRODUCTMAIN;
+						tomain4.obj=zhuheproductjson.toString();
+						mainhand.sendMessage(tomain4); // 发送消息
+					}
+				}  
+			}) 
+			{  
+				@Override  
+				protected Map<String, String> getParams() throws AuthFailureError {  
+					//3.添加params
+					Map<String, String> map = new HashMap<String, String>();  
+					map.put("Token", Tok);  
+					map.put("param", param6);
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+map.toString(),"server.txt");
+					return map;  
+			   }  
+			}; 	
+			//5.加载信息并发送到网络上
+			mQueue.add(stringRequest6);	
+		}
+		else if(ToolClass.getServerVer()==1)//一期后台
+		{
+			//第一步，获取图片名字ATTID
+			final String CLS_URL=object2.getString("product_Images");
+			String ATT_ID="";
+			if(CLS_URL.equals("")!=true)
+			{
+				String a[] = CLS_URL.split("/");  
+				ATT_ID=a[a.length-1];
+				ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","图片ATT_ID="+ATT_ID,"server.txt");										
+				zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+			}
+			else
+			{
+				zhuheobj.put("AttImg", "");
+			}
+			
+			try
+			{	
+				if(ATT_ID.equals("")==true)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]无图片","server.txt");
 				}
 				else
 				{
-					try {
-						zhuheproductjson.put("ProductList", zhuheproductArray);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					if(ToolClass.isImgFile(ATT_ID))
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片已存在","server.txt");
 					}
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
-
-					//上传给server
-					//向主线程返回信息
-					Message tomain4=mainhand.obtainMessage();
-					tomain4.what=SETRODUCTMAIN;
-					tomain4.obj=zhuheproductjson.toString();
-					mainhand.sendMessage(tomain4); // 发送消息
+					else 
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片...","server.txt");
+						//第二步.准备下载	
+						String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+						String url= serip+CLS_URL;	//要提交的目标地址
+						final String ATTIDS=ATT_ID;
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+						ImageRequest imageRequest = new ImageRequest(  
+								url,  
+								new Response.Listener<Bitmap>() {  
+									@Override  
+									public void onResponse(Bitmap response) {  
+										ToolClass.saveBitmaptofile(response,ATTIDS);
+										try {
+											ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片完成","server.txt");
+										} catch (JSONException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}  
+								}, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+									@Override  
+									public void onErrorResponse(VolleyError error) {  
+										result = "请求失败！";
+										try {
+											ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片失败","server.txt");
+										} catch (JSONException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+									}  
+								});
+						mQueue.add(imageRequest); 
+					}
+					
 				}
-			}  
-		}, new Response.ErrorListener() {  
-			@Override  
-			public void onErrorResponse(VolleyError error) {  
-				result = "请求失败！";
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10]"+result,"server.txt");
-				//第三步，把图片名字保存到json中
+			}
+			catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+			}
+			
+			//第三步，把图片名字保存到json中		
+			zhuheproductArray.put(zhuheobj);
+			
+			
+			//第五步：进行下一个商品信息
+			productint++;
+			if(productint<productarr.length())
+			{
 				try {
-					zhuheobj.put("AttImg", "");
-					zhuheproductArray.put(zhuheobj);					
+					updateproduct(productint);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}	
-				
-				//第五步：进行下一个商品信息
-				productint++;
-				if(productint<productarr.length())
-				{
-					try {
-						updateproduct(productint);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
-				else
-				{
-					try {
-						zhuheproductjson.put("ProductList", zhuheproductArray);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
+			}
+			else
+			{
+				try {
+					zhuheproductjson.put("ProductList", zhuheproductArray);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
 
-					//上传给server
-					//向主线程返回信息
-					Message tomain4=mainhand.obtainMessage();
-					tomain4.what=SETRODUCTMAIN;
-					tomain4.obj=zhuheproductjson.toString();
-					mainhand.sendMessage(tomain4); // 发送消息
-				}
-			}  
-		}) 
-		{  
-			@Override  
-			protected Map<String, String> getParams() throws AuthFailureError {  
-				//3.添加params
-				Map<String, String> map = new HashMap<String, String>();  
-				map.put("Token", Tok);  
-				map.put("param", param6);
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+map.toString(),"server.txt");
-				return map;  
-		   }  
-		}; 	
-		//5.加载信息并发送到网络上
-		mQueue.add(stringRequest6);	
-		
+				//上传给server
+				//向主线程返回信息
+				Message tomain4=mainhand.obtainMessage();
+				tomain4.what=SETRODUCTMAIN;
+				tomain4.obj=zhuheproductjson.toString();
+				mainhand.sendMessage(tomain4); // 发送消息
+			}
+		}
 		return "";
 	}
 	
@@ -884,6 +1651,10 @@ public class EVServerhttp implements Runnable {
 		int orderStatus=0;
 		String productName="";
 		String RefundAmount="";
+		//一期后台
+		String NOTE_AMOUNT="",COIN_AMOUNT="",CASH_AMOUNT="",REFUND_NOTE_AMOUNT="",
+				REFUND_COIN_AMOUNT="",REFUND_CASH_AMOUNT="",AMOUNT_OWED="",Amount="",
+				Cab="",PATH_NO="";
 		int Status=0;
 		try {
 			jsonObject =recordarr.getJSONObject(i);
@@ -903,10 +1674,30 @@ public class EVServerhttp implements Runnable {
 			productName=jsonObject.getString("productName");
 			RefundAmount=jsonObject.getString("RefundAmount");
 			Status=jsonObject.getInt("Status");
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
-				+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
-				"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName,"server.txt");			
-			    	
+			if(ToolClass.getServerVer()==0)//旧的后台
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
+					+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
+					"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName,"server.txt");			
+			}
+			else if(ToolClass.getServerVer()==1)//一期后台
+			{
+				NOTE_AMOUNT=jsonObject.getString("NOTE_AMOUNT");
+				COIN_AMOUNT=jsonObject.getString("COIN_AMOUNT");
+				CASH_AMOUNT=jsonObject.getString("CASH_AMOUNT");
+				REFUND_NOTE_AMOUNT=jsonObject.getString("REFUND_NOTE_AMOUNT");
+				REFUND_COIN_AMOUNT=jsonObject.getString("REFUND_COIN_AMOUNT");
+				REFUND_CASH_AMOUNT=jsonObject.getString("REFUND_CASH_AMOUNT");
+				AMOUNT_OWED=jsonObject.getString("AMOUNT_OWED");
+				Amount=jsonObject.getString("Amount");
+				Cab=jsonObject.getString("Cab");
+				PATH_NO=jsonObject.getString("PATH_NO");
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
+						+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
+						"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName+"NOTE_AMOUNT="+NOTE_AMOUNT+"COIN_AMOUNT="+COIN_AMOUNT
+						+"CASH_AMOUNT="+CASH_AMOUNT+"REFUND_NOTE_AMOUNT="+REFUND_NOTE_AMOUNT+"REFUND_COIN_AMOUNT="+REFUND_COIN_AMOUNT+"REFUND_CASH_AMOUNT="+REFUND_CASH_AMOUNT
+						+"AMOUNT_OWED="+AMOUNT_OWED+"Amount="+Amount+"Cab="+Cab+"PATH_NO="+PATH_NO,"server.txt");			
+			}
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -952,7 +1743,14 @@ public class EVServerhttp implements Runnable {
 			orderpay.put("payType", payType);//0现金,1支付宝声波,2银联,3支付宝二维码,4微信
 			orderpay.put("shouldPay", shouldPay);//交易金额,如2.5元
 			orderpay.put("realPay", 2);
-			orderpay.put("RefundAmount", RefundAmount);//退款金额,如1.5元
+			if(ToolClass.getServerVer()==0)//旧的后台
+			{
+				orderpay.put("RefundAmount", RefundAmount);//退款金额,如1.5元
+			}
+			else if(ToolClass.getServerVer()==1)//一期后台
+			{
+				orderpay.put("RefundAmount", 0);//退款金额,如1.5元
+			}
 			orderpay.put("smallChange", 0);
 			orderpay.put("realNote", 1);
 			orderpay.put("realCoins", 0);
@@ -961,15 +1759,34 @@ public class EVServerhttp implements Runnable {
 			orderpay.put("integre", 0);
 			orderpay.put("payDesc", "test");
 			orderpay.put("payTime", orderTime);	//支付时间
+			if(ToolClass.getServerVer()==1)//一期后台
+			{
+				orderpay.put("NOTE_AMOUNT", NOTE_AMOUNT);
+				orderpay.put("COIN_AMOUNT", COIN_AMOUNT);
+				orderpay.put("CASH_AMOUNT", CASH_AMOUNT);
+				orderpay.put("REFUND_NOTE_AMOUNT", REFUND_NOTE_AMOUNT);
+				orderpay.put("REFUND_COIN_AMOUNT", REFUND_COIN_AMOUNT);
+				orderpay.put("REFUND_CASH_AMOUNT", REFUND_CASH_AMOUNT);
+				orderpay.put("AMOUNT_OWED", AMOUNT_OWED);
+				orderpay.put("Status", Status);//0：未退款；1：正在退款；2：退款成功；3：退款失败'
+			}
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderpay="+orderpay.toString(),"server.txt");
 			
 			JSONObject orderrefund=new JSONObject();
 			orderrefund.put("RefundId", 122);
 			orderrefund.put("orderNo", orderNo);//商品id
 			orderrefund.put("Reason", "test");
-			orderrefund.put("Amount", 1);
-			orderrefund.put("Refund", 0);
-			orderrefund.put("Debt", 0);
+			if(ToolClass.getServerVer()==0)//旧的后台
+			{
+				orderrefund.put("Amount", 0);
+				orderrefund.put("Debt", 0);
+			}
+			else if(ToolClass.getServerVer()==1)//一期后台			
+			{
+				orderrefund.put("Amount", Amount);
+				orderrefund.put("Debt", AMOUNT_OWED);
+			}
+			orderrefund.put("Refund", 0);			
 			orderrefund.put("ResultCode", "test");
 			orderrefund.put("TradeNo", "test");
 			orderrefund.put("Description", "test");
@@ -991,6 +1808,11 @@ public class EVServerhttp implements Runnable {
 			orderproduct.put("productIntegre", 1);
 			orderproduct.put("IntegreAmount", 1);
 			orderproduct.put("firstpurchaseprice", 1);
+			if(ToolClass.getServerVer()==1)//一期后台
+			{
+				orderproduct.put("Cab", Cab);
+				orderproduct.put("PATH_NO", PATH_NO);
+			}
 			JSONArray orderpro=new JSONArray();
 			orderpro.put(orderproduct);
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderproduct="+orderpro.toString(),"server.txt");
@@ -1279,6 +2101,1030 @@ public class EVServerhttp implements Runnable {
 		//5.加载信息并发送到网络上
 		mQueue.add(stringRequest3);				
 	}
+	
+	
+	//==========
+	//==版本更新模块
+	//==========
+	JSONArray versionarr=null;
+	JSONArray zhuheversionArray=null;
+	JSONObject zhuheversionjson = null; 
+	int versionint=0;
+	//分解商品信息
+	private void versionArray(String classrst) throws JSONException
+	{
+		JSONObject jsonObject = new JSONObject(classrst);
+		if(ToolClass.getServerVer()==1)//一期后台
+		{
+			versionarr=jsonObject.getJSONArray("List");
+			versionint=0;
+			zhuheversionArray=new JSONArray();
+			zhuheversionjson = new JSONObject(); 
+			if(versionarr.length()==0)
+			{
+				ToolClass.deleteAPKFile();
+				//向主线程返回信息
+				Message tomain=mainhand.obtainMessage();
+				tomain.what=SETVERSIONMAIN;
+				tomain.obj=zhuheversionjson.toString();
+				mainhand.sendMessage(tomain); // 发送消息	
+			}			
+		}
+	}
+	//更新程序信息
+	private String updateversion(int i) throws JSONException
+	{
+		final JSONObject object2=versionarr.getJSONObject(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新版本="+object2.toString(),"server.txt");										
+		final JSONObject zhuheobj=object2;
+		//第一步.获取商品图片名字
+		final String FILE_URL=object2.getString("FILE_URL");
+		String ATT_ID="";
+		if(FILE_URL.equals("null")!=true)
+		{
+			String a[] = FILE_URL.split("/");  
+			ATT_ID=a[a.length-1];
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载ATT_ID="+ATT_ID,"server.txt");										
+			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+		}
+		else
+		{
+			zhuheobj.put("AttImg", "");
+		}
+		
+		try
+		{	
+			if(ATT_ID.equals("")==true)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATT_ID+"]不存在","server.txt");
+			}
+			else
+			{
+				if(ToolClass.isAPKFile(ATT_ID))
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATT_ID+"]已存在","server.txt");
+				}
+				else 
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATT_ID+"]开始下载...","server.txt");
+					//第二步.准备下载	
+					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+					String url= serip+FILE_URL;	//要提交的目标地址
+					final String ATTIDS=ATT_ID;
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+					downloadApk(ATTIDS,url);//下载程序
+										
+				}
+				
+			}
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]"+e,"server.txt");
+		}
+		
+		//第三步，把图片名字保存到json中		
+		zhuheversionArray.put(zhuheobj);
+		
+		
+		//第四步：进行下一个分类信息
+		versionint++;
+		if(versionint<versionarr.length())
+		{
+			try {
+				updateversion(versionint);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				zhuheversionjson.put("List", zhuheversionArray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheversionjson.toString(),"server.txt");
 
+			//上传给server
+			//向主线程返回信息
+			Message tomain4=mainhand.obtainMessage();
+			tomain4.what=SETVERSIONMAIN;
+			tomain4.obj=zhuheversionjson.toString();
+			mainhand.sendMessage(tomain4); // 发送消息
+		}		
+		return "";
+		
+	}
+	
+	private String url=null;
+	private String ATTIDS=null;
+	/**
+     * 下载apk文件
+     */
+    private void downloadApk(String ATT,String str)
+    {    	
+    	ATTIDS=ATT;
+    	url=str;
+        // 启动新线程下载软件
+        new downloadApkThread().start();
+    }
+
+    /**
+     * 下载文件线程
+     * 
+     * @author coolszy
+     *@date 2012-4-26
+     *@blog http://blog.92coding.com
+     */
+    private class downloadApkThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+            	//1.下载
+            	HttpClient client = new DefaultHttpClient();  
+                HttpGet get = new HttpGet(url);  
+                HttpResponse response = client.execute(get);  
+                HttpEntity entity = response.getEntity();  
+                long length = entity.getContentLength();  
+                InputStream is = entity.getContent();  
+                FileOutputStream fileOutputStream = null;  
+                if (is != null)
+                {  
+                    File file = ToolClass.setAPKFile(ATTIDS);  
+                    fileOutputStream = new FileOutputStream(file);  
+                    byte[] buf = new byte[1024];  
+                    int ch = -1;  
+                    int count = 0;  
+                    while ((ch = is.read(buf)) != -1) {  
+                        fileOutputStream.write(buf, 0, ch);  
+                        count += ch;  
+                        if (length > 0) {  
+                        }  
+                    }  
+                }  
+                fileOutputStream.flush();  
+                if (fileOutputStream != null) {  
+                    fileOutputStream.close();  
+                } 
+                //2.上传更新版本状态
+                String target3 = httpStr+"/api/updateClientVersion";	//要提交的目标地址
+                StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
+        			@Override  
+        			public void onResponse(String response) {              			   
+        			    //如果请求成功
+        				result = response;	//获取返回的字符串
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+        				
+        			}  
+        		}, new Response.ErrorListener() {  
+        			@Override  
+        			public void onErrorResponse(VolleyError error) {  
+        				result = "请求失败！";
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8]"+result,"server.txt");            				
+        			}  
+        		}) 
+        		{  
+        			@Override  
+        			protected Map<String, String> getParams() throws AuthFailureError {  
+        				//3.添加params
+        				Map<String, String> map = new HashMap<String, String>();  
+        				map.put("Token", Tok);  
+        				map.put("VMC_NO", vmc_no);
+        				map.put("OPEN_DOOR_ID", "");
+        				map.put("EXEC_RESULT", "9");
+        				map.put("EXEC_TIME", ToolClass.getLasttime());
+        				map.put("VERSION_STATUS", "2");
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载完成version="+map.toString(),"server.txt");
+        				return map;  
+        		   }  
+        		}; 	
+        		//3.加载信息并发送到网络上
+        		mQueue.add(stringRequest3);
+               
+        		
+        		//4.上传给server
+    			//向主线程返回信息
+    			Message tomain4=mainhand.obtainMessage();
+    			tomain4.what=SETINSTALLMAIN;
+    			tomain4.obj=ATTIDS;
+    			mainhand.sendMessage(tomain4); // 发送消息                
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+                //2.上传更新版本状态
+                String target3 = httpStr+"/api/updateClientVersion";	//要提交的目标地址
+                StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
+        			@Override  
+        			public void onResponse(String response) {              			   
+        			    //如果请求成功
+        				result = response;	//获取返回的字符串
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+        				
+        			}  
+        		}, new Response.ErrorListener() {  
+        			@Override  
+        			public void onErrorResponse(VolleyError error) {  
+        				result = "请求失败！";
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail8]"+result,"server.txt");            				
+        			}  
+        		}) 
+        		{  
+        			@Override  
+        			protected Map<String, String> getParams() throws AuthFailureError {  
+        				//3.添加params
+        				Map<String, String> map = new HashMap<String, String>();  
+        				map.put("Token", Tok);  
+        				map.put("VMC_NO", vmc_no);
+        				map.put("OPEN_DOOR_ID", "");
+        				map.put("EXEC_RESULT", "2");
+        				map.put("EXEC_TIME", ToolClass.getLasttime());
+        				map.put("VERSION_STATUS", "1");
+        				ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载失败version="+map.toString(),"server.txt");
+        				return map;  
+        		   }  
+        		}; 	
+        		//3.加载信息并发送到网络上
+        		mQueue.add(stringRequest3);
+            }
+        }
+    };
+	
+    
+    //==========
+  	//==日志更新模块
+  	//==========
+  	JSONArray logarr=null;
+  	JSONArray zhuhelogArray=null;
+  	JSONObject zhuhelogjson = null; 
+  	int logint=0;
+  	//分解商品信息
+  	private void logArray(String classrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(classrst);
+  		if(ToolClass.getServerVer()==1)//一期后台
+  		{
+  			logarr=jsonObject.getJSONArray("List");
+  			logint=0;
+  			zhuhelogArray=new JSONArray();
+  			zhuhelogjson = new JSONObject(); 
+  			if(logarr.length()==0)
+  			{
+  				//向主线程返回信息
+  				Message tomain=mainhand.obtainMessage();
+  				tomain.what=SETLOGMAIN;
+  				tomain.obj=zhuhelogjson.toString();
+  				mainhand.sendMessage(tomain); // 发送消息	
+  			}			
+  		}
+  	}
+  	//更新日志信息
+  	private String updatelog(int i) throws JSONException
+  	{
+  		final JSONObject object2=logarr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新日志="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步.获取日志ID
+  		final int LOG_ID=object2.getInt("CLIENT_LOG_ID");
+  		String START_LOG_TIME=object2.getString("START_LOG_TIME");
+  		String END_LOG_TIME=object2.getString("END_LOG_TIME");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","需要上传LOG_ID="+LOG_ID+"START_LOG_TIME="+START_LOG_TIME+"END_LOG_TIME"+END_LOG_TIME,"server.txt");										
+		zhuheobj.put("AttImg", LOG_ID);
+		//第二步.压缩日志包
+		final String f=ToolClass.logFileInterval(START_LOG_TIME, END_LOG_TIME);
+		
+		if(f==null)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","日志["+LOG_ID+"]无日志需要上传","server.txt");
+		}
+		else
+		{
+	  		try
+	  		{	
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","日志["+LOG_ID+"]开始上传...","server.txt");
+				//第二步.准备上传	
+	  			uploadLog(String.valueOf(LOG_ID),f);
+	  		}
+	  		catch (Exception e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]"+e,"server.txt");
+	  		}
+		}
+  		
+  		//第三步，把图片名字保存到json中		
+  		zhuhelogArray.put(zhuheobj);
+  		
+  		
+  		//第四步：进行下一个分类信息
+  		logint++;
+  		if(logint<logarr.length())
+  		{
+  			try {
+  				updatelog(logint);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  		}
+  		else
+  		{
+  			try {
+  				zhuhelogjson.put("List", zhuhelogArray);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuhelogjson.toString(),"server.txt");
+
+  			//上传给server
+  			//向主线程返回信息
+  			Message tomain4=mainhand.obtainMessage();
+  			tomain4.what=SETLOGMAIN;
+  			tomain4.obj=zhuhelogjson.toString();
+  			mainhand.sendMessage(tomain4); // 发送消息
+  		}		
+  		return "";
+  		
+  	}
+  	
+  	private String LOG_IDS=null;
+  	private File file=null;
+  	/**
+     * 上传日志文件
+     */
+    private void uploadLog(String LOG_ID,String f)
+    {    	
+    	LOG_IDS=LOG_ID;
+    	file=new File(f);
+        // 启动新线程下载软件
+        new uploadLogThread().start();
+    }
+  	
+    /**
+     * 上传文件线程
+     * 
+     * @author coolszy
+     *@date 2012-4-26
+     *@blog http://blog.92coding.com
+     */
+    private class uploadLogThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+//        	String target = httpStr+"/api/uploadClientLog";	//要提交的目标地址
+//			HttpClient httpclient = new DefaultHttpClient();	//创建HttpClient对象
+//			httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 10000);//请求超时
+//			httpclient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);//读取超时
+//			HttpPost httppost = new HttpPost(target);	//创建HttpPost对象
+//			//1.添加params
+//			List<NameValuePair> params = new ArrayList<NameValuePair>();
+//			params.add(new BasicNameValuePair("LAST_EDIT_TIME", ToolClass.getLasttime()));
+//			params.add(new BasicNameValuePair("Token", Tok));			
+//			params.add(new BasicNameValuePair("CLIENT_LOG_ID", LOG_IDS));
+//			String bal=null;
+//			try {
+//				//输入文件流
+//				FileInputStream inputFile = new FileInputStream(file);
+//				//抓为byte字节
+//				byte[] buffer = new byte[(int)file.length()];
+//				inputFile.read(buffer);
+//				inputFile.close();
+//				//压缩为Base64格式
+//				bal= Base64.encodeToString(buffer,Base64.DEFAULT);
+//			} catch (FileNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			params.add(new BasicNameValuePair("FILE_CONTENT", bal));
+//			//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+params.toString(),"server.txt");
+//			try {
+//				httppost.setEntity(new UrlEncodedFormEntity(params, "utf-8")); //设置编码方式
+//				HttpResponse httpResponse = httpclient.execute(httppost);	//执行HttpClient请求
+//				//向主线程返回信息
+//				Message tomain=mainhand.obtainMessage();
+//				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK){	//如果请求成功
+//					//如果请求成功
+//					result = EntityUtils.toString(httpResponse.getEntity());	//获取返回的字符串
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=日志上传完成"+result,"server.txt");					
+//				}else{
+//					result = "请求失败！";
+//					tomain.what=SETFAILMAIN;
+//					mainhand.sendMessage(tomain); // 发送消息
+//					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]日志上传"+result,"server.txt");
+//				}
+//				
+//				
+//			} 
+//	       catch (Exception e) 
+//	       {  
+//	           //e.printStackTrace();  
+//	    	   //向主线程返回网络失败信息
+//				Message tomain=mainhand.obtainMessage();
+//	    	    tomain.what=SETFAILMAIN;
+//	    	    mainhand.sendMessage(tomain); // 发送消息
+//	    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail1]SETFAILMAIN","server.txt");
+//	       }
+        	
+        	//第二步：上传给server
+  			String target17 = httpStr+"/api/uploadClientLog";	//要提交的目标地址
+			final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+        	//向主线程返回信息
+			final Message tomain17=mainhand.obtainMessage();
+			tomain17.what=SETNONE;
+			//4.准备加载信息设置
+			StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
+				@Override  
+				public void onResponse(String response) {  
+				   
+				    //如果请求成功
+					result = response;	//获取返回的字符串
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=日志上传完成"+result,"server.txt");
+															 
+				}  
+			}, new Response.ErrorListener() {  
+				@Override  
+				public void onErrorResponse(VolleyError error) {  
+					result = "请求失败！";
+					tomain17.what=SETFAILMAIN;
+		    	    mainhand.sendMessage(tomain17); // 发送消息
+		    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETFAILMAIN"+result,"server.txt");
+				}  
+			}) 
+			{  
+				@Override  
+				protected Map<String, String> getParams() throws AuthFailureError {  
+					String bal=null;
+					try {
+						//输入文件流
+						FileInputStream inputFile = new FileInputStream(file);
+						//抓为byte字节
+						byte[] buffer = new byte[(int)file.length()];
+						inputFile.read(buffer);
+						inputFile.close();
+						//压缩为Base64格式
+						bal= Base64.encodeToString(buffer,Base64.DEFAULT);
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//3.添加params
+					Map<String, String> map = new HashMap<String, String>();  
+					map.put("Token", Tok);  
+					map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
+					map.put("CLIENT_LOG_ID", LOG_IDS);
+					map.put("FILE_CONTENT", bal);
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1=日志上传...","server.txt");
+					return map;  
+			   }  
+			}; 	
+			//5.加载信息并发送到网络上
+			mQueue.add(stringRequest17);
+        }
+    };
+    
+    //==============
+  	//==支付宝微信更新模块
+  	//==============
+  	JSONArray Accountarr=null;
+  	JSONArray zhuheAccountArray=null;
+  	JSONObject zhuheAccountjson = null; 
+  	int Accountint=0;
+  	//分解商品信息
+  	private void AccountArray(String classrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(classrst);
+  		if(ToolClass.getServerVer()==1)//一期后台
+  		{
+  			Accountarr=jsonObject.getJSONArray("List");
+  			Accountint=0;
+  			zhuheAccountArray=new JSONArray();
+  			zhuheAccountjson = new JSONObject(); 
+  			if(Accountarr.length()==0)
+  			{
+  				//向主线程返回信息
+  				Message tomain=mainhand.obtainMessage();
+  				tomain.what=SETACCOUNTMAIN;
+  				tomain.obj=zhuheAccountjson.toString();
+  				mainhand.sendMessage(tomain); // 发送消息	
+  			}			
+  		}
+  	}
+  	//更新支付宝微信信息
+  	private String updateAccount(int i) throws JSONException
+  	{
+  		final JSONObject object2=Accountarr.getJSONObject(i);
+  		Message tomain14=mainhand.obtainMessage();
+  		tomain14.what=SETACCOUNTMAIN;
+		tomain14.obj="";							   	    
+		mainhand.sendMessage(tomain14); // 发送消息
+		
+		
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新支付宝微信信息="+object2.toString(),"server.txt");										
+		//延时3s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            { 
+			ToolClass.ResetConfigFileServer(object2);
+			Message tomain=mainhand.obtainMessage();
+	  		tomain.what=SETACCOUNTRESETMAIN;
+			tomain.obj="";							   	    
+			mainhand.sendMessage(tomain); // 发送消息
+            }
+
+		}, 1000);
+  		return "";
+  		
+  	}
+  	
+    //==============
+  	//==广告模块
+  	//==============
+  	JSONArray advarr=null;
+  	JSONArray zhuheadvArray=null;
+  	JSONObject zhuheadvjson = null; 
+  	int advint=0;
+  	//分解广告信息
+  	private void advArray(String advrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(advrst); 
+  		advarr=jsonObject.getJSONArray("List");
+  		advint=0;
+  		zhuheadvArray=new JSONArray();
+  		zhuheadvjson = new JSONObject(); 
+  		if(advarr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETADVMAIN;
+  			tomain.obj=zhuheadvjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}
+  	}
+  	
+  	//更新广告信息
+  	private String updateadv(int i) throws JSONException
+  	{
+  		final JSONObject object2=advarr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新广告="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步，获取图片名字ATTID
+  		final String CLS_URL=object2.getString("ADV_URL");
+  		String ATT_ID="",TypeStr="";
+  		int FileType=0;//1图片,2视频
+  		if(CLS_URL.equals("null")!=true)
+  		{
+  			String a[] = CLS_URL.split("/");  
+  			ATT_ID=a[a.length-1];  
+  			String tmp = ATT_ID;
+	    	ATT_ID=tmp.substring(0,tmp.lastIndexOf("."));		    	
+	    	TypeStr=tmp.substring(tmp.lastIndexOf(".")+1);
+		    //是否视频文件
+		    if(MediaFileAdapter.isVideoFileType(tmp)==true)
+		    {
+		    	FileType=2;
+		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告视频ATT_ID="+ATT_ID+"."+TypeStr,"server.txt");										
+		    }
+		    //是否图片文件
+		    else if(MediaFileAdapter.isImgFileType(tmp)==true)
+		    {
+		    	FileType=1;
+	  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片ATT_ID="+ATT_ID+"."+TypeStr,"server.txt");										
+	  		}
+  			
+  			zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
+  		}
+  		else
+  		{
+  			zhuheobj.put("AttImg", "");
+  		}
+  		
+  		
+  		try
+  		{	
+  			if(ATT_ID.equals("")==true)
+  			{
+  				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]无","server.txt");
+  			}
+  			else
+  			{
+  				int IS_DELETE=object2.getInt("IS_DELETE");
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],IS_DELETE="+IS_DELETE,"server.txt");
+					
+  				if(ToolClass.isAdsFile(ATT_ID,TypeStr))
+  				{
+  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]已存在","server.txt");
+  					if(IS_DELETE==1)
+  					{
+  						ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]删除","server.txt");
+  						ToolClass.delAds(ATT_ID,TypeStr);
+  					}
+  				}
+  				else 
+  				{
+  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],不存在","server.txt");
+  					if(IS_DELETE==0)
+  					{
+	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载...","server.txt");
+	  					//第二步.准备下载	
+	  					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+	  					String url= serip+CLS_URL;	//要提交的目标地址
+	  					final String ATTIDS=ATT_ID;
+	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+	  					//下载图片
+	  					if(FileType==1)
+	  					{
+		  					ImageRequest imageRequest = new ImageRequest(  
+		  							url,  
+		  					        new Response.Listener<Bitmap>() {  
+		  					            @Override  
+		  					            public void onResponse(Bitmap response) {  
+		  					            	ToolClass.saveBitmaptoads(response,ATTIDS);
+		  					            	try {
+		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片["+object2.getString("ADV_TITLE")+"],下载完成","server.txt");
+		  									} catch (JSONException e) {
+		  										// TODO Auto-generated catch block
+		  										e.printStackTrace();
+		  									}
+		  					            }  
+		  					        }, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+		  					            @Override  
+		  					            public void onErrorResponse(VolleyError error) {  
+		  									result = "请求失败！";
+		  									try {
+		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片["+object2.getString("ADV_TITLE")+"],下载失败","server.txt");
+		  									} catch (JSONException e) {
+		  										// TODO Auto-generated catch block
+		  										e.printStackTrace();
+		  									}
+		  					            }  
+		  					        });
+		  					mQueue.add(imageRequest); 
+	  					}
+	  				    //下载视频
+	  					else if(FileType==2)
+	  					{
+	  						downloadAds(url,ATTIDS,TypeStr);//下载程序
+	  					}
+  					}
+  				}
+  				
+  			}
+  		}
+  		catch (JSONException e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+  		}
+  		
+  		//第三步，把名字保存到json中		
+  		zhuheadvArray.put(zhuheobj);
+  		
+  		
+  		//第四步：进行下一个分类信息
+  		advint++;
+  		if(advint<advarr.length())
+  		{
+  			try {
+  				updateadv(advint);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  		}
+  		else
+  		{
+  			try {
+  				zhuheadvjson.put("List", zhuheadvArray);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheadvjson.toString(),"server.txt");
+
+  			//上传给server
+  			//向主线程返回信息
+  			Message tomain4=mainhand.obtainMessage();
+  			tomain4.what=SETADVMAIN;
+  			tomain4.obj=zhuheclassjson.toString();
+  			mainhand.sendMessage(tomain4); // 发送消息
+  			
+  			//不管成功或失败，都重新置广告时间
+  		    //延时3s
+  		    new Handler().postDelayed(new Runnable() 
+  			{
+  	            @Override
+  	            public void run() 
+  	            { 
+  				Message tomain=mainhand.obtainMessage();
+  		  		tomain.what=SETADVRESETMAIN;
+  				tomain.obj="";							   	    
+  				mainhand.sendMessage(tomain); // 发送消息
+  	            }
+
+  			}, 1000);
+  		}		
+  		return "";
+  	}
+  	
+  	private String adsurl=null;
+  	private String ATTADS=null;
+  	private String TypeStr=null;
+	/**
+     * 下载apk广告视频文件
+     */
+    private void downloadAds(String str,String ATT_ID,String Type)
+    {    	
+    	adsurl=str;
+    	ATTADS=ATT_ID;
+    	TypeStr=Type;
+        // 启动新线程下载软件
+        new downloadAdsThread().start();
+    }
+  	
+    /**
+     * 下载文件线程
+     * 
+     * @author coolszy
+     *@date 2012-4-26
+     *@blog http://blog.92coding.com
+     */
+    private class downloadAdsThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+            	//1.下载
+            	HttpClient client = new DefaultHttpClient();  
+                HttpGet get = new HttpGet(adsurl);  
+                HttpResponse response = client.execute(get);  
+                HttpEntity entity = response.getEntity();  
+                long length = entity.getContentLength();  
+                InputStream is = entity.getContent();  
+                FileOutputStream fileOutputStream = null;  
+                if (is != null)
+                {  
+                    File file = ToolClass.saveAvitoads(ATTADS,TypeStr);  
+                    fileOutputStream = new FileOutputStream(file);  
+                    byte[] buf = new byte[1024];  
+                    int ch = -1;  
+                    int count = 0;  
+                    while ((ch = is.read(buf)) != -1) {  
+                        fileOutputStream.write(buf, 0, ch);  
+                        count += ch;  
+                        if (length > 0) {  
+                        }  
+                    }  
+                }  
+                fileOutputStream.flush();  
+                if (fileOutputStream != null) {  
+                    fileOutputStream.close();  
+                }   
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告视频["+ATTADS+"."+TypeStr+"],下载完成","server.txt");
+            } catch (Exception e)
+            {
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告视频["+ATTADS+"."+TypeStr+"],下载失败","server.txt");
+                e.printStackTrace();                
+            }
+        }
+    };
+    
+    //==============
+  	//==设备状态模块
+  	//==============
+  	JSONArray clientarr=null;
+  	JSONArray zhuheclientArray=null;
+  	JSONObject zhuheclientjson = null; 
+  	int clientint=0;
+  	//分解设备信息
+  	private void clientArray(String clientrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(clientrst); 
+  		clientarr=jsonObject.getJSONArray("List");
+  		clientint=0;
+  		zhuheclientArray=new JSONArray();
+  		zhuheclientjson = new JSONObject(); 
+  		if(clientarr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETCLIENTMAIN;
+  			tomain.obj=zhuheclientjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}
+  	    //本地VMC_NO和密码
+  		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		devID=tb_inaccount.getDevID().toString();
+    		mainPwd=tb_inaccount.getMainPwd();
+    		ToolClass.Log(ToolClass.INFO,"EV_SERVER","本地VMC_NO="+devID+",MANAGER_PASSWORD="+mainPwd,"server.txt");	
+    	}
+  	}
+  	
+  	String devID="";
+  	String mainPwd="";
+  	//更新设备信息
+  	private String updateclient(int i) throws JSONException
+  	{  	
+  		final JSONObject object2=clientarr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新设备="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步，获取VMC_NO和密码
+  		final String VMC_NO=object2.getString("VMC_NO");
+  		final String MANAGER_PASSWORD=object2.getString("MANAGER_PASSWORD");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","设备VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD,"server.txt");	
+  		zhuheobj.put("AttImg", "");
+  		  		
+  		try
+  		{	
+  			if((devID.isEmpty()==false)&&(devID.equals(VMC_NO)))
+  			{  				
+  				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+  			    //创建Tb_inaccount对象 
+    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+    					0,0,MANAGER_PASSWORD,0,0,0,0,0,0,0,"",0,
+    					0,0, 0,0,0);
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置设备VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
+    			parameterDAO.updatepwd(tb_vmc_system_parameter); 
+  			}
+  		}
+  		catch (Exception e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+  		}
+  		
+  		//第三步，把名字保存到json中		
+  		zhuheclientArray.put(zhuheobj);
+  		
+  		
+  		//第四步：进行下一个分类信息
+  		clientint++;
+  		if(clientint<clientarr.length())
+  		{
+  			try {
+  				updateclient(clientint);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  		}
+  		else
+  		{
+  			try {
+  				zhuheclientjson.put("List", zhuheclientArray);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheclientjson.toString(),"server.txt");
+
+  			//上传给server
+  			//向主线程返回信息
+  			Message tomain4=mainhand.obtainMessage();
+  			tomain4.what=SETCLIENTMAIN;
+  			tomain4.obj=zhuheclassjson.toString();
+  			mainhand.sendMessage(tomain4); // 发送消息  			
+  		}		
+  		return "";
+  	}
+  	
+    //==============
+  	//==取货码模块
+    //取货码比较特殊，不能用作复制的例子
+  	//==============
+  	JSONArray pickuparr=null;
+  	JSONArray zhuhepickupArray=null;
+  	JSONObject zhuhepickupjson = null; 
+  	int pickupint=0;
+  	//分解设备信息
+  	private void pickupArray(String pickuprst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(pickuprst); 
+  		pickuparr=jsonObject.getJSONArray("List");
+  		pickupint=0;
+  		zhuhepickupArray=new JSONArray();
+  		zhuhepickupjson = new JSONObject(); 
+  		if(pickuparr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETERRFAILPICKUPMAIN;
+  			tomain.obj=zhuhepickupjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}  	   
+  	}
+  	String PICKUP_CODE="";
+  	//更新取货码信息
+  	private String updatepickup(int i,String pick) throws JSONException
+  	{  	  		
+  		boolean quhuo=false; 
+  		PICKUP_CODE=pick;
+  		final JSONObject object2=pickuparr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码出货="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=new JSONObject();
+  		//第一步，获取PRODUCT_NO和STAUTS
+  		final String PRODUCT_NO=object2.getString("PRODUCT_NO");
+  		final int STAUTS=object2.getInt("STAUTS");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","取货码PRODUCT_NO="+PRODUCT_NO+",STAUTS="+STAUTS,"server.txt");	
+  		//返回值表示，可以取货
+  		if(STAUTS==0)
+  		{
+  			//本地有货物
+  			vmc_columnDAO columnDAO = new vmc_columnDAO(ToolClass.getContext());// 创建InaccountDAO对象
+  			if(columnDAO.getproductCount(PRODUCT_NO)>0)
+  			{
+  				quhuo=true;
+  			}  			 
+  		}
+  		//获取成功
+  		if(quhuo)
+  		{
+  			//第一步：确认参数
+  			final String out_trade_no=ToolClass.out_trade_no(ToolClass.getContext());	
+  			zhuheobj.put("PRODUCT_NO", PRODUCT_NO);
+  			zhuheobj.put("out_trade_no", out_trade_no);
+  			
+  			//第二步：上传给server取货码使用掉
+  			String target17 = httpStr+"/api/savePickupCode";	//要提交的目标地址
+			final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+			//向主线程返回信息
+			final Message tomain17=mainhand.obtainMessage();
+			tomain17.what=SETNONE;
+			//4.准备加载信息设置
+			StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
+				@Override  
+				public void onResponse(String response) {  
+				   
+				    //如果请求成功
+					result = response;	//获取返回的字符串
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+															 
+				}  
+			}, new Response.ErrorListener() {  
+				@Override  
+				public void onErrorResponse(VolleyError error) {  
+					result = "请求失败！";
+					tomain17.what=SETFAILMAIN;
+		    	    mainhand.sendMessage(tomain17); // 发送消息
+		    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail17]SETFAILMAIN"+result,"server.txt");
+				}  
+			}) 
+			{  
+				@Override  
+				protected Map<String, String> getParams() throws AuthFailureError {  
+					//3.添加params
+					Map<String, String> map = new HashMap<String, String>();  
+					map.put("Token", Tok);  
+					map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
+					map.put("PICKUP_CODE", PICKUP_CODE);
+					map.put("ORDER_NO", out_trade_no);
+					map.put("VMC_NO", vmc_no);
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1=上传取货码完成"+map.toString(),"server.txt");
+					return map;  
+			   }  
+			}; 	
+			//5.加载信息并发送到网络上
+			mQueue.add(stringRequest17);
+			
+			
+  			//第三步：向主线程返回信息
+  			Message tomain4=mainhand.obtainMessage();
+  			tomain4.what=SETPICKUPMAIN;
+  			tomain4.obj=zhuheobj;
+  			mainhand.sendMessage(tomain4); // 发送消息 
+  		}
+  		else
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETERRFAILPICKUPMAIN;
+  			tomain.obj=zhuhepickupjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}	
+  		return "";
+  	}
 	
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <TextView 	
+        	android:id="@+id/txtcabid"
+        	android:minWidth="160px"
+        	android:textSize="40sp"	  
+        	android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="柜号:"/>
+        
+    <EditText
+            android:id="@+id/edtcabid"
+	        android:minWidth="150px"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/txtcabid"
+	        android:textSize="40sp"
+            android:textStyle="bold"	
+            android:numeric="integer"	
+            android:text="1"/>
+	<TextView 	
+        	android:id="@+id/txthuoid"
+        	android:minWidth="160px"
+        	android:textSize="40sp"	  
+        	android:layout_below="@id/txtcabid"
+        	android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="货道号:"/>
+        
+    <EditText
+            android:id="@+id/edthuoid"
+	        android:minWidth="150px"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/txtcabid"
+	        android:layout_toRightOf="@id/txthuoid"
+	        android:textSize="40sp"
+            android:textStyle="bold"	
+            android:numeric="integer"	
+            android:text="1"/>
+    <Button
+		    android:id="@+id/btnchuhuo"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
+			android:layout_below="@id/edthuoid"
+	        android:text="出货"/>
+	<Button
+		    android:id="@+id/btncancel"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
+			android:layout_below="@id/edthuoid"
+	        android:layout_toRightOf="@id/btnchuhuo"
+	        android:text="退出"/>
+</RelativeLayout>

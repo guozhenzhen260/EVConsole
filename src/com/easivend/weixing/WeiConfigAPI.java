@@ -53,8 +53,9 @@ public class WeiConfigAPI
 //    	WeiConfig.setWeicert_pwd(str);
 //    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicert_pwd="+WeiConfig.getWeicert_pwd(),"log.txt");
     }
-  //发送信息
+    //发送信息
     public static String sendPost(String urlString,Map<String, String> list) 
+    		throws Exception
     {
     	String content=null;
     	//连接上成发送信息
@@ -83,60 +84,50 @@ public class WeiConfigAPI
 	     }  
 	     xml.append("</xml>");	
 	     Log.i("EV_JNI","Send2="+xml.toString());
-	     //4.发送信息
-		try {
-            byte[] xmlbyte = xml.toString().getBytes("UTF-8");
-            
-            //Log.i("EV_JNI","Send5="+xml);
+	     
+	     //4.发送信息		
+        byte[] xmlbyte = xml.toString().getBytes("UTF-8");        
+        //Log.i("EV_JNI","Send5="+xml);
+        URL url = new URL(urlString);    
+        HttpsURLConnection  conn = (HttpsURLConnection) url.openConnection();
+		if(ToolClass.getSsl()!=null)
+		{
+			conn.setSSLSocketFactory(ToolClass.getSsl());
+		}
+        conn.setConnectTimeout(9000);//设置连接主机超时（单位：毫秒）
+        conn.setReadTimeout(3000);//设置从主机读取数据超时（单位：毫秒）
+        conn.setDoOutput(true);// 允许输出
+        conn.setDoInput(true);// 允许输入
+        conn.setUseCaches(false);// 不使用缓存
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+        conn.setRequestProperty("Charset", "UTF-8");
+        conn.setRequestProperty("Content-Length",String.valueOf(xmlbyte.length));
+        conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
+        conn.setRequestProperty("X-ClientType", "2");//发送自定义的头信息
 
-            URL url = new URL(urlString);
-            
-            
-            HttpsURLConnection  conn = (HttpsURLConnection) url.openConnection();
-    		if(ToolClass.getSsl()!=null)
-    		{
-    			conn.setSSLSocketFactory(ToolClass.getSsl());
-    		}
-            conn.setConnectTimeout(9000);//设置连接主机超时（单位：毫秒）
-            conn.setReadTimeout(3000);//设置从主机读取数据超时（单位：毫秒）
-            conn.setDoOutput(true);// 允许输出
-            conn.setDoInput(true);// 允许输入
-            conn.setUseCaches(false);// 不使用缓存
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
-            conn.setRequestProperty("Charset", "UTF-8");
-            conn.setRequestProperty("Content-Length",
-                    String.valueOf(xmlbyte.length));
-            conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
-            conn.setRequestProperty("X-ClientType", "2");//发送自定义的头信息
-
-            conn.getOutputStream().write(xmlbyte);
-            conn.getOutputStream().flush();
-            conn.getOutputStream().close();
+        conn.getOutputStream().write(xmlbyte);
+        conn.getOutputStream().flush();
+        conn.getOutputStream().close();
 
 
-            if (conn.getResponseCode() != 200)
-                throw new RuntimeException("请求url失败");
+        if (conn.getResponseCode() != 200)
+            throw new RuntimeException("请求url失败");
 
-            InputStream in = conn.getInputStream();// 获取返回数据
-              
-            BufferedReader bufferedReader = new BufferedReader(  
-                    new InputStreamReader(in));  
-            StringBuffer temp = new StringBuffer();  
-            String line = bufferedReader.readLine();  
-            while (line != null) {  
-                temp.append(line).append("\r\n");  
-                line = bufferedReader.readLine();  
-            }  
-            bufferedReader.close(); 
-            content = new String(temp.toString().getBytes(), "UTF-8"); 				            
-            Log.i("EV_JNI","rec1="+content);
-		  }
-          catch (Exception e) 
-          {
-			// TODO: handle exception
-        	  System.out.println(e);
-		  }  
+        InputStream in = conn.getInputStream();// 获取返回数据
+          
+        BufferedReader bufferedReader = new BufferedReader(  
+                new InputStreamReader(in));  
+        StringBuffer temp = new StringBuffer();  
+        String line = bufferedReader.readLine();  
+        while (line != null) {  
+            temp.append(line).append("\r\n");  
+            line = bufferedReader.readLine();  
+        }  
+        bufferedReader.close(); 
+        content = new String(temp.toString().getBytes(), "UTF-8"); 				            
+        Log.i("EV_JNI","rec1="+content);
+		   
 	     return content;
     }
     

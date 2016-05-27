@@ -218,7 +218,7 @@ public class LogOpt extends Activity {
 		}
 		else
 		{
-			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
+			ToolClass.failToast("请输入正确查询时间！");	
 		}
 	}
 	//****************
@@ -328,7 +328,7 @@ public class LogOpt extends Activity {
 		}
 		else
 		{
-			Toast.makeText(LogOpt.this, "请输入正确查询时间！", Toast.LENGTH_SHORT).show();
+			ToolClass.failToast("请输入正确查询时间！");	
 		}
 	}
 	

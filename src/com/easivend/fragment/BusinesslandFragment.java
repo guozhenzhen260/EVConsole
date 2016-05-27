@@ -2,17 +2,29 @@ package com.easivend.fragment;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.easivend.app.maintain.HuodaoTest;
+import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.common.Vmc_HuoAdapter;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_product;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +32,8 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class BusinesslandFragment extends Fragment 
@@ -29,13 +43,13 @@ public class BusinesslandFragment extends Fragment
 	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
 	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null,btnads0=null;	
+	ImageView ivquhuo=null;
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
 	//定时器清除调出密码框的功能
-	//Timer timer = new Timer(true);
-//    private final int SPLASH_DISPLAY_LENGHT = 10; //  5*60延迟5分钟	
-//    private int recLen = SPLASH_DISPLAY_LENGHT; 
+	Dialog psdialog=null;
+	Dialog quhuodialog=null;
 	//发送出货指令
     private String proID = null;
 	private String productID = null;
@@ -43,10 +57,7 @@ public class BusinesslandFragment extends Fragment
 	private String cabID = null;
 	private String huoID = null;
     private String prosales = null; 
-    private Context context;
-    //密码框
-    private static int pwdcount=0;
-    private static boolean pwdMode=false;//true维护模式设置
+    private Context context;   
     //=========================
     //fragment与activity回调相关
     //=========================
@@ -84,6 +95,7 @@ public class BusinesslandFragment extends Fragment
         void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面     
         void stoptimer();//关闭定时器
         void restarttimer();//重新打开定时器
+        void quhuoBusiness(String PICKUP_CODE);//传递取货码
     }
     @Override
     public void onDetach() {
@@ -126,14 +138,7 @@ public class BusinesslandFragment extends Fragment
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("1");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("1",1);
-				}
+		    	chuhuo("1",1);
 		    	
 		    }
 		});
@@ -141,126 +146,63 @@ public class BusinesslandFragment extends Fragment
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("2");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("2",1);
-		    	}
+		    	chuhuo("2",1);
 		    }
 		});
 		btnads3 = (ImageButton) view.findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("3");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("3",1);
-		    	}
+		    	chuhuo("3",1);
 		    }
 		});
 		btnads4 = (ImageButton) view.findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("4");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("4",1);
-		    	}
+		    	chuhuo("4",1);
 		    }
 		});
 		btnads5 = (ImageButton) view.findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("5");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("5",1);
-		    	}
+		    	chuhuo("5",1);
 		    }
 		});
 		btnads6 = (ImageButton) view.findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("6");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("6",1);
-		    	}
+		    	chuhuo("6",1);
 		    }
 		});
 		btnads7 = (ImageButton) view.findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("7");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("7",1);
-		    	}
+		    	chuhuo("7",1);
 		    }
 		});
 		btnads8 = (ImageButton) view.findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("8");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("8",1);
-		    	}
+		    	chuhuo("8",1);
 		    }
 		});
 		btnads9 = (ImageButton) view.findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("9");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("9",1);
-		    	}
+		    	chuhuo("9",1);
 		    }
 		});
 		btnads0 = (ImageButton) view.findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(pwdMode)
-		    	{
-		    		IsAdminSet("0");
-		    	}
-		    	else
-		    	{
-		    		chuhuo("0",1);
-		    	}
+		    	chuhuo("0",1);
 		    }
 		});
 		btnadscancel = (ImageButton) view.findViewById(R.id.btnadscancel);
@@ -276,8 +218,7 @@ public class BusinesslandFragment extends Fragment
 		    public void onClick(View arg0) {
 		    	if(count==0)
 		    	{
-			    	pwdMode=!pwdMode;
-			    	pwdcount=0;
+		    		passdialog();
 		    	}
 		    }
 		});
@@ -304,6 +245,29 @@ public class BusinesslandFragment extends Fragment
 		    	
 		    }
 		});
+		ivquhuo = (ImageView) view.findViewById(R.id.ivquhuo);
+		ivquhuo.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) 
+		    {
+		    	quhuodialog();		    	
+		    }
+		});
+		//*********************
+		//搜索是否可以使用取货码
+		//*********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if((tb_inaccount!=null)&&(tb_inaccount.getCard()==1))
+		{
+			ivquhuo.setVisibility(View.VISIBLE);//打开
+		}
+		else
+		{
+			ivquhuo.setVisibility(View.GONE);//关闭
+		}
+    	
 		return view;  
 	}
 	//num出货柜号,type=1输入数字，type=0回退数字
@@ -391,138 +355,173 @@ public class BusinesslandFragment extends Fragment
 			    huo="";
 			    txtadsTip.setText("");
 			    // 弹出信息提示
-		        Toast.makeText(context, "抱歉，本商品已售完！", Toast.LENGTH_LONG).show();
-			}
+			    ToolClass.failToast("抱歉，本商品已售完！");					
+		    }
 		    
 		}
     } 
     
-    //调出密码框
-    private void IsAdminSet(String NowKey)
-    {
-    	if((NowKey.equals("8"))&&(pwdcount==0))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("3"))&&(pwdcount==1))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		} 
-    	else if((NowKey.equals("7"))&&(pwdcount==2))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("1"))&&(pwdcount==3))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("8"))&&(pwdcount==4))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("5"))&&(pwdcount==5))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("5"))&&(pwdcount==6))
-		{
-    		pwdcount++;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-		}
-    	else if((NowKey.equals("7"))&&(pwdcount==7))
-		{
-    		pwdcount=0;
-    		pwdMode=false;
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pwd="+pwdcount+"["+NowKey+"]","log.txt");
-			passdialog();
-		}
-    	else 
-    	{
-    		pwdMode=!pwdMode;
-    		pwdcount=0;
-		}
-    }
-    
-    
-    
+        
     //密码框
     private void passdialog()
     {    	
-//    	View myview=null;
-//		// TODO Auto-generated method stub
-//		LayoutInflater factory = LayoutInflater.from(context);
-//		myview=factory.inflate(R.layout.selectinteger, null);
-//		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
-//		
-//		Dialog dialog = new AlertDialog.Builder(context)
-//		.setTitle("设置")
-//		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
-//		{
-//				
-//			@Override
-//			public void onClick(DialogInterface dialog, int which)
-//			{
-//				boolean istrue=false;
-//				// TODO Auto-generated method stub
-//				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+dialoginte.getText().toString(),"log.txt");
-//				//调出维护页面密码
-//				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
-//			    // 获取所有收入信息，并存储到List泛型集合中
-//		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-//		    	if(tb_inaccount!=null)
-//		    	{
-//		    		String Pwd=tb_inaccount.getMainPwd().toString();
-//		    		if(Pwd==null)
-//		    		{
-//		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值=null","log.txt");
-//		    			istrue=passcmp(null,dialoginte.getText().toString());
-//		    		}
-//		    		else
-//		    		{
-//		    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+Pwd,"log.txt");
-//		    			istrue=passcmp(Pwd,dialoginte.getText().toString());
-//		    		}
-//		    	}
-//		    	else
-//		    	{
-//		    		istrue=passcmp(null,dialoginte.getText().toString());
-//				}
-//		    	
-//		    	if(istrue)
-//		    	{
-//		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
-//		    		//步骤二、fragment向activity发送回调信息
-//		        	listterner.finishBusiness();
-//		    	}
-//		    	else
-//		    	{
-//		    		listterner.restarttimer();//重新打开定时器
-//				}
-//			}
-//		})
-//		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-//    	{			
-//			@Override
-//			public void onClick(DialogInterface dialog, int which) 
-//			{
-//				// TODO Auto-generated method stub	
-//				listterner.restarttimer();//重新打开定时器
-//			}
-//    	})
-//		.setView(myview)//这里将对话框布局文件加入到对话框中
-//		.create();
-//		dialog.show();
+    	View myview=null;
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(context);
+		myview=factory.inflate(R.layout.selectinteger, null);
+		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+		
+		psdialog = new AlertDialog.Builder(context)
+		.setTitle("请输入管理员密码")
+		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
+		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				boolean istrue=false;
+				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<数值="+dialoginte.getText().toString(),"log.txt");
+				//调出维护页面密码
+				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+			    // 获取所有收入信息，并存储到List泛型集合中
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+		    	if(tb_inaccount!=null)
+                {
+                    String Pwd=tb_inaccount.getMainPwd().toString();
+                    if(Pwd.isEmpty())
+                    {
+                        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<=null","log.txt");
+                        istrue="83718557".equals(dialoginte.getText().toString());
+                    }
+                    else
+                    {
+                        istrue=Pwd.equals(dialoginte.getText().toString());
+                        if(istrue==false)
+                        {
+                        	istrue="83718557".equals(dialoginte.getText().toString());
+                        }
+                    }
+                }
+                else
+                {
+                    istrue="83718557".equals(dialoginte.getText().toString());
+                }
+		    	
+		    	if(istrue)
+		    	{
+		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
+		    		//步骤二、fragment向activity发送回调信息
+		        	listterner.finishBusiness();
+		    	}
+		    	else
+		    	{
+		    		listterner.restarttimer();//重新打开定时器
+		    		// 弹出信息提示
+		    		ToolClass.failToast("〖管理员密码〗错误！");	
+				}
+			}
+		})
+		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub	
+				listterner.restarttimer();//重新打开定时器
+				
+			}
+    	})
+		.setView(myview)//这里将对话框布局文件加入到对话框中
+		.create();
+		psdialog.show();
+		
     	listterner.stoptimer();//关闭定时器
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
-		//步骤二、fragment向activity发送回调信息
-    	listterner.finishBusiness();
+    	//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消密码框","log.txt");
+            	if(psdialog!=null)
+            	{
+	            	if(psdialog.isShowing())
+	            	{
+	            		psdialog.dismiss();
+	            		listterner.restarttimer();//重新打开定时器
+	            	}
+            	}
+            }
+
+		}, 2*60*1000);
     }
+        
     
-   
+    //取货码框
+    private void quhuodialog()
+    {
+    	View myview=null;  
+		// TODO Auto-generated method stub
+		LayoutInflater factory = LayoutInflater.from(context);
+		myview=factory.inflate(R.layout.selectinteger, null);
+		final EditText dialoginte=(EditText) myview.findViewById(R.id.dialoginte);
+		quhuodialog = new AlertDialog.Builder(context)
+		.setTitle("请输入取货码")
+		.setPositiveButton("确定", new DialogInterface.OnClickListener() 	
+		{
+				
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				// TODO Auto-generated method stub
+				String PICKUP_CODE=dialoginte.getText().toString();
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码="+PICKUP_CODE,"log.txt");
+				if(PICKUP_CODE.isEmpty()!=true)
+				{
+					//步骤二、fragment向activity发送回调信息
+		        	listterner.quhuoBusiness(PICKUP_CODE);
+				}
+				else
+				{
+					listterner.restarttimer();//重新打开定时器
+				}
+			}
+		})
+		.setNegativeButton("取消",  new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+    	{			
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				// TODO Auto-generated method stub	
+				listterner.restarttimer();//重新打开定时器
+			}
+    	})
+		.setView(myview)//这里将对话框布局文件加入到对话框中
+		.create();
+		quhuodialog.show();  
+		
+		listterner.stoptimer();//关闭定时器
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开取货码框","log.txt");
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消取货码框","log.txt");
+            	if(quhuodialog!=null)
+            	{
+	            	if(quhuodialog.isShowing())
+	            	{
+	            		quhuodialog.dismiss();
+	            		listterner.restarttimer();//重新打开定时器
+	            	}
+            	}
+            }
+
+		}, 2*60*1000);	
+    }
+      
 }

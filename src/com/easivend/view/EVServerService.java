@@ -1,5 +1,9 @@
 package com.easivend.view;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.app.maintain.GoodsProSet;
 import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.MaintainActivity;
@@ -42,6 +47,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -59,7 +65,8 @@ public class EVServerService extends Service {
     LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
-    private String LAST_EDIT_TIME="";
+    private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
+    		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
@@ -123,7 +130,16 @@ public class EVServerService extends Service {
         		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
         		childheartmsg3.obj=columngrid();
         		childhand.sendMessage(childheartmsg3);
-				break;	
+				break;
+				//发送取货码到子线程中	
+			case EVServerhttp.SETPICKUPCHILD:	
+				String PICKUP_CODE=bundle.getString("PICKUP_CODE");
+				childhand=serverhttp.obtainHandler();
+        		Message childheartmsg4=childhand.obtainMessage();
+        		childheartmsg4.what=EVServerhttp.SETPICKUPCHILD;
+        		childheartmsg4.obj=PICKUP_CODE;
+        		childhand.sendMessage(childheartmsg4);
+				break;		
 			}			
 		}
 
@@ -188,6 +204,11 @@ public class EVServerService extends Service {
 					//获取商品分类信息	
 					case EVServerhttp.SETERRFAILCLASSMAIN://子线程接收主线程消息获取商品分类信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETCLASSMAIN://子线程接收主线程消息获取商品分类信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息成功","server.txt");
@@ -197,7 +218,7 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						}						
 						//初始化三:获取商品信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg2=childhand.obtainMessage();
@@ -208,6 +229,11 @@ public class EVServerService extends Service {
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETRODUCTMAIN://子线程接收主线程消息获取商品信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息成功","server.txt");
@@ -217,7 +243,7 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						}						
 						//初始化四:获取货道配置信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg3=childhand.obtainMessage();
@@ -228,6 +254,11 @@ public class EVServerService extends Service {
 					//获取货道信息	
 					case EVServerhttp.SETERRFAILHUODAOMAIN://子线程接收主线程消息获取货道信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取货道信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHUODAOMAIN://子线程接收主线程消息获取货道信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取货道信息成功","server.txt");
@@ -237,9 +268,9 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
+						}						
 						//有不存在的商品
-						if((isspempty)&&(isspretry<4))
+						if((isspempty)&&(isspretry<4)) 
 						{
 							isspempty=false;
 							isspretry++;
@@ -263,9 +294,15 @@ public class EVServerService extends Service {
 					//获取心跳信息	
 					case EVServerhttp.SETERRFAILHEARTMAIN://子线程接收主线程消息获取心跳信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
+						
 						//初始化六、发送交易记录命令到子线程中
 		            	childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg2=childhand.obtainMessage();
@@ -276,21 +313,180 @@ public class EVServerService extends Service {
 					//获取上报交易记录返回	
 					case EVServerhttp.SETERRFAILRECORDMAIN://子线程接收主线程消息上报交易记录失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报交易记录失败","server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETRECORDMAIN://子线程接收主线程消息上报交易记录
 						//修改交易数据上报状态为已上报
 						updategrid(msg.obj.toString());
-						
-						//初始化七、发送货道上传命令到子线程中
-						childhand=serverhttp.obtainHandler();
-		        		Message childheartmsg3=childhand.obtainMessage();
-		        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
-		        		childheartmsg3.obj=columngrid();
-		        		childhand.sendMessage(childheartmsg3);
+						if(ToolClass.getServerVer()==0)//旧的后台
+						{
+							//初始化七、发送货道上传命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+			        		childheartmsg3.obj=columngrid();
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						else if(ToolClass.getServerVer()==1)//一期后台
+						{
+							//初始化七.1、获取版本下载
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETPVERSIONCHILD;
+			        		//刚开机时的时间
+			        		//1>>刚开机只设置一次时间：这样刚开机不会下载一次程序，只有在开机之后，后台设置升级程序，才会下载
+			        		//2>>以后都不会再设置时间
+			        		if(LAST_VERSION_TIME.isEmpty())
+			        		{		
+			        			LAST_VERSION_TIME=ToolClass.getLasttime();
+			        		}
+			        		childheartmsg3.obj=LAST_VERSION_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;	
+						//获取版本信息	
+					case EVServerhttp.SETERRFAILVERSIONMAIN://子线程接收主线程消息获取版本失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETVERSIONMAIN://子线程接收主线程消息获取版本信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本信息成功","server.txt");
+						{
+							//初始化七.2、发送日志上传命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETLOGCHILD;
+			        		//1>>每次查询都重新设置一次时间：这样开机后不会马上上传日志，只有在开机之后，后台日志上传请求，才会上传
+			        		//2>>如果上传失败，下一次就不会再上传了
+			        		LAST_LOG_TIME=ToolClass.getLasttime();			        		
+			        		childheartmsg3.obj=LAST_LOG_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;						
+						//获取版本安装信息	
+					case EVServerhttp.SETINSTALLMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取安装信息成功="+msg.obj.toString(),"server.txt");
+						//3>>安装完程序后，重置时间
+						LAST_VERSION_TIME=ToolClass.getLasttime();
+						installApk(msg.obj.toString());		        		
+						break;
+						//获取日志信息	
+					case EVServerhttp.SETERRFAILLOGMAIN://子线程接收主线程消息获取日志失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取版本日志，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETLOGMAIN://子线程接收主线程消息获取日志信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取日志信息成功","server.txt");
+						{
+							//初始化七.3、发送获取支付宝微信命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETACCOUNTCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次账号
+			        		childheartmsg3.obj=LAST_ACCOUNT_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;
+						//获取支付宝微信信息	
+					case EVServerhttp.SETERRFAILACCOUNTMAIN://子线程接收主线程消息获取支付宝微信失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETACCOUNTMAIN://子线程接收主线程消息获取支付宝微信信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信信息成功","server.txt");						
+						{
+							//初始化七.4、发送获取广告信息到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETADVCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次广告
+			        		childheartmsg3.obj=LAST_ADV_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;	
+						//获取支付宝微信账号重新设置
+					case EVServerhttp.SETACCOUNTRESETMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取支付宝微信账号重新设置="+msg.obj.toString(),"server.txt");
+						//2>>设置账号后，重置时间
+						LAST_ACCOUNT_TIME=ToolClass.getLasttime();	        		
+						break;	
+						//获取广告信息	
+					case EVServerhttp.SETERRFAILADVMAIN://子线程接收主线程消息获取广告失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETADVMAIN://子线程接收主线程消息获取广告信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告信息成功","server.txt");						
+						{
+							//初始化七.5、发送获取设备信息到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETCLIENTCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次本机设置
+			        		childheartmsg3.obj=LAST_CLIENT_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;	
+						//获取广告账号重新设置
+					case EVServerhttp.SETADVRESETMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取广告重新设置="+msg.obj.toString(),"server.txt");
+						//2>>设置广告后，重置时间
+						LAST_ADV_TIME=ToolClass.getLasttime();	 
+						Intent intent3=new Intent();
+						intent3.putExtra("EVWhat", EVServerhttp.SETADVRESETMAIN);
+						intent3.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent3);
+						break;
+						//获取设备信息	
+					case EVServerhttp.SETERRFAILCLIENTMAIN://子线程接收主线程消息获取设备失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETCLIENTMAIN://子线程接收主线程消息获取设备信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");						
+						//2>>重置设备后，重置时间
+						LAST_CLIENT_TIME=ToolClass.getLasttime();	
+						{
+							//初始化七、发送货道上传命令到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+			        		childheartmsg3.obj=columngrid();
+			        		childhand.sendMessage(childheartmsg3);
+						}
 						break;	
 					//获取上报货道信息返回	
 					case EVServerhttp.SETERRFAILHUODAOSTATUMAIN://子线程接收主线程上报货道信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报货道信息失败","server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHUODAOSTATUMAIN://子线程接收主线程上报货道信息
 						//修改数据上报状态为已上报
@@ -335,6 +531,11 @@ public class EVServerService extends Service {
 					//上传设备信息	
 					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
@@ -346,6 +547,32 @@ public class EVServerService extends Service {
 		        		childheartmsg4.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childheartmsg4);	
 						
+						break;
+						//取货码比较特殊，不能用作复制的例子
+						//获取取货码返回	
+					case EVServerhttp.SETERRFAILPICKUPMAIN://子线程接收主线程上报取货码信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报取货码信息失败","server.txt");
+						Intent intent2=new Intent();
+						intent2.putExtra("EVWhat", EVServerhttp.SETERRFAILPICKUPMAIN);
+						intent2.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent2);
+						break;
+					case EVServerhttp.SETPICKUPMAIN://子线程接收主线程上报取货码出货信息
+						JSONObject zhuheobj=null;
+						try {
+							zhuheobj=new JSONObject(msg.obj.toString());
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 取货码出货="+zhuheobj.toString(),"server.txt");
+							
+							Intent intent4=new Intent();
+							intent4.putExtra("EVWhat", EVServerhttp.SETPICKUPMAIN);
+							intent4.putExtra("PRODUCT_NO", zhuheobj.getString("PRODUCT_NO"));
+							intent4.putExtra("out_trade_no", zhuheobj.getString("out_trade_no"));
+							intent4.setAction("android.intent.action.vmserverrec");//action与接收器相同
+							localBroadreceiver.sendBroadcast(intent4);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}						
 						break;	
 					//网络故障
 					case EVServerhttp.SETFAILMAIN://子线程接收主线程网络失败
@@ -355,7 +582,9 @@ public class EVServerService extends Service {
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
 						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
 						localBroadreceiver.sendBroadcast(intent);	
-						break;						
+						break;	
+					default:
+						break;	
 				}				
 			}
 			
@@ -417,24 +646,52 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },40,10*60,TimeUnit.SECONDS);       // 10*60timeTask  
+	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
 	}	
 	
 	//更新商品分类信息
 	private void updatevmcClass(String classrst) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject(classrst); 
-		JSONArray arr1=jsonObject.getJSONArray("ProductClassList");
-		for(int i=0;i<arr1.length();i++)
+		if(ToolClass.getServerVer()==0)//旧的后台
 		{
-			JSONObject object2=arr1.getJSONObject(i);
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品分类CLASS_CODE="+object2.getString("CLASS_CODE")
-					+"CLASS_NAME="+object2.getString("CLASS_NAME"),"server.txt");										
-			// 创建InaccountDAO对象
-        	vmc_classDAO classDAO = new vmc_classDAO(EVServerService.this);
-            // 创建Tb_inaccount对象
-        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(object2.getString("CLASS_CODE"), object2.getString("CLASS_NAME"),object2.getString("LAST_EDIT_TIME"),"");
-        	classDAO.addorupdate(tb_vmc_class);// 修改
+			JSONArray arr1=jsonObject.getJSONArray("ProductClassList");
+			for(int i=0;i<arr1.length();i++)
+			{
+				JSONObject object2=arr1.getJSONObject(i);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品分类CLASS_CODE="+object2.getString("CLASS_CODE")
+						+"CLASS_NAME="+object2.getString("CLASS_NAME"),"server.txt");										
+				// 创建InaccountDAO对象
+	        	vmc_classDAO classDAO = new vmc_classDAO(EVServerService.this);
+	            // 创建Tb_inaccount对象
+	        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(object2.getString("CLASS_CODE"), object2.getString("CLASS_NAME"),object2.getString("LAST_EDIT_TIME"),"");
+	        	classDAO.addorupdate(tb_vmc_class);// 修改
+			}
+		}
+		else if(ToolClass.getServerVer()==1)//一期后台
+		{
+			JSONArray arr1=jsonObject.getJSONArray("List");
+			for(int i=0;i<arr1.length();i++)
+			{
+				JSONObject object2=arr1.getJSONObject(i);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品分类CLASS_CODE="+object2.getString("CLASS_CODE")
+						+"CLASS_NAME="+object2.getString("CLASS_NAME")+"IS_DELETE="+object2.getInt("IS_DELETE")
+						+"AttImg="+object2.getString("AttImg"),"server.txt");										
+				// 创建InaccountDAO对象
+	        	vmc_classDAO classDAO = new vmc_classDAO(EVServerService.this);
+	            // 创建Tb_inaccount对象
+	        	Tb_vmc_class tb_vmc_class = new Tb_vmc_class(object2.getString("CLASS_CODE"), object2.getString("CLASS_NAME"),object2.getString("LAST_EDIT_TIME"),object2.getString("AttImg"));
+	        	//删除商品分类
+	        	if(object2.getInt("IS_DELETE")==1) 
+	        	{
+	        		classDAO.detele(tb_vmc_class);
+	        	}
+	        	else
+	        	{
+	        		classDAO.addorupdate(tb_vmc_class);// 修改
+	        	}
+			}
+			
 		}
 	}
 	
@@ -475,7 +732,15 @@ public class EVServerService extends Service {
 	private void updatevmcColumn(String classrst) throws JSONException
 	{
 		JSONObject jsonObject = new JSONObject(classrst); 
-		JSONArray arr1=jsonObject.getJSONArray("PathList");
+		JSONArray arr1=null;
+		if(ToolClass.getServerVer()==0)//旧的后台
+		{
+			arr1=jsonObject.getJSONArray("PathList");
+		}
+		else if(ToolClass.getServerVer()==1)//一期后台
+		{
+			arr1=jsonObject.getJSONArray("List");
+		}
 		for(int i=0;i<arr1.length();i++)
 		{
 			JSONObject object2=arr1.getJSONObject(i);
@@ -484,7 +749,12 @@ public class EVServerService extends Service {
 			int PATH_NO=Integer.parseInt(object2.getString("PATH_NO"));
 			String PATH_NOSTR=(PATH_NO<10)?("0"+String.valueOf(PATH_NO)):String.valueOf(PATH_NO);
 			int PATH_REMAINING=Integer.parseInt(object2.getString("PATH_REMAINING"));
-			int status=0;
+			int IS_DELETE=0;
+			if(ToolClass.getServerVer()==1)//一期后台
+			{
+				IS_DELETE=Integer.parseInt(object2.getString("IS_DELETE"));
+			}
+			int status=0;//货道状态
 			int j=0;
 			//输出内容
 	        Set<Map.Entry<String,Integer>> allset=huoSet.entrySet();  //实例化
@@ -510,25 +780,51 @@ public class EVServerService extends Service {
 				status=updatehuodaostatus(status,PATH_REMAINING);
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新货道PATH_ID="+PATH_ID+"CABINET_NO="+object2.getString("CABINET_NO")
 						+"PATH_NO="+PATH_NOSTR+"PRODUCT_NO="+object2.getString("PRODUCT_NO")
-						+"PATH_COUNT="+object2.getString("PATH_COUNT"),"server.txt");	
+						+"PATH_COUNT="+object2.getString("PATH_COUNT")+"IS_DELETE="+IS_DELETE,"server.txt");	
 				// 创建InaccountDAO对象
     			vmc_columnDAO columnDAO = new vmc_columnDAO(EVServerService.this);
 	            //创建Tb_inaccount对象
     			Tb_vmc_column tb_vmc_column = new Tb_vmc_column(object2.getString("CABINET_NO"), PATH_NOSTR,"",object2.getString("PRODUCT_NO"),
     					Integer.parseInt(object2.getString("PATH_COUNT")),Integer.parseInt(object2.getString("PATH_REMAINING")),
-    					status,"",PATH_ID,0);    			
-    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息
-    			//查看本货道对应的商品是否存在
-    			// 创建InaccountDAO对象
-    			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
-    			//创建Tb_inaccount对象
-    			Tb_vmc_product tb_vmc_product = productDAO.find(object2.getString("PRODUCT_NO"));
-    			if(tb_vmc_product==null)
+    					status,"",PATH_ID,0); 
+    			if(ToolClass.getServerVer()==0)//旧的后台
     			{
-    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
-    						+"不存在","server.txt");	
-    				isspempty=true;    				
-    			}
+	    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息
+	    			//查看本货道对应的商品是否存在
+	    			// 创建InaccountDAO对象
+	    			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
+	    			//创建Tb_inaccount对象
+	    			Tb_vmc_product tb_vmc_product = productDAO.find(object2.getString("PRODUCT_NO"));
+	    			if(tb_vmc_product==null)
+	    			{
+	    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
+	    						+"不存在","server.txt");	
+	    				isspempty=true;    				
+	    			}
+    			}	
+    			else if(ToolClass.getServerVer()==1)//一期后台
+    			{
+    				//删除货道
+    				if(IS_DELETE==1)
+    				{
+    					columnDAO.detele(tb_vmc_column);
+    				}
+    				else
+        			{
+    	    			columnDAO.addorupdateforserver(tb_vmc_column);// 添加货道信息
+    	    			//查看本货道对应的商品是否存在
+    	    			// 创建InaccountDAO对象
+    	    			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
+    	    			//创建Tb_inaccount对象
+    	    			Tb_vmc_product tb_vmc_product = productDAO.find(object2.getString("PRODUCT_NO"));
+    	    			if(tb_vmc_product==null)
+    	    			{
+    	    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品PRODUCT_NO="+object2.getString("PRODUCT_NO")
+    	    						+"不存在","server.txt");	
+    	    				isspempty=true;    				
+    	    			}
+        			}
+    			}    			
 			}
 			//更新货道失败
 			else
@@ -681,7 +977,7 @@ public class EVServerService extends Service {
 					payStatue=2;
 					actualQuantity=0;
 				}
-		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描-1取货码
 		    	if(payTypevalue[x]==0)
 				{
 		    		payTyp=0;
@@ -702,6 +998,10 @@ public class EVServerService extends Service {
 				{
 					payTyp=4;
 				}
+				else if(payTypevalue[x]==-1)
+				{
+					payTyp=-1;
+				}
 		    	
 		    	if(RealStatusvalue[x]==0)
 		    	{
@@ -718,23 +1018,39 @@ public class EVServerService extends Service {
 		    	RefundAmount=String.valueOf(realAmountvalue[x]+realCardvalue[x]);
 		    	//ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售payStatus="+payStatusvalue[x]+"payType="+payTypevalue[x],"server.txt");
 				
-		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+ToolClass.getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
-				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productID[x]+"quantity="+1+
-				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
+//		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售orderNo="+ordereID[x]+"orderTime="+ToolClass.getStrtime(payTime[x])+"orderStatus="+orderStatus+"payStatus="
+//				+payStatue+"payType="+payTyp+"shouldPay="+shouldPay[x]+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productID[x]+"quantity="+1+
+//				"actualQuantity="+actualQuantity+"customerPrice="+salesPrice[x]+"productName="+productName[x],"server.txt");			
 		    	JSONObject object=new JSONObject();
 		    	object.put("orderNo", ordereID[x]);
 		    	object.put("orderTime", ToolClass.getStrtime(payTime[x]));
-		    	object.put("orderStatus", orderStatus);
-		    	object.put("payStatus", payStatue);
-		    	object.put("payType", payTyp);
-		    	object.put("shouldPay", shouldPay[x]);
-		    	object.put("RefundAmount", RefundAmount);
-		    	object.put("Status", Status);
+		    	object.put("orderStatus", orderStatus);//1未支付,2出货成功,3出货未完成
+		    	object.put("payStatus", payStatue);//0未付款,1正在付款,2付款完成,3付款失败
+		    	object.put("payType", payTyp);//支付类型:0=现金1=支付宝2=银联3=二维码4=微支付
+		    	object.put("shouldPay", shouldPay[x]);//商品总金额		    	
+		    	object.put("RefundAmount", RefundAmount);//退款总金额
+		    	object.put("Status", Status);//退款状态:0：未退款；1：正在退款；2：退款成功；3：退款失败
 		    	object.put("productNo", productID[x]);		    	
 		    	object.put("quantity", 1);
 		    	object.put("actualQuantity", actualQuantity);
 		    	object.put("customerPrice", salesPrice[x]);
 		    	object.put("productName", productName[x]);	
+		    	
+		    	//一期后台
+		    	if(ToolClass.getServerVer()==1)//一期后台
+		    	{
+		    		object.put("NOTE_AMOUNT", smallNotevalue[x]);//纸币总金额
+		    		object.put("COIN_AMOUNT", smallConivalue[x]);//硬币总金额
+		    		object.put("CASH_AMOUNT", smallAmountvalue[x]);//现金总金额
+		    		object.put("REFUND_NOTE_AMOUNT", realNotevalue[x]);//退款纸币总金额
+		    		object.put("REFUND_COIN_AMOUNT", realCoinvalue[x]);//退款硬币总金额
+		    		object.put("REFUND_CASH_AMOUNT", realAmountvalue[x]);//退款总金额
+		    		object.put("AMOUNT_OWED", debtAmountvalue[x]);//欠款金额
+		    		object.put("Amount", realCardvalue[x]);//非现金退款金额
+		    		object.put("Cab", cabID[x]);//柜号
+		    		object.put("PATH_NO", columnID[x]);//货道号
+		    	}
+		    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","销售="+object.toString(),"server.txt");	
 		    	
 		    	array.put(object);
 			}
@@ -878,4 +1194,58 @@ public class EVServerService extends Service {
 		}		  	
 	}
 
+	/**
+     * 后台静默安装apk文件
+     */
+    private void installApk(String ATTIDS)
+    {        	
+    	//1.静默安装
+    	Process process = null;  
+        OutputStream out = null;
+        boolean result = false;  
+        
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
+        //1.有提示的安装
+        File fileName = ToolClass.setAPKFile(ATTIDS);
+        Intent intent = new Intent();  
+        //执行动作  
+        intent.setAction(Intent.ACTION_VIEW); 
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+        //执行的数据类型  
+        intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
+        startActivity(intent); 
+        
+//        File fileName = new File(  
+//        		ToolClass.getEV_DIR()+File.separator+ATTIDS);
+//        try {  
+//            process = Runtime.getRuntime().exec("su");  
+//            out = process.getOutputStream();  
+//            DataOutputStream dataOutputStream = new DataOutputStream(out);  
+//            dataOutputStream.writeBytes("chmod 777 " + fileName.getPath() + "\n");  
+//            dataOutputStream.writeBytes("LD_LIBRARY_PATH=/vendor/lib:/system/lib pm install -r " +  
+//            		fileName.getPath());  
+//            // 提交命令  
+//            dataOutputStream.flush();  
+//            // 关闭流操作  
+//            dataOutputStream.close();  
+//            out.close();  
+//            int value = process.waitFor();  
+//              
+//            // 代表成功  
+//            if (value == 0) 
+//            {  
+//                result = true;  
+//                //2.杀死本进程
+//	            //android.os.Process.killProcess(android.os.Process.myPid());
+//            } else if (value == 1) { // 失败  
+//                result = false;  
+//            } else { // 未知情况  
+//                result = false;  
+//            }  
+//        } catch (IOException e) {  
+//            e.printStackTrace();  
+//        } catch (InterruptedException e) {  
+//            e.printStackTrace();  
+//        }
+    }
 }

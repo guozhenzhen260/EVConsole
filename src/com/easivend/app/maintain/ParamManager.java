@@ -79,7 +79,7 @@ public class ParamManager extends TabActivity
     	this.mytabhost.addTab(myTabmachine); 
     	
     	TabSpec myTabdevice=this.mytabhost.newTabSpec("tab1");
-    	myTabdevice.setIndicator("设备参数配置");
+    	myTabdevice.setIndicator("交易参数配置");
     	myTabdevice.setContent(this.layres[1]);
     	this.mytabhost.addTab(myTabdevice); 
     	
@@ -252,6 +252,14 @@ public class ParamManager extends TabActivity
 		});
     	
     	btncard = (Button) findViewById(R.id.btncard);
+    	btncard.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, OpendoorTest.class);// 使用AddInaccount窗口初始化Intent
+		    	intent.putExtra("id", edtdevhCode.getText().toString());
+		    	startActivity(intent);// 打开AddInaccount
+		    }
+		});
     	btnzhifubaofaca = (Button) findViewById(R.id.btnzhifubaofaca);
     	btnzhifubaofaca.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -408,13 +416,13 @@ public class ParamManager extends TabActivity
     		} catch (Exception e)
 			{
 				// TODO: handle exception
-				Toast.makeText(ParamManager.this, "数据添加失败！", Toast.LENGTH_SHORT).show();
+    			ToolClass.failToast("数据添加失败！");	
 			}		    		
             
         } 
         else
         {
-            Toast.makeText(ParamManager.this, "请填写红色部分！", Toast.LENGTH_SHORT).show();
+        	ToolClass.failToast("请填写红色部分！");	
         }
     }
     
@@ -697,7 +705,7 @@ public class ParamManager extends TabActivity
 		} catch (Exception e)
 		{
 			// TODO: handle exception
-			Toast.makeText(ParamManager.this, "数据添加失败！", Toast.LENGTH_SHORT).show();
+			ToolClass.failToast("数据添加失败！");	
 		}	    		    	
 	}
     @Override

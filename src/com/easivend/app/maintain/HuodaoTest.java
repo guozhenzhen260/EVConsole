@@ -58,6 +58,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,6 +70,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -83,6 +85,7 @@ public class HuodaoTest extends TabActivity
 	private TabHost mytabhost = null;
 	private ProgressBar barhuomanager=null;
 	private int[] layres=new int[]{R.id.tab_huodaomanager,R.id.tab_huodaotest,R.id.tab_huodaoset};//内嵌布局文件的id
+	HuoPictureAdapter adapter=null;
 	private TextView txthuosetrst=null;
 	private int con=1;//查询连接次数
 	private int ishuoquery=0;//是否正在查询1,正在查询,0查询完成
@@ -96,6 +99,10 @@ public class HuodaoTest extends TabActivity
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
 	private int huonno=0;//循环出货第几个格子了
+	private boolean autohuonno=false;//true表示在进行循环出货
+	private int autohuonum=0;//循环出到第几次了
+	//循环测试结果
+	Map<String, Integer> huoalltest= new LinkedHashMap<String,Integer>();
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
 	GridView gvhuodao=null;
@@ -107,7 +114,7 @@ public class HuodaoTest extends TabActivity
 	private int cool=0;//是否支持制冷 	 	1:支持 0:不支持
 	private int hot=0;//是否支持加热  		1:支持 0:不支持
 	private int light=0;//是否支持照明  	1:支持 0:不支持
-	private TextView txthuorst=null,txthuotestrst=null;
+	private TextView txthuorst=null,txthuotestrst=null,txthuoallrst=null;
 	private Button btnhuochu=null,btnhuochuall=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
@@ -195,6 +202,7 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
@@ -258,7 +266,7 @@ public class HuodaoTest extends TabActivity
     	btnhuosetexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	
-		    	finish();
+		    	finishActivity();
 		    }
 		});    	
     	
@@ -295,6 +303,7 @@ public class HuodaoTest extends TabActivity
 		
     	//spinhuoCab= (Spinner) findViewById(R.id.spinhuoCab); 
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
+		txthuoallrst=(TextView)findViewById(R.id.txthuoallrst);
 		txthuotestrst=(TextView)findViewById(R.id.txthuotestrst);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
 		btnhuochuall = (Button) findViewById(R.id.btnhuochuall);
@@ -368,6 +377,7 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
@@ -396,9 +406,22 @@ public class HuodaoTest extends TabActivity
 		});
 		btnhuochuall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {	    	  
-		    	huonno=1;
-		    	comsend(COMService.EV_CHUHUOCHILD,huonno);
+		    public void onClick(View arg0) {	
+		    	if(autohuonno==false)
+		    	{
+		    		autohuonno=true;
+			    	btnhuochuall.setText("结束循环出货");
+			    	autohuonum=1;
+			    	huonno=1;
+			    	comsend(COMService.EV_CHUHUOCHILD,huonno);
+		    	}
+		    	else
+		    	{
+		    		autohuonno=false;
+		    		autohuonum=0;
+		    		huoalltest.clear();
+			    	btnhuochuall.setText("开始循环出货");
+		    	}
 		    }
 		});
 		btnhuocancel.setOnClickListener(new OnClickListener() {// 为重置按钮设置监听事件
@@ -410,7 +433,7 @@ public class HuodaoTest extends TabActivity
 		btnhuoexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {		    	
-		    	finish();
+		    	finishActivity();
 		    }
 		});
 		
@@ -1378,14 +1401,21 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
 				//只有有柜号的时候，才请求加载柜内货道信息
 				if(cabinetID!=null)
 				{
 					cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
 					cabinetTypepeivar=cabinetType[arg2]; 
-					if(cabinetTypepeivar!=5)
+					//弹簧货道
+					if(cabinetTypepeivar==1)
 					{
 						gethuofile();
+					}
+					//升降机货道
+					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+					{
+						getelevatorfile();
 					}
 				}				
 			}
@@ -1410,9 +1440,19 @@ public class HuodaoTest extends TabActivity
 					    				@Override
 					    				public void onClick(DialogInterface dialog, int which) 
 					    				{
-					    					// TODO Auto-generated method stub	
-					    					sethuofile();	
-									    	gethuofile();
+					    					// TODO Auto-generated method stub
+					    					//弹簧货道
+					    					if(cabinetTypepeivar==1)
+					    					{
+						    					sethuofile();	
+										    	gethuofile();
+					    					}
+					    					//升降机货道
+					    					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+					    					{
+					    						setelevatorfile();
+					    						getelevatorfile();
+					    					}
 					    				}
 				    		      }
 				    			)		    		        
@@ -1447,6 +1487,16 @@ public class HuodaoTest extends TabActivity
 					    					// TODO Auto-generated method stub	
 					    					HuodaoTest.this.dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
 									    	autochu=true;
+									    	//弹簧货道
+									    	if(cabinetTypepeivar==1)
+									    	{
+									    		autophysic=57;
+									    	}
+									    	//升降机货道
+									    	else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+									    	{
+									    		autophysic=11;
+									    	}
 									    	comsend(COMService.EV_CHUHUOCHILD,autophysic);
 					    				}
 				    		      }
@@ -1468,7 +1518,7 @@ public class HuodaoTest extends TabActivity
 		btnhuosetclose.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 				    @Override
 				    public void onClick(View arg0) {				    	
-				    	finish();
+				    	finishActivity();
 				    }
 				});
 	}
@@ -1498,6 +1548,7 @@ public class HuodaoTest extends TabActivity
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetsetvar)
 		    	+" column="+opt		    	
 		    	,"log.txt");
+				edtcolumn.setText(String.valueOf(opt));
 				//4.发送指令广播给COMService
 				if(autochu)
 					intent.putExtra("EVWhat", COMService.EV_SETHUOCHILD);	
@@ -1550,7 +1601,7 @@ public class HuodaoTest extends TabActivity
 				cool=(Integer)Set.get("cool");
 				hot=(Integer)Set.get("hot");
 				light=(Integer)Set.get("light");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道cool:"+cool+",hot="+hot+",light="+light,"log.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","API<<货道cool:"+cool+",hot="+hot+",light="+light,"com.txt");
 				if(light>0)
 				{
 					txtlight.setText("支持");
@@ -1584,6 +1635,7 @@ public class HuodaoTest extends TabActivity
 				}
 
 				huoSet.clear();
+				huoalltest.clear();
 				//输出内容
 				Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
 				Iterator<Entry<String, Integer>> iter=allmap.iterator();
@@ -1601,11 +1653,16 @@ public class HuodaoTest extends TabActivity
 							tempno=me.getKey();
 						
 						huoSet.put(tempno, (Integer)me.getValue());
+						huoalltest.put(tempno, 0);
 					}
 				} 
 				huonum=huoSet.size();
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+huonum+"货道状态:"+huoSet.toString(),"log.txt");	
-				showhuodao();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<"+huonum+"货道状态:"+huoSet.toString(),"com.txt");	
+				if(huonum==0)
+            	{
+            		ToolClass.failToast("本柜连接失败!");
+            	}
+            	showhuodao();//显示货道列表				
 				break;
 			//操作返回	
 			case COMService.EV_OPTMAIN: 
@@ -1624,19 +1681,44 @@ public class HuodaoTest extends TabActivity
 					//循环继续做货道配置操作
 					if(autochu)
 					{
-						autohuofile(status);
+						//弹簧货道
+						if(cabinetTypepeivar==1)
+						{
+							autohuofile(status);
+						}
+						//升降机货道
+						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+						{
+							autoelevatorfile(status);
+						}
 					}
 					
 					sethuorst(status);
 					//循环继续做出货操作
-					if((huonno>0)&&(huonno<huonum))
-					{							
-						huonno++;
-						comsend(COMService.EV_CHUHUOCHILD,huonno);
-					}
-					else if(huonno>=huonum)
+					if(autohuonno)
 					{
-						huonno=0;
+						setallhuorst();
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {            	
+				            	//出货下一个货道
+								if((huonno>0)&&(huonno<huonum))
+								{							
+									huonno++;
+									comsend(COMService.EV_CHUHUOCHILD,huonno);
+								}
+								else if(huonno>=huonum)
+								{							
+									huonno=1;
+									autohuonum++;
+									comsend(COMService.EV_CHUHUOCHILD,huonno);
+								}
+				            }
+
+						}, 500);						
 					}
 				}
 				break;
@@ -1680,6 +1762,19 @@ public class HuodaoTest extends TabActivity
 				barhuomanager.setVisibility(View.VISIBLE);  
 				showhuodao();
 			}			
+		}
+	}
+	
+	private void finishActivity()
+	{
+		if(autohuonno)
+		{
+			// 弹出信息提示
+			ToolClass.failToast("请在[本次出货完成]之后，再退出页面！");
+		}
+		else
+		{
+			finish();
 		}
 	}
 	
@@ -1734,7 +1829,7 @@ public class HuodaoTest extends TabActivity
 		    	}
 		    	else
 		        {
-		            Toast.makeText(HuodaoTest.this, "请输入货柜编号和类型！", Toast.LENGTH_SHORT).show();
+		    		ToolClass.failToast("请输入货柜编号和类型！");	
 		        }
 			}
 		})
@@ -1768,7 +1863,7 @@ public class HuodaoTest extends TabActivity
 		} catch (Exception e)
 		{
 			// TODO: handle exception
-			Toast.makeText(HuodaoTest.this, "货柜添加失败！", Toast.LENGTH_SHORT).show();
+			ToolClass.failToast("货柜添加失败！");	
 		}
 	}
 	//显示全部柜信息
@@ -1783,12 +1878,12 @@ public class HuodaoTest extends TabActivity
 	    spinhuotestCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    spinhuopeiCab.setAdapter(arrayAdapter);// 为spin列表设置数据源
 	    cabinetID=vmc_cabAdapter.getCabinetID();    
-	    cabinetType=vmc_cabAdapter.getCabinetType();
+	    cabinetType=vmc_cabAdapter.getCabinetType(); 	    
 	    //只有有柜号的时候，才请求加载柜内货道信息
-//		if(cabinetID!=null)
-//		{
-//		    cabinetsetvar=Integer.parseInt(cabinetID[0]); 
-//		}
+		if(cabinetID.length>0)
+		{
+			cabinetTypepeivar=cabinetType[0]; 
+		}
 	}
 	//导入本柜全部货道信息
 	private void showhuodao()
@@ -1812,7 +1907,7 @@ public class HuodaoTest extends TabActivity
 		@Override
 		protected void onPostExecute(Vmc_HuoAdapter huoAdapter) {
 			// TODO Auto-generated method stub
-			HuoPictureAdapter adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+			adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
 			gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
 			barhuomanager.setVisibility(View.GONE);
 		}
@@ -1909,14 +2004,119 @@ public class HuodaoTest extends TabActivity
 	//===============
 	private void sethuorst(int status)
 	{
-		if(status==1)
-		{		
-			txthuotestrst.setText("出货成功");
-		}
+		StringBuilder str=new StringBuilder();
+		str.append("货道");
+		str.append(edtcolumn.getText().toString());
+		String tempno="";
+		if(Integer.parseInt(edtcolumn.getText().toString())<10)
+			tempno="0"+edtcolumn.getText().toString();
 		else 
+			tempno=edtcolumn.getText().toString();
+		
+		if(status==1)
 		{
-			txthuotestrst.setText("出货失败");
+			txthuotestrst.setTextColor(android.graphics.Color.BLACK);
 		}
+		else
+		{
+			txthuotestrst.setTextColor(android.graphics.Color.RED);
+			if(huoalltest.containsKey(tempno))
+			{
+				int value=huoalltest.get(tempno);
+				value++;
+				huoalltest.put(tempno, value);
+			}
+		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","huoalltest="+huoalltest.toString(),"log.txt");	
+		//弹簧货道或者格子柜
+		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5))
+		{
+			switch(status)
+			{
+				case 1:
+					str.append("出货成功");
+					break;
+				case 0:
+					str.append("出货失败");
+					break;	
+				case 2:
+					str.append("货道不存在");
+					break;
+				case 3:
+					str.append("电机未到位");
+					break;	
+				case 4:
+					str.append("出货失败");
+					break;
+				case 5:
+					str.append("通信故障");
+					break;	
+			}
+		}
+		//升降机货道
+		else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+		{
+			switch(status)
+			{
+				case 1:
+					str.append("出货成功");
+					break;
+				case 4:
+					str.append("出货失败");
+					break;
+				case 8:
+					str.append("卡货");
+					break;
+				case 0x1F:
+					str.append("通信故障");
+					break;
+				case 0x12:
+					str.append("升降机故障");
+					break;
+				case 0x11:
+					str.append("升降机忙");
+					break;
+				case 0:
+					str.append("出货失败 通信失败");
+					break;
+				case 0x2:
+					str.append("数据错误");
+					break;
+				case 5:
+					str.append("取货门未开启");
+					break;
+				case 6:
+					str.append("货物未取走");
+					break;	
+				case 0x7:
+					str.append("其他故障");
+					break;
+				case 0x88:
+					str.append("正在出货");
+					break;	
+			}
+		}	
+		txthuotestrst.setText(str);
+	}
+	//循环出货返回结果
+	private void setallhuorst()
+	{
+		StringBuilder str=new StringBuilder();
+		str.append("出货次数:[").append(autohuonum).append("]");
+		Map<String, String> huodaolist= new LinkedHashMap<String,String>();
+		//输出内容
+		Set<Entry<String, Integer>> allmap=huoalltest.entrySet();  //实例化
+		Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		while(iter.hasNext())
+		{
+			Entry<String, Integer> me=iter.next();
+			if(me.getValue()>0)
+			{
+				huodaolist.put("货道"+me.getKey(),"故障"+me.getValue());
+			}
+		} 
+		str.append("故障货道:").append(huodaolist.toString());
+		txthuoallrst.setText(str);
 	}
 	
 	//===============
@@ -2121,7 +2321,7 @@ public class HuodaoTest extends TabActivity
 				break;	
 		}
 	}
-	//自检逻辑货道开关性能,result==0,或者21货道存在，其他值货道不存在
+	//自检逻辑货道开关性能,result==0,或者0x21货道存在，其他值货道不存在
 	private void autohuofile(int result)
 	{
 		switch(autophysic)
@@ -2906,6 +3106,7 @@ public class HuodaoTest extends TabActivity
 				break;	
 		}
 	}
+	
 	//保存逻辑货道实际对应物理货道的文件
 	private void sethuofile()
 	{
@@ -4004,5 +4205,1893 @@ public class HuodaoTest extends TabActivity
 		}
 	}
 	
+	//========
+	//升降机模块
+	//========
+	//自检逻辑货道开关性能,result==0,或者0x21货道存在，其他值货道不存在
+	private void autoelevatorfile(int result)
+	{
+		switch(autophysic)
+		{
+			//第一层
+			case 11:
+				if((result==1)||(result==4))
+				{
+					btnhuoset11.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset11.setChecked(false);	
+				}
+				autophysic++;				
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 12:
+				if((result==1)||(result==4))
+				{
+					btnhuoset12.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset12.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 13:
+				if((result==1)||(result==4))
+				{
+					btnhuoset13.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset13.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 14:
+				if((result==1)||(result==4))
+				{
+					btnhuoset14.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset14.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 15:
+				if((result==1)||(result==4))
+				{
+					btnhuoset15.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset15.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 16:
+				if((result==1)||(result==4))
+				{
+					btnhuoset16.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset16.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 17:
+				if((result==1)||(result==4))
+				{
+					btnhuoset17.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset17.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 18:
+				if((result==1)||(result==4))
+				{
+					btnhuoset18.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset18.setChecked(false);	
+				}
+				autophysic=21;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第二层	
+			case 21:
+				if((result==1)||(result==4))
+				{
+					btnhuoset21.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset21.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 22:
+				if((result==1)||(result==4))
+				{
+					btnhuoset22.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset22.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 23:
+				if((result==1)||(result==4))
+				{
+					btnhuoset23.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset23.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 24:
+				if((result==1)||(result==4))
+				{
+					btnhuoset24.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset24.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 25:
+				if((result==1)||(result==4))
+				{
+					btnhuoset25.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset25.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 26:
+				if((result==1)||(result==4))
+				{
+					btnhuoset26.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset26.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 27:
+				if((result==1)||(result==4))
+				{
+					btnhuoset27.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset27.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 28:
+				if((result==1)||(result==4))
+				{
+					btnhuoset28.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset28.setChecked(false);	
+				}
+				autophysic=31;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			//第三层	
+			case 31:
+				if((result==1)||(result==4))
+				{
+					btnhuoset31.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset31.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 32:
+				if((result==1)||(result==4))
+				{
+					btnhuoset32.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset32.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 33:
+				if((result==1)||(result==4))
+				{
+					btnhuoset33.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset33.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 34:
+				if((result==1)||(result==4))
+				{
+					btnhuoset34.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset34.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 35:
+				if((result==1)||(result==4))
+				{
+					btnhuoset35.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset35.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 36:
+				if((result==1)||(result==4))
+				{
+					btnhuoset36.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset36.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 37:
+				if((result==1)||(result==4))
+				{
+					btnhuoset37.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset37.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 38:
+				if((result==1)||(result==4))
+				{
+					btnhuoset38.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset38.setChecked(false);	
+				}
+				autophysic=41;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第四层	
+			case 41:
+				if((result==1)||(result==4))
+				{
+					btnhuoset41.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset41.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 42:
+				if((result==1)||(result==4))
+				{
+					btnhuoset42.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset42.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 43:
+				if((result==1)||(result==4))
+				{
+					btnhuoset43.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset43.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 44:
+				if((result==1)||(result==4))
+				{
+					btnhuoset44.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset44.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 45:
+				if((result==1)||(result==4))
+				{
+					btnhuoset45.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset45.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 46:
+				if((result==1)||(result==4))
+				{
+					btnhuoset46.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset46.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 47:
+				if((result==1)||(result==4))
+				{
+					btnhuoset47.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset47.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 48:
+				if((result==1)||(result==4))
+				{
+					btnhuoset48.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset48.setChecked(false);	
+				}
+				autophysic=51;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			//第五层	
+			case 51:
+				if((result==1)||(result==4))
+				{
+					btnhuoset51.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset51.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 52:
+				if((result==1)||(result==4))
+				{
+					btnhuoset52.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset52.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 53:
+				if((result==1)||(result==4))
+				{
+					btnhuoset53.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset53.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 54:
+				if((result==1)||(result==4))
+				{
+					btnhuoset54.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset54.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 55:
+				if((result==1)||(result==4))
+				{
+					btnhuoset55.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset55.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 56:
+				if((result==1)||(result==4))
+				{
+					btnhuoset56.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset56.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 57:
+				if((result==1)||(result==4))
+				{
+					btnhuoset57.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset57.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 58:
+				if((result==1)||(result==4))
+				{
+					btnhuoset58.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset58.setChecked(false);	
+				}
+				autophysic=61;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第六层	
+			case 61:
+				if((result==1)||(result==4))
+				{
+					btnhuoset61.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset61.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 62:
+				if((result==1)||(result==4))
+				{
+					btnhuoset62.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset62.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 63:
+				if((result==1)||(result==4))
+				{
+					btnhuoset63.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset63.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 64:
+				if((result==1)||(result==4))
+				{
+					btnhuoset64.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset64.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 65:
+				if((result==1)||(result==4))
+				{
+					btnhuoset65.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset65.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 66:
+				if((result==1)||(result==4))
+				{
+					btnhuoset66.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset66.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 67:
+				if((result==1)||(result==4))
+				{
+					btnhuoset67.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset67.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 68:
+				if((result==1)||(result==4))
+				{
+					btnhuoset68.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset68.setChecked(false);	
+				}
+				autophysic=71;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;	
+			//第七层
+			case 71:
+				if((result==1)||(result==4))
+				{
+					btnhuoset71.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset71.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 72:
+				if((result==1)||(result==4))
+				{
+					btnhuoset72.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset72.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 73:
+				if((result==1)||(result==4))
+				{
+					btnhuoset73.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset73.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 74:
+				if((result==1)||(result==4))
+				{
+					btnhuoset74.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset74.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 75:
+				if((result==1)||(result==4))
+				{
+					btnhuoset75.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset75.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 76:
+				if((result==1)||(result==4))
+				{
+					btnhuoset76.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset76.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 77:
+				if((result==1)||(result==4))
+				{
+					btnhuoset77.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset77.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 78:
+				if((result==1)||(result==4))
+				{
+					btnhuoset78.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset78.setChecked(false);	
+				}
+				autophysic=81;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			//第八层
+			case 81:
+				if((result==1)||(result==4))
+				{
+					btnhuoset81.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset81.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 82:
+				if((result==1)||(result==4))
+				{
+					btnhuoset82.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset82.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 83:
+				if((result==1)||(result==4))
+				{
+					btnhuoset83.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset83.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 84:
+				if((result==1)||(result==4))
+				{
+					btnhuoset84.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset84.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 85:
+				if((result==1)||(result==4))
+				{
+					btnhuoset85.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset85.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 86:
+				if((result==1)||(result==4))
+				{
+					btnhuoset86.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset86.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 87:
+				if((result==1)||(result==4))
+				{
+					btnhuoset87.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset87.setChecked(false);	
+				}
+				autophysic++;
+				comsend(COMService.EV_CHUHUOCHILD,autophysic);
+				break;
+			case 88:
+				if((result==1)||(result==4))
+				{
+					btnhuoset88.setChecked(true);
+				}
+				else 
+				{
+					btnhuoset88.setChecked(false);	
+				}
+				dialog.dismiss();
+				autochu=false;
+				sethuofile();
+				gethuofile();
+				break;	
+		}
+	}
+	
+	//保存逻辑货道实际对应物理货道的升降机文件
+	private void setelevatorfile()
+	{
+		int logic=1,physic;
+		JSONObject allSet=new JSONObject();
+		try {
+			//第一层
+			physic=11;
+			if(btnhuoset11.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset12.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset13.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset14.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset15.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset16.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset17.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset18.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第二层
+			physic=21;
+			if(btnhuoset21.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset22.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset23.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset24.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset25.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset26.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset27.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset28.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第三层
+			physic=31;
+			if(btnhuoset31.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset32.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset33.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset34.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset35.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset36.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset37.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset38.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第四层
+			physic=41;
+			if(btnhuoset41.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset42.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset43.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset44.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset45.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset46.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset47.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset48.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第五层
+			physic=51;
+			if(btnhuoset51.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset52.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset53.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset54.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset55.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset56.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset57.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset58.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第六层
+			physic=61;
+			if(btnhuoset61.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset62.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset63.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset64.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset65.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset66.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset67.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset68.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第七层
+			physic=71;
+			if(btnhuoset71.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset72.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset73.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset74.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset75.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset76.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset77.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset78.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			
+			//第八层
+			physic=81;
+			if(btnhuoset81.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset82.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset83.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset84.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset85.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset86.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset87.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+			if(btnhuoset88.isChecked())
+			{
+				allSet.put(String.valueOf(logic++), physic++);
+			}
+			else
+			{
+				physic++;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
+		ToolClass.WriteElevatorFile(allSet.toString());
+		ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
+        // 弹出信息提示
+        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+	}
+	
+	//读取逻辑货道实际对应物理货道的文件
+	private void getelevatorfile()
+	{
+		int logic=1,physic;
+		Map<String, Integer> allset=ToolClass.ReadElevatorFile();  
+		if(allset!=null)
+		{
+			//第一层
+			physic=11;
+			//如果判断有这个Value值
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset11.setChecked(true);
+			}
+			else
+			{
+				btnhuoset11.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset12.setChecked(true);
+			}
+			else
+			{
+				btnhuoset12.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset13.setChecked(true);
+			}
+			else
+			{
+				btnhuoset13.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset14.setChecked(true);
+			}
+			else
+			{
+				btnhuoset14.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset15.setChecked(true);
+			}
+			else
+			{
+				btnhuoset15.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset16.setChecked(true);
+			}
+			else
+			{
+				btnhuoset16.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset17.setChecked(true);
+			}
+			else
+			{
+				btnhuoset17.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset18.setChecked(true);
+			}
+			else
+			{
+				btnhuoset18.setChecked(false);
+			}
+			
+			//第二层
+			physic=21;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset21.setChecked(true);
+			}
+			else
+			{
+				btnhuoset21.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset22.setChecked(true);
+			}
+			else
+			{
+				btnhuoset22.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset23.setChecked(true);
+			}
+			else
+			{
+				btnhuoset23.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset24.setChecked(true);
+			}
+			else
+			{
+				btnhuoset24.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset25.setChecked(true);
+			}
+			else
+			{
+				btnhuoset25.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset26.setChecked(true);
+			}
+			else
+			{
+				btnhuoset26.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset27.setChecked(true);
+			}
+			else
+			{
+				btnhuoset27.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset28.setChecked(true);
+			}
+			else
+			{
+				btnhuoset28.setChecked(false);
+			}
+			
+			//第三层
+			physic=31;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset31.setChecked(true);
+			}
+			else
+			{
+				btnhuoset31.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset32.setChecked(true);
+			}
+			else
+			{
+				btnhuoset32.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset33.setChecked(true);
+			}
+			else
+			{
+				btnhuoset33.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset34.setChecked(true);
+			}
+			else
+			{
+				btnhuoset34.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset35.setChecked(true);
+			}
+			else
+			{
+				btnhuoset35.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset36.setChecked(true);
+			}
+			else
+			{
+				btnhuoset36.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset37.setChecked(true);
+			}
+			else
+			{
+				btnhuoset37.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset38.setChecked(true);
+			}
+			else
+			{
+				btnhuoset38.setChecked(false);
+			}
+			
+			//第四层
+			physic=41;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset41.setChecked(true);
+			}
+			else
+			{
+				btnhuoset41.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset42.setChecked(true);
+			}
+			else
+			{
+				btnhuoset42.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset43.setChecked(true);
+			}
+			else
+			{
+				btnhuoset43.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset44.setChecked(true);
+			}
+			else
+			{
+				btnhuoset44.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset45.setChecked(true);
+			}
+			else
+			{
+				btnhuoset45.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset46.setChecked(true);
+			}
+			else
+			{
+				btnhuoset46.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset47.setChecked(true);
+			}
+			else
+			{
+				btnhuoset47.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset48.setChecked(true);
+			}
+			else
+			{
+				btnhuoset48.setChecked(false);
+			}
+			
+			//第五层
+			physic=51;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset51.setChecked(true);
+			}
+			else
+			{
+				btnhuoset51.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset52.setChecked(true);
+			}
+			else
+			{
+				btnhuoset52.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset53.setChecked(true);
+			}
+			else
+			{
+				btnhuoset53.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset54.setChecked(true);
+			}
+			else
+			{
+				btnhuoset54.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset55.setChecked(true);
+			}
+			else
+			{
+				btnhuoset55.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset56.setChecked(true);
+			}
+			else
+			{
+				btnhuoset56.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset57.setChecked(true);
+			}
+			else
+			{
+				btnhuoset57.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset58.setChecked(true);
+			}
+			else
+			{
+				btnhuoset58.setChecked(false);
+			}
+			
+			//第六层
+			physic=61;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset61.setChecked(true);
+			}
+			else
+			{
+				btnhuoset61.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset62.setChecked(true);
+			}
+			else
+			{
+				btnhuoset62.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset63.setChecked(true);
+			}
+			else
+			{
+				btnhuoset63.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset64.setChecked(true);
+			}
+			else
+			{
+				btnhuoset64.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset65.setChecked(true);
+			}
+			else
+			{
+				btnhuoset65.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset66.setChecked(true);
+			}
+			else
+			{
+				btnhuoset66.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset67.setChecked(true);
+			}
+			else
+			{
+				btnhuoset67.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset68.setChecked(true);
+			}
+			else
+			{
+				btnhuoset68.setChecked(false);
+			}
+			
+			//第七层
+			physic=71;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset71.setChecked(true);
+			}
+			else
+			{
+				btnhuoset71.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset72.setChecked(true);
+			}
+			else
+			{
+				btnhuoset72.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset73.setChecked(true);
+			}
+			else
+			{
+				btnhuoset73.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset74.setChecked(true);
+			}
+			else
+			{
+				btnhuoset74.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset75.setChecked(true);
+			}
+			else
+			{
+				btnhuoset75.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset76.setChecked(true);
+			}
+			else
+			{
+				btnhuoset76.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset77.setChecked(true);
+			}
+			else
+			{
+				btnhuoset77.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset78.setChecked(true);
+			}
+			else
+			{
+				btnhuoset78.setChecked(false);
+			}
+			
+			//第八层
+			physic=81;
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset81.setChecked(true);
+			}
+			else
+			{
+				btnhuoset81.setChecked(false);
+			}	
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset82.setChecked(true);
+			}
+			else
+			{
+				btnhuoset82.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset83.setChecked(true);
+			}
+			else
+			{
+				btnhuoset83.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset84.setChecked(true);
+			}
+			else
+			{
+				btnhuoset84.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset85.setChecked(true);
+			}
+			else
+			{
+				btnhuoset85.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset86.setChecked(true);
+			}
+			else
+			{
+				btnhuoset86.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset87.setChecked(true);
+			}
+			else
+			{
+				btnhuoset87.setChecked(false);
+			}
+			if(allset.containsValue(physic++))
+			{
+				btnhuoset88.setChecked(true);
+			}
+			else
+			{
+				btnhuoset88.setChecked(false);
+			}
+		}
+	}
+	
+		
 	
 }

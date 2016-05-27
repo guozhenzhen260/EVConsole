@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.KeyStore;
 import java.text.ParseException;
@@ -57,8 +58,10 @@ import com.easivend.evprotocol.EVprotocol;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_system_parameter;
+import com.easivend.view.XZip;
 import com.easivend.weixing.WeiConfig;
 import com.easivend.weixing.WeiConfigAPI;
+import com.example.evconsole.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
@@ -68,6 +71,8 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -76,6 +81,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore.Images.ImageColumns;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class ToolClass 
 {
@@ -92,11 +101,38 @@ public class ToolClass
 	public static Bitmap mark=null;//售完图片
 	public static int goc=0;//是否使用出货确认板1是
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
+	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
+	private static int ServerVer=0;//0旧的后台，1一期的后台
+	public static String version="";//本机版本号
 	
-	
+	public static String getVersion() {
+		String curVersion=null;
+		int curVersionCode=0;
+		 try {
+	            PackageInfo pInfo = context.getPackageManager().getPackageInfo(
+	            		context.getPackageName(), 0);
+	            curVersion = pInfo.versionName;
+	            curVersionCode = pInfo.versionCode;
+	        } catch (NameNotFoundException e) {
+	            Log.e("update", e.getMessage());
+	            curVersion = "1.1.1000";
+	            curVersionCode = 111000;
+	        }
+		 version=(curVersion+curVersionCode).toString();
+		return version;
+	}
+
+	public static int getServerVer() {
+		return ServerVer;
+	}
+
+	public static void setServerVer(int serverVer) {
+		ServerVer = serverVer;
+	}
+
 	public static String getBentcom() {
 		return bentcom;
 	}
@@ -503,6 +539,204 @@ public class ToolClass
 		System.out.println(fileName+" 修改文件操作="+newname);            		
 		fileName.renameTo(new File(sDir+File.separator+newname));
 	}
+    
+    //java设定一个日期时间，加几分钟（小时或者天）后得到新的日期
+    //返回的是字符串型的时间，
+    //输入的是String day基准时间, int x天数
+    public static String addDateMinut(String day, int x)
+    {   
+    	// 24小时制  
+    	//引号里面个格式也可以是 HH:mm:ss或者HH:mm等等，很随意的，不过在主函数调用时，要和输入的变
+    	//量day格式一致
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;   
+        try {   
+            date = format.parse(day);   
+        } catch (Exception ex) {   
+            ex.printStackTrace();   
+        }   
+        if (date == null)   
+            return "";   
+        System.out.println("front:" + format.format(date)); //显示输入的日期  
+        Calendar cal = Calendar.getInstance();   
+        cal.setTime(date);   //得到基准时间
+        
+        cal.add(Calendar.DATE, x);// 天 
+        date = cal.getTime();   
+        System.out.println("after:" + format.format(date));  //显示更新后的日期 
+        cal = null;   
+        return format.format(date);   
+  
+    } 
+    /**
+     * 递归删除ZIP文件和文件夹
+     * @param file    要删除的根目录
+     */
+    private static void deleteZIPFile()
+    {
+    	String  sDir =null;
+    	 try {
+        	  sDir = ToolClass.ReadLogFile()+"ZIPFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllZIPFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static void deleteAllZIPFile(File file)
+    {        
+        if(file.isDirectory())
+        {
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0)
+            {
+                return;
+            }
+            for(File f : childFile)
+            {
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","删除log="+f.toString(),"server.txt");										
+                f.delete();
+            }
+        }
+    }
+     /**  
+     * 复制单个文件  
+     * @param oldPath String 原文件路径 如：c:/fqf.txt  
+     * @param newPath String 复制后路径 如：f:/fqf.txt  
+     * @return boolean  
+     */   
+	   private static void copyFile(String oldPath, String newPath) 
+	   {   
+	       try {   
+	           int bytesum = 0;   
+	           int byteread = 0;   
+	           File oldfile = new File(oldPath);   
+	           if (oldfile.exists()) { //文件存在时   
+	               InputStream inStream = new FileInputStream(oldPath); //读入原文件   
+	               FileOutputStream fs = new FileOutputStream(newPath);   
+	               byte[] buffer = new byte[1444];   
+	               int length;   
+	               while ( (byteread = inStream.read(buffer)) != -1) {   
+	                   bytesum += byteread; //字节数 文件大小   
+	                   System.out.println(bytesum);   
+	                   fs.write(buffer, 0, byteread);   
+	               }   
+	               inStream.close();   
+	           }   
+	       }   
+	       catch (Exception e) {   
+	           System.out.println("复制单个文件操作出错");   
+	           e.printStackTrace();   
+	  
+	       }   
+	  
+	   }  
+	   /**
+	     * zipLogFiles压缩需要上传的日志包
+	     * @param 
+	     */
+	    private static String zipLogFiles(String srcFileString) 
+	  	{  
+	  		//遍历这个文件夹里的所有文件
+	  		String zipFileString=ToolClass.getEV_DIR()+File.separator+"logzip.zip";
+	  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<srcFileString="+srcFileString+" zipFileString="+zipFileString,"log.txt"); 
+	  		try {
+	  			XZip.ZipFolder(srcFileString, zipFileString);
+	  		} catch (Exception e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	  		return zipFileString;
+	  	}   
+    /**
+     * 判断与当前时间差距多久,createtime是文件创建时间,datetime是当前时间
+     * 传入的时间格式必须类似于2012-8-21 17:53:20这样的格式  
+     * 返回值：1秒，2分，3时，4天，5半个月
+     */
+    public static String logFileInterval(String starttime,String endtime)
+    {
+    	boolean inter=false;//true表示需要压缩数据包
+        String  sDir =null,zipDir=null,zipFileString=null;
+    	File fileName=null;
+    	
+        //1.设置起始时间和结束时间
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+        
+        ParsePosition pos = new ParsePosition(0);  
+        Date d1 = (Date) sd.parse(starttime, pos); 
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","起始时间="+starttime+",="+d1.getTime(),"server.txt");
+        
+        endtime=addDateMinut(endtime,1);
+        ParsePosition posnow = new ParsePosition(0);  
+        Date dnow = (Date) sd.parse(endtime, posnow);
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","结束时间="+endtime+",="+dnow.getTime(),"server.txt");
+        //2.整理压缩目标目录 
+        deleteZIPFile(); 	
+        zipDir=ToolClass.ReadLogFile()+"ZIPFile"+File.separator;
+        //3.遍历log文件，判断是否是在这个时间之内
+        try {
+        	 sDir = ToolClass.getEV_DIR()+File.separator+"logs";
+  		  
+	  		 File dirName = new File(sDir);
+	  		 //如果目录不存在，则创建目录
+	  		 if (!dirName.exists()) 
+	  		 {  
+	  			//按照指定的路径创建文件夹  
+	  			dirName.mkdirs(); 
+	  		 }   
+	  		//遍历这个文件夹里的所有文件
+	   		File[] files = dirName.listFiles();
+	   		if (files.length > 0) 
+	   		{  
+	   			for (int i = 0; i < files.length; i++) 
+	   			{
+	   			  if(!files[i].isDirectory())
+	   			  {		
+	   				  	ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断日志目录内文件="+files[i].toString(),"server.txt"); 
+	   				   
+	   		        	fileName=new File(files[i].toString()); 
+	   		        	if(fileName.exists())
+	   		        	{  
+	   		        		String logdatetime = getFileCreated(fileName);
+	   		        		ParsePosition poslog = new ParsePosition(0);  
+	   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
+	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
+	   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
+	   		            	{
+	   		            		//4.拷贝文件到压缩目录中
+	   		            		String a[] = files[i].toString().split("/");  
+	   		            		String ATT_ID=a[a.length-1];  
+	   		            		String ZIPFile=zipDir+ATT_ID;
+	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
+	   		            		copyFile(files[i].toString(),ZIPFile);
+	   		            		inter=true;
+	   		            	}
+	   		            	else
+	   		            	{
+	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
+	   		            	}	
+	   		    	    } 
+	   			  }
+	   			}
+	   		}
+	   		//5.压缩数据包
+	   		if(inter)
+	   		{
+	   			zipFileString=zipLogFiles(zipDir);
+	   		}
+	     } catch (Exception e) {
+			e.printStackTrace();
+		 } 
+        return zipFileString;
+    }
 	
 	 /* 遍历目录内文件列表， file是目录名，datetime是当前时间，如果超过半个月，就删除掉这个文件
 	  * */  
@@ -534,6 +768,122 @@ public class ToolClass
 		}    
     }
     
+    /**
+     * 使用isAPKFile,判断这个程序是已经存在目录中,true存在,false不存在
+     */
+    public static boolean isAPKFile(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename);         	
+        	//如果不存在，则创建文件
+        	if(!fileName.exists())
+        	{  
+        		fileext=false; 
+    	    }  
+        	else
+        		fileext=true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileext; 
+    }
+    /**
+     * 使用isAPKFile,保存这个程序到目录中
+     */
+    public static File setAPKFile(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
+    }
+    /**
+     * 递归删除APK文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteAPKFile()
+    {
+    	String  sDir =null;
+    	 try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static void deleteAllFile(File file)
+    {        
+        if(file.isDirectory())
+        {
+            File[] childFile = file.listFiles();
+            if(childFile == null || childFile.length == 0)
+            {
+                return;
+            }
+            for(File f : childFile)
+            {
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","删除程序="+f.toString(),"server.txt");										
+                f.delete();
+            }
+        }
+    }
+    
+    /**
+     * zipFiles压缩日志包
+     * @param 
+     */
+    public static String zipFiles() 
+  	{  
+  		//遍历这个文件夹里的所有文件
+  		String srcFileString=ToolClass.ReadLogFile();
+  		String zipFileString=ToolClass.getEV_DIR()+File.separator+"logzip.zip";
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<srcFileString="+srcFileString+" zipFileString="+zipFileString,"log.txt"); 
+  		try {
+  			XZip.ZipFolder(srcFileString, zipFileString);
+  		} catch (Exception e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  		}
+  		return zipFileString;
+  	}
+    
+     
     /**
      * 使用isImgFile,判断这个商品图片是已经存在目录中,true存在,false不存在
      */
@@ -633,6 +983,126 @@ public class ToolClass
     	sDir = ToolClass.getEV_DIR()+File.separator+"ads"+File.separator;
     	return sDir;
     }
+    
+    /**
+     * 使用isAdsFile,判断这个广告是已经存在目录中,true存在,false不存在
+     */
+    public static boolean isAdsFile(String filename,String TypeStr) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);         	
+        	//如果不存在，则创建文件
+        	if(!fileName.exists())
+        	{  
+        		fileext=false; 
+    	    }  
+        	else
+        		fileext=true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileext; 
+    }
+    
+    //将Bitmap图片保存在本地
+    public static boolean  saveBitmaptoads(Bitmap bmp,String filename)
+    {      	
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则开始保存图片
+        	if(!fileName.exists())
+        	{  
+        		CompressFormat format= Bitmap.CompressFormat.JPEG;  
+    	        int quality = 100;  
+    	        OutputStream stream = null;  
+    	        stream = new FileOutputStream(fileName);      	         
+    	        fileext=bmp.compress(format, quality, stream); 
+    	    }  
+        	else
+        		fileext=false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     } 
+    
+    /**
+     * 使用saveAvitoads,保存这个视频广告到目录中
+     */
+    public static File saveAvitoads(String filename,String TypeStr) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
+    }
+    
+    //将广告文件删除
+    public static boolean  delAds(String filename,String TypeStr)
+    {      	
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);   
+        	 //如果存在，删除
+        	 if(fileName.exists())
+        	{  
+        		 fileName.delete();	
+    	    } 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     }
     
     /**
      * 读取日志文件
@@ -853,6 +1323,161 @@ public class ToolClass
     }
     
     /**
+     * 重新更新支付宝微信文件,后台服务器下发用
+     */
+    public static void ResetConfigFileServer(JSONObject object2) 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	
+    	    	
+        try {        	  
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      } 
+        	  
+          	  //1.将数据从文件中读入
+    	  	  //打开文件
+    		  FileInputStream input = new FileInputStream(sDir);
+    		  //输出信息
+  	          Scanner scan=new Scanner(input);
+  	          while(scan.hasNext())
+  	          {
+  	           	str=scan.next()+"\n";
+  	          }
+  	         ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config="+str,"server.txt");
+  	         if(str!=null)
+  	         {
+	  	        Map<String, String> list=new HashMap<String,String>();      			
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config2="+list.toString(),"server.txt");
+				Map<String,String> list2=new HashMap<String,String>();
+				//输出内容
+		        Set<Map.Entry<String,String>> allset=list.entrySet();  //实例化
+		        Iterator<Map.Entry<String,String>> iter=allset.iterator();
+		        while(iter.hasNext())
+		        {
+		            Map.Entry<String,String> me=iter.next();
+		            if(
+		            	  //支付宝	
+		            		(me.getKey().equals("alipartner")!=true)
+		            	  &&(me.getKey().equals("aliseller_email")!=true)
+		            	  &&(me.getKey().equals("alikey")!=true)
+		            	  &&(me.getKey().equals("alisubpartner")!=true)
+		            	  &&(me.getKey().equals("isalisub")!=true)
+		            	  //微信	
+		            	  &&(me.getKey().equals("weiappid")!=true)
+		            	  &&(me.getKey().equals("weimch_id")!=true)
+		            	  &&(me.getKey().equals("weikey")!=true)
+		            	  &&(me.getKey().equals("weisubmch_id")!=true)
+		            	  &&(me.getKey().equals("isweisub")!=true)
+		              )
+		            	list2.put(me.getKey(), me.getValue());
+		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
+		        } 	
+		        //支付宝
+		        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
+  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+  	        	if(object2.get("ALI_OTHER_PARTNER").toString().isEmpty())
+  	        	{
+  	        		list2.put("isalisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		list2.put("isalisub", "0.995");
+  	        	}	
+  	        	
+  	        	//微信
+  	        	list2.put("weiappid", object2.get("WX_APP_ID").toString());
+  	        	list2.put("weimch_id", object2.get("WX_MCHID").toString());
+  	        	list2.put("weikey", object2.get("WX_KEY").toString());
+  	        	list2.put("weisubmch_id", object2.get("WX_OTHER_MCHID").toString());
+  	        	if(object2.get("WX_OTHER_MCHID").toString().isEmpty())
+  	        	{
+  	        		list2.put("isweisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		list2.put("isweisub", "1");
+  	        	}
+		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config3="+list2.toString(),"server.txt");
+		        JSONObject jsonObject = new JSONObject(list2);
+		        String mapstrString=jsonObject.toString();
+		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config4="+mapstrString,"server.txt");
+		        //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+	            FileWriter writer = new FileWriter(fileName);
+	            writer.write(mapstrString);
+	            writer.close();
+  	         }
+  	         else
+  	         {  	        	
+  	        	JSONObject jsonObject = new JSONObject();
+  	            //支付宝
+  	        	jsonObject.put("alipartner", object2.get("ALI_PARTNER"));
+  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL"));
+  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY"));
+  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER"));
+  	        	if(object2.get("ALI_OTHER_PARTNER").toString().isEmpty())
+  	        	{
+  	        		jsonObject.put("isalisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		jsonObject.put("isalisub", "0.995");
+  	        	}	
+  	        	
+  	        	//微信
+  	        	jsonObject.put("weiappid", object2.get("WX_APP_ID"));
+  	        	jsonObject.put("weimch_id", object2.get("WX_MCHID"));
+  	        	jsonObject.put("weikey", object2.get("WX_KEY"));
+  	        	jsonObject.put("weisubmch_id", object2.get("WX_OTHER_MCHID"));
+  	        	if(object2.get("WX_OTHER_MCHID").toString().isEmpty())
+  	        	{
+  	        		jsonObject.put("isweisub", "0");
+  	        	}
+  	        	else
+  	        	{
+  	        		jsonObject.put("isweisub", "1");
+  	        	}
+  	        	String mapstrString=jsonObject.toString();
+  	        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config2="+mapstrString,"server.txt");
+  	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	            FileWriter writer = new FileWriter(fileName, true);
+  	            writer.write(mapstrString);
+  	            writer.close();
+			 }
+  	        
+  	        //从配置文件获取数据
+  			Map<String, String> list=ToolClass.ReadConfigFile(); 
+  	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
+	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
+	        //加载微信证书
+			ToolClass.setWeiCertFile();
+//  	         //将json格式解包
+//  	         list=new HashMap<String,String>();      			
+//			JSONObject object=new JSONObject(str);      				
+//			Gson gson=new Gson();
+//			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+//			//Log.i("EV_JNI",perobj.toString());
+//			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
+        	//2.写回到文件中  
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
      * 读取货道配置文件
      */
     public static Map<String, Integer> ReadColumnFile() 
@@ -1058,6 +1683,8 @@ public class ToolClass
     	return 0;
     }
     
+    
+    
     /**
      * 写入货道配置文件
      */
@@ -1085,6 +1712,148 @@ public class ToolClass
         } catch (Exception e) {
             e.printStackTrace();
         }        
+    }
+    
+    /*=============
+     * 升降机模块
+     =============*/
+    /**
+     * 读取货道配置文件
+     */
+    public static Map<String, Integer> ReadElevatorFile() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         elevatorlist=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+		            elevatorlist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+elevatorlist.toString(),"com.txt");
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 升降机出货
+     */
+    public static int elevatorChuhuo(Integer logic)
+    {
+    	int val=0;
+    	if(elevatorlist!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]elevatorlist="+elevatorlist,"com.txt");
+    		if(elevatorlist.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    val=elevatorlist.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
+    		}
+    	}
+    	return val;
+    }
+    /**
+     * 写入升降机货道配置文件
+     */
+    public static void WriteElevatorFile(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
+     * 升降机返回出货结果
+    private static final int LIFT_VENDOUT_COM_ERR	=		0x1F;		//通信故障
+	private static final int LIFT_VENDOUT_FAULT		=		0x12;		//升降机故障
+	private static final int LIFT_VENDOUT_BUSY		=		0x11;		//升降机忙
+	private static final int LIFT_VENDOUT_FAIL		=		0;			//出货失败 通信失败
+	private static final int LIFT_VENDOUT_SUC		=		1;			//出货成功
+	private static final int LIFT_VENDOUT_DATAERR	=		2;			//数据错误
+	private static final int LIFT_VENDOUT_EMPTY		=		3;			//无货
+	private static final int LIFT_VENDOUT_STUCK		=		4 ; 			//卡货
+	private static final int LIFT_VNEDOUT_DOOR_NOT_OPEN	=	5;			//取货门未开启
+	private static final int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
+	private static final int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
+	private static final int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
+	 *  1:成功;4:出货失败8:卡货;其他与故障码一样
+     */    
+    public static int elevatorChuhuorst(int Rst)
+    {    
+    	int LIFT_VENDOUT_COM_ERR	=		0x1F;		//通信故障
+    	int LIFT_VENDOUT_FAULT		=		0x12;		//升降机故障
+    	int LIFT_VENDOUT_BUSY		=		0x11;		//升降机忙
+    	int LIFT_VENDOUT_FAIL		=		0;			//出货失败 通信失败
+    	int LIFT_VENDOUT_SUC		=		1;			//出货成功
+    	int LIFT_VENDOUT_DATAERR	=		2;			//数据错误
+    	int LIFT_VENDOUT_EMPTY		=		3;			//无货
+    	int LIFT_VENDOUT_STUCK		=		4 ; 			//卡货
+    	int LIFT_VNEDOUT_DOOR_NOT_OPEN	=	5;			//取货门未开启
+    	int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
+    	int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
+    	int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
+    	if(Rst==LIFT_VENDOUT_EMPTY)
+    	{
+    		return 4;
+    	}
+    	else if(Rst==LIFT_VENDOUT_STUCK)
+    	{
+    		return 8;
+    	}
+    	else
+    	{
+    		return Rst;
+    	}
     }
     
     //保存操作日志
@@ -1911,6 +2680,19 @@ public class ToolClass
 				ToolClass.setColumncom_id(ToolClass.Resetportid(columncom));
 			}
 		}
+	}
+	
+	//弹出图形界面失败提示
+	public static void failToast(String str)
+	{
+		// 弹出信息提示
+		Toast myToast=Toast.makeText(context, str, Toast.LENGTH_LONG);
+		myToast.setGravity(Gravity.CENTER, 0, 0);
+		LinearLayout toastView = (LinearLayout) myToast.getView();
+		ImageView imageCodeProject = new ImageView(context);
+		imageCodeProject.setImageResource(R.drawable.search);
+		toastView.addView(imageCodeProject, 0);
+		myToast.show();
 	}
 	
 }

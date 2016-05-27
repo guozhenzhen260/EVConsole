@@ -16,8 +16,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,12 +30,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class BusZhitihuo extends Activity 
 {
 	public static BusZhitihuo BusZhitihuoAct=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
+	private boolean isbus=false;//true表示停用倒计时，false启用倒计时
 	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60延迟5分钟
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	EditText txtadsTip=null;
@@ -40,6 +46,7 @@ public class BusZhitihuo extends Activity
 			   btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadscancel=null,
 			   btnadsenter=null,imgbtnbuszhitihuoback=null;
 	Button btnadsclass=null;
+	Dialog dialog=null,alert=null;
 	StringBuilder str=new StringBuilder();
 	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	private String zhifutype = "5";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,5取货密码
@@ -175,7 +182,7 @@ public class BusZhitihuo extends Activity
 			    	str.delete(0,str.length()); 
 			    	txtadsTip.setText(str);
 			    	// 弹出信息提示
-		            Toast.makeText(BusZhitihuo.this, "〖提货密码〗错误！", Toast.LENGTH_LONG).show();
+			    	ToolClass.failToast("抱歉，〖提货密码〗无效,请联系管理员！");			    	
 		    	}
 		    }
 		});
@@ -193,7 +200,7 @@ public class BusZhitihuo extends Activity
 		    public void onClick(View arg0) {
 		    	LayoutInflater factory = LayoutInflater.from(BusZhitihuo.this);
 				final View myview=factory.inflate(R.layout.zhitipwd, null);
-				Dialog dialog = new AlertDialog.Builder(BusZhitihuo.this)				
+				dialog = new AlertDialog.Builder(BusZhitihuo.this)				
 				.setPositiveButton("修改", new DialogInterface.OnClickListener() 		{
 						
 					@Override
@@ -206,22 +213,24 @@ public class BusZhitihuo extends Activity
 						String oldstr=oldpwd.getText().toString();
 						String newstr=newpwd.getText().toString();
 						String newstr2=newpwd2.getText().toString();
-						if(newstr.equals("")==true)
+						if((newstr.equals("")==true)||(oldstr.isEmpty())||(newstr2.isEmpty()))
 						{
+							restarttimer();//重新打开定时器
 							// 弹出信息提示
-				            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗错误！", Toast.LENGTH_LONG).show();
+							ToolClass.failToast("〖修改提货密码〗错误！");
 						}
 						else if(newstr.equals(newstr2)==false)
 						{
+							restarttimer();//重新打开定时器
 							// 弹出信息提示
-				            Toast.makeText(BusZhitihuo.this, "〖修改提货密码〗错误！", Toast.LENGTH_LONG).show();
+							ToolClass.failToast("〖修改提货密码〗错误！");
 						}
 						else if(ToolClass.getzhitihuo(BusZhitihuo.this, OrderDetail.getCabID(), OrderDetail.getColumnID(), oldstr))
 						{
 							ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<准备修改密码"+newstr,"log.txt");
 							final String tihuoPwd=newstr;
 							//创建警告对话框
-					    	Dialog alert=new AlertDialog.Builder(BusZhitihuo.this)
+					    	alert=new AlertDialog.Builder(BusZhitihuo.this)
 					    		.setTitle("对话框")//标题
 					    		.setMessage("您确定要修改提货码吗？")//表示对话框中得内容
 					    		.setIcon(R.drawable.ic_launcher)//设置logo
@@ -231,6 +240,7 @@ public class BusZhitihuo extends Activity
 						    				public void onClick(DialogInterface dialog, int which) 
 						    				{
 						    					// TODO Auto-generated method stub	
+						    					restarttimer();//重新打开定时器
 						    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<修改密码="+tihuoPwd,"log.txt");
 //						    					// 创建InaccountDAO对象
 								    			vmc_columnDAO columnDAO = new vmc_columnDAO(BusZhitihuo.this);
@@ -250,7 +260,8 @@ public class BusZhitihuo extends Activity
 											@Override
 											public void onClick(DialogInterface dialog, int which) 
 											{
-												// TODO Auto-generated method stub				
+												// TODO Auto-generated method stub	
+												restarttimer();//重新打开定时器
 											}
 							        	}
 							        )
@@ -264,15 +275,46 @@ public class BusZhitihuo extends Activity
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
 					{
-						// TODO Auto-generated method stub				
+						// TODO Auto-generated method stub
+						restarttimer();//重新打开定时器
 					}
 	        	})
 				.setView(myview)//这里将对话框布局文件加入到对话框中
 				.create();
-				dialog.show();		    	
+				dialog.show();	
+				
+				stoptimer();//关闭倒计时
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<打开密码框","log.txt");
+				//延时0.5s
+			    new Handler().postDelayed(new Runnable() 
+				{
+		            @Override
+		            public void run() 
+		            {      
+		            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<超时取消密码框","log.txt");
+		            	if(dialog!=null)
+		            	{
+			            	if(dialog.isShowing())
+			            	{
+			            		dialog.dismiss();
+			            		restarttimer();//重新打开定时器
+			            	}
+		            	}
+		            	if(alert!=null)
+		            	{
+			            	if(alert.isShowing())
+			            	{
+			            		alert.dismiss();
+			            		restarttimer();//重新打开定时器
+			            	}
+		            	}
+		            }
+
+				}, 3*60*1000);
 		    }
 		});
 	}
+		
 	//调用倒计时定时器
 	TimerTask task = new TimerTask() { 
         @Override 
@@ -282,18 +324,33 @@ public class BusZhitihuo extends Activity
 		         @Override 
 		        public void run()
 		        { 
-		            recLen--; 
-		            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<倒计时="+recLen,"log.txt");	
-		            //退出页面
-		            if(recLen <= 0)
-		            { 
-		                timer.shutdown(); 
-		                finish();
-		            } 
+		        	if(isbus==false) 
+		        	{
+			            recLen--; 
+			            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<倒计时="+recLen,"log.txt");	
+			            //退出页面
+			            if(recLen <= 0)
+			            { 
+			                timer.shutdown(); 
+			                finish();
+			            } 
+		        	}
 		        } 
             });
         }      
     };
+    
+    //重新打开定时器
+    private void restarttimer()
+    {
+    	isbus=false;
+    	recLen=SPLASH_TIMEOUT_LENGHT;
+    }
+    //关闭定时器
+    private void stoptimer()
+    {
+    	isbus=true;
+    }
     
     //跳到出货页面
   	private void tochuhuo()

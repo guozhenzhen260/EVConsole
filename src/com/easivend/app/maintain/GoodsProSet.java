@@ -179,13 +179,13 @@ public class GoodsProSet extends Activity
 		    		} catch (Exception e)
 					{
 						// TODO: handle exception
-						Toast.makeText(GoodsProSet.this, "类别商品失败！", Toast.LENGTH_SHORT).show();
+		    			ToolClass.failToast("类别商品失败！");
 					}		    		
 		            
 		        } 
 		        else
 		        {
-		            Toast.makeText(GoodsProSet.this, "请填写红色部分！", Toast.LENGTH_SHORT).show();
+		        	ToolClass.failToast("请填写红色部分！");
 		        }
 		    }
 		});

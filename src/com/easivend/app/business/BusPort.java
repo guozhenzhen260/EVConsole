@@ -11,9 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusgoodsFragment;
 import com.easivend.fragment.BusgoodsFragment.BusgoodsFragInteraction;
@@ -32,9 +34,12 @@ import com.easivend.fragment.BuszhierFragment.BuszhierFragInteraction;
 import com.easivend.fragment.BuszhiweiFragment;
 import com.easivend.fragment.BuszhiweiFragment.BuszhiweiFragInteraction;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
+import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
+import com.easivend.model.Tb_vmc_product;
 import com.easivend.view.COMService;
+import com.easivend.view.EVServerService;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 import android.annotation.SuppressLint;
@@ -46,13 +51,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class BusPort extends Activity implements 
 //business页面接口
@@ -96,8 +106,11 @@ BushuoFragInteraction
 	private int con=0;
 	//进度对话框
 	ProgressDialog dialog= null;
-	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,-1取货码
 	private String out_trade_no=null;
+	//Server服务相关
+	LocalBroadcastManager localBroadreceiver;
+	EVServerReceiver receiver;
 	//=================
 	//==现金支付页面相关
 	//=================
@@ -173,6 +186,8 @@ BushuoFragInteraction
          */
     	//视频页面
         void BusportMovie();      //视频页面轮播
+        //刷新广告页面
+        void BusportAds();      //刷新广告列表
         //现金页面
         void BusportTsxx(String str);      //提示信息
         void BusportTbje(String str);      //投币金额
@@ -203,6 +218,18 @@ BushuoFragInteraction
 		setContentView(R.layout.busport);		
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
+		//=============
+		//Server服务相关
+		//=============
+		//4.注册接收器
+		localBroadreceiver = LocalBroadcastManager.getInstance(this);
+		receiver=new EVServerReceiver();
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("android.intent.action.vmserverrec");
+		localBroadreceiver.registerReceiver(receiver,filter);
+		//=============
+		//COM服务相关
+		//=============
 		//4.注册接收器
 		comBroadreceiver = LocalBroadcastManager.getInstance(this);
 		comreceiver=new COMReceiver();
@@ -215,7 +242,7 @@ BushuoFragInteraction
 	        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt");
 	        	  if(isbus==false)
 	        	  {
-		        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
+		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 
 		        	  //回到首页
 		        	  if(recLen == 0)
@@ -363,16 +390,16 @@ BushuoFragInteraction
 						con++;
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:退款成功");
-						dialog.dismiss();
-						//清数据
-						clearamount();						
-						recLen=10;						
+//						listterner.BusportTsxx("交易结果:退款成功");
+//						dialog.dismiss();
+//						//清数据
+//						clearamount();						
+//						recLen=10;						
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:撤销成功");
-						clearamount();
-				    	viewSwitch(BUSPORT, null);
+//						listterner.BusportTsxx("交易结果:撤销成功");
+//						clearamount();
+//				    	viewSwitch(BUSPORT, null);
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						listterner.BusportTsxx("交易结果:交易成功");
@@ -394,10 +421,9 @@ BushuoFragInteraction
 			}
 			
 		};
-		//启动用户自己定义的类
+		//创建用户自己定义的类
 		zhifubaohttp=new Zhifubaohttp(zhifubaomainhand);
-		zhifubaothread=Executors.newFixedThreadPool(3);
-		zhifubaothread.execute(zhifubaohttp);
+		zhifubaothread=Executors.newCachedThreadPool();
 		
 		
 		//***********************
@@ -421,16 +447,16 @@ BushuoFragInteraction
 						con++;						
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:退款成功");
-						dialog.dismiss();
-						//清数据
-						clearamount();						
-						recLen=10;	
+//						listterner.BusportTsxx("交易结果:退款成功");
+//						dialog.dismiss();
+//						//清数据
+//						clearamount();						
+//						recLen=10;	
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:撤销成功");
-						clearamount();
-				    	viewSwitch(BUSPORT, null);
+//						listterner.BusportTsxx("交易结果:撤销成功");
+//						clearamount();
+//				    	viewSwitch(BUSPORT, null);
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						listterner.BusportTsxx("交易结果:交易成功");
@@ -454,8 +480,8 @@ BushuoFragInteraction
 		};
 		//启动用户自己定义的类
 		weixinghttp=new Weixinghttp(weixingmainhand);
-		weixingthread=Executors.newFixedThreadPool(3);
-		weixingthread.execute(weixinghttp);
+		weixingthread=Executors.newCachedThreadPool();
+		
 				
 	}
 	
@@ -488,10 +514,20 @@ BushuoFragInteraction
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=打开密码框","log.txt");
-    	Intent intent = new Intent();
-    	intent.setClass(BusPort.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
-        startActivityForResult(intent, PWD_CODE);
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=退出","log.txt");
+//    	Intent intent = new Intent();
+//    	intent.setClass(BusPort.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
+//        startActivityForResult(intent, PWD_CODE);
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {      
+            	finish(); 
+            }
+
+		}, 500);	
 	}
 	//步骤三、实现Business接口,转到商品购物页面
 	//buslevel跳转到的页面
@@ -499,6 +535,67 @@ BushuoFragInteraction
 	public void gotoBusiness(int buslevel, Map<String, String> str)
 	{
 		viewSwitch(buslevel, str);
+	}
+	//步骤三、实现Business接口,传递取货码
+	@Override
+	public void quhuoBusiness(String PICKUP_CODE)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port取货码="+PICKUP_CODE,"log.txt");
+		Intent intent2=new Intent(); 
+		intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
+		intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
+		intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+		localBroadreceiver.sendBroadcast(intent2);
+	}
+	
+	//=============
+	//Server服务相关
+	//=============	
+	//2.创建EVServerReceiver的接收器广播，用来接收服务器同步的内容
+	public class EVServerReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			case EVServerhttp.SETPICKUPMAIN:
+				String PRODUCT_NO=bundle.getString("PRODUCT_NO");
+				out_trade_no=bundle.getString("out_trade_no");
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码成功PRODUCT_NO="+PRODUCT_NO+"out_trade_no="+out_trade_no,"log.txt");					
+				// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_product表中
+		 	    vmc_productDAO productdao = new vmc_productDAO(context);
+		 	    Tb_vmc_product tb_vmc_product=productdao.find(PRODUCT_NO);
+		 	    //保存到报表表里面
+		 	    //订单总信息
+		 	    OrderDetail.setProID(tb_vmc_product.getProductID()+"-"+tb_vmc_product.getProductName());		 	    
+		 	    OrderDetail.setProType("1");
+		 	    //订单支付表 
+		 	    zhifutype="-1";
+		 	    OrderDetail.setShouldPay(tb_vmc_product.getSalesPrice());
+		 	    OrderDetail.setShouldNo(1);
+		 	    OrderDetail.setCabID("");
+		 		OrderDetail.setColumnID("");
+		 	    //订单详细信息表   
+		 	    OrderDetail.setProductID(PRODUCT_NO);
+		 	    tochuhuo();
+				break;
+			case EVServerhttp.SETERRFAILPICKUPMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=取货码失败","log.txt");
+				// 弹出信息提示
+				ToolClass.failToast("抱歉，取货码无效,请联系管理员！");
+	    		break;	
+			case EVServerhttp.SETADVRESETMAIN:
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=刷新广告","log.txt");
+				listterner.BusportAds();
+				break;
+			}			
+		}
+
 	}
 	
 	//=======================
@@ -595,6 +692,7 @@ BushuoFragInteraction
 			deletezhier();
 		else 
 		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 	    	clearamount();
 	    	viewSwitch(BUSPORT, null);
 		}
@@ -602,14 +700,7 @@ BushuoFragInteraction
     //用于超时的结束界面
   	private void timeoutBuszhierFinish()
   	{
-  		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
-  		if((iszhier==1)&&(ercheck==false))
-  			deletezhier();
-  		else 
-  		{
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
-		}
+  		BuszhierFinish();
   	}
     
     //发送订单
@@ -662,7 +753,9 @@ BushuoFragInteraction
   	//撤销交易
   	private void deletezhier()
   	{
-  		if(ercheckopt())
+  		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		zhifubaochildhand=zhifubaohttp.obtainHandler();
@@ -681,11 +774,14 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
+  		clearamount();
+    	viewSwitch(BUSPORT, null);
   	}
     //退款
   	private void payoutzhier()
   	{
-  		if(ercheckopt())
+  		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		zhifubaochildhand=zhifubaohttp.obtainHandler();
@@ -705,6 +801,10 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
+  		dialog.dismiss();
+		//清数据
+		clearamount();						
+		recLen=10;
   	}
     
     //=======================
@@ -718,6 +818,7 @@ BushuoFragInteraction
 			deletezhiwei();
 		else 
 		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 	    	clearamount();
 	    	viewSwitch(BUSPORT, null);
 		}
@@ -725,14 +826,7 @@ BushuoFragInteraction
     //用于超时的结束界面
   	private void timeoutBuszhiweiFinish()
   	{
-  		//如果需要撤销，而且线程可以操作，才作撤销操作，否则直接退出页面
-  		if((iszhiwei==1)&&(ercheck==false))
-  			deletezhiwei();
-  		else 
-		{
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
-		}
+  		BuszhiweiFinish();
   	}
     //发送订单
   	private void sendzhiwei()
@@ -766,7 +860,7 @@ BushuoFragInteraction
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
 	  		Message childmsg=weixingchildhand.obtainMessage();
-	  		childmsg.what=Zhifubaohttp.SETQUERYCHILD;
+	  		childmsg.what=Weixinghttp.SETQUERYCHILD;
 	  		JSONObject ev=null;
 	  		try {
 	  			ev=new JSONObject();
@@ -784,12 +878,13 @@ BushuoFragInteraction
   	//退款交易
   	private void payoutzhiwei()
   	{
-  		if(ercheckopt())
+  		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
 	  		Message childmsg=weixingchildhand.obtainMessage();
-	  		childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
+	  		childmsg.what=Weixinghttp.SETPAYOUTCHILD;
 	  		JSONObject ev=null;
 	  		try {
 	  			ev=new JSONObject();
@@ -805,12 +900,18 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
+  		dialog.dismiss();
+		//清数据
+		clearamount();						
+		recLen=10;
   	}
   	
 	//撤销交易
   	private void deletezhiwei()
   	{
-  		if(ercheckopt())
+  		//if(ercheckopt())
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -829,6 +930,8 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
+  		clearamount();
+    	viewSwitch(BUSPORT, null);
   	}
     
     //=======================
@@ -947,6 +1050,13 @@ BushuoFragInteraction
 					OrderDetail.addLog(BusPort.this);					
 				}
     			break;	
+    		//取货码页面		
+    		case -1:
+    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+				OrderDetail.addLog(BusPort.this);					
+				clearamount();
+				recLen=10;
+    			break;
     	}
     	
 	}
@@ -959,7 +1069,6 @@ BushuoFragInteraction
     private void tochuhuo()
     {        
     	ischuhuo=true;
-    	BillEnable(0);
 //    	Intent intent = null;// 创建Intent对象                
 //    	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
 ////    	intent.putExtra("out_trade_no", out_trade_no);
@@ -976,7 +1085,8 @@ BushuoFragInteraction
     	OrderDetail.setOrdereID(out_trade_no);
     	OrderDetail.setPayType(Integer.parseInt(zhifutype));
     	if(gotoswitch==BUSZHIAMOUNT)
-    	{    		
+    	{    	
+        	BillEnable(0);	
     	}
     	else if(gotoswitch==BUSZHIER)
     	{
@@ -1131,10 +1241,21 @@ BushuoFragInteraction
 				if (buszhierFragment == null) {
 					buszhierFragment = new BuszhierFragment();
 	            }
-	            // 使用当前Fragment的布局替代id_content的控件
+				// 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhierFragment);
-	            //发送订单
-        		sendzhier();
+				//新建一个线程并启动
+				zhifubaothread.execute(zhifubaohttp);
+				//延时
+			    new Handler().postDelayed(new Runnable() 
+				{
+		            @Override
+		            public void run() 
+		            {   
+			            //发送订单
+		        		sendzhier();
+		            }
+
+				}, 1500);		            
 				break;
 			case BUSZHIWEI://微信支付
 				isbus=false;
@@ -1145,8 +1266,19 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiweiFragment);
-	            //发送订单
-        		sendzhiwei();
+	            //新建一个线程并启动
+	            weixingthread.execute(weixinghttp);
+				//延时
+			    new Handler().postDelayed(new Runnable() 
+				{
+		            @Override
+		            public void run() 
+		            {   
+		            	//发送订单
+		        		sendzhiwei();
+		            }
+
+				}, 1500);	           
 				break;	
 			case BUSHUO://出货页面	
 				isbus=false;
@@ -1166,26 +1298,7 @@ BushuoFragInteraction
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");
-		if(requestCode==PWD_CODE)
-		{
-			if(resultCode==PassWord.RESULT_OK)
-			{
-				Bundle bundle=data.getExtras();
-				String pwd = bundle.getString("pwd");
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<维护密码pwd="+pwd,"log.txt");
-				boolean istrue=ToolClass.getpwdStatus(BusPort.this,pwd);
-				if(istrue)
-		    	{
-		    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<确定退出","log.txt");
-		    		finish();
-		    	}
-		    	else
-		    	{
-		    		listterner.BusportMovie();
-				}
-			}			
-		}
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI","log.txt");		
 	}
 	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
 	public class COMReceiver extends BroadcastReceiver 
@@ -1400,6 +1513,11 @@ BushuoFragInteraction
 	@Override
 	protected void onDestroy() {
 		timer.shutdown(); 
+		//=============
+		//Server服务相关
+		//=============
+		//5.解除注册接收器
+		localBroadreceiver.unregisterReceiver(receiver);
 		//=============
 		//COM服务相关
 		//=============

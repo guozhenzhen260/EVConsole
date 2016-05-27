@@ -149,12 +149,19 @@ public class BuszhiweiFragment extends Fragment
 		@Override
 		public void BusportSend(String str) {
 			// TODO Auto-generated method stub
-			txtbuszhiweirst.setText("交易结果:"+str);
+			//txtbuszhiweirst.setText("交易结果:"+str);
+			txtbuszhiweirst.setText("交易结果:请扫描二维码");
 			ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(str));
 		}
 
 		@Override
 		public void BusportMovie() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void BusportAds() {
 			// TODO Auto-generated method stub
 			
 		}
