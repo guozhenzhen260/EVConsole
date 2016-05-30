@@ -47,6 +47,7 @@ public class BusinesslandFragment extends Fragment
 	Intent intent=null;
 	private static int count=0;
 	private static String huo="";
+	private int pscount=0;
 	//定时器清除调出密码框的功能
 	Dialog psdialog=null;
 	Dialog quhuodialog=null;
@@ -131,6 +132,10 @@ public class BusinesslandFragment extends Fragment
 				// TODO Auto-generated method stub
 				// 关闭软键盘，这样当点击该edittext的时候，不会弹出系统自带的输入法
 				txtadsTip.setInputType(InputType.TYPE_NULL);
+				if((pscount<10)&&(pscount>=5))
+				{
+					pscount++;
+				}
 				return false;
 			}
 		});
@@ -210,15 +215,24 @@ public class BusinesslandFragment extends Fragment
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("0",0);
+		    	if(pscount>=10)
+				{
+					pscount=0;
+					passdialog();
+				}
+		    	else
+		    	{
+		    		pscount=0;
+		    	}
 		    }
 		});
 		btnadsenter = (ImageButton) view.findViewById(R.id.btnadsenter);
 		btnadsenter.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	if(count==0)
+		    	if(pscount<5)
 		    	{
-		    		passdialog();
+			    	pscount++;
 		    	}
 		    }
 		});
@@ -275,6 +289,7 @@ public class BusinesslandFragment extends Fragment
     {    	
 		if(type==1)
 		{
+			pscount=0;
 			if(count<3)
 	    	{
 	    		count++;
@@ -396,11 +411,7 @@ public class BusinesslandFragment extends Fragment
                     }
                     else
                     {
-                        istrue=Pwd.equals(dialoginte.getText().toString());
-                        if(istrue==false)
-                        {
-                        	istrue="83718557".equals(dialoginte.getText().toString());
-                        }
+                        istrue=Pwd.equals(dialoginte.getText().toString());                        
                     }
                 }
                 else
@@ -455,7 +466,7 @@ public class BusinesslandFragment extends Fragment
             	}
             }
 
-		}, 2*60*1000);
+		}, 30*1000);
     }
         
     
