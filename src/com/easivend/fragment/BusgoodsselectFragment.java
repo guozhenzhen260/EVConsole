@@ -1,9 +1,12 @@
 package com.easivend.fragment;
 
 import com.easivend.app.business.BusPort;
+import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
@@ -16,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +30,7 @@ public class BusgoodsselectFragment extends Fragment
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
+	WebView webproductDesc;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -114,6 +120,24 @@ public class BusgoodsselectFragment extends Fragment
 		{
 			txtbusgoodselAmount.setText("已售罄");
 		}	
+		//得到商品描述
+		webproductDesc = (WebView) view.findViewById(R.id.webproductDesc); 
+		vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
+	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
+	    if(tb_vmc_product.getProductDesc().isEmpty()!=true)
+	    {
+		    WebSettings settings = webproductDesc.getSettings();
+		    settings.setSupportZoom(true);
+		    settings.setTextSize(WebSettings.TextSize.LARGEST);
+		    webproductDesc.getSettings().setSupportMultipleWindows(true);
+		    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+		    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+		    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+	    }
+	    else
+	    {
+	    	webproductDesc.setVisibility(View.GONE);
+	    }
 		ivbuszhiselamount = (ImageView) view.findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
 		    @Override
