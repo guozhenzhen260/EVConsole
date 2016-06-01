@@ -71,7 +71,7 @@ public class GoodsManager extends TabActivity
 	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
 	private ImageView imgclassname=null;
 	private Button btnclassname=null,btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
-	private Button btnproadd=null,btnprodel=null,btnproexit=null;	
+	private Button btnproadd=null,btnprodel=null,btnprodelselect=null,btnproexit=null;	
 	// 定义商品列表
 	Vmc_ProductAdapter productAdapter=null;
     private GridView gvProduct=null;
@@ -359,6 +359,44 @@ public class GoodsManager extends TabActivity
 		        }
 		    }
 		});
+    	//删除按键配置
+    	btnprodelselect = (Button) findViewById(R.id.btnprodelselect);
+    	btnprodelselect.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0)
+		    {
+		    	
+		    	//创建警告对话框
+		    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)
+		    		.setTitle("对话框")//标题
+		    		.setMessage("您确定要全部清空选货按键配置信息吗？")//表示对话框中得内容
+		    		.setIcon(R.drawable.ic_launcher)//设置logo
+		    		.setPositiveButton("清除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+		    			{				
+			    				@Override
+			    				public void onClick(DialogInterface dialog, int which) 
+			    				{
+			    					// TODO Auto-generated method stub	
+			    					ToolClass.DelSelectFile();
+					    			ToolClass.addOptLog(GoodsManager.this,2,"清空选货按键配置");
+					    			// 弹出信息提示
+			    		            Toast.makeText(GoodsManager.this, "〖清空选货按键配置〗成功！", Toast.LENGTH_SHORT).show();
+			    				}
+		    		      }
+		    			)		    		        
+	    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+	    		        	{			
+	    						@Override
+	    						public void onClick(DialogInterface dialog, int which) 
+	    						{
+	    							// TODO Auto-generated method stub				
+	    						}
+	    		        	}
+	    		        )
+	    		        .create();//创建一个对话框
+	    		        alert.show();//显示对话框		    	
+		    }
+		});    	
     	//退出
     	btnproexit = (Button) findViewById(R.id.btnproexit);
     	btnproexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件

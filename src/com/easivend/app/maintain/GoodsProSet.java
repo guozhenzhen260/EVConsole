@@ -3,6 +3,8 @@ package com.easivend.app.maintain;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ClassAdapter;
@@ -36,11 +38,12 @@ public class GoodsProSet extends Activity
 	private ImageView ivProduct=null;
 	private Button btnImg=null,btnaddProSave=null,btnaddProexit=null;
 	private EditText edtproductID=null,edtproductName=null,edtmarketPrice=null,edtsalesPrice=null,
-			edtshelfLife=null;
+			edtselectKey=null,edtshelfLife=null;
 	private WebView webproductDesc=null;
 	private TextView onloadTime=null;	
 	private String[] proclassID = null;// 定义字符串数组，用来存储商品id信息
 	private Spinner spinproductclassID=null;
+	private Map<String,String> allset=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -57,6 +60,7 @@ public class GoodsProSet extends Activity
 		edtproductName = (EditText) findViewById(R.id.edtproductName);
 		edtmarketPrice = (EditText) findViewById(R.id.edtmarketPrice);		
 		edtsalesPrice = (EditText) findViewById(R.id.edtsalesPrice);
+		edtselectKey = (EditText) findViewById(R.id.edtselectKey);
 		edtshelfLife = (EditText) findViewById(R.id.edtshelfLife);		
 		webproductDesc = (WebView) findViewById(R.id.webproductDesc);
 		this.spinproductclassID = (Spinner) super.findViewById(R.id.spinproductclassID);
@@ -83,6 +87,18 @@ public class GoodsProSet extends Activity
 		    edtmarketPrice.setText(String.valueOf(tb_inaccount.getMarketPrice()));
 		    edtsalesPrice.setText(String.valueOf(tb_inaccount.getSalesPrice()));
 		    edtshelfLife.setText(String.valueOf(tb_inaccount.getShelfLife()));
+		    //设置按键号		    
+		    allset=ToolClass.ReadSelectFile();
+		    if(allset!=null)
+		    {
+			    //如果判断有这个Value值
+			    for(Map.Entry entry:allset.entrySet())
+			    {
+			        if((tb_inaccount.getProductID().toString()).equals(entry.getValue()))
+			        		edtselectKey.setText(entry.getKey().toString());
+	
+			    }
+		    }
 		    //得到商品描述
 		    WebSettings settings = webproductDesc.getSettings();
 		    settings.setSupportZoom(true);
@@ -135,6 +151,7 @@ public class GoodsProSet extends Activity
 		    	float marketPrice = Float.parseFloat(edtmarketPrice.getText().toString());
 		    	float salesPrice = Float.parseFloat(edtsalesPrice.getText().toString());
 		    	int shelfLife= 0;
+		    	String selectKey=edtselectKey.getText().toString();
 		    	if(edtshelfLife.getText().toString().isEmpty()!=true)
 		    		shelfLife = Integer.parseInt(edtshelfLife.getText().toString());		    	
 		    	String productDesc = "";
@@ -148,39 +165,69 @@ public class GoodsProSet extends Activity
 		    			&&(edtmarketPrice.getText().toString().isEmpty()!=true)		    				    			
 		    		)
 		    	{
-		    		try 
+		    		boolean update=false;
+		    		//选货按键如果已经使用，则重新选择
+		    		if(allset!=null)
 		    		{
-		    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID+" productName="+productName+" marketPrice="
-		    					+marketPrice+" salesPrice="+salesPrice+" shelfLife="+shelfLife+" productDesc="+productDesc+" attBatch1="
-		    					+attBatch1+" attBatch2="+attBatch2+" attBatch3="+attBatch3+" classID="+classID,"log.txt");
-		    			// 创建InaccountDAO对象
-		    			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);
-			            //创建Tb_inaccount对象
-		    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(productID, productName,productDesc,marketPrice,
-		    					salesPrice,shelfLife,date,date,attBatch1,attBatch2,attBatch3,0,0);
-		    			if(proID.isEmpty()==true)
-		    			{
-		    				productDAO.add(tb_vmc_product,classID);// 添加商品信息
-		    				ToolClass.addOptLog(GoodsProSet.this,0,"添加商品:"+productID+productName);
-		    			}
-		    			else 
-		    			{	
-		    				productDAO.update(tb_vmc_product,classID);// 修改商品信息
-		    				ToolClass.addOptLog(GoodsProSet.this,1,"修改商品"+productID+productName);
+			    		if((Integer.parseInt(selectKey)>0)//有绑定按键
+			    				&&(allset.containsKey(selectKey))//此按键已经绑定过商品
+			    				&&(allset.get(selectKey).equals(productID)!=true)//此按键已经绑定过的商品不是当前商品
+			    		  )
+			    		{
+				        	ToolClass.failToast("此按键已绑定商品"+allset.get(selectKey)+"，请选择其他按键！");
+				        }
+			    		else
+			    		{
+			    			update=true;
+			    		}
+		    		}
+		    		else
+		    		{
+		    			update=true;
+		    		}
+		    			
+		    			
+		    		if(update)	
+		    		{
+			    		try 
+			    		{
+			    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID+" productName="+productName+" marketPrice="
+			    					+marketPrice+" salesPrice="+salesPrice+" shelfLife="+shelfLife+" selectKey="+selectKey+" productDesc="+productDesc+" attBatch1="
+			    					+attBatch1+" attBatch2="+attBatch2+" attBatch3="+attBatch3+" classID="+classID,"log.txt");
+			    			// 创建InaccountDAO对象
+			    			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);
+				            //创建Tb_inaccount对象
+			    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(productID, productName,productDesc,marketPrice,
+			    					salesPrice,shelfLife,date,date,attBatch1,attBatch2,attBatch3,0,0);
+			    			if(proID.isEmpty()==true)
+			    			{
+			    				productDAO.add(tb_vmc_product,classID);// 添加商品信息
+			    				ToolClass.addOptLog(GoodsProSet.this,0,"添加商品:"+productID+productName);
+			    			}
+			    			else 
+			    			{	
+			    				productDAO.update(tb_vmc_product,classID);// 修改商品信息
+			    				ToolClass.addOptLog(GoodsProSet.this,1,"修改商品"+productID+productName);
+							}
+			    			//保存到按键表中
+			    			if((Integer.parseInt(selectKey)>0))
+			    			{
+			    				ToolClass.WriteSelectFile(selectKey,productID);
+			    			}
+				        	// 弹出信息提示
+				            Toast.makeText(GoodsProSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
+				            //退出时，返回intent
+				            Intent intent=new Intent();
+				            intent.putExtra("back", "ok");
+				            setResult(GoodsManager.RESULT_OK,intent);
+				            finish();
+				            
+			    		} catch (Exception e)
+						{
+							// TODO: handle exception
+			    			ToolClass.failToast("类别商品失败！");
 						}
-			        	// 弹出信息提示
-			            Toast.makeText(GoodsProSet.this, "〖新增商品〗数据添加成功！", Toast.LENGTH_SHORT).show();
-			            //退出时，返回intent
-			            Intent intent=new Intent();
-			            intent.putExtra("back", "ok");
-			            setResult(GoodsManager.RESULT_OK,intent);
-			            finish();
-			            
-		    		} catch (Exception e)
-					{
-						// TODO: handle exception
-		    			ToolClass.failToast("类别商品失败！");
-					}		    		
+		    		}
 		            
 		        } 
 		        else

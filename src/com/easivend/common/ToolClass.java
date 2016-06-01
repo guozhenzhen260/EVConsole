@@ -102,6 +102,7 @@ public class ToolClass
 	public static int goc=0;//是否使用出货确认板1是
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
+	public static Map<String, String> selectlist=null;//保存选货按键id与商品id的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
@@ -1854,6 +1855,138 @@ public class ToolClass
     	{
     		return Rst;
     	}
+    }
+    
+    /*=============
+     * 选货按键模块
+     =============*/
+    /**
+     * 读取选货按键文件
+     */
+    public static Map<String,String> ReadSelectFile() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String,String> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evSelectconfig.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,String>();   
+	  	         selectlist=new HashMap<String,String>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String,String>>(){}.getType());
+				//输出内容
+		        Set<Entry<String,String>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String,String>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String,String> me=iter.next();	
+		            selectlist.put(me.getKey(),me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+selectlist.toString(),"com.txt");
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    /**
+     * 写入按键配置文件
+     */
+    public static void WriteSelectFile(String selectKey,String productID) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evSelectconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	          
+          	  ReadSelectFile();
+          	  selectlist.put(selectKey,productID);
+          	  ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<selectlist="
+                	  +selectlist.toString(),"com.txt");
+          	  Map<String,String> list=new HashMap<String,String>();
+              //删除这个相同的Value值
+			  for(Map.Entry entry:selectlist.entrySet())
+			  {
+				 if(entry.getValue().equals(productID)!=true)
+				 {
+					 list.put(entry.getKey().toString(), entry.getValue().toString());
+				 }				 
+			  }
+			  ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<list="
+                	  +list.toString(),"com.txt");
+          	  
+			  JSONObject obj=new JSONObject();	
+          	  //将其余的补充进来
+			  for(Map.Entry entry:list.entrySet())
+			  {
+			      obj.put(entry.getKey().toString(), entry.getValue().toString());
+			  }
+			  //将本次添加进来
+			  obj.put(selectKey, productID);
+			  
+          	  ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<JSONObject="+obj.toString(),"com.txt");
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);  	          
+  	          writer.write(obj.toString());
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
+     * 删除按键配置文件
+     */
+    public static void DelSelectFile() 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evSelectconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+          	  fileName.delete();
+  	          
+          	  ReadSelectFile();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
     }
     
     //保存操作日志
