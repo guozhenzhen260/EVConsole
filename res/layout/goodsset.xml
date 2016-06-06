@@ -26,7 +26,8 @@
 				        android:id="@+id/btnImg"  
 				        android:text="选择图片"
 				        android:layout_width="100dp"   
-				        android:layout_height="70dp"   
+				        android:layout_height="70dp"  
+				        android:background="@drawable/button_selector" 
 				    /> 
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -274,13 +275,15 @@
 				        android:id="@+id/btnaddProSave"  
 				        android:text="保存"
 				        android:layout_width="100dp"   
-				        android:layout_height="70dp"   
+				        android:layout_height="70dp" 
+				        android:background="@drawable/button_selector"  
 				    /> 
 				    <Button   
 				        android:id="@+id/btnaddProexit"  
 				        android:text="返回"
 				        android:layout_width="100dp"   
-				        android:layout_height="70dp"   
+				        android:layout_height="70dp"  
+				        android:background="@drawable/button_selector" 
 				    /> 
 	            </LinearLayout>	        
 		    </TableRow>  

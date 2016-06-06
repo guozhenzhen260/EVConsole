@@ -424,12 +424,14 @@
 							        android:text="保存"
 							        android:layout_width="100dp"
 									android:layout_height="70dp"  
+									android:background="@drawable/button_selector"
 							    /> 
 							    <Button   
 							        android:id="@+id/btnmachineexit"  
 							        android:text="退出"
 							        android:layout_width="100dp"
-									android:layout_height="70dp"    
+									android:layout_height="70dp" 
+									android:background="@drawable/button_selector"   
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -488,7 +490,8 @@
 						             android:id="@+id/btnamount"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp"  
-						             android:enabled="false"           
+						             android:enabled="false"  
+						             android:background="@drawable/button_selector"         
 						             android:text="测试" />      
 				            </LinearLayout>	        
 					    </TableRow> 
@@ -520,7 +523,8 @@
 						             android:id="@+id/btncard"
 						             android:layout_width="wrap_content"
 									 android:layout_height="70dp"  
-						             android:enabled="false"             
+						             android:enabled="false"     
+						             android:background="@drawable/button_selector"        
 						             android:text="第三方出货测试" />         
 				            </LinearLayout>	        
 					    </TableRow> 
@@ -552,7 +556,8 @@
 						             android:id="@+id/btnzhifubaofaca"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
-						             android:enabled="false"              
+						             android:enabled="false" 
+						             android:background="@drawable/button_selector"             
 						             android:text="测试" />        
 				            </LinearLayout>	        
 					    </TableRow>
@@ -584,7 +589,8 @@
 						             android:id="@+id/btnzhifubaoer"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
-						             android:enabled="false"              
+						             android:enabled="false" 
+						             android:background="@drawable/button_selector"             
 						             android:text="测试" />        
 				            </LinearLayout>	        
 					    </TableRow>
@@ -616,7 +622,8 @@
 						             android:id="@+id/btnweixing"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp"  
-						             android:enabled="false"            
+						             android:enabled="false" 
+						             android:background="@drawable/button_selector"           
 						             android:text="测试" />      
 				            </LinearLayout>	        
 					    </TableRow>
@@ -648,7 +655,8 @@
 						             android:id="@+id/btnprinter"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
-						             android:enabled="false"              
+						             android:enabled="false"  
+						             android:background="@drawable/button_selector"            
 						             android:text="测试" />      
 				            </LinearLayout>	        
 					    </TableRow>	
@@ -665,13 +673,15 @@
 							        android:id="@+id/btndeviceSave"  
 							        android:text="保存"
 							        android:layout_width="100dp"
-									android:layout_height="70dp"   
+									android:layout_height="70dp"  
+									android:background="@drawable/button_selector" 
 							    /> 
 							    <Button   
 							        android:id="@+id/btndeviceexit"  
 							        android:text="退出"
 							        android:layout_width="100dp"
-									android:layout_height="70dp"   
+									android:layout_height="70dp" 
+									android:background="@drawable/button_selector"  
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -705,6 +715,7 @@
 			        android:layout_below="@+id/emachinelistview"
 			        android:layout_width="100dp"
 					android:layout_height="70dp"   
+					android:background="@drawable/button_selector"
 			    /> 
 			    <Button   
 			        android:id="@+id/btnmachinerunCancel"  
@@ -712,7 +723,8 @@
 			        android:layout_below="@+id/emachinelistview"
 			        android:text="退出"
 			        android:layout_width="100dp"
-					android:layout_height="70dp"  
+					android:layout_height="70dp" 
+					android:background="@drawable/button_selector" 
 			    /> 	
 		</RelativeLayout>	 			    
 	</LinearLayout>

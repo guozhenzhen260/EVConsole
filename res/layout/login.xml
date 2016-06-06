@@ -119,6 +119,7 @@
 			        android:layout_alignParentRight="true"
 			        android:layout_below="@id/tvallopen"
 			        android:layout_marginLeft="10dp"
+			        android:background="@drawable/button_selector"
 			        android:text="退出" />
 			
 			    <Button
@@ -127,6 +128,7 @@
 					android:layout_height="70dp" 
 			        android:layout_below="@id/tvallopen"
 			        android:layout_toLeftOf="@id/btnClose"
+			        android:background="@drawable/button_selector"
 			        android:text="修改" />
 			    <Button
 			        android:id="@+id/btnGaoji"
@@ -134,6 +136,7 @@
 					android:layout_height="70dp" 
 			        android:layout_below="@id/tvallopen"
 			        android:layout_toLeftOf="@id/btnLogin"
+			        android:background="@drawable/button_selector"
 			        android:text="高级设置" /> 
 			     <TextView
 			        android:id="@+id/tvip"
@@ -159,6 +162,7 @@
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
 			        android:layout_below="@id/txtip"
+			        android:background="@drawable/button_selector"
 			        android:text="清除商品信息" />   
         </RelativeLayout>
 	</ScrollView>

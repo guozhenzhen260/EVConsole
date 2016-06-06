@@ -27,6 +27,7 @@
 				        android:text="选择商品"
 				        android:layout_width="100dp"
 						android:layout_height="70dp"  
+						android:background="@drawable/button_selector"
 				    /> 
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -382,19 +383,22 @@
 				        android:id="@+id/btnhuoaddSave"  
 				        android:text="保存"
 				        android:layout_width="100dp"
-						android:layout_height="70dp"    
+						android:layout_height="70dp" 
+						android:background="@drawable/button_selector"   
 				    /> 
 				    <Button   
 				        android:id="@+id/btnhuodelSave"  
 				        android:text="删除"
 				        android:layout_width="100dp"
-						android:layout_height="70dp"   
+						android:layout_height="70dp"  
+						android:background="@drawable/button_selector" 
 				    /> 
 				    <Button   
 				        android:id="@+id/btnhuoexit"  
 				        android:text="返回"
 				        android:layout_width="100dp"
-						android:layout_height="70dp"   
+						android:layout_height="70dp"  
+						android:background="@drawable/button_selector" 
 				    /> 
 	            </LinearLayout>	        
 		    </TableRow>  	    

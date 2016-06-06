@@ -304,7 +304,8 @@
 						    <Button
 					             android:id="@+id/btnbillpayout"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp" 			                         
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"			                         
 					             android:text="找币" />    
 						</LinearLayout>		                   
 				    </TableRow>  
@@ -347,27 +348,32 @@
 					        <Button
 					             android:id="@+id/btnbillon"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"            
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"           
 					             android:text="打开" />
 					         <Button
 					             android:id="@+id/btnbilloff"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"            
 					             android:text="关闭" />
 					         <Button
 					             android:id="@+id/btnbillquery"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"            
+								 android:layout_height="70dp"  
+								 android:background="@drawable/button_selector"          
 					             android:text="查询" /> 
 					         <Button
 					             android:id="@+id/btnbillset"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"            
+								 android:layout_height="70dp"   
+								 android:background="@drawable/button_selector"         
 					             android:text="配置" />    
 					         <Button
 					             android:id="@+id/btnbillexit2"
 					             android:layout_width="100dp"
 								 android:layout_height="70dp"
+								 android:background="@drawable/button_selector"
 					             android:text="退出" />      
 						</LinearLayout> 
 				    </TableRow>					
@@ -831,7 +837,8 @@
 						    <Button
 					             android:id="@+id/btncoinpayout"
 					             android:layout_width="wrap_content"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp"    
+								 android:background="@drawable/button_selector"         
 					             android:text="按金额找零" />    
 						</LinearLayout>		                   
 				    </TableRow>  
@@ -875,27 +882,32 @@
 					        <Button
 					             android:id="@+id/btncoinon"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"            
 					             android:text="打开" />
 					         <Button
 					             android:id="@+id/btncoinoff"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"            
 					             android:text="关闭" />
 					         <Button
 					             android:id="@+id/btncoinquery"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"            
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"           
 					             android:text="查询" />
 					         <Button
 					             android:id="@+id/btncoinset"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"            
 					             android:text="配置" />
 					         <Button
 					             android:id="@+id/btncoinexit"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"            
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"           
 					             android:text="退出" />   
 						</LinearLayout> 
 				    </TableRow>						    
@@ -1110,6 +1122,7 @@
 					             android:id="@+id/btnhopperpaymoney"
 					             android:layout_width="wrap_content"
 								 android:layout_height="70dp"
+								 android:background="@drawable/button_selector"
 					             android:text="按金额找零" /> 
 						</LinearLayout>                
 				    </TableRow>  
@@ -1177,7 +1190,8 @@
 						     <Button
 					             android:id="@+id/btnhopperpaynum"
 					             android:layout_width="wrap_content"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp"    
+								 android:background="@drawable/button_selector"         
 					             android:text="按枚数出币" />
 				         </LinearLayout>
 				    </TableRow>
@@ -1217,21 +1231,25 @@
 					             android:id="@+id/btnhopperquery"
 					             android:layout_width="100dp"
 								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"
 					             android:text="查询" />
 						    <Button
 					             android:id="@+id/btnhopperpay"
 					             android:layout_width="wrap_content"
 								 android:layout_height="70dp"
+								 android:background="@drawable/button_selector"
 					             android:text="按金额找零" />  
 					        <Button
 					             android:id="@+id/btnhopperset"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"             
+								 android:layout_height="70dp"  
+								 android:background="@drawable/button_selector"           
 					             android:text="配置" />
 					        <Button
 					             android:id="@+id/btnhopperexit"
 					             android:layout_width="100dp"
-								 android:layout_height="70dp"            
+								 android:layout_height="70dp" 
+								 android:background="@drawable/button_selector"           
 					             android:text="退出" />
 				         </LinearLayout>		
 				    </TableRow>				

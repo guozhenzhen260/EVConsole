@@ -58,26 +58,31 @@
 			    android:id="@+id/btnweixingtestok"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
+			    android:background="@drawable/button_selector"
 		        android:text="生成二维码"/>	
 		     <Button
 			    android:id="@+id/btnweixingtestquery"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
+			    android:background="@drawable/button_selector"
 		        android:text="查询"/>	
 		     <Button
 			    android:id="@+id/btnweixingtestdelete"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
+			    android:background="@drawable/button_selector"
 		        android:text="撤销交易"/>	
 		     <Button
 			    android:id="@+id/btnweixingtestpayout"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
+			    android:background="@drawable/button_selector"
 		        android:text="退款"/>
 		     <Button
 			    android:id="@+id/btnweixingtestcancel"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
+			    android:background="@drawable/button_selector"
 		        android:text="退出"/>	
     	</LinearLayout>    	
 </LinearLayout>

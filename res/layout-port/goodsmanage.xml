@@ -99,7 +99,8 @@
 							    <Button
 						             android:id="@+id/btnclassname"
 						             android:layout_width="100dp"
-						             android:layout_height="70dp"             
+						             android:layout_height="70dp" 
+						             android:background="@drawable/button_selector"            
 						             android:text="选择图片" />    
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -114,22 +115,26 @@
 				            	<Button
 						             android:id="@+id/btnclassadd"
 						             android:layout_width="150dp"
-						             android:layout_height="70dp"             
+						             android:layout_height="70dp"
+						             android:background="@drawable/button_selector"             
 						             android:text="添加" />	
 						        <Button
 						             android:id="@+id/btnclassupdate"
 						             android:layout_width="150dp"
 						             android:layout_height="70dp"
+						             android:background="@drawable/button_selector"
 						             android:text="修改" />  
 						        <Button
 						             android:id="@+id/btnclassdel"
 						             android:layout_width="150dp"
 						             android:layout_height="70dp"
+						             android:background="@drawable/button_selector"
 						             android:text="删除" /> 
 						        <Button
 						             android:id="@+id/btnclassexit"
 						             android:layout_width="150dp"
 						             android:layout_height="70dp"
+						             android:background="@drawable/button_selector"
 						             android:text="退出" />            					         
 				            </LinearLayout>	  	         
 					    </TableRow>					    
@@ -202,7 +207,8 @@
 					             android:id="@+id/btnproadd"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"  
-					             android:layout_below="@+id/txtproname"           
+					             android:layout_below="@+id/txtproname" 
+					             android:background="@drawable/button_selector"          
 					             android:text="添加" />				         
 				         <Button
 					             android:id="@+id/btnprodel"
@@ -210,6 +216,7 @@
 					             android:layout_toRightOf="@+id/btnproadd"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
+					             android:background="@drawable/button_selector"
 					             android:text="删除" />
 				         <Button
 					             android:id="@+id/btnprodelselect"
@@ -217,6 +224,7 @@
 					             android:layout_toRightOf="@+id/btnprodel"
 					             android:layout_width="200dp"
 					             android:layout_height="70dp"
+					             android:background="@drawable/button_selector"
 					             android:text="清空按键设置" />
 				         <Button
 					             android:id="@+id/btnproexit"
@@ -224,6 +232,7 @@
 					             android:layout_toRightOf="@+id/btnprodelselect"
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
+					             android:background="@drawable/button_selector"
 					             android:text="退出" />						             			         
 					</RelativeLayout>					
 				</LinearLayout>	

@@ -83,21 +83,24 @@
 	             android:id="@+id/btnloggridquery"	
 	             android:layout_below="@+id/edtloggridstart"			             
 	             android:layout_width="100dp"
-				 android:layout_height="70dp"             
+				 android:layout_height="70dp" 
+				 android:background="@drawable/button_selector"            
 	             android:text="查询记录" />
 	     <Button
 	             android:id="@+id/btnloggriddel"	
 	             android:layout_below="@+id/edtloggridstart"	
 	             android:layout_toRightOf="@+id/btnloggridquery"		             
 	             android:layout_width="100dp"
-				 android:layout_height="70dp"              
+				 android:layout_height="70dp"
+				 android:background="@drawable/button_selector"              
 	             android:text="删除记录" />		         
          <Button
 	             android:id="@+id/btnloggridexit"
 	             android:layout_below="@+id/edtloggridstart"	
 	             android:layout_toRightOf="@+id/btnloggriddel"
 	             android:layout_width="100dp"
-				 android:layout_height="70dp" 
+				 android:layout_height="70dp"
+				 android:background="@drawable/button_selector" 
 	             android:text="退出" />
 	</RelativeLayout>     
 </LinearLayout>

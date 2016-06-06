@@ -32,25 +32,29 @@
 		         <Button
 			             android:id="@+id/btnhuosetadd"			             
 			             android:layout_width="100dp"
-			             android:layout_height="70dp"             
+			             android:layout_height="70dp"
+			             android:background="@drawable/button_selector"             
 			             android:text="添加柜" />		         
 		         <Button
 			             android:id="@+id/btnhuosetdel"
 			             android:layout_toRightOf="@+id/btnhuosetadd"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
+			             android:background="@drawable/button_selector"
 			             android:text="删除柜" />
 		         <Button
 			             android:id="@+id/btnhuosetbu"
 			             android:layout_toRightOf="@+id/btnhuosetdel"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
+			             android:background="@drawable/button_selector"
 			             android:text="补满本柜" />
 		         <Button
 			             android:id="@+id/btnhuosetexit"
 			             android:layout_toRightOf="@+id/btnhuosetbu"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
+			             android:background="@drawable/button_selector"
 			             android:text="退出" />
 		         <TextView 		 
             	    android:minWidth="160px"  
@@ -330,22 +334,26 @@
 						        <Button
 						             android:id="@+id/btnhuochu"
 						             android:layout_width="100dp"
-						             android:layout_height="70dp"             
+						             android:layout_height="70dp"  
+						             android:background="@drawable/button_selector"           
 						             android:text="出货" />
 						        <Button
 						             android:id="@+id/btnhuocancel"
 						             android:layout_width="100dp"
-						             android:layout_height="70dp"            
+						             android:layout_height="70dp"  
+						             android:background="@drawable/button_selector"          
 						             android:text="重置" />
 						         <Button
 						             android:id="@+id/btnhuochuall"
 						             android:layout_width="wrap_content"
-						             android:layout_height="70dp"             
+						             android:layout_height="70dp"    
+						             android:background="@drawable/button_selector"         
 						             android:text="开始循环出货" />
 						         <Button
 						             android:id="@+id/btnhuoexit"
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"
+						             android:background="@drawable/button_selector"
 						             android:text="退出" />
 					         </LinearLayout>
 					    </TableRow>			        
@@ -1275,21 +1283,24 @@
 			             android:id="@+id/btnhuosetsethuo"			             
 			             android:layout_width="150dp"
 			             android:layout_height="100dp"
-			             android:layout_below="@+id/spinhuopeiCab"              
+			             android:layout_below="@+id/spinhuopeiCab"    
+			             android:background="@drawable/button_selector"          
 			             android:text="手动配置" />
 			        <Button
 			             android:id="@+id/btnhuosetautohuo"			             
 			             android:layout_width="150dp"
 			             android:layout_height="100dp"
 			             android:layout_toRightOf="@+id/btnhuosetsethuo"
-			             android:layout_below="@+id/spinhuopeiCab"              
+			             android:layout_below="@+id/spinhuopeiCab"     
+			             android:background="@drawable/button_selector"         
 			             android:text="自动配置" />
 			        <Button
 			             android:id="@+id/btnhuosetclose"			             
 			             android:layout_width="150dp"
 			             android:layout_height="100dp"
 			             android:layout_toRightOf="@+id/btnhuosetautohuo"
-			             android:layout_below="@+id/spinhuopeiCab"              
+			             android:layout_below="@+id/spinhuopeiCab"   
+			             android:background="@drawable/button_selector"           
 			             android:text="关闭" />
 			    </RelativeLayout>    
 			</ScrollView>    

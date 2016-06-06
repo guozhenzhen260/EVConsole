@@ -20,5 +20,6 @@
         android:layout_height="70dp"
         android:textColor="#FF0000"  
         android:textSize="40sp"
+        android:background="@drawable/button_selector"
         android:text="返回" />
 </LinearLayout>
