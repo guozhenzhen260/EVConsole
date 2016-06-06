@@ -47,8 +47,9 @@ public class MediaFileAdapter
     public static final int FILE_TYPE_3GPP2   = 24;
     public static final int FILE_TYPE_WMV     = 25;
     public static final int FILE_TYPE_AVI     = 26;
+    public static final int FILE_TYPE_MOV     = 27;
     private static final int FIRST_VIDEO_FILE_TYPE = FILE_TYPE_MP4;
-    private static final int LAST_VIDEO_FILE_TYPE = FILE_TYPE_AVI;
+    private static final int LAST_VIDEO_FILE_TYPE = FILE_TYPE_MOV;
     
     // Image file types
     public static final int FILE_TYPE_JPEG    = 31;
@@ -109,6 +110,7 @@ public class MediaFileAdapter
         addFileType("3GPP2", FILE_TYPE_3GPP2, "video/3gpp2");
         addFileType("WMV", FILE_TYPE_WMV, "video/x-ms-wmv");
         addFileType("AVI", FILE_TYPE_AVI, "video/avi");
+        addFileType("MOV", FILE_TYPE_MOV, "video/mov");
 
         addFileType("JPG", FILE_TYPE_JPEG, "image/jpeg");
         addFileType("JPEG", FILE_TYPE_JPEG, "image/jpeg");
@@ -159,11 +161,11 @@ public class MediaFileAdapter
     }
     
     public static MediaFileType getFileType(String path) {
-    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品2ID="+path);
+    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品2ID="+path,"log.txt");
         int lastDot = path.lastIndexOf(".");
         if (lastDot < 0)
             return null;
-        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品3ID="+path.substring(lastDot + 1).toUpperCase());
+        //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品3ID="+path.substring(lastDot + 1).toUpperCase(),"log.txt");
         return sFileTypeMap.get(path.substring(lastDot + 1).toUpperCase());
     }
     //根据视频文件路径判断文件类型
