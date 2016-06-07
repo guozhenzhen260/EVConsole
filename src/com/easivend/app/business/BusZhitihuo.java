@@ -42,9 +42,10 @@ public class BusZhitihuo extends Activity
 	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60—”≥Ÿ5∑÷÷”
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	EditText txtadsTip=null;
-	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
+	Button btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			   btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadscancel=null,
-			   btnadsenter=null,imgbtnbuszhitihuoback=null;
+			   btnadsenter=null;
+	ImageButton imgbtnbuszhitihuoback=null;
 	Button btnadsclass=null;
 	Dialog dialog=null,alert=null;
 	StringBuilder str=new StringBuilder();
@@ -76,7 +77,7 @@ public class BusZhitihuo extends Activity
 				return false;
 			}
 		});
-		btnads1 = (ImageButton) findViewById(R.id.btnads1);		
+		btnads1 = (Button) findViewById(R.id.btnads1);		
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -84,7 +85,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);		    	
 		    }
 		});
-		btnads2 = (ImageButton) findViewById(R.id.btnads2);
+		btnads2 = (Button) findViewById(R.id.btnads2);
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -92,7 +93,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads3 = (ImageButton) findViewById(R.id.btnads3);
+		btnads3 = (Button) findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -100,7 +101,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads4 = (ImageButton) findViewById(R.id.btnads4);
+		btnads4 = (Button) findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -108,7 +109,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads5 = (ImageButton) findViewById(R.id.btnads5);
+		btnads5 = (Button) findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -116,7 +117,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads6 = (ImageButton) findViewById(R.id.btnads6);
+		btnads6 = (Button) findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -124,7 +125,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads7 = (ImageButton) findViewById(R.id.btnads7);
+		btnads7 = (Button) findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -132,7 +133,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads8 = (ImageButton) findViewById(R.id.btnads8);
+		btnads8 = (Button) findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -140,7 +141,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads9 = (ImageButton) findViewById(R.id.btnads9);
+		btnads9 = (Button) findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -148,7 +149,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnads0 = (ImageButton) findViewById(R.id.btnads0);
+		btnads0 = (Button) findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -156,7 +157,7 @@ public class BusZhitihuo extends Activity
 		    	txtadsTip.setText(str);	
 		    }
 		});
-		btnadscancel = (ImageButton) findViewById(R.id.btnadscancel);
+		btnadscancel = (Button) findViewById(R.id.btnadscancel);
 		btnadscancel.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -167,7 +168,7 @@ public class BusZhitihuo extends Activity
 		    	}
 		    }
 		});
-		btnadsenter = (ImageButton) findViewById(R.id.btnadsenter);
+		btnadsenter = (Button) findViewById(R.id.btnadsenter);
 		btnadsenter.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
