@@ -30,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,9 +41,9 @@ public class BusinesslandFragment extends Fragment
 {	
 	final static int REQUEST_CODE=1; 	
 	EditText txtadsTip=null;
-	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
-			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnadsenter=null;
-	ImageButton btnadsclass=null,btnadscuxiao=null,btnadsbuysale=null,btnadsquhuo=null,btnads0=null;	
+	Button btnads1=null, btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
+			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnads0=null,btnadsenter=null;
+	ImageButton btnadsclass=null;
 	ImageView ivquhuo=null;
 	Intent intent=null;
 	private static int count=0;
@@ -139,7 +140,7 @@ public class BusinesslandFragment extends Fragment
 				return false;
 			}
 		});
-		btnads1 = (ImageButton) view.findViewById(R.id.btnads1);		
+		btnads1 = (Button) view.findViewById(R.id.btnads1);		
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -147,70 +148,70 @@ public class BusinesslandFragment extends Fragment
 		    	
 		    }
 		});
-		btnads2 = (ImageButton) view.findViewById(R.id.btnads2);
+		btnads2 = (Button) view.findViewById(R.id.btnads2);
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("2",1);
 		    }
 		});
-		btnads3 = (ImageButton) view.findViewById(R.id.btnads3);
+		btnads3 = (Button) view.findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("3",1);
 		    }
 		});
-		btnads4 = (ImageButton) view.findViewById(R.id.btnads4);
+		btnads4 = (Button) view.findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("4",1);
 		    }
 		});
-		btnads5 = (ImageButton) view.findViewById(R.id.btnads5);
+		btnads5 = (Button) view.findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("5",1);
 		    }
 		});
-		btnads6 = (ImageButton) view.findViewById(R.id.btnads6);
+		btnads6 = (Button) view.findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("6",1);
 		    }
 		});
-		btnads7 = (ImageButton) view.findViewById(R.id.btnads7);
+		btnads7 = (Button) view.findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("7",1);
 		    }
 		});
-		btnads8 = (ImageButton) view.findViewById(R.id.btnads8);
+		btnads8 = (Button) view.findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("8",1);
 		    }
 		});
-		btnads9 = (ImageButton) view.findViewById(R.id.btnads9);
+		btnads9 = (Button) view.findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("9",1);
 		    }
 		});
-		btnads0 = (ImageButton) view.findViewById(R.id.btnads0);
+		btnads0 = (Button) view.findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("0",1);
 		    }
 		});
-		btnadscancel = (ImageButton) view.findViewById(R.id.btnadscancel);
+		btnadscancel = (Button) view.findViewById(R.id.btnadscancel);
 		btnadscancel.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -226,7 +227,7 @@ public class BusinesslandFragment extends Fragment
 		    	}
 		    }
 		});
-		btnadsenter = (ImageButton) view.findViewById(R.id.btnadsenter);
+		btnadsenter = (Button) view.findViewById(R.id.btnadsenter);
 		btnadsenter.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
