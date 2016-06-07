@@ -39,6 +39,8 @@ import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ClearCacheRequest;
+import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -142,6 +144,22 @@ public class EVServerhttp implements Runnable {
 		return this.childhand;
 	}
 	
+	public RequestQueue getRequestQueue() {
+        if (mQueue == null) {
+            // getApplicationContext()是关键, 它会避免
+            // Activity或者BroadcastReceiver带来的缺点.
+        	mQueue = Volley.newRequestQueue(ToolClass.getContext());
+        }
+        //强制清除缓存
+        File cacheDir = new File(ToolClass.getContext().getCacheDir(), "volley");
+        DiskBasedCache cache = new DiskBasedCache(cacheDir);
+        mQueue.start();
+
+        // clear all volley caches.
+        mQueue.add(new ClearCacheRequest(cache, null));
+        return mQueue;
+    }
+	
 	@Override
 	public void run() 
 	{
@@ -173,9 +191,8 @@ public class EVServerhttp implements Runnable {
 						httpStr= list.get("server");
 					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 签到["+Thread.currentThread().getId()+"]="+httpStr,"server.txt");
-					//新建Volley
-					mQueue = Volley.newRequestQueue(ToolClass.getContext()); 
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//2.设置参数,设置服务器地址
 					String target = httpStr+"/api/vmcCheckin";	//要提交的目标地址
 					//1.添加到类集中，其中key,value类型为String
@@ -249,7 +266,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 心跳["+Thread.currentThread().getId()+"]","server.txt");
 					//心跳
 					String target2 = httpStr+"/api/vmcPoll";	//要提交的目标地址
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain2=mainhand.obtainMessage();
 					tomain2.what=SETNONE;
@@ -312,7 +330,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类["+Thread.currentThread().getId()+"]","server.txt");
 					String target3 = httpStr+"/api/productClass";	//要提交的目标地址
 					final String LAST_EDIT_TIME3=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain3=mainhand.obtainMessage();
 					tomain3.what=SETNONE;
@@ -393,7 +412,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target4 = httpStr+"/api/productData";	//要提交的目标地址
 					final String LAST_EDIT_TIME4=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain4=mainhand.obtainMessage();
 					tomain4.what=SETNONE;
@@ -462,7 +482,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取货道信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target5 = httpStr+"/api/vmcPathConfigDownload";	//要提交的目标地址
 					final String LAST_EDIT_TIME5=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain5=mainhand.obtainMessage();
 					tomain5.what=SETNONE;
@@ -557,6 +578,8 @@ public class EVServerhttp implements Runnable {
 					Gson gson7=new Gson();
 					final String param7=gson7.toJson(parammap7);		
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param7.toString(),"server.txt");
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain7=mainhand.obtainMessage();
 					tomain7.what=SETNONE;
@@ -667,6 +690,8 @@ public class EVServerhttp implements Runnable {
 					Gson gson11=new Gson();
 					final String param11=gson11.toJson(parammap11);		
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param11.toString(),"server.txt");
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain11=mainhand.obtainMessage();
 					tomain11.what=SETNONE;
@@ -724,7 +749,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target12 = httpStr+"/api/clientVersion";	//要提交的目标地址
 					final String LAST_EDIT_TIME12=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain12=mainhand.obtainMessage();
 					tomain12.what=SETNONE;
@@ -790,7 +816,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取日志信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target13 = httpStr+"/api/clientLogInfo";	//要提交的目标地址
 					final String LAST_EDIT_TIME13=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain13=mainhand.obtainMessage();
 					tomain13.what=SETNONE;
@@ -856,7 +883,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取支付宝微信信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target14 = httpStr+"/api/selectAccount";	//要提交的目标地址
 					final String LAST_EDIT_TIME14=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain14=mainhand.obtainMessage();
 					tomain14.what=SETNONE;
@@ -921,7 +949,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取广告信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target15 = httpStr+"/api/advInfo";	//要提交的目标地址
 					final String LAST_EDIT_TIME15=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain15=mainhand.obtainMessage();
 					tomain15.what=SETNONE;
@@ -986,7 +1015,8 @@ public class EVServerhttp implements Runnable {
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取设备信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target16 = httpStr+"/api/selectClientSetting";	//要提交的目标地址
 					final String LAST_EDIT_TIME16=msg.obj.toString();
-					
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain16=mainhand.obtainMessage();
 					tomain16.what=SETNONE;
@@ -1053,6 +1083,8 @@ public class EVServerhttp implements Runnable {
 					String target17 = httpStr+"/api/getPickupCodeStatus";	//要提交的目标地址
 					final String PICKUP_CODE=msg.obj.toString();
 					final String LAST_EDIT_TIME17=ToolClass.getLasttime();
+					//新建Volley 
+					mQueue = getRequestQueue();
 					//向主线程返回信息
 					final Message tomain17=mainhand.obtainMessage();
 					tomain17.what=SETNONE;
@@ -1325,6 +1357,8 @@ public class EVServerhttp implements Runnable {
 			}					
 			final String param6=json.toString();		
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param6.toString(),"server.txt");
+			//新建Volley 
+			mQueue = getRequestQueue();
 			//4.准备加载信息设置
 			StringRequest stringRequest6 = new StringRequest(Method.POST, target6,  new Response.Listener<String>() {  
 				@Override  
@@ -1842,6 +1876,8 @@ public class EVServerhttp implements Runnable {
 		
 		//向主线程返回信息
 		final Message tomain3=mainhand.obtainMessage();
+		//新建Volley 
+		mQueue = getRequestQueue();
 		//4.准备加载信息设置
 		StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
 			@Override  
@@ -2019,6 +2055,8 @@ public class EVServerhttp implements Runnable {
 			
 		//向主线程返回信息
 		final Message tomain3=mainhand.obtainMessage();
+		//新建Volley 
+		mQueue = getRequestQueue();
 		//4.准备加载信息设置
 		StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
 			@Override  
@@ -2275,6 +2313,8 @@ public class EVServerhttp implements Runnable {
                 } 
                 //2.上传更新版本状态
                 String target3 = httpStr+"/api/updateClientVersion";	//要提交的目标地址
+                //新建Volley 
+				mQueue = getRequestQueue();
                 StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
         			@Override  
         			public void onResponse(String response) {              			   
@@ -2320,6 +2360,8 @@ public class EVServerhttp implements Runnable {
                 e.printStackTrace();
                 //2.上传更新版本状态
                 String target3 = httpStr+"/api/updateClientVersion";	//要提交的目标地址
+                //新建Volley 
+				mQueue = getRequestQueue();
                 StringRequest stringRequest3 = new StringRequest(Method.POST, target3,  new Response.Listener<String>() {  
         			@Override  
         			public void onResponse(String response) {              			   
@@ -2543,6 +2585,8 @@ public class EVServerhttp implements Runnable {
         	//向主线程返回信息
 			final Message tomain17=mainhand.obtainMessage();
 			tomain17.what=SETNONE;
+			//新建Volley 
+			mQueue = getRequestQueue();
 			//4.准备加载信息设置
 			StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
 				@Override  
@@ -3073,6 +3117,8 @@ public class EVServerhttp implements Runnable {
 			//向主线程返回信息
 			final Message tomain17=mainhand.obtainMessage();
 			tomain17.what=SETNONE;
+			//新建Volley 
+			mQueue = getRequestQueue();
 			//4.准备加载信息设置
 			StringRequest stringRequest17 = new StringRequest(Method.POST, target17,  new Response.Listener<String>() {  
 				@Override  

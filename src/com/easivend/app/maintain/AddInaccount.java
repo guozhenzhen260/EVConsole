@@ -204,45 +204,47 @@ public class AddInaccount extends TabActivity
 		btnbillset.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	//创建警告对话框
-		    	Dialog alert=new AlertDialog.Builder(AddInaccount.this)
-		    		.setTitle("对话框")//标题
-		    		.setMessage("您确定要配置纸币器吗？")//表示对话框中得内容
-		    		.setIcon(R.drawable.ic_launcher)//设置logo
-		    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
-		    			{				
-			    				@Override
-			    				public void onClick(DialogInterface dialog, int which) 
-			    				{
-			    					// TODO Auto-generated method stub	
-			    					int billtype=0;
-			    			    	if(spinbillmanagerbill.getSelectedItemPosition()==1)
-			    			    		billtype=2;
-			    					else if(spinbillmanagerbill.getSelectedItemPosition()==0)
-			    						billtype=0;
-			    			    	//EVprotocolAPI.EV_mdbBillConfig(ToolClass.getCom_id(),billtype);	
-			    			    	Intent intent2=new Intent();
-			    			    	intent2.putExtra("EVWhat", COMService.EV_MDB_B_CON);
-			    			    	intent2.putExtra("billtype", billtype);
-			    			    	intent2.setAction("android.intent.action.comsend");//action与接收器相同
-			    					comBroadreceiver.sendBroadcast(intent2);
-			    					devopt=COMService.EV_MDB_B_CON;
-			    			    	// 弹出信息提示
-						            Toast.makeText(AddInaccount.this, "配置纸币器成功！", Toast.LENGTH_SHORT).show();
-						     }
-		    		      }
-		    			)		    		        
-	    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-	    		        	{			
-	    						@Override
-	    						public void onClick(DialogInterface dialog, int which) 
-	    						{
-	    							// TODO Auto-generated method stub				
-	    						}
-	    		        	}
-	    		        )
-	    		        .create();//创建一个对话框
-	    		        alert.show();//显示对话框		    		       
+//		    	//创建警告对话框
+//		    	Dialog alert=new AlertDialog.Builder(AddInaccount.this)
+//		    		.setTitle("对话框")//标题
+//		    		.setMessage("您确定要配置纸币器吗？")//表示对话框中得内容
+//		    		.setIcon(R.drawable.ic_launcher)//设置logo
+//		    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+//		    			{				
+//			    				@Override
+//			    				public void onClick(DialogInterface dialog, int which) 
+//			    				{
+//			    					// TODO Auto-generated method stub	
+//			    					int billtype=0;
+//			    			    	if(spinbillmanagerbill.getSelectedItemPosition()==1)
+//			    			    		billtype=2;
+//			    					else if(spinbillmanagerbill.getSelectedItemPosition()==0)
+//			    						billtype=0;
+//			    			    	//EVprotocolAPI.EV_mdbBillConfig(ToolClass.getCom_id(),billtype);	
+//			    			    	Intent intent2=new Intent();
+//			    			    	intent2.putExtra("EVWhat", COMService.EV_MDB_B_CON);
+//			    			    	intent2.putExtra("billtype", billtype);
+//			    			    	intent2.setAction("android.intent.action.comsend");//action与接收器相同
+//			    					comBroadreceiver.sendBroadcast(intent2);
+//			    					devopt=COMService.EV_MDB_B_CON;
+//			    			    	// 弹出信息提示
+//						            Toast.makeText(AddInaccount.this, "配置纸币器成功！", Toast.LENGTH_SHORT).show();
+//						     }
+//		    		      }
+//		    			)		    		        
+//	    		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+//	    		        	{			
+//	    						@Override
+//	    						public void onClick(DialogInterface dialog, int which) 
+//	    						{
+//	    							// TODO Auto-generated method stub				
+//	    						}
+//	    		        	}
+//	    		        )
+//	    		        .create();//创建一个对话框
+//	    		        alert.show();//显示对话框	
+		    	// TODO: handle exception
+				ToolClass.failToast("本功能暂未开启！");
 		    }
 		});	
 		btnbillexit = (Button) findViewById(R.id.btnbillexit2);
@@ -348,7 +350,9 @@ public class AddInaccount extends TabActivity
 	  	btncoinset.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	CoinConfig();
+		    	//CoinConfig();
+		    	// TODO: handle exception
+				ToolClass.failToast("本功能暂未开启！");
 		    }
 		});
 	  	btncoinexit = (Button) findViewById(R.id.btncoinexit);
@@ -443,7 +447,9 @@ public class AddInaccount extends TabActivity
 	  	btnhopperset.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	CoinConfig();
+		    	//CoinConfig();
+		    	// TODO: handle exception
+				ToolClass.failToast("本功能暂未开启！");
 		    }
 		});
 	  	btnhopperexit = (Button) findViewById(R.id.btnhopperexit);
