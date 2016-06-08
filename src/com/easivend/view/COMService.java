@@ -477,7 +477,7 @@ public class COMService extends Service {
         		childhand.sendMessage(child13);
 				break;
 			case EV_MDB_PAYOUT:
-				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 使能禁能","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService MDB设备找币","com.txt");
 				Message child14=childhand.obtainMessage();
 				child14.what=COMThread.EV_MDB_PAYOUT;
         		JSONObject ev14=null;
@@ -496,6 +496,7 @@ public class COMService extends Service {
         		childhand.sendMessage(child14);	
 				break;
 			case EV_MDB_HP_PAYOUT:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService hopper硬币器找币","com.txt");
 				Message child15=childhand.obtainMessage();
 				child15.what=COMThread.EV_MDB_HP_PAYOUT;
         		JSONObject ev15=null;
@@ -523,6 +524,7 @@ public class COMService extends Service {
         		childhand.sendMessage(child11);	
 				break;
 			case EV_MDB_COST:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 扣款接口","com.txt");
 				Message child16=childhand.obtainMessage();
 				child16.what=COMThread.EV_MDB_COST;
         		JSONObject ev16=null;
@@ -538,6 +540,7 @@ public class COMService extends Service {
         		childhand.sendMessage(child16);
 				break;
 			case EV_MDB_PAYBACK://退币按钮接口
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 退币按钮接口","com.txt");
 				Message child17=childhand.obtainMessage();
 				child17.what=COMThread.EV_MDB_PAYBACK;
         		JSONObject ev17=null;

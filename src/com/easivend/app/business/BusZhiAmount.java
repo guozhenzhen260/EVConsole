@@ -45,7 +45,7 @@ public class BusZhiAmount  extends Activity
 	private int recLen = 180; 
 	private int queryLen = 0; 
     ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
-    private int iszhienable=0;//1发送打开指令,0还没发送打开指令
+    private int iszhienable=0;//1发送打开指令,0还没发送打开指令,2本次投币已经结束
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
     private int dispenser=0;//0无,1hopper,2mdb
     private boolean ischuhuo=false;//true已经出货过了，可以上报日志
@@ -258,7 +258,7 @@ public class BusZhiAmount  extends Activity
 					  	}
 					  	
 					  	if(money>0)
-					  	{
+					  	{					  		
 					  		iszhiamount=1;
 					  		recLen = 180;//有投币后倒计时不用计算了
 					  		txtbuszhiamountbillAmount.setText(String.valueOf(money));
@@ -267,6 +267,7 @@ public class BusZhiAmount  extends Activity
 					  		OrderDetail.setSmallAmount(money);
 					  		if(money>=amount)
 					  		{
+					  			iszhienable=2;
 					  			timer.shutdown(); 
 					  			tochuhuo();
 					  		}
@@ -331,7 +332,7 @@ public class BusZhiAmount  extends Activity
                     if(iszhienable==1)
                     {
 	                    queryLen++;
-	                    if(queryLen>=1)
+	                    if(queryLen>=5)
 	                    {
 	                    	queryLen=0;
 	                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
@@ -361,20 +362,29 @@ public class BusZhiAmount  extends Activity
     private void tochuhuo()
     {        
     	ischuhuo=true;
-    	BillEnable(0);
-    	Intent intent = null;// 创建Intent对象                
-    	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
-//    	intent.putExtra("out_trade_no", out_trade_no);
-//    	intent.putExtra("proID", proID);
-//    	intent.putExtra("productID", productID);
-//    	intent.putExtra("proType", proType);
-//    	intent.putExtra("cabID", cabID);
-//    	intent.putExtra("huoID", huoID);
-//    	intent.putExtra("prosales", prosales);
-//    	intent.putExtra("count", count);
-//    	intent.putExtra("reamin_amount", reamin_amount);
-//    	intent.putExtra("zhifutype", zhifutype);    	
-    	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
+    	BillEnable(0);    	   
+    	//延时
+	    new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {   
+            	Intent intent = null;// 创建Intent对象                
+            	intent = new Intent(BusZhiAmount.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+//            	intent.putExtra("out_trade_no", out_trade_no);
+//            	intent.putExtra("proID", proID);
+//            	intent.putExtra("productID", productID);
+//            	intent.putExtra("proType", proType);
+//            	intent.putExtra("cabID", cabID);
+//            	intent.putExtra("huoID", huoID);
+//            	intent.putExtra("prosales", prosales);
+//            	intent.putExtra("count", count);
+//            	intent.putExtra("reamin_amount", reamin_amount);
+//            	intent.putExtra("zhifutype", zhifutype);
+            	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
+            }
+
+		}, 2500);    	
     }
     //接收BusHuo返回信息
   	@Override
@@ -406,8 +416,30 @@ public class BusZhiAmount  extends Activity
 				//2.更新投币金额
   				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款money="+money,"log.txt");
   				txtbuszhiamountbillAmount.setText(String.valueOf(money));
-  				//没剩下余额了，不退币
-  				if(money==0)
+  				  				
+  				//还有余额退币
+  				if(money>0)
+  				{
+  					dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
+  					new Handler().postDelayed(new Runnable() 
+					{
+			            @Override
+			            public void run() 
+			            {            	
+			            	//退币
+		  	  	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+		  					Intent intent=new Intent();
+		  			    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+		  					intent.putExtra("bill", 1);	
+		  					intent.putExtra("coin", 1);	
+		  					intent.setAction("android.intent.action.comsend");//action与接收器相同
+		  					comBroadreceiver.sendBroadcast(intent);
+			            }
+
+					}, 500);  					
+				}
+  			    //没剩下余额了，不退币
+  				else
   				{  					
 			    	OrderDetail.addLog(BusZhiAmount.this);			    	
 			    	//打开纸币硬币器					
@@ -421,20 +453,6 @@ public class BusZhiAmount  extends Activity
 
 					}, 500);
   				}
-  				//退币
-  				else 
-  				{
-  					dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
-  					
-  					//退币
-  	  	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
-  					Intent intent=new Intent();
-  			    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
-  					intent.putExtra("bill", 1);	
-  					intent.putExtra("coin", 1);	
-  					intent.setAction("android.intent.action.comsend");//action与接收器相同
-  					comBroadreceiver.sendBroadcast(intent);
-				}  				
   			}			
   		}
   	}
