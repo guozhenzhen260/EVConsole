@@ -29,7 +29,7 @@ public class OrderDetail
 	private static String proType = "";//1代表通过商品ID出货,2代表通过货道出货	
 	//订单支付表 
 	private static String ordereID = "";// 订单ID[pk]
-	private static int payType = 0;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+	private static int payType = 0;// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,5自提密码
 	private static int payStatus = 0;// 订单状态0出货成功，1出货失败，2支付失败，3未支付
 	private static int RealStatus = 0;// 退款状态，0不显示未发生退款动作，1退款完成，2部分退款，3退款失败
 	private static float smallNote = 0;// 纸币金额

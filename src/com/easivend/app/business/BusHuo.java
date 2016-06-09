@@ -216,9 +216,13 @@ public class BusHuo extends Activity
 					status=Set2.get("result");//出货结果
 					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<BusHuo出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","com.txt");	
 					dialog.dismiss();
-					//1.更新出货结果
-					//扣除存货余量
-					chuhuoupdate(cabinetvar,huodaoNo);
+					//不是自提密码的，才扣除存货余量
+					if(OrderDetail.getPayType()!=5)
+					{
+						//1.更新出货结果
+						//扣除存货余量
+						chuhuoupdate(cabinetvar,huodaoNo);
+					}
 					//出货成功
 					if(status==1)
 					{
