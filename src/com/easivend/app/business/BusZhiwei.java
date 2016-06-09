@@ -59,7 +59,7 @@ public class BusZhiwei extends Activity
     private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Weixinghttp weixinghttp=null;
-    private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
+    private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +144,7 @@ public class BusZhiwei extends Activity
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						txtbuszhiweirst.setText("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
+						iszhiwei=2;
 						timer.shutdown(); 
 						tochuhuo();
 						break;
@@ -329,7 +330,7 @@ public class BusZhiwei extends Activity
 	//结束界面
 	private void finishActivity()
 	{	
-		if(iszhiwei==1)
+		if(iszhiwei>0)
 			deletezhiwei();
 		else 
 		{

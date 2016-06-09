@@ -57,7 +57,7 @@ public class BusZhier extends Activity
     private Handler mainhand=null,childhand=null;   
     private String out_trade_no=null;
     Zhifubaohttp zhifubaohttp=null;
-    private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码
+    private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +142,7 @@ public class BusZhier extends Activity
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						txtbuszhierrst.setText("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
+						iszhier=2;
 						timer.shutdown(); 
 						tochuhuo();
 						break;
@@ -328,7 +329,7 @@ public class BusZhier extends Activity
 	private void finishActivity()
 	{
 		//如果需要撤销，必须作撤销操作
-		if(iszhier==1)
+		if(iszhier>0)
 			deletezhier();
 		else 
 		{

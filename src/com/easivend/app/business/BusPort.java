@@ -130,7 +130,7 @@ BushuoFragInteraction
     private ExecutorService zhifubaothread=null;
     private Handler zhifubaomainhand=null,zhifubaochildhand=null;
     Zhifubaohttp zhifubaohttp=null;
-    private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码
+    private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
     //=================
   	//==微信支付页面相关
@@ -139,7 +139,7 @@ BushuoFragInteraction
     private ExecutorService weixingthread=null;
     private Handler weixingmainhand=null,weixingchildhand=null;   
     Weixinghttp weixinghttp=null;
-    private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
+    private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次投币已经结束
     //=================
 	//==出货页面相关
 	//=================
@@ -403,6 +403,7 @@ BushuoFragInteraction
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						listterner.BusportTsxx("交易结果:交易成功");
+						iszhier=2;
 //						//reamin_amount=String.valueOf(amount);
 						tochuhuo();
 						break;
@@ -461,6 +462,7 @@ BushuoFragInteraction
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						listterner.BusportTsxx("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
+						iszhiwei=2;
 						tochuhuo();
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -688,7 +690,7 @@ BushuoFragInteraction
     @Override
 	public void BuszhierFinish() {
 		// TODO Auto-generated method stub
-    	if(iszhier==1)
+    	if(iszhier>0)
 			deletezhier();
 		else 
 		{
@@ -814,7 +816,7 @@ BushuoFragInteraction
   	@Override
 	public void BuszhiweiFinish() {
 		// TODO Auto-generated method stub
-  		if(iszhiwei==1)
+  		if(iszhiwei>0)
 			deletezhiwei();
 		else 
 		{
