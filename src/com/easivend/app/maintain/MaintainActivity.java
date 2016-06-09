@@ -191,7 +191,8 @@ public class MaintainActivity extends Activity
 	        ToolClass.setCom(com);
 	        ToolClass.setBentcom(bentcom);
 	        ToolClass.setColumncom(columncom);		        
-
+	        //2.作文件备份
+  	        ToolClass.ResetConfigFile();  
 		}
 		else
 		{

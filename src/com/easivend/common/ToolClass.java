@@ -1163,6 +1163,26 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+	  	         //文件损坏,则从备份那边覆盖一份过来
+	  	         if(str==null)
+	  	         {
+	  	        	 //恢复文件
+	  	        	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
+	  	        	String copyFile = copyDir+"easivendconfig.txt";
+	  	  		    ToolClass.Log(ToolClass.INFO,"EV_JNI"," 文件"+sDir+"损坏,恢复备份="+copyFile,"log.txt");
+	  	  		    copyFile(copyFile,sDir);
+	  	  		    
+	  	  		    //重新读入文件信息
+	  	  		    //打开文件
+		    		  FileInputStream input2 = new FileInputStream(sDir);
+		    		 //输出信息
+		  	          Scanner scan2=new Scanner(input2);
+		  	          while(scan2.hasNext())
+		  	          {
+		  	           	str=scan2.next()+"\n";
+		  	          }
+		  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config恢复备份="+str,"log.txt");
+	  	         }
 	  	         //将json格式解包
 	  	         list=new HashMap<String,String>();      			
 				JSONObject object=new JSONObject(str);      				
@@ -1269,8 +1289,8 @@ public class ToolClass
 //			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
 //			//Log.i("EV_JNI",perobj.toString());
 //			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
-        	//2.写回到文件中  
-        	             
+        	//2.作文件备份
+  	        ResetConfigFile();             
         } catch (Exception e) {
             e.printStackTrace();
         }        
@@ -1332,7 +1352,8 @@ public class ToolClass
     	String  sDir =null,str=null;
     	
     	    	
-        try {        	  
+        try {      
+        	  //1.从服务器中下载的信息修改配置文件
         	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
         	 
         	  fileName=new File(sDir);
@@ -1458,6 +1479,7 @@ public class ToolClass
   	            writer.close();
 			 }
   	        
+  	         //2.重置支付宝微信账号
   	        //从配置文件获取数据
   			Map<String, String> list=ToolClass.ReadConfigFile(); 
   	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
@@ -1471,11 +1493,29 @@ public class ToolClass
 //			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
 //			//Log.i("EV_JNI",perobj.toString());
 //			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
-        	//2.写回到文件中  
+        	
         	             
         } catch (Exception e) {
             e.printStackTrace();
         }        
+    }
+    
+    //作配置文件备份
+    public static void ResetConfigFile()
+    {
+    	String sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
+    	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
+		File dirName = new File(copyDir);
+		//如果目录不存在，则创建目录
+  		 if (!dirName.exists()) 
+  		 {  
+  			//按照指定的路径创建文件夹  
+  			dirName.mkdirs(); 
+  		 } 
+		String copyFile = copyDir+"easivendconfig.txt";
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+sDir+"选定,copy="+copyFile,"server.txt"); 
+		  
+		copyFile(sDir,copyFile);
     }
     
     /**
