@@ -180,7 +180,7 @@ public class MaintainActivity extends Activity
 		//串口配置和注册相关
 		//================
 		ToolClass.SetDir();	//设置根目录
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[开启程序]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序启动...]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
@@ -190,11 +190,7 @@ public class MaintainActivity extends Activity
 	        columncom = list.get("columncom");
 	        server = list.get("server");//设置服务器路径
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
-	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
-	        if(list.containsKey("isallopen"))//设置是否一直打开程序
-	        {
-	        	isallopen=Integer.parseInt(list.get("isallopen"));		        	
-	        }
+	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
 	        ToolClass.setCom(com);
 	        ToolClass.setBentcom(bentcom);
 	        ToolClass.setColumncom(columncom);		        
@@ -279,7 +275,7 @@ public class MaintainActivity extends Activity
             	    				@Override
             	    				public void onClick(DialogInterface dialog, int which) 
             	    				{
-            	    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[退出本机程序]","log.txt");			
+            	    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序关闭...]","log.txt");			
             	    					// TODO Auto-generated method stub	
             	    					finish();// 关闭当前Activity
             	    				}

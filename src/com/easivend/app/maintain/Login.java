@@ -48,7 +48,7 @@ public class Login extends Activity
     String bentcom =null;
     String columncom =null;
     String server =null,sercom=null,serip=null;
-    int isallopen=0;
+    int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -80,10 +80,6 @@ public class Login extends Activity
 	        	server = list.get("server");
 	        	sercom=server.substring(server.lastIndexOf('/')+1,server.length());
 	        	serip=server.substring(0,server.lastIndexOf('/')+1);
-	        }	        
-	        if(list.containsKey("isallopen"))
-	        {
-	        	isallopen=Integer.parseInt(list.get("isallopen"));
 	        }
         }
         txtlogin.setText(com);
