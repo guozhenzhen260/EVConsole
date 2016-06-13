@@ -37,7 +37,7 @@
    	/> 	
     <Button
         android:id="@+id/btnads1"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_below="@+id/btnadsclass"	       
         android:background="@drawable/button_selector" 
@@ -45,7 +45,7 @@
         android:text="1" />   
     <Button
         android:id="@+id/btnads2"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads1" 
         android:layout_below="@+id/btnadsclass"
@@ -54,7 +54,7 @@
         android:text="2" />
     <Button
         android:id="@+id/btnads3"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads2" 
         android:layout_below="@+id/btnadsclass"
@@ -63,7 +63,7 @@
         android:text="3" />  
    <Button
         android:id="@+id/btnads4"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_below="@+id/btnads1"	       
         android:background="@drawable/button_selector" 
@@ -71,7 +71,7 @@
         android:text="4" />   
    <Button
         android:id="@+id/btnads5"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads4" 
         android:layout_below="@+id/btnads2"
@@ -80,7 +80,7 @@
         android:text="5" />
    <Button
         android:id="@+id/btnads6"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads5" 
         android:layout_below="@+id/btnads3"
@@ -89,7 +89,7 @@
         android:text="6" />
    <Button
         android:id="@+id/btnads7"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_below="@+id/btnads4"	   
         android:background="@drawable/button_selector" 
@@ -97,7 +97,7 @@
         android:text="7" />   
    <Button
         android:id="@+id/btnads8"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads7" 
         android:layout_below="@+id/btnads5"
@@ -106,7 +106,7 @@
         android:text="8" />
    <Button
         android:id="@+id/btnads9"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads8" 
         android:layout_below="@+id/btnads6"
@@ -115,7 +115,7 @@
         android:text="9" />  
    <Button
         android:id="@+id/btnadscancel"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_below="@+id/btnads7"	       
         android:background="@drawable/button_selector" 
@@ -123,7 +123,7 @@
         android:text="退格" />   
    <Button
         android:id="@+id/btnads0"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnadscancel" 
         android:layout_below="@+id/btnads8"
@@ -132,7 +132,7 @@
         android:text="0" />
    <Button
         android:id="@+id/btnadsenter"
-        android:layout_width="310dp"
+        android:layout_width="340dp"
         android:layout_height="90dp"
         android:layout_toRightOf="@+id/btnads0" 
         android:layout_below="@+id/btnads9"

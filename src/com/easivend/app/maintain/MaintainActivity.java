@@ -18,6 +18,9 @@ package com.easivend.app.maintain;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.easivend.dao.vmc_cabinetDAO;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
 import com.easivend.view.COMService;
@@ -36,9 +39,12 @@ import com.example.evconsole.R;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -51,6 +57,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MaintainActivity extends Activity
@@ -173,7 +180,7 @@ public class MaintainActivity extends Activity
 		//串口配置和注册相关
 		//================
 		ToolClass.SetDir();	//设置根目录
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[开启程序]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
@@ -262,7 +269,35 @@ public class MaintainActivity extends Activity
                     startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 7:
-                    finish();// 关闭当前Activity
+                	//创建警告对话框
+                	Dialog alert=new AlertDialog.Builder(MaintainActivity.this)
+                		.setTitle("对话框")//标题
+                		.setMessage("您确定要退出程序吗？")//表示对话框中得内容
+                		.setIcon(R.drawable.ic_launcher)//设置logo
+                		.setPositiveButton("退出", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+                			{				
+            	    				@Override
+            	    				public void onClick(DialogInterface dialog, int which) 
+            	    				{
+            	    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[退出本机程序]","log.txt");			
+            	    					// TODO Auto-generated method stub	
+            	    					finish();// 关闭当前Activity
+            	    				}
+                		      }
+                			)		    		        
+            		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+            		        	{			
+            						@Override
+            						public void onClick(DialogInterface dialog, int which) 
+            						{
+            							// TODO Auto-generated method stub				
+            						}
+            		        	}
+            		        )
+            		        .create();//创建一个对话框
+            		        alert.show();//显示对话框
+                    
+                    break;
                 }
             }
         });

@@ -516,7 +516,7 @@ BushuoFragInteraction
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=退出","log.txt");
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<busland=退出交易页面","log.txt");
 //    	Intent intent = new Intent();
 //    	intent.setClass(BusPort.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
 //        startActivityForResult(intent, PWD_CODE);
