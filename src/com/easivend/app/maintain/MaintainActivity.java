@@ -62,9 +62,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MaintainActivity extends Activity
 {
-	private GridView gvInfo;// 创建GridView对象
-	//跳转页面对话框
-	private ProgressDialog barmaintain= null;
+	private GridView gvInfo;// 创建GridView对象	
 	//进度对话框
 	ProgressDialog dialog= null;
 	// 定义字符串数组，存储系统功能
@@ -161,7 +159,7 @@ public class MaintainActivity extends Activity
             @Override
             public void run() 
             {      
-            	dialog= ProgressDialog.show(MaintainActivity.this,"同步服务器","请稍候...");
+            	dialog= ProgressDialog.show(MaintainActivity.this,"正在同步服务器","请稍候片刻...");
             	ToolClass.ResstartPort(1);
             	ToolClass.ResstartPort(2);
             	ToolClass.ResstartPort(3);
@@ -221,38 +219,31 @@ public class MaintainActivity extends Activity
                 Intent intent = null;// 创建Intent对象
                 switch (arg2) {
                 case 0:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开商品管理","请稍候...");
                 	intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);// 打开GoodsManager
                     break;
                 case 1:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开货道管理","请稍候...");
-                    intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用HuodaoTest窗口初始化Intent
+                	intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用HuodaoTest窗口初始化Intent
                     startActivityForResult(intent,REQUEST_CODE);// 打开HuodaoTest
                     break;
                 case 2:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开参数管理","请稍候...");
                 	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
                     startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
                     break;    
                 case 3:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开订单日志查询","请稍候...");
                 	intent = new Intent(MaintainActivity.this, Order.class);// 使用Accountflag窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);
                     break;                
                 case 4:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开操作日志查询","请稍候...");
                 	intent = new Intent(MaintainActivity.this, LogOpt.class);// 使用Accountflag窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);
                     break;
                 case 5:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开本机配置","请稍候...");
                 	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent
                 	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 6:
-                	barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
-    				//横屏
+                	//横屏
     				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
     				{
     					intent = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
@@ -309,11 +300,9 @@ public class MaintainActivity extends Activity
 		{
 			if(resultCode==MaintainActivity.RESULT_CANCELED)
 			{				
-				barmaintain.dismiss();
-			}	
+							}	
 			else if(resultCode==MaintainActivity.RESULT_OK)
 			{	
-				barmaintain.dismiss();
 				//从配置文件获取数据
 				Map<String, String> list=ToolClass.ReadConfigFile();
 				if(list!=null)
@@ -356,7 +345,6 @@ public class MaintainActivity extends Activity
 				{
 					issale=true;
 					//签到完成，自动开启售货程序
-					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
 					Intent intbus;
 					//横屏
 					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
@@ -379,7 +367,6 @@ public class MaintainActivity extends Activity
 				{
 					issale=true;
 					//签到完成，自动开启售货程序
-					barmaintain= ProgressDialog.show(MaintainActivity.this,"打开交易页面","请稍候...");
 					Intent intbus;
 					//横屏
 					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)

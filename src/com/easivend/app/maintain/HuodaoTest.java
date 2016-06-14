@@ -100,6 +100,7 @@ public class HuodaoTest extends TabActivity
 	private int huonum=0;//本柜货道数量
 	private int huonno=0;//循环出货第几个格子了
 	private boolean autohuonno=false;//true表示在进行循环出货
+	private boolean chuhuopt=false;//true表示正在出货操作
 	private int autohuonum=0;//循环出到第几次了
 	//循环测试结果
 	Map<String, Integer> huoalltest= new LinkedHashMap<String,Integer>();
@@ -202,15 +203,23 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
-				//只有有柜号的时候，才请求加载柜内货道信息
-				if(cabinetID!=null)
+				if(chuhuopt)
 				{
-					barhuomanager.setVisibility(View.VISIBLE); 
-					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
-					spinhuotestCab.setSelection(arg2);
-					queryhuodao();					
-				}				
+					// 弹出信息提示
+					ToolClass.failToast("请在[本次出货完成]之后，再选择其他货柜！");
+				}
+				else
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
+					//只有有柜号的时候，才请求加载柜内货道信息
+					if(cabinetID!=null)
+					{
+						barhuomanager.setVisibility(View.VISIBLE); 
+						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+						spinhuotestCab.setSelection(arg2);
+						queryhuodao();					
+					}	
+				}
 			}
 
 			@Override
@@ -218,6 +227,7 @@ public class HuodaoTest extends TabActivity
 				// TODO Auto-generated method stub
 				
 			}
+			
 		});
     	//修改或添加货道对应商品
     	gvhuodao.setOnItemClickListener(new OnItemClickListener() {
@@ -377,14 +387,22 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
-				//只有有柜号的时候，才请求加载柜内货道信息
-				if(cabinetID!=null)
+				if(chuhuopt)
 				{
-					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
-					spinhuosetCab.setSelection(arg2);
-					queryhuodao();	
-				}				
+					// 弹出信息提示
+					ToolClass.failToast("请在[本次出货完成]之后，再选择其他货柜！");
+				}
+				else
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
+					//只有有柜号的时候，才请求加载柜内货道信息
+					if(cabinetID!=null)
+					{
+						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+						spinhuosetCab.setSelection(arg2);
+						queryhuodao();	
+					}	
+				}
 			}
 
 			@Override
@@ -1401,23 +1419,31 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
-				//只有有柜号的时候，才请求加载柜内货道信息
-				if(cabinetID!=null)
+				if(chuhuopt)
 				{
-					cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
-					cabinetTypepeivar=cabinetType[arg2]; 
-					//弹簧货道
-					if(cabinetTypepeivar==1)
+					// 弹出信息提示
+					ToolClass.failToast("请在[本次出货完成]之后，再选择其他货柜！");
+				}
+				else
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
+					//只有有柜号的时候，才请求加载柜内货道信息
+					if(cabinetID!=null)
 					{
-						gethuofile();
+						cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetTypepeivar=cabinetType[arg2]; 
+						//弹簧货道
+						if(cabinetTypepeivar==1)
+						{
+							gethuofile();
+						}
+						//升降机货道
+						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+						{
+							getelevatorfile();
+						}
 					}
-					//升降机货道
-					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
-					{
-						getelevatorfile();
-					}
-				}				
+				}
 			}
 
 			@Override
@@ -1548,6 +1574,7 @@ public class HuodaoTest extends TabActivity
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetsetvar)
 		    	+" column="+opt		    	
 		    	,"log.txt");
+				chuhuopt=true;
 				edtcolumn.setText(String.valueOf(opt));
 				//4.发送指令广播给COMService
 				if(autochu)
@@ -1584,6 +1611,7 @@ public class HuodaoTest extends TabActivity
 		@Override
 		public void onReceive(Context context, Intent intent) 
 		{
+			chuhuopt=false;
 			// TODO Auto-generated method stub
 			Bundle bundle=intent.getExtras();
 			int EVWhat=bundle.getInt("EVWhat");
@@ -1767,7 +1795,7 @@ public class HuodaoTest extends TabActivity
 	
 	private void finishActivity()
 	{
-		if(autohuonno)
+		if(chuhuopt)
 		{
 			// 弹出信息提示
 			ToolClass.failToast("请在[本次出货完成]之后，再退出页面！");
