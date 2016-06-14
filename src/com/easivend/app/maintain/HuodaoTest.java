@@ -1499,45 +1499,54 @@ public class HuodaoTest extends TabActivity
 		btnhuosetautohuo.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 				    @Override
 				    public void onClick(View arg0) {
-				    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<hello","log.txt");	
-				    	//创建警告对话框
-				    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
-				    		.setTitle("对话框")//标题
-				    		.setMessage("您确定要自动配置货道吗？")//表示对话框中得内容
-				    		.setIcon(R.drawable.ic_launcher)//设置logo
-				    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
-				    			{				
-					    				@Override
-					    				public void onClick(DialogInterface dialog, int which) 
-					    				{
-					    					// TODO Auto-generated method stub	
-					    					HuodaoTest.this.dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
-									    	autochu=true;
-									    	//弹簧货道
-									    	if(cabinetTypepeivar==1)
-									    	{
-									    		autophysic=57;
-									    	}
-									    	//升降机货道
-									    	else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
-									    	{
-									    		autophysic=11;
-									    	}
-									    	comsend(COMService.EV_CHUHUOCHILD,autophysic);
-					    				}
-				    		      }
-				    			)		    		        
-						        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-						        	{			
-										@Override
-										public void onClick(DialogInterface dialog, int which) 
-										{
-											// TODO Auto-generated method stub				
-										}
-						        	}
-						        )
-						        .create();//创建一个对话框
-						        alert.show();//显示对话框				    	
+				    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<hello","log.txt");
+				    	//弹簧货道
+				    	if(cabinetTypepeivar==1)
+				    	{
+					    	//创建警告对话框
+					    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+					    		.setTitle("对话框")//标题
+					    		.setMessage("您确定要自动配置货道吗？")//表示对话框中得内容
+					    		.setIcon(R.drawable.ic_launcher)//设置logo
+					    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+					    			{				
+						    				@Override
+						    				public void onClick(DialogInterface dialog, int which) 
+						    				{
+						    					// TODO Auto-generated method stub	
+						    					HuodaoTest.this.dialog= ProgressDialog.show(HuodaoTest.this,"自动配置货道","请稍候...");
+										    	autochu=true;
+										    	//弹簧货道
+										    	if(cabinetTypepeivar==1)
+										    	{
+										    		autophysic=57;
+										    	}
+										    	//升降机货道
+										    	else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+										    	{
+										    		autophysic=11;
+										    	}
+										    	comsend(COMService.EV_CHUHUOCHILD,autophysic);
+						    				}
+					    		      }
+					    			)		    		        
+							        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+							        	{			
+											@Override
+											public void onClick(DialogInterface dialog, int which) 
+											{
+												// TODO Auto-generated method stub				
+											}
+							        	}
+							        )
+							        .create();//创建一个对话框
+							        alert.show();//显示对话框	
+				    	}
+				    	else
+				    	{
+				    		// 弹出信息提示
+							ToolClass.failToast("本功能只适用于弹簧货道！");
+				    	}
 				    }
 				});
 		btnhuosetclose = (Button) findViewById(R.id.btnhuosetclose);
