@@ -85,7 +85,7 @@ public class BusgoodsSelect extends Activity
 		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
 		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
 	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
-	    if(tb_vmc_product.getProductDesc().isEmpty()!=true)
+	    if(tb_vmc_product.getProductDesc().isEmpty()!=true) 
 	    {
 	    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
 		    WebSettings settings = webproductDesc.getSettings();
