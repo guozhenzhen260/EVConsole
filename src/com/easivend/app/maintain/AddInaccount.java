@@ -86,6 +86,7 @@ public class AddInaccount extends TabActivity
 	private Button btnhopperquery=null,btnhopperpay=null,btnhopperpaymoney=null,btnhopperset=null,btnhopperexit=null,
 			btnhopperpaynum=null;
 	private int devopt=0;//操作类型	
+	private boolean cashopt=false;//true表示有打开纸币器或者硬币器
 	//COM服务相关
 	LocalBroadcastManager comBroadreceiver;
 	COMReceiver comreceiver;
@@ -251,7 +252,7 @@ public class AddInaccount extends TabActivity
 		btnbillexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		        finish();
+		    	finishActivity();
 		    }
 		});
 		//===============
@@ -359,7 +360,7 @@ public class AddInaccount extends TabActivity
 	  	btncoinexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		        finish();
+		    	finishActivity();
 		    }
 		});
 	    //===============
@@ -456,7 +457,7 @@ public class AddInaccount extends TabActivity
 	  	btnhopperexit.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		        finish();
+		    	finishActivity();
 		    }
 		});
 	}
@@ -494,10 +495,12 @@ public class AddInaccount extends TabActivity
 						    	intent2.putExtra("EVWhat", COMService.EV_MDB_B_INFO);	
 								intent2.setAction("android.intent.action.comsend");//action与接收器相同
 								comBroadreceiver.sendBroadcast(intent2);
+								cashopt=true;
 							}
 							else
 							{
 								ToolClass.setBill_err(2);
+								cashopt=false;
 							}
 						}
 						
@@ -514,10 +517,12 @@ public class AddInaccount extends TabActivity
 						    	intent3.putExtra("EVWhat", COMService.EV_MDB_C_INFO);	
 								intent3.setAction("android.intent.action.comsend");//action与接收器相同
 								comBroadreceiver.sendBroadcast(intent3);
+								cashopt=true;
 							}
 							else
 							{
 								ToolClass.setCoin_err(2);
+								cashopt=false;
 							}
 						}
 						break;
@@ -762,7 +767,21 @@ public class AddInaccount extends TabActivity
 					case COMService.EV_MDB_HP_PAYOUT://找零
 						txthopperpaynum.setText(String.valueOf((Integer)Set.get("changed")));
 						
-						break;	
+						break;
+					case COMService.EV_MDB_COST://扣钱
+						//如果已经打开了现金设备，则关闭它
+						if(cashopt)
+						{
+							Intent intent5=new Intent();
+					    	intent5.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+							intent5.putExtra("bill", 1);	
+							intent5.putExtra("coin", 1);	
+							intent5.putExtra("opt", 0);	
+							intent5.setAction("android.intent.action.comsend");//action与接收器相同
+							comBroadreceiver.sendBroadcast(intent5);
+						}
+						finish();
+						break;
 					default:break;	
 				}
 				break;			
@@ -857,8 +876,9 @@ public class AddInaccount extends TabActivity
 		        .create();//创建一个对话框
 		        alert.show();//显示对话框
 	}
-	@Override
-	protected void onDestroy() {
+	//关闭页面
+	private void finishActivity()
+	{
 		//扣钱
 	    //EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend((float)amount));
 		if(amount>0)
@@ -870,6 +890,24 @@ public class AddInaccount extends TabActivity
 			comBroadreceiver.sendBroadcast(intent);
 			devopt=COMService.EV_MDB_COST;
 		}
+		else
+		{
+			//如果已经打开了现金设备，则关闭它
+			if(cashopt)
+			{
+				Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+				intent.putExtra("bill", 1);	
+				intent.putExtra("coin", 1);	
+				intent.putExtra("opt", 0);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+			}
+			finish();
+		}
+	}
+	@Override
+	protected void onDestroy() {		
 		//=============
   		//COM服务相关
   		//=============
