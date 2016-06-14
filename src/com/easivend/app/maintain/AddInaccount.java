@@ -20,6 +20,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.easivend.view.COMService;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -87,6 +92,9 @@ public class AddInaccount extends TabActivity
 			btnhopperpaynum=null;
 	private int devopt=0;//操作类型	
 	private boolean cashopt=false;//true表示有打开纸币器或者硬币器
+	private boolean ercheck=false;//true正在退币操作中，请稍后。false没有退币的线程操作
+	private int queryLen = 0; //查询时间
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	//COM服务相关
 	LocalBroadcastManager comBroadreceiver;
 	COMReceiver comreceiver;
@@ -113,6 +121,7 @@ public class AddInaccount extends TabActivity
     	myTabpay.setIndicator("Hopper找零器测试");
     	myTabpay.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabpay); 
+    	timer.scheduleWithFixedDelay(task, 1, 1, TimeUnit.SECONDS);       // timeTask 
     	
     	//4.注册接收器
 		comBroadreceiver = LocalBroadcastManager.getInstance(this);
@@ -157,6 +166,7 @@ public class AddInaccount extends TabActivity
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
 				devopt=COMService.EV_MDB_PAYOUT;
+				ercheck=true;
 		    }
 		});
 		btnbillon = (Button) findViewById(R.id.btnbillon);
@@ -345,6 +355,7 @@ public class AddInaccount extends TabActivity
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
 				devopt=COMService.EV_MDB_PAYOUT;
+				ercheck=true;
 		    }
 		});
 	  	btncoinset = (Button) findViewById(R.id.btncoinset);
@@ -412,6 +423,7 @@ public class AddInaccount extends TabActivity
 		    	intent.setAction("android.intent.action.comsend");//action与接收器相同
 		    	comBroadreceiver.sendBroadcast(intent);
 		    	devopt=COMService.EV_MDB_PAYOUT;
+		    	ercheck=true;
 		    }
 		});
 	  	btnhopperpaymoney = (Button) findViewById(R.id.btnhopperpaymoney);
@@ -428,6 +440,7 @@ public class AddInaccount extends TabActivity
 		    	intent.setAction("android.intent.action.comsend");//action与接收器相同
 		    	comBroadreceiver.sendBroadcast(intent);
 		    	devopt=COMService.EV_MDB_PAYOUT;
+		    	ercheck=true;
 		    }
 		});
 	  	btnhopperpaynum = (Button) findViewById(R.id.btnhopperpaynum);
@@ -442,6 +455,7 @@ public class AddInaccount extends TabActivity
 		    	intent.setAction("android.intent.action.comsend");//action与接收器相同
 		    	comBroadreceiver.sendBroadcast(intent);
 		    	devopt=COMService.EV_MDB_HP_PAYOUT;
+		    	ercheck=true;
 		    }
 		});
 	  	btnhopperset = (Button) findViewById(R.id.btnhopperset);
@@ -461,6 +475,39 @@ public class AddInaccount extends TabActivity
 		    }
 		});
 	}
+	
+	//调用倒计时定时器
+	TimerTask task = new TimerTask() { 
+        @Override 
+        public void run() { 
+  
+            runOnUiThread(new Runnable() {      // UI thread 
+                @Override 
+                public void run() { 
+                    //发送查询交易指令
+                    if(cashopt)
+                    {
+                    	//没有在退币中，才可以查询
+                    	if(ercheck==false)
+                    	{
+		                    queryLen++;
+		                    if(queryLen>=5)
+		                    {
+		                    	queryLen=0;
+		                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+		        		    	Intent intent2=new Intent();
+		        		    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+		        				intent2.setAction("android.intent.action.comsend");//action与接收器相同
+		        				comBroadreceiver.sendBroadcast(intent2);
+		        				devopt=COMService.EV_MDB_HEART;//Heart操作
+		                    }
+                    	}
+                    }                    
+                } 
+            }); 
+        } 
+    };
+	
 	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
 	public class COMReceiver extends BroadcastReceiver 
 	{
@@ -762,11 +809,12 @@ public class AddInaccount extends TabActivity
 						txtpaymoney.setText(String.valueOf(money));	
 						money=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));					  	
 						txtcoinpaymoney.setText(String.valueOf(money));	
-						txthopperpaymoney.setText(String.valueOf(money));	
+						txthopperpaymoney.setText(String.valueOf(money));
+						ercheck=false;
 						break;
 					case COMService.EV_MDB_HP_PAYOUT://找零
 						txthopperpaynum.setText(String.valueOf((Integer)Set.get("changed")));
-						
+						ercheck=false;
 						break;
 					case COMService.EV_MDB_COST://扣钱
 						//如果已经打开了现金设备，则关闭它
