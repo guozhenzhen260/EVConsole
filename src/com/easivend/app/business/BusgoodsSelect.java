@@ -87,6 +87,7 @@ public class BusgoodsSelect extends Activity
 	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
 	    if(tb_vmc_product.getProductDesc().isEmpty()!=true)
 	    {
+	    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÉÌÆ·Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
 		    WebSettings settings = webproductDesc.getSettings();
 		    settings.setSupportZoom(true);
 		    settings.setTextSize(WebSettings.TextSize.LARGEST);

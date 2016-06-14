@@ -100,6 +100,7 @@ public class GoodsProSet extends Activity
 			    }
 		    }
 		    //得到商品描述
+		    //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_inaccount.getProductDesc().toString(),"log.txt");
 		    WebSettings settings = webproductDesc.getSettings();
 		    settings.setSupportZoom(true);
 		    settings.setTextSize(WebSettings.TextSize.LARGEST);
