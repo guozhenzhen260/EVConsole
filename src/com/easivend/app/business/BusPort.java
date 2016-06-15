@@ -1309,6 +1309,7 @@ BushuoFragInteraction
 				}, 1500);	           
 				break;	
 			case BUSHUO://³ö»õÒ³Ãæ	
+				recLen=10*60;
 				isbus=false;
 				if (bushuoFragment == null) {
 					bushuoFragment = new BushuoFragment();
