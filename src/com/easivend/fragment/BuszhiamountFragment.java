@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BuszhiamountFragment extends Fragment 
@@ -21,6 +22,7 @@ public class BuszhiamountFragment extends Fragment
 	TextView txtbuszhiamountcount=null,txtbuszhiamountAmount=null,txtbuszhiamountbillAmount=null,txtbuszhiamounttime=null,
 			txtbuszhiamounttsxx=null;
 	ImageButton imgbtnbuszhiamountqxzf=null,imgbtnbuszhiamountqtzf=null;
+	ImageView imgbtnbusgoodsback=null;
 	float amount=0;//商品需要支付金额	 
 //	private String proID = null;
 //	private String productID = null;
@@ -92,6 +94,13 @@ public class BuszhiamountFragment extends Fragment
 		txtbuszhiamounttsxx = (TextView) view.findViewById(R.id.txtbuszhiamounttsxx);
 		imgbtnbuszhiamountqxzf = (ImageButton) view.findViewById(R.id.imgbtnbuszhiamountqxzf);
 		imgbtnbuszhiamountqxzf.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {		    	
+		    	listterner.BuszhiamountFinish();//步骤二、fragment向activity发送回调信息
+		    }
+		});
+		this.imgbtnbusgoodsback=(ImageView)view.findViewById(R.id.imgbtnbusgoodsback);
+		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {		    	
 		    	listterner.BuszhiamountFinish();//步骤二、fragment向activity发送回调信息
