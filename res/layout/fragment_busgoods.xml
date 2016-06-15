@@ -2,21 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >    
-    <Gallery
+    <GridView
 	    android:id="@+id/gvbusgoodsProduct"
-	    android:layout_width="fill_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:gravity="center"
-		android:spacing="5px"
-		android:unselectedAlpha="0.5"		
+	    android:layout_alignParentTop="true"
+	    android:layout_above="@+id/imgbtnbusgoodsback"
+	    android:columnWidth="335dp"
+	    android:gravity="center"		    
+	    android:numColumns="auto_fit"
+	    android:stretchMode="spacingWidthUniform"
+	    android:fastScrollEnabled="true"		
 	     />
-    		         
-    <ImageButton
+    <ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgback" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgnext" />       	         
+    <ImageView
 	       android:id="@+id/imgbtnbusgoodsback"
 	       android:layout_alignParentBottom="true"
-	       android:layout_alignParentRight="true"
-	       android:layout_width="140dp"
-	       android:layout_height="140dp"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
 	       android:src="@drawable/busfinish" />
 
 </RelativeLayout>

@@ -94,7 +94,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         viewHolder.proID.setText(pictures.get(arg0).getProID());// 设置图像ID
         viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
         viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
-        viewHolder.prosales.setText("现价:"+pictures.get(arg0).getProsales());// 设置现价
+        viewHolder.prosales.setText("零售价:"+pictures.get(arg0).getProsales());// 设置现价
         //显示商品数量
 		if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
         {
@@ -102,7 +102,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         	viewHolder.proID.setTextColor(android.graphics.Color.BLACK);
         	viewHolder.count.setTextColor(android.graphics.Color.BLACK);
         	viewHolder.promarket.setTextColor(android.graphics.Color.BLACK);
-        	viewHolder.prosales.setTextColor(android.graphics.Color.BLACK);		        	
+        	viewHolder.prosales.setTextColor(android.graphics.Color.RED);		        	
         }
         else
         {
