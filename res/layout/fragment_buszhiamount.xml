@@ -108,14 +108,14 @@
 	       android:layout_alignParentLeft="true"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
-	       android:src="@drawable/imgback" />	
+	       android:src="@drawable/zhifuback" />	
 	<ImageView
 	       android:id="@+id/imgnext"
 	       android:layout_alignParentBottom="true"
 	       android:layout_toRightOf="@+id/imgback"  
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
-	       android:src="@drawable/imgnext" />       	         
+	       android:src="@drawable/zhifunext" />       	         
     <ImageView
 	       android:id="@+id/imgbtnbusgoodsback"
 	       android:layout_alignParentBottom="true"

@@ -84,27 +84,27 @@
    	/>
 	<ImageView
 	    android:id="@+id/ivbuszhier"
-	    android:layout_width="230dp"
-        android:layout_height="230dp"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/imgzflc"	
-        android:layout_marginTop="135dp"
-        android:layout_marginLeft="400dp"
-        android:src="@drawable/wutupian"
+        android:layout_marginTop="137dp"
+        android:layout_marginLeft="420dp"
+        android:src="@drawable/zhierwait"
         />
 	<ImageView
-       android:id="@+id/imgback"
-       android:layout_alignParentBottom="true"
-       android:layout_alignParentLeft="true"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:src="@drawable/imgback" />	
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifuback" />	
 	<ImageView
-       android:id="@+id/imgnext"
-       android:layout_alignParentBottom="true"
-       android:layout_toRightOf="@+id/imgback"  
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:src="@drawable/imgnext" />       	         
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifunext" />        	         
     <ImageView
        android:id="@+id/imgbtnbusgoodsback"
        android:layout_alignParentBottom="true"

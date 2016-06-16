@@ -44,6 +44,6 @@
         android:layout_centerHorizontal="true"
         android:textSize="35sp"
         android:textColor="#FF0000"
-        android:text="第0/0页" />
+        android:text="0/0" />
 
 </RelativeLayout>

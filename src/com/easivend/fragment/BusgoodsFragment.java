@@ -192,7 +192,7 @@ public class BusgoodsFragment extends Fragment
     	int index=pagein*6;
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<count="+count+",page="+page+",pageindex="+pagein+"index="+index+"max="+max,"log.txt");
     	StringBuilder info=new StringBuilder();
-    	info.append("ตฺ").append(pagein+1).append("/").append(page).append("าณ");    	
+    	info.append(pagein+1).append("/").append(page);    	
     	txtpage.setText(info);
     	pageproID=new String[max-index];
     	pageproductID=new String[max-index];
