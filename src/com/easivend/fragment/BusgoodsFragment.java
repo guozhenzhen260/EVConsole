@@ -123,6 +123,7 @@ public class BusgoodsFragment extends Fragment
     	procount=productAdapter.getProcount();
     	count=proID.length;
         page=(count%6>0)?(count/6)+1:(count/6);
+        pageindex=0;
         updategrid(pageindex);
     	
         imgback.setOnClickListener(new OnClickListener() {
@@ -147,8 +148,7 @@ public class BusgoodsFragment extends Fragment
 		});
 		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
-		    public void onClick(View arg0) {
-		    	pageindex=0;
+		    public void onClick(View arg0) {		    	
 		    	listterner.BusgoodsFinish();//步骤二、fragment向activity发送回调信息
 		    }
 		});
