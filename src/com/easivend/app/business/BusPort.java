@@ -416,7 +416,7 @@ BushuoFragInteraction
 					case Zhifubaohttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息						
-						listterner.BusportTsxx("交易结果:"+msg.obj.toString());
+						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
 						break;	
 				}				
 			}
@@ -474,7 +474,7 @@ BushuoFragInteraction
 					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息
-						listterner.BusportTsxx("交易结果:"+msg.obj.toString());
+						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
 						break;		
 				}				
 			}

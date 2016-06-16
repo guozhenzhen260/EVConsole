@@ -28,6 +28,7 @@ public class BuszhierFragment extends Fragment
 	private int recLen = 180; 
 	private int queryLen = 0; 
     private TextView txtView; 
+    ImageView imgbtnbusgoodsback=null;
 //  Timer timer = new Timer(); 
 //	private String proID = null;
 //	private String productID = null;
@@ -106,6 +107,13 @@ public class BuszhierFragment extends Fragment
 		imgbtnbuszhierqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {	
+		    	listterner.BuszhierFinish();//步骤二、fragment向activity发送回调信息
+		    }
+		});
+		this.imgbtnbusgoodsback=(ImageView)view.findViewById(R.id.imgbtnbusgoodsback);
+		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {		    	
 		    	listterner.BuszhierFinish();//步骤二、fragment向activity发送回调信息
 		    }
 		});
