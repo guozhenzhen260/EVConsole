@@ -20,6 +20,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class BusgoodsFragment extends Fragment
 {
@@ -28,6 +29,7 @@ public class BusgoodsFragment extends Fragment
 	GridView gvbusgoodsProduct=null;
 	String proclassID=null;
 	ImageView imgbtnbusgoodsback=null,imgback=null,imgnext=null;
+	TextView txtpage=null;
 	private String[] proID = null,pageproID=null;
 	private String[] productID = null,pageproductID = null;
 	private String[] productName = null,pageproductName = null;
@@ -94,6 +96,7 @@ public class BusgoodsFragment extends Fragment
 		this.imgbtnbusgoodsback=(ImageView)view.findViewById(R.id.imgbtnbusgoodsback);
 		this.imgback=(ImageView)view.findViewById(R.id.imgback);
 		this.imgnext=(ImageView)view.findViewById(R.id.imgnext);
+		this.txtpage=(TextView)view.findViewById(R.id.txtpage);
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proclassID="+proclassID,"log.txt");
 		//如果存在商品分类id
 		if((proclassID!=null)&&(proclassID.isEmpty()!=true))
@@ -188,6 +191,9 @@ public class BusgoodsFragment extends Fragment
     	int max=((pagein*6+6)>count)?count:(pagein*6+6);
     	int index=pagein*6;
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<count="+count+",page="+page+",pageindex="+pagein+"index="+index+"max="+max,"log.txt");
+    	StringBuilder info=new StringBuilder();
+    	info.append("第").append(pagein+1).append("/").append(page).append("页");    	
+    	txtpage.setText(info);
     	pageproID=new String[max-index];
     	pageproductID=new String[max-index];
     	pageproductName=new String[max-index];
