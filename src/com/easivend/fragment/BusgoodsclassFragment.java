@@ -19,11 +19,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 
 public class BusgoodsclassFragment extends Fragment 
 {
 	GridView gvbusgoodsclass=null;
-	ImageButton imgbtnbusgoodsclassback=null;
+	ImageView imgbtnbusgoodsback=null;
 	private Context context;
 	
 	//=========================
@@ -104,8 +105,8 @@ public class BusgoodsclassFragment extends Fragment
                 }
             }
         });
-	    imgbtnbusgoodsclassback=(ImageButton)view.findViewById(R.id.imgbtnbusgoodsclassback);
-	    imgbtnbusgoodsclassback.setOnClickListener(new OnClickListener() {
+	    imgbtnbusgoodsback=(ImageView)view.findViewById(R.id.imgbtnbusgoodsback);
+	    imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	listterner.BusgoodsclassFinish();//步骤二、fragment向activity发送回调信息

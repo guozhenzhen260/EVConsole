@@ -80,7 +80,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
             viewHolder = new ProViewHolder();// 初始化ProViewHolder对象
             viewHolder.proID = (TextView) arg1.findViewById(R.id.proID);// 设置图像标题
             viewHolder.image = (ImageView) arg1.findViewById(R.id.proImage);// 设置图像的二进制值
-            viewHolder.promarket = (TextView) arg1.findViewById(R.id.promarket);// 设置图像标题
+            //viewHolder.promarket = (TextView) arg1.findViewById(R.id.promarket);// 设置图像标题
             viewHolder.prosales = (TextView) arg1.findViewById(R.id.prosales);// 设置图像标题
             viewHolder.count = (TextView) arg1.findViewById(R.id.count);// 设置剩余数量
             
@@ -92,8 +92,8 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         }
         //标识作为唯一id,用来比对和查询        
         viewHolder.proID.setText(pictures.get(arg0).getProID());// 设置图像ID
-        viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
-        viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
+        //viewHolder.promarket.setText("原价:"+pictures.get(arg0).getPromarket());// 设置原价
+        //viewHolder.promarket.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //删除线
         viewHolder.prosales.setText("零售价:"+pictures.get(arg0).getProsales());// 设置现价
         //显示商品数量
 		if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
@@ -101,7 +101,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         	viewHolder.count.setText("剩余数量:"+pictures.get(arg0).getProcount());// 设置剩余数量
         	viewHolder.proID.setTextColor(android.graphics.Color.BLACK);
         	viewHolder.count.setTextColor(android.graphics.Color.BLACK);
-        	viewHolder.promarket.setTextColor(android.graphics.Color.BLACK);
+        	//viewHolder.promarket.setTextColor(android.graphics.Color.BLACK);
         	viewHolder.prosales.setTextColor(android.graphics.Color.RED);		        	
         }
         else
@@ -109,7 +109,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         	viewHolder.count.setText("剩余数量:已售罄");// 设置剩余数量
         	viewHolder.proID.setTextColor(android.graphics.Color.GRAY);
         	viewHolder.count.setTextColor(android.graphics.Color.GRAY);
-        	viewHolder.promarket.setTextColor(android.graphics.Color.GRAY);
+        	//viewHolder.promarket.setTextColor(android.graphics.Color.GRAY);
         	viewHolder.prosales.setTextColor(android.graphics.Color.GRAY);		        	
         }
         ToolClass.Log(ToolClass.INFO,"EV_JNI","商品:"+pictures.get(arg0).getProID()+",promarket="+pictures.get(arg0).getPromarket()+",prosales="+pictures.get(arg0).getProsales()+",proImage="+pictures.get(arg0).getProImage()+",procount="+pictures.get(arg0).getProcount(),"log.txt");

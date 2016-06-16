@@ -49,8 +49,8 @@ public final class R {
         public static final int busfinish=0x7f020012;
         public static final int button_selector=0x7f020013;
         public static final int buy=0x7f020014;
-        public static final int clr_normal=0x7f020034;
-        public static final int clr_pressed=0x7f020035;
+        public static final int clr_normal=0x7f020035;
+        public static final int clr_pressed=0x7f020036;
         public static final int czjx=0x7f020015;
         public static final int ditu=0x7f020016;
         public static final int exit=0x7f020017;
@@ -73,15 +73,16 @@ public final class R {
         public static final int sysset=0x7f020028;
         public static final int tihuopwd=0x7f020029;
         public static final int weixing=0x7f02002a;
-        public static final int wutupian=0x7f02002b;
-        public static final int ysq=0x7f02002c;
-        public static final int zflc=0x7f02002d;
-        public static final int zhier=0x7f02002e;
-        public static final int zhierfang=0x7f02002f;
-        public static final int zhierwait=0x7f020030;
-        public static final int zhifuback=0x7f020031;
-        public static final int zhifunext=0x7f020032;
-        public static final int zhiweifang=0x7f020033;
+        public static final int wufenleiimg=0x7f02002b;
+        public static final int wutupian=0x7f02002c;
+        public static final int ysq=0x7f02002d;
+        public static final int zflc=0x7f02002e;
+        public static final int zhier=0x7f02002f;
+        public static final int zhierfang=0x7f020030;
+        public static final int zhierwait=0x7f020031;
+        public static final int zhifuback=0x7f020032;
+        public static final int zhifunext=0x7f020033;
+        public static final int zhiweifang=0x7f020034;
     }
     public static final class id {
         public static final int ItemImage=0x7f0900a2;

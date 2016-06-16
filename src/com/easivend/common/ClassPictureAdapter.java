@@ -116,7 +116,7 @@ public class ClassPictureAdapter extends BaseAdapter
         else
         {
         	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无图片pro="+pictures.get(arg0).getProclassName()+","+pictures.get(arg0).getProImage(),"log.txt");
-        	viewHolder.busgoodsclassImage.setImageResource(R.drawable.wutupian);
+        	viewHolder.busgoodsclassImage.setImageResource(R.drawable.wufenleiimg);
 		}
        
         return arg1;// 返回图像标识

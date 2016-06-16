@@ -8,7 +8,7 @@
         android:layout_width="335dp"
         android:layout_height="335dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/wutupian"
+        android:src="@drawable/wufenleiimg"
         android:scaleType="fitXY" />
 
     <TextView
