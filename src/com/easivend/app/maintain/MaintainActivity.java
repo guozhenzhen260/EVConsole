@@ -199,12 +199,11 @@ public class MaintainActivity extends Activity
 		{
 			dialog.dismiss();
 		}
-		
-		//加载微信证书
-		ToolClass.setWeiCertFile();
 		//加载售罄水印图片		
 		Bitmap mark = BitmapFactory.decodeResource(this.getResources(), R.drawable.ysq);  
 		ToolClass.setMark(mark);
+		//加载微信证书
+		ToolClass.setWeiCertFile();		
 		//加载goc
 		ToolClass.setGoc(MaintainActivity.this);	
 		//================

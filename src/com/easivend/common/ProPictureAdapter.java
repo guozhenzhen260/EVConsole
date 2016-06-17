@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,16 +151,23 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
 		        	/*原图片加载已售完水印 */
 		            Bitmap photo = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
 		            if(photo!=null)
-		            {
+		            {		   
+		            	//1.加载水印
 			            Bitmap mark=ToolClass.getMark();
 			            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+pictures.get(arg0).getProID()+"overproImage="+pictures.get(arg0).getProImage(),"log.txt");
 			            Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
 			            Canvas canvas = new Canvas(photoMark);  
 			            canvas.drawBitmap(photo, 0, 0, null);  
-			            canvas.drawBitmap(mark, photo.getWidth() - mark.getWidth(), photo.getHeight() - mark.getHeight(), null);  
+			            canvas.drawBitmap(mark, 61, 117, null);  
 			            canvas.save(Canvas.ALL_SAVE_FLAG);  
 			            canvas.restore();
-			            viewHolder.image.setImageBitmap(photoMark);// 设置图像的二进制值
+		            	//2.设置滤镜，将商品图片变暗:这三个负数的值越大，图片就会越暗
+		            	final float[] BT_SELECTED = new float[]{ 1, 0, 0, 0, -170, 0, 1,
+		        				0, 0, -170, 0, 0, 1, 0, -170, 0, 0, 0, 1, 0 };
+		            	viewHolder.image.setDrawingCacheEnabled(true);
+		            	viewHolder.image.setColorFilter( new ColorMatrixColorFilter(BT_SELECTED) ) ; 
+		            	viewHolder.image.setImageBitmap(photoMark);// 设置图像的二进制值
+		            	
 		            }
 		        }
 			}

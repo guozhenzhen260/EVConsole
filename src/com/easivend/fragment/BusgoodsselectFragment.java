@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 public class BusgoodsselectFragment extends Fragment 
 {
-	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
+	ImageView ivbusgoodselProduct=null,imgbtnbusgoodsback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	WebView webproductDesc;
@@ -214,8 +214,8 @@ public class BusgoodsselectFragment extends Fragment
     			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
     		}
     	}		
-		imgbtnbusgoodselback=(ImageButton)view.findViewById(R.id.imgbtnbusgoodselback);
-		imgbtnbusgoodselback.setOnClickListener(new OnClickListener() {
+    	imgbtnbusgoodsback=(ImageView)view.findViewById(R.id.imgbtnbusgoodsback);
+    	imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	listterner.BusgoodsselectFinish();//步骤二、fragment向activity发送回调信息
