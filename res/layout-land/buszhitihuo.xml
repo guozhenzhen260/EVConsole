@@ -8,7 +8,7 @@
 		android:textSize="60sp" 
 		android:layout_height="wrap_content" 
 		android:textStyle="bold"
- 		android:hint="请输入提货密码"        
+ 		android:hint="请输入密码"        
         />
     <Button
         android:id="@+id/btnadsclass"

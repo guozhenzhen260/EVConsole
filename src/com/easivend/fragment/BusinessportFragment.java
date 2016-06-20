@@ -39,10 +39,10 @@ import android.widget.Toast;
 
 public class BusinessportFragment extends Fragment {
 	EditText txtadsTip=null;
-	ImageButton btnadsclass=null,btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,
+	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,
 			btnads6=null,btnads7=null,btnads8=null,btnads9=null,btnadsenter=null,btnads0=null,
 			btnadscancel=null;	
-	ImageView ivquhuo=null;
+	ImageView ivquhuo=null,btnadsclass=null;
 	Intent intent=null;
 	private boolean quhuo=false;//true使用取货码功能
 	private static int count=0;
@@ -237,7 +237,7 @@ public class BusinessportFragment extends Fragment {
 		    	}
 		    }
 		});
-		btnadsclass = (ImageButton) view.findViewById(R.id.btnadsclass);
+		btnadsclass = (ImageView) view.findViewById(R.id.btnadsclass);
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {

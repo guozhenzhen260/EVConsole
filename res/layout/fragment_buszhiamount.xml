@@ -95,11 +95,18 @@
        android:layout_height="wrap_content"
        android:layout_below="@+id/imgbtnbuszhiamountqxzf"
        android:src="@drawable/zflc" />
+	<ImageView
+	       android:id="@+id/imgxqwhite"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@+id/imgzflc" 
+	       android:src="@drawable/imgwhite" />
 	<ImageView 
    	    android:id = "@+id/ivbuszhiamountbill"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/imgzflc"	
+		android:layout_above="@+id/imgback"
 		android:src="@drawable/billonlyfang"			
    	/>
 	<ImageView

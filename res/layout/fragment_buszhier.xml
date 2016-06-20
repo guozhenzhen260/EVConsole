@@ -65,7 +65,6 @@
 	<ImageButton
         android:id="@+id/imgbtnbuszhierqxzf"
         android:layout_below="@+id/txtbuszhiertime"
-        android:layout_marginTop="45dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qxzffang" />
@@ -75,11 +74,18 @@
        android:layout_height="wrap_content"
        android:layout_below="@+id/imgbtnbuszhierqxzf"
        android:src="@drawable/zflc" />
+	<ImageView
+       android:id="@+id/imgxqwhite"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/imgzflc" 
+       android:src="@drawable/imgwhite" />
 	<ImageView 
    	    android:id = "@+id/ivbuszhierbeijing"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/imgzflc"	
+		android:layout_above="@+id/imgback"
 		android:src="@drawable/zhierfang"			
    	/>
 	<ImageView
@@ -87,8 +93,8 @@
 	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imgzflc"	
-        android:layout_marginTop="137dp"
-        android:layout_marginLeft="420dp"
+        android:layout_marginTop="127dp"
+        android:layout_marginLeft="430dp"
         android:src="@drawable/zhierwait"
         />
 	<ImageView

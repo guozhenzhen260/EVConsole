@@ -106,7 +106,7 @@ public class BushuoFragment extends Fragment
 				+count+" zhifutype="+zhifutype,"log.txt");		
   	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
 		this.ivbushuoquhuo =(ImageView) view.findViewById(R.id.ivbushuoquhuo);
-		ivbushuoquhuo.setVisibility(View.GONE);
+		
 		
 		//****
 		//出货
@@ -221,17 +221,17 @@ public class BushuoFragment extends Fragment
 				txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
 				txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 				chuhuoLog(1);//记录日志
+				ivbushuoquhuo.setImageResource(R.drawable.chusuccess);
 			}
 			else
 			{
 				txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
 				txtbushuoname.setTextColor(android.graphics.Color.RED);
 				chuhuoLog(0);//记录日志
-			}
-									
+				ivbushuoquhuo.setImageResource(R.drawable.chufail);
+			}					
 			//3.退回找零页面
-			listterner.BushuoFinish(status);//步骤二、fragment向activity发送回调信息  		
-//			ivbushuoquhuo.setVisibility(View.VISIBLE);
+			listterner.BushuoFinish(status);//步骤二、fragment向activity发送回调信息 
 // 	    	new Handler().postDelayed(new Runnable() 
 //			{
 //                @Override

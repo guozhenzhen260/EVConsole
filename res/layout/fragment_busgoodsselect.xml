@@ -26,6 +26,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/imgcpxq" 
 	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
+	        android:layout_marginLeft="47dp"
 	        android:textSize="40sp"
             android:textStyle="bold"
 	        />
@@ -35,6 +36,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/txtbusgoodselName"
 	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
+	        android:layout_marginLeft="47dp"
 	        android:textSize="40sp"
             android:textStyle="bold"
             android:textColor="#FF6633" 
@@ -57,6 +59,7 @@
 		android:layout_height="wrap_content"	
 		android:layout_below="@+id/txtbusgoodselAmounttxt"
 		android:layout_toRightOf="@+id/ivbusgoodselProduct"
+		android:layout_marginLeft="47dp"
 		android:src="@drawable/zhier"			
    	/> 
    	<ImageView 
@@ -64,8 +67,8 @@
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
 		android:layout_below="@+id/txtbusgoodselAmounttxt"
-		android:layout_toRightOf="@+id/ivbuszhiselzhier"
-		android:layout_marginLeft="45dp"
+		android:layout_toRightOf="@+id/ivbuszhiselzhier"		
+		android:layout_marginLeft="47dp"
 		android:src="@drawable/weixing"			
    	/> 	
    	<ImageView 
@@ -73,8 +76,8 @@
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
 		android:layout_below="@+id/txtbusgoodselAmounttxt"
-		android:layout_toRightOf="@+id/ivbuszhiselweixing"	
-		android:layout_marginLeft="45dp"
+		android:layout_toRightOf="@+id/ivbuszhiselweixing"
+		android:layout_marginLeft="47dp"
 		android:src="@drawable/amount"			
    	/> 
 	<TextView

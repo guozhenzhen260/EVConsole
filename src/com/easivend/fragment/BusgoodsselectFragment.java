@@ -189,6 +189,7 @@ public class BusgoodsselectFragment extends Fragment
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
+    		int zhifucount=0;
     		if(tb_inaccount.getAmount()!=1)
     		{
     			ivbuszhiselamount.setVisibility(View.GONE);//关闭
@@ -196,6 +197,7 @@ public class BusgoodsselectFragment extends Fragment
     		else
     		{
     			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
     		}	
     		if(tb_inaccount.getZhifubaoer()!=1)
     		{
@@ -204,6 +206,7 @@ public class BusgoodsselectFragment extends Fragment
     		else
     		{
     			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
     		}
     		if(tb_inaccount.getWeixing()!=1)
     		{
@@ -212,6 +215,21 @@ public class BusgoodsselectFragment extends Fragment
     		else
     		{
     			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
+    		}
+    		switch(zhifucount)
+    		{
+    			case 3:
+    				ivbuszhiselamount.setImageResource(R.drawable.amountnormal);
+    				ivbuszhiselzhier.setImageResource(R.drawable.zhiernormal);
+    				ivbuszhiselweixing.setImageResource(R.drawable.weixingnormal);
+    				break;
+    			case 2:
+    			case 1:	
+    				ivbuszhiselamount.setImageResource(R.drawable.amountlarge);
+    				ivbuszhiselzhier.setImageResource(R.drawable.zhierlarge);
+    				ivbuszhiselweixing.setImageResource(R.drawable.weixinglarge);
+    				break;	
     		}
     	}		
     	imgbtnbusgoodsback=(ImageView)view.findViewById(R.id.imgbtnbusgoodsback);

@@ -944,7 +944,6 @@ BushuoFragInteraction
 	public void BushuoChuhuoOpt(int cabinetvar, int huodaoNo,int cabinetTypevar) {
 		// TODO Auto-generated method stub
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<busport商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt");
-		dialog= ProgressDialog.show(BusPort.this,"正在出货中","请稍候...");
 		ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
 		    	+" column="+huodaoNo		    	
@@ -1520,7 +1519,6 @@ BushuoFragInteraction
 					case EVprotocol.EV_BENTO_OPEN://格子柜出货 					
 					case EVprotocol.EV_COLUMN_OPEN://主柜出货
 						status=Set.get("result");//出货结果
-						dialog.dismiss();
 						listterner.BusportChjg(status);
 					default:break;	
 				}
