@@ -125,9 +125,17 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILCLIENTMAIN=43;//what标记,发送给主线程获取设备故障
 	public final static int SETCLIENTMAIN=44;//what标记,发送给主线程获取设备返回
 	
-	public final static int SETPICKUPCHILD=45;//what标记,发送给子线取货码信息
-	public final static int SETERRFAILPICKUPMAIN=46;//what标记,发送给主线程取货码无效
-	public final static int SETPICKUPMAIN=47;//what标记,发送给主线程取货码出货
+	public final static int SETEVENTINFOCHILD=45;//what标记,发送给子线程获取活动信息
+	public final static int SETERRFAILEVENTINFOMAIN=46;//what标记,发送给主线程获取活动故障
+	public final static int SETEVENTINFOMAIN=47;//what标记,发送给主线程获取活动返回
+	
+	public final static int SETDEMOINFOCHILD=48;//what标记,发送给子线程获取购买演示信息
+	public final static int SETERRFAILDEMOINFOMAIN=49;//what标记,发送给主线程获取购买演示故障
+	public final static int SETDEMOINFOMAIN=50;//what标记,发送给主线程获取购买演示返回
+	
+	public final static int SETPICKUPCHILD=51;//what标记,发送给子线取货码信息
+	public final static int SETERRFAILPICKUPMAIN=52;//what标记,发送给主线程取货码无效
+	public final static int SETPICKUPMAIN=53;//what标记,发送给主线程取货码出货
 	
 	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
@@ -1077,6 +1085,146 @@ public class EVServerhttp implements Runnable {
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest16);					
 					break;
+				case SETEVENTINFOCHILD://获取活动信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取活动信息["+Thread.currentThread().getId()+"]","server.txt");
+					
+					String target18 = httpStr+"/api/eventInfo";	//要提交的目标地址
+					final String LAST_EDIT_TIME18=msg.obj.toString();
+					//新建Volley 
+					mQueue = getRequestQueue();
+					//向主线程返回信息
+					final Message tomain18=mainhand.obtainMessage();
+					tomain18.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest18 = new StringRequest(Method.POST, target18,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain18.what=SETERRFAILEVENTINFOMAIN;
+									tomain18.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain18); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail18]SETERRFAILEVENTINFOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok18]","server.txt");
+//									advArray(result);
+//									if(advarr.length()>0)
+//									{
+//										updateadv(0);
+//									}
+									tomain18.what=SETEVENTINFOMAIN;
+									tomain18.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain18); // 发送消息
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain18.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain18); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail18]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME18);							
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest18);					
+					break;	
+				case SETDEMOINFOCHILD://获取购买演示信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取购买演示信息["+Thread.currentThread().getId()+"]","server.txt");
+					
+					String target19 = httpStr+"/api/demoInfo";	//要提交的目标地址
+					final String LAST_EDIT_TIME19=msg.obj.toString();
+					//新建Volley 
+					mQueue = getRequestQueue();
+					//向主线程返回信息
+					final Message tomain19=mainhand.obtainMessage();
+					tomain19.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest19 = new StringRequest(Method.POST, target19,  new Response.Listener<String>() {  
+						@Override  
+						public void onResponse(String response) {  
+						   
+						    //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain19.what=SETERRFAILDEMOINFOMAIN;
+									tomain19.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain19); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail19]SETERRFAILEVENTINFOMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok19]","server.txt");
+//									advArray(result);
+//									if(advarr.length()>0)
+//									{
+//										updateadv(0);
+//									}
+									tomain19.what=SETDEMOINFOMAIN;
+									tomain19.obj=object.getString("Message");							   	    
+									mainhand.sendMessage(tomain19); // 发送消息
+								}			    	    
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										 
+						}  
+					}, new Response.ErrorListener() {  
+						@Override  
+						public void onErrorResponse(VolleyError error) {  
+							result = "请求失败！";
+							tomain19.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain19); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail19]SETFAILMAIN"+result,"server.txt");
+						}  
+					}) 
+					{  
+						@Override  
+						protected Map<String, String> getParams() throws AuthFailureError {  
+							//3.添加params
+							Map<String, String> map = new HashMap<String, String>();  
+							map.put("Token", Tok);  
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME19);							
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+							return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest19);					
+					break;	
 				//取货码比较特殊，不能用作复制的例子
 				case SETPICKUPCHILD://获取取货码
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取取货码信息["+Thread.currentThread().getId()+"]","server.txt");

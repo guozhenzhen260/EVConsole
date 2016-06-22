@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
@@ -372,8 +373,16 @@ public class MoviewlandFragment extends Fragment {
     {  
     	ivads.setVisibility(View.GONE);//图片关闭
     	videoView.setVisibility(View.GONE);//视频关闭
+    	
 		webtishiInfo.setVisibility(View.VISIBLE);//提示打开
-		
+		 WebSettings settings = webtishiInfo.getSettings();
+	     settings.setSupportZoom(true);
+	     settings.setTextSize(WebSettings.TextSize.LARGEST);
+	     webtishiInfo.getSettings().setSupportMultipleWindows(true);
+	     webtishiInfo.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+	     webtishiInfo.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+	     webtishiInfo.loadDataWithBaseURL(null,"敬请期待!", "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+		    
     	//延时10s
         new Handler().postDelayed(new Runnable() 
 		{

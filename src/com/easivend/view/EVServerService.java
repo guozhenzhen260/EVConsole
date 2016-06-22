@@ -66,7 +66,8 @@ public class EVServerService extends Service {
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
     private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
-    		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="";
+    		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="",
+    		LAST_EVENT_TIME="",LAST_DEMO_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
@@ -469,7 +470,61 @@ public class EVServerService extends Service {
 					case EVServerhttp.SETCLIENTMAIN://子线程接收主线程消息获取设备信息
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");						
 						//2>>重置设备后，重置时间
-						LAST_CLIENT_TIME=ToolClass.getLasttime();	
+						LAST_CLIENT_TIME=ToolClass.getLasttime();
+						{
+							//初始化七.6、发送获取活动信息到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETEVENTINFOCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次活动
+			        		childheartmsg3.obj=LAST_EVENT_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+						break;	
+						//获取活动信息	
+					case EVServerhttp.SETERRFAILEVENTINFOMAIN://子线程接收主线程消息获取活动失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取活动，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETEVENTINFOMAIN://子线程接收主线程消息获取活动信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取活动信息成功","server.txt");						
+						//2>>重置设备后，重置时间
+						LAST_EVENT_TIME=ToolClass.getLasttime();
+						{
+							//初始化七.7、发送获取购买演示信息到子线程中
+							childhand=serverhttp.obtainHandler();
+			        		Message childheartmsg3=childhand.obtainMessage();
+			        		childheartmsg3.what=EVServerhttp.SETDEMOINFOCHILD;
+			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次活动
+			        		childheartmsg3.obj=LAST_DEMO_TIME;
+			        		childhand.sendMessage(childheartmsg3);
+						}
+//						{
+//							//初始化七、发送货道上传命令到子线程中
+//							childhand=serverhttp.obtainHandler();
+//			        		Message childheartmsg3=childhand.obtainMessage();
+//			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
+//			        		childheartmsg3.obj=columngrid();
+//			        		childhand.sendMessage(childheartmsg3);
+//						}
+						break;
+						//获取购买演示信息	
+					case EVServerhttp.SETERRFAILDEMOINFOMAIN://子线程接收主线程消息获取购买演示失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取购买演示，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETDEMOINFOMAIN://子线程接收主线程消息获取购买演示信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取购买演示信息成功","server.txt");						
+						//2>>重置设备后，重置时间
+						LAST_DEMO_TIME=ToolClass.getLasttime();
 						{
 							//初始化七、发送货道上传命令到子线程中
 							childhand=serverhttp.obtainHandler();
