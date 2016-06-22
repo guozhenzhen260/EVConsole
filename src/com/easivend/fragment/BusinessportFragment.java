@@ -42,7 +42,7 @@ public class BusinessportFragment extends Fragment {
 	ImageButton btnads1=null,btnads2=null,btnads3=null,btnads4=null,btnads5=null,
 			btnads6=null,btnads7=null,btnads8=null,btnads9=null,btnadsenter=null,btnads0=null,
 			btnadscancel=null;	
-	ImageView ivquhuo=null,btnadsclass=null;
+	ImageView ivquhuo=null,btnadsclass=null,ivgmys=null,ivczjx=null;
 	Intent intent=null;
 	private boolean quhuo=false;//true使用取货码功能
 	private static int count=0;
@@ -98,6 +98,7 @@ public class BusinessportFragment extends Fragment {
         void finishBusiness();//关闭activity页面
         void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面  
         void quhuoBusiness(String PICKUP_CODE);//传递取货码
+        void tishiInfo(int infotype);//传递提示信息
     }
     @Override
     public void onDetach() {
@@ -260,6 +261,20 @@ public class BusinessportFragment extends Fragment {
 		    		listterner.gotoBusiness(BusPort.BUSGOODS,str);
 		    	}
 		    	
+		    }
+		});
+		ivgmys = (ImageView) view.findViewById(R.id.ivgmys);
+		ivgmys.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	listterner.tishiInfo(1);		    	
+		    }
+		});
+		ivczjx = (ImageView) view.findViewById(R.id.ivczjx);
+		ivczjx.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	listterner.tishiInfo(2);		    	
 		    }
 		});
 		ivquhuo = (ImageView) view.findViewById(R.id.ivquhuo);

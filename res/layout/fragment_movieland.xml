@@ -14,6 +14,12 @@
 	        android:src="@drawable/quhuo"
 	        android:gravity="center"  	
 	     />
+    <WebView
+            android:id="@+id/webtishiInfo"
+            android:textSize="40sp"
+	        android:layout_width="match_parent"   
+	        android:layout_height="match_parent" 
+	        />
 	 <ImageView
 	       android:layout_alignParentBottom="true"
 	       android:layout_alignParentLeft="true"

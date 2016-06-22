@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.webkit.WebView;
 import android.widget.ImageView;
 
 public class MoviewlandFragment extends Fragment {
@@ -33,7 +34,7 @@ public class MoviewlandFragment extends Fragment {
 	private int curIndex = 0,isClick=0;//  
     Random r=new Random(); 
     private List<String> mMusicList = new ArrayList<String>();  
-    //ImageView
+    private WebView webtishiInfo;
     private ImageView ivads=null;
     private List<String> imgMusicList = new ArrayList<String>();  
     private boolean viewvideo=false;
@@ -88,7 +89,9 @@ public class MoviewlandFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_movieland, container, false);  
 		context=this.getActivity();//获取activity的context
-		videoView=(MyVideoView)view.findViewById(R.id.video);	
+		videoView=(MyVideoView)view.findViewById(R.id.video);
+		//得到提示描述
+		webtishiInfo = (WebView) view.findViewById(R.id.webtishiInfo); 
 		ivads=(ImageView)view.findViewById(R.id.ivads);
 		ivads.setOnClickListener(new OnClickListener() {
 			
@@ -142,9 +145,8 @@ public class MoviewlandFragment extends Fragment {
 		@Override
 		public void BusportMovie() {
 			// TODO Auto-generated method stub
-			 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<视频重载入","log.txt");
-			 viewvideo=true;
-			 show(); 
+			 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<显示交易提示信息","log.txt");
+			 showtishiInfo();
 		}
 
 		@Override
@@ -245,6 +247,7 @@ public class MoviewlandFragment extends Fragment {
 	    	{
 	    		viewvideo=true;
 	    		ivads.setVisibility(View.GONE);//图片关闭
+	    		webtishiInfo.setVisibility(View.GONE);//提示关闭
 	    		videoView.setVisibility(View.VISIBLE);//视频打开
 	    		play();
 	    	}
@@ -255,6 +258,7 @@ public class MoviewlandFragment extends Fragment {
 	    		if(imgMusicList.size()>0)
 	    		{
 		    		videoView.setVisibility(View.GONE);//视频关闭
+		    		webtishiInfo.setVisibility(View.GONE);//提示关闭
 		    		ivads.setVisibility(View.VISIBLE);//图片打开
 		    		showImage();
 	    		}
@@ -362,6 +366,25 @@ public class MoviewlandFragment extends Fragment {
   		}
   		return rst;
     }
+    
+    //显示提示信息
+    private void showtishiInfo()
+    {  
+    	ivads.setVisibility(View.GONE);//图片关闭
+    	videoView.setVisibility(View.GONE);//视频关闭
+		webtishiInfo.setVisibility(View.VISIBLE);//提示打开
+		
+    	//延时10s
+        new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {
+            	show();
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);
+    }  
     
     
     //切换到操作fragment

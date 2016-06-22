@@ -225,7 +225,7 @@ public class BushuoFragment extends Fragment
 			}
 			else
 			{
-				txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
+				txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，您没有被扣款!");
 				txtbushuoname.setTextColor(android.graphics.Color.RED);
 				chuhuoLog(0);//记录日志
 				ivbushuoquhuo.setImageResource(R.drawable.chufail);

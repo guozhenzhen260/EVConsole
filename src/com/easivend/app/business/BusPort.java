@@ -184,8 +184,8 @@ BushuoFragInteraction
          * Activity 向Fragment传递指令，这个方法可以根据需求来定义
          * @param str
          */
-    	//视频页面
-        void BusportMovie();      //视频页面轮播
+    	//显示交易提示信息
+        void BusportMovie();      //显示交易提示信息
         //刷新广告页面
         void BusportAds();      //刷新广告列表
         //现金页面
@@ -548,6 +548,13 @@ BushuoFragInteraction
 		intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
 		intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
 		localBroadreceiver.sendBroadcast(intent2);
+	}
+	//步骤三、实现Business接口,传递提示信息
+	@Override
+	public void tishiInfo(int infotype)
+	{
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port提示类型="+infotype,"log.txt");
+		listterner.BusportMovie();
 	}
 	
 	//=============
