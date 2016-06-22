@@ -15,6 +15,7 @@
 
 
 package com.easivend.common;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,6 +24,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -332,7 +336,7 @@ public class ToolClass
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
                 + "HH:mm:ss:SSS"); //精确到毫秒 
         String datetime = tempDate.format(new java.util.Date()).toString();  
-        String cont=datetime+content+"\n";
+        String cont=datetime+content+"\r\n";
     	
         try {
         	 sDir = ToolClass.getEV_DIR()+File.separator+"logs";
@@ -352,7 +356,10 @@ public class ToolClass
     	      fileName.createNewFile(); 
     	    }  
             //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-            FileWriter writer = new FileWriter(fileName, true);
+//            FileWriter writer = new FileWriter(fileName, true);
+//            writer.write(cont);
+//            writer.close();
+        	Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(fileName, true),Charset.forName("gbk")));
             writer.write(cont);
             writer.close();
         } catch (Exception e) {
