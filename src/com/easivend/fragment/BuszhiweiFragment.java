@@ -163,7 +163,7 @@ public class BuszhiweiFragment extends Fragment
 		}
 
 		@Override
-		public void BusportMovie() {
+		public void BusportMovie(int infotype) {
 			// TODO Auto-generated method stub
 			
 		}

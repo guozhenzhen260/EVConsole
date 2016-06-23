@@ -9,6 +9,8 @@ import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.MyVideoView;
 import  com.example.evconsole.R;
 import android.app.Activity;
@@ -144,10 +146,10 @@ public class MoviewlandFragment extends Fragment {
 		}
 
 		@Override
-		public void BusportMovie() {
+		public void BusportMovie(int infotype) {
 			// TODO Auto-generated method stub
-			 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<显示交易提示信息","log.txt");
-			 showtishiInfo();
+			 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<显示交易提示信息="+infotype,"log.txt");
+			 showtishiInfo(infotype);
 		}
 
 		@Override
@@ -369,19 +371,44 @@ public class MoviewlandFragment extends Fragment {
     }
     
     //显示提示信息
-    private void showtishiInfo()
+    private void showtishiInfo(int infotype)
     {  
     	ivads.setVisibility(View.GONE);//图片关闭
     	videoView.setVisibility(View.GONE);//视频关闭
     	
-		webtishiInfo.setVisibility(View.VISIBLE);//提示打开
+		 webtishiInfo.setVisibility(View.VISIBLE);//提示打开
 		 WebSettings settings = webtishiInfo.getSettings();
 	     settings.setSupportZoom(true);
 	     settings.setTextSize(WebSettings.TextSize.LARGEST);
 	     webtishiInfo.getSettings().setSupportMultipleWindows(true);
 	     webtishiInfo.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
 	     webtishiInfo.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
-	     webtishiInfo.loadDataWithBaseURL(null,"敬请期待!", "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+	     String info="敬请期待!";
+	     //购买演示和提示信息
+  		 vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	     // 获取所有收入信息，并存储到List泛型集合中
+    	 Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	 if(tb_inaccount!=null)
+    	 {
+    		 //购买演示
+    		 if(infotype==1)
+    		 {
+    			 if(tb_inaccount.getDemo().isEmpty()==false)
+    			 {
+    				 info=tb_inaccount.getDemo();
+    			 }
+    		 }
+    		 //活动信息
+    		 else if(infotype==2)
+    		 {
+    			 if(tb_inaccount.getEvent().isEmpty()==false)
+    			 {
+    				 info=tb_inaccount.getEvent();
+    			 }
+    		 }
+    	 }
+	     
+	     webtishiInfo.loadDataWithBaseURL(null,info, "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
 		    
     	//延时10s
         new Handler().postDelayed(new Runnable() 

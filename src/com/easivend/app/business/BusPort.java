@@ -185,7 +185,7 @@ BushuoFragInteraction
          * @param str
          */
     	//显示交易提示信息
-        void BusportMovie();      //显示交易提示信息
+        void BusportMovie(int infotype);      //显示交易提示信息
         //刷新广告页面
         void BusportAds();      //刷新广告列表
         //现金页面
@@ -554,7 +554,7 @@ BushuoFragInteraction
 	public void tishiInfo(int infotype)
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port提示类型="+infotype,"log.txt");
-		listterner.BusportMovie();
+		listterner.BusportMovie(infotype);
 	}
 	
 	//=============

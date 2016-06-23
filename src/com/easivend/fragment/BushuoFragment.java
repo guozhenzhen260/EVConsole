@@ -291,7 +291,7 @@ public class BushuoFragment extends Fragment
 		}
 
 		@Override
-		public void BusportMovie() {
+		public void BusportMovie(int infotype) {
 			// TODO Auto-generated method stub
 			
 		}

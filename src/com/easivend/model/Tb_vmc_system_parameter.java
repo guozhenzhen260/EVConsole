@@ -41,12 +41,15 @@ public class Tb_vmc_system_parameter
     private int proSortType;// 显示排序方式    
     private float marketAmount;// 纸币投币金额上限,如”20.00”
     private float billAmount;// 最低纸币器开启金额,如”20.00”
+    private String event;//活动信息
+    private String demo;//购买演示
     // 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_system_parameter(String devID, String devhCode, int isNet,
 			int isfenClass, int isbuyCar, int liebiaoKuan, String mainPwd,
 			int amount, int card, int zhifubaofaca, int zhifubaoer,
 			int weixing, int printer, int language, String rstTime, int rstDay,
-			int baozhiProduct, int emptyProduct,int proSortType,float marketAmount,float billAmount) {
+			int baozhiProduct, int emptyProduct,int proSortType,float marketAmount,float billAmount,
+			String event,String demo) {
 		super();
 		this.devID = devID;
 		this.devhCode = devhCode;
@@ -69,6 +72,24 @@ public class Tb_vmc_system_parameter
 		this.proSortType = proSortType;
 		this.marketAmount=marketAmount;
 		this.billAmount=billAmount;
+		this.event=event;
+		this.demo=demo;
+	}
+
+	public String getEvent() {
+		return event;
+	}
+
+	public void setEvent(String event) {
+		this.event = event;
+	}
+
+	public String getDemo() {
+		return demo;
+	}
+
+	public void setDemo(String demo) {
+		this.demo = demo;
 	}
 
 	public String getDevID() {

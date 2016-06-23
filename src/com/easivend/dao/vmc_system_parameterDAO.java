@@ -104,7 +104,7 @@ public class vmc_system_parameterDAO
 	 		db.close(); 
 	    }
 	} 
-	//添加或修改密码
+	//修改密码
 	public void updatepwd(Tb_vmc_system_parameter tb_vmc_system_parameter)throws SQLException
 	{
 		int max=0;
@@ -147,6 +147,92 @@ public class vmc_system_parameterDAO
 	 		db.close(); 
 	    }
 	} 
+	//修改活动信息
+	public void updateevent(Tb_vmc_system_parameter tb_vmc_system_parameter)throws SQLException
+	{
+		int max=0;
+		//取得排序值
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select count(devID) from vmc_system_parameter", null);// 获取收入信息的记录数
+        if (cursor.moveToNext()) {// 判断Cursor中是否有数据
+
+            max=cursor.getInt(0);// 返回总记录数
+        }
+     
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if(max>0)	        
+	        {
+	            // 执行添加商品		
+	     		db.execSQL(
+	     				"update vmc_system_parameter " +
+	     				"set " +
+	     				"event=? " +
+	     				"where devID=?" 
+	     				,
+	     		        new Object[] { tb_vmc_system_parameter.getEvent(),tb_vmc_system_parameter.getDevID()});
+	     		
+	            }		           
+	        
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
+	} 
+	//修改购买演示信息
+	public void updatedemo(Tb_vmc_system_parameter tb_vmc_system_parameter)throws SQLException
+	{
+		int max=0;
+		//取得排序值
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select count(devID) from vmc_system_parameter", null);// 获取收入信息的记录数
+        if (cursor.moveToNext()) {// 判断Cursor中是否有数据
+
+            max=cursor.getInt(0);// 返回总记录数
+        }
+     
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if(max>0)	        
+	        {
+	            // 执行添加商品		
+	     		db.execSQL(
+	     				"update vmc_system_parameter " +
+	     				"set " +
+	     				"demo=? " +
+	     				"where devID=?" 
+	     				,
+	     		        new Object[] { tb_vmc_system_parameter.getDemo(),tb_vmc_system_parameter.getDevID()});
+	     		
+	            }		           
+	        
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
+	} 
 	/**
      * 查找一条商品信息
      * 
@@ -159,7 +245,8 @@ public class vmc_system_parameterDAO
         db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         Cursor cursor = db.rawQuery("select devID,devhCode,isNet,isfenClass,isbuyCar," +
  				"liebiaoKuan,mainPwd,amount,card,zhifubaofaca,zhifubaoer,weixing,printer," +
- 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType,marketAmount,billAmount from vmc_system_parameter", null );// 根据编号查找支出信息，并存储到Cursor类中
+ 				"language,rstTime,rstDay,baozhiProduct,emptyProduct,proSortType,marketAmount,billAmount," +
+ 				"event,demo from vmc_system_parameter", null );// 根据编号查找支出信息，并存储到Cursor类中
         if (cursor.moveToNext()) 
         {// 遍历查找到的支出信息
 
@@ -169,7 +256,8 @@ public class vmc_system_parameterDAO
     				cursor.getString(cursor.getColumnIndex("mainPwd")),cursor.getInt(cursor.getColumnIndex("amount")), cursor.getInt(cursor.getColumnIndex("card")), cursor.getInt(cursor.getColumnIndex("zhifubaofaca")),
     				cursor.getInt(cursor.getColumnIndex("zhifubaoer")), cursor.getInt(cursor.getColumnIndex("weixing")), cursor.getInt(cursor.getColumnIndex("printer")), cursor.getInt(cursor.getColumnIndex("language")),
     				cursor.getString(cursor.getColumnIndex("rstTime")), cursor.getInt(cursor.getColumnIndex("rstDay")),  cursor.getInt(cursor.getColumnIndex("baozhiProduct")),  cursor.getInt(cursor.getColumnIndex("emptyProduct")),
-    				cursor.getInt(cursor.getColumnIndex("proSortType")),cursor.getFloat(cursor.getColumnIndex("marketAmount")),cursor.getFloat(cursor.getColumnIndex("billAmount"))
+    				cursor.getInt(cursor.getColumnIndex("proSortType")),cursor.getFloat(cursor.getColumnIndex("marketAmount")),cursor.getFloat(cursor.getColumnIndex("billAmount")),
+    				cursor.getString(cursor.getColumnIndex("event")),cursor.getString(cursor.getColumnIndex("demo"))
     				
     		);
         }

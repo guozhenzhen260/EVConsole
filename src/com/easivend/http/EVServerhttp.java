@@ -1118,14 +1118,11 @@ public class EVServerhttp implements Runnable {
 								else
 								{
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok18]","server.txt");
-//									advArray(result);
-//									if(advarr.length()>0)
-//									{
-//										updateadv(0);
-//									}
-									tomain18.what=SETEVENTINFOMAIN;
-									tomain18.obj=object.getString("Message");							   	    
-									mainhand.sendMessage(tomain18); // 发送消息
+									eventArray(result);
+									if(eventarr.length()>0)
+									{
+										updateevent(0);
+									}									
 								}			    	    
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -1188,14 +1185,11 @@ public class EVServerhttp implements Runnable {
 								else
 								{
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok19]","server.txt");
-//									advArray(result);
-//									if(advarr.length()>0)
-//									{
-//										updateadv(0);
-//									}
-									tomain19.what=SETDEMOINFOMAIN;
-									tomain19.obj=object.getString("Message");							   	    
-									mainhand.sendMessage(tomain19); // 发送消息
+									demoArray(result);
+									if(demoarr.length()>0)
+									{
+										updatedemo(0);
+									}
 								}			    	    
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -3157,7 +3151,7 @@ public class EVServerhttp implements Runnable {
   			    //创建Tb_inaccount对象 
     			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
     					0,0,MANAGER_PASSWORD,0,0,0,0,0,0,0,"",0,
-    					0,0, 0,0,0);
+    					0,0, 0,0,0,"","");
     			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置设备VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
     			parameterDAO.updatepwd(tb_vmc_system_parameter); 
   			}
@@ -3199,6 +3193,184 @@ public class EVServerhttp implements Runnable {
   			tomain4.what=SETCLIENTMAIN;
   			tomain4.obj=zhuheclassjson.toString();
   			mainhand.sendMessage(tomain4); // 发送消息  			
+  		}		
+  		return "";
+  	}
+  	
+    //==============
+  	//==活动信息模块
+  	//==============
+  	JSONArray eventarr=null;
+  	JSONArray zhuheeventArray=null;
+  	JSONObject zhuheeventjson = null; 
+  	int eventint=0;
+  	//分解设备信息
+  	private void eventArray(String eventrst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(eventrst); 
+  		eventarr=jsonObject.getJSONArray("List");
+  		eventint=0;
+  		zhuheeventArray=new JSONArray();
+  		zhuheeventjson = new JSONObject(); 
+  		if(eventarr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETEVENTINFOMAIN;
+  			tomain.obj=zhuheeventjson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}  	    
+  	}
+  	
+  	//更新活动信息
+  	private String updateevent(int i) throws JSONException
+  	{  	
+  		final JSONObject object2=eventarr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新活动信息="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步，获取VMC_NO和密码
+  		final String EVENT_CONTENT=object2.getString("EVENT_CONTENT");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","EVENT_CONTENT="+EVENT_CONTENT,"server.txt");	
+  		zhuheobj.put("AttImg", "");
+  		  
+  		try
+  		{	
+  			{  				
+  				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+  			    //创建Tb_inaccount对象 
+    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(devID, "", 0,0, 
+    					0,0,"",0,0,0,0,0,0,0,"",0,
+    					0,0, 0,0,0,EVENT_CONTENT,"");
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置EVENT_CONTENT","server.txt");	
+    			parameterDAO.updateevent(tb_vmc_system_parameter); 
+  			}
+  		}
+  		catch (Exception e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+  		}
+  		
+  		//第三步，把名字保存到json中		
+  		zhuheeventArray.put(zhuheobj);
+  		
+  		
+  		//第四步：进行下一个分类信息
+  		eventint++;
+  		if(eventint<eventarr.length())
+  		{
+  			try {
+  				updateevent(eventint);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  		}
+  		else
+  		{
+  			try {
+  				zhuheeventjson.put("List", zhuheeventArray);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheeventjson.toString(),"server.txt");
+
+  			//上传给server
+  		    //向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETEVENTINFOMAIN;
+			tomain.obj=zhuheeventjson.toString();
+			mainhand.sendMessage(tomain); // 发送消息 			
+  		}		
+  		return "";
+  	}
+  	
+    //==============
+  	//==购买演示模块
+  	//==============
+  	JSONArray demoarr=null;
+  	JSONArray zhuhedemoArray=null;
+  	JSONObject zhuhedemojson = null; 
+  	int demoint=0;
+  	//分解设备信息
+  	private void demoArray(String demorst) throws JSONException
+  	{
+  		JSONObject jsonObject = new JSONObject(demorst); 
+  		demoarr=jsonObject.getJSONArray("List");
+  		demoint=0;
+  		zhuhedemoArray=new JSONArray();
+  		zhuhedemojson = new JSONObject(); 
+  		if(demoarr.length()==0)
+  		{
+  			//向主线程返回信息
+  			Message tomain=mainhand.obtainMessage();
+  			tomain.what=SETDEMOINFOMAIN;
+  			tomain.obj=zhuhedemojson.toString();
+  			mainhand.sendMessage(tomain); // 发送消息	
+  		}  	    
+  	}
+  	
+  	//更新购买演示
+  	private String updatedemo(int i) throws JSONException
+  	{  	
+  		final JSONObject object2=demoarr.getJSONObject(i);
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新购买演示="+object2.toString(),"server.txt");										
+  		final JSONObject zhuheobj=object2;
+  		//第一步，获取VMC_NO和密码
+  		final String DEMO_CONTENT=object2.getString("DEMO_CONTENT");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","DEMO_CONTENT="+DEMO_CONTENT,"server.txt");	
+  		zhuheobj.put("AttImg", "");
+  		  
+  		try
+  		{	
+  			{  				
+  				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+  			    //创建Tb_inaccount对象 
+    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(devID, "", 0,0, 
+    					0,0,"",0,0,0,0,0,0,0,"",0,
+    					0,0, 0,0,0,"",DEMO_CONTENT);
+    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置DEMO_CONTENT","server.txt");	
+    			parameterDAO.updatedemo(tb_vmc_system_parameter); 
+  			}
+  		}
+  		catch (Exception e) {
+  			// TODO Auto-generated catch block
+  			e.printStackTrace();
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+  		}
+  		
+  		//第三步，把名字保存到json中		
+  		zhuhedemoArray.put(zhuheobj);
+  		
+  		
+  		//第四步：进行下一个分类信息
+  		demoint++;
+  		if(demoint<demoarr.length())
+  		{
+  			try {
+  				updatedemo(demoint);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  		}
+  		else
+  		{
+  			try {
+  				zhuhedemojson.put("List", zhuhedemoArray);
+  			} catch (JSONException e) {
+  				// TODO Auto-generated catch block
+  				e.printStackTrace();
+  			}
+  			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuhedemojson.toString(),"server.txt");
+
+  			//上传给server
+  		    //向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETDEMOINFOMAIN;
+			tomain.obj=zhuhedemojson.toString();
+			mainhand.sendMessage(tomain); // 发送消息 			
   		}		
   		return "";
   	}
