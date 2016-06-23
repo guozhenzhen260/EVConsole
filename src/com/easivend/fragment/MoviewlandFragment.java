@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.easivend.app.business.BusPort;
-import com.easivend.app.business.BusPort.BusPortFragInteraction;
+import com.easivend.app.business.BusPort.BusPortMovieFragInteraction;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
@@ -111,47 +111,24 @@ public class MoviewlandFragment extends Fragment {
 	     * 步骤五、当Fragment被加载到activity的时候，注册回调信息
 	     * @param activity
 	     */
-		BusPort.setCallBack(new buportInterfaceImp());
+		BusPort.setMovieCallBack(new buportIntermoviefaceImp());
 		return view;
 	}
 	
-	private class buportInterfaceImp implements BusPortFragInteraction//加载接口
+	private class buportIntermoviefaceImp implements BusPortMovieFragInteraction//加载接口
 	{
 		/**
 	     * 用来与其他fragment交互的,
 	     * 步骤三、实现BusPortFragInteraction接口
 	     * @param activity
-	     */
-		@Override
-		public void BusportTsxx(String str) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void BusportTbje(String str) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void BusportChjg(int sta) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void BusportSend(String str) {
-			// TODO Auto-generated method stub
-		}
-
+	     */		
 		@Override
 		public void BusportMovie(int infotype) {
 			// TODO Auto-generated method stub
 			 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<显示交易提示信息="+infotype,"log.txt");
 			 showtishiInfo(infotype);
 		}
-
+		
 		@Override
 		public void BusportAds() {
 			// TODO Auto-generated method stub
@@ -161,7 +138,9 @@ public class MoviewlandFragment extends Fragment {
 			listFiles(); 
 			startVideo();
 		}
+
 	}
+
 	
 	/* 播放列表 */  
     private void listFiles() 

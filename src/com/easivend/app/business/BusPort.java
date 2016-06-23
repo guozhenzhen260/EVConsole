@@ -161,6 +161,7 @@ BushuoFragInteraction
      * 用来与其他fragment交互的,设置静态变量
      */
     public static BusPortFragInteraction listterner;
+    public static BusPortMovieFragInteraction listternermovie;
 //    @Override
 //    public void onAttach(Activity activity) {
 //        super.onAttach(activity);
@@ -184,10 +185,6 @@ BushuoFragInteraction
          * Activity 向Fragment传递指令，这个方法可以根据需求来定义
          * @param str
          */
-    	//显示交易提示信息
-        void BusportMovie(int infotype);      //显示交易提示信息
-        //刷新广告页面
-        void BusportAds();      //刷新广告列表
         //现金页面
         void BusportTsxx(String str);      //提示信息
         void BusportTbje(String str);      //投币金额
@@ -195,6 +192,13 @@ BushuoFragInteraction
         void BusportChjg(int sta);      //出货结果
         //非现金页面
         void BusportSend(String str);      //二维码
+    }
+    public interface BusPortMovieFragInteraction
+    {
+    	//显示交易提示信息
+        void BusportMovie(int infotype);      //显示交易提示信息
+        //刷新广告页面
+        void BusportAds();      //刷新广告列表
     }
         
     /**
@@ -204,7 +208,10 @@ BushuoFragInteraction
      */
   	public static void setCallBack(BusPortFragInteraction call){ 
   		listterner = call;
-      } 
+      }
+  	public static void setMovieCallBack(BusPortMovieFragInteraction call){ 
+  		listternermovie = call;
+      }
   	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -554,7 +561,7 @@ BushuoFragInteraction
 	public void tishiInfo(int infotype)
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port提示类型="+infotype,"log.txt");
-		listterner.BusportMovie(infotype);
+		listternermovie.BusportMovie(infotype);
 	}
 	
 	//=============
@@ -600,7 +607,7 @@ BushuoFragInteraction
 	    		break;	
 			case EVServerhttp.SETADVRESETMAIN:
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","BusPort=刷新广告","log.txt");
-				listterner.BusportAds();
+				listternermovie.BusportAds();
 				break;
 			}			
 		}

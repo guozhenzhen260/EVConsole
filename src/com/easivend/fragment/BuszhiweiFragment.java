@@ -161,18 +161,7 @@ public class BuszhiweiFragment extends Fragment
 			txtbuszhiweirst.setText("交易结果:请扫描二维码");
 			ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(str));
 		}
-
-		@Override
-		public void BusportMovie(int infotype) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void BusportAds() {
-			// TODO Auto-generated method stub
-			
-		}
+		
 	}
     
 }

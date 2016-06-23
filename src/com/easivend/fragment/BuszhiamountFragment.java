@@ -146,17 +146,7 @@ public class BuszhiamountFragment extends Fragment
 			
 		}
 
-		@Override
-		public void BusportMovie(int infotype) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void BusportAds() {
-			// TODO Auto-generated method stub
-			
-		}
+		
 	}
 		
 }
