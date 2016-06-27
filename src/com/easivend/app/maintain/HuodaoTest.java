@@ -1690,7 +1690,6 @@ public class HuodaoTest extends TabActivity
 							tempno=me.getKey();
 						
 						huoSet.put(tempno, (Integer)me.getValue());
-						huoalltest.put(tempno, 0);
 					}
 				} 
 				huonum=huoSet.size();
@@ -2041,6 +2040,7 @@ public class HuodaoTest extends TabActivity
 	//===============
 	private void sethuorst(int status)
 	{
+		boolean result=false;//true出货成功,false出货失败
 		StringBuilder str=new StringBuilder();
 		str.append("货道");
 		str.append(edtcolumn.getText().toString());
@@ -2050,21 +2050,10 @@ public class HuodaoTest extends TabActivity
 		else 
 			tempno=edtcolumn.getText().toString();
 		
-		if(status==1)
-		{
-			txthuotestrst.setTextColor(android.graphics.Color.BLACK);
-		}
-		else
-		{
-			txthuotestrst.setTextColor(android.graphics.Color.RED);
-			if(huoalltest.containsKey(tempno))
-			{
-				int value=huoalltest.get(tempno);
-				value++;
-				huoalltest.put(tempno, value);
-			}
-		}
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","huoalltest="+huoalltest.toString(),"log.txt");	
+		//******************************************
+		//所有货道返回值，只有1代表成功，4代表已售完，其他值都是失败
+		//******************************************
+		
 		//弹簧货道或者格子柜
 		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5))
 		{
@@ -2072,6 +2061,7 @@ public class HuodaoTest extends TabActivity
 			{
 				case 1:
 					str.append("出货成功");
+					result=true;
 					break;
 				case 0:
 					str.append("出货失败");
@@ -2083,7 +2073,8 @@ public class HuodaoTest extends TabActivity
 					str.append("电机未到位");
 					break;	
 				case 4:
-					str.append("出货失败");
+					str.append("货物已售完");
+					result=true;
 					break;
 				case 5:
 					str.append("通信故障");
@@ -2097,9 +2088,11 @@ public class HuodaoTest extends TabActivity
 			{
 				case 1:
 					str.append("出货成功");
+					result=true;
 					break;
 				case 4:
-					str.append("出货失败");
+					str.append("货物已售完");
+					result=true;
 					break;
 				case 8:
 					str.append("卡货");
@@ -2134,25 +2127,31 @@ public class HuodaoTest extends TabActivity
 			}
 		}	
 		txthuotestrst.setText(str);
+		//打印出货结果
+		if(result)
+		{
+			txthuotestrst.setTextColor(android.graphics.Color.BLACK);
+		}
+		else
+		{
+			txthuotestrst.setTextColor(android.graphics.Color.RED);
+			if(huoalltest.containsKey(tempno))
+			{
+				int value=huoalltest.get(tempno);
+				value++;
+				huoalltest.put(tempno, value);
+			}
+			else
+			{
+				huoalltest.put(tempno, 1);
+			}
+		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","huoalltest="+huoalltest.toString(),"log.txt");	
 	}
 	//循环出货返回结果
 	private void setallhuorst()
 	{
-		StringBuilder str=new StringBuilder();
-		str.append("出货次数:[").append(autohuonum).append("]");
-		Map<String, String> huodaolist= new LinkedHashMap<String,String>();
-		//输出内容
-		Set<Entry<String, Integer>> allmap=huoalltest.entrySet();  //实例化
-		Iterator<Entry<String, Integer>> iter=allmap.iterator();
-		while(iter.hasNext())
-		{
-			Entry<String, Integer> me=iter.next();
-			if(me.getValue()>0)
-			{
-				huodaolist.put("货道"+me.getKey(),"故障"+me.getValue());
-			}
-		} 
-		str.append("故障货道:").append(huodaolist.toString());
+		String str="出货次数:["+autohuonum+"],故障信息"+huoalltest.toString();
 		txthuoallrst.setText(str);
 	}
 	
@@ -2358,7 +2357,7 @@ public class HuodaoTest extends TabActivity
 				break;	
 		}
 	}
-	//自检逻辑货道开关性能,result==0,或者0x21货道存在，其他值货道不存在
+	//自检逻辑货道开关性能,result==1,或者4货道存在，其他值货道不存在
 	private void autohuofile(int result)
 	{
 		switch(autophysic)
@@ -4245,7 +4244,7 @@ public class HuodaoTest extends TabActivity
 	//========
 	//升降机模块
 	//========
-	//自检逻辑货道开关性能,result==0,或者0x21货道存在，其他值货道不存在
+	//自检逻辑货道开关性能,result==1,或者4货道存在，其他值货道不存在
 	private void autoelevatorfile(int result)
 	{
 		switch(autophysic)

@@ -1608,7 +1608,7 @@ public class ToolClass
 	* 	 GOODS_NOTPASS_BIT       (1 << 5)   //bit5商品没出(出货确认没检测到)
 	* 	 DRV_CMDERR_BIT          (1 << 6)   //bit6命令错误(只有发送命令和查询命令着两个命令，如果发了其他的命令就报错)
 	* 	 DRV_GOCERR_BIT          (1 << 7)   //bit7出货检测模块状态(GOC故障)
-	 * 1:成功;0:故障;2:货道不存在;3:电机未到位;4:出货失败 5:通信故障
+	 * 1:成功;0:故障;2:货道不存在;3:电机未到位;4:无货 5:通信故障
      */
     public static int colChuhuorst(int Rst)
     {
@@ -1874,7 +1874,7 @@ public class ToolClass
 	private static final int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
 	private static final int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
 	private static final int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
-	 *  1:成功;4:出货失败8:卡货;其他与故障码一样
+	 *  1:成功;4:无货8:卡货;其他与故障码一样
      */    
     public static int elevatorChuhuorst(int Rst)
     {    
