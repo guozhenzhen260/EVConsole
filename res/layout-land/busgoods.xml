@@ -2,25 +2,54 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgcpfl"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/cpflland" />
     <GridView 
 		    android:id="@+id/gvbusgoodsProduct"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:verticalSpacing="10dp"
-		    android:horizontalSpacing="10dp"
-		    android:columnWidth="305dp"
+		    android:layout_below="@+id/imgcpfl"
+		    android:layout_above="@+id/imgbtnbusgoodsback"
+		    android:columnWidth="335dp"
 		    android:gravity="center"		    
 		    android:numColumns="auto_fit"
 		    android:stretchMode="spacingWidthUniform"
 		    android:fastScrollEnabled="true"
 		     />
-    		         
-    <ImageButton
+    
+    <ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifubackland" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifunextland" />       	         
+    <ImageView
 	       android:id="@+id/imgbtnbusgoodsback"
 	       android:layout_alignParentBottom="true"
-	       android:layout_alignParentRight="true"
-	       android:layout_width="140dp"
-	       android:layout_height="140dp"
-	       android:src="@drawable/busfinish" />
-
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinishland" />
+    <TextView
+        android:id="@+id/txtpage"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="23dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="442dp" 
+        android:textSize="35sp"
+        android:textColor="#FF0000"
+        android:text="0/0" />		         
+    
 </RelativeLayout>

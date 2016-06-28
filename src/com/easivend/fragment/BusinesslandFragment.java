@@ -41,11 +41,11 @@ public class BusinesslandFragment extends Fragment
 {	
 	final static int REQUEST_CODE=1; 	
 	EditText txtadsTip=null;
-	Button btnads1=null, btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
-			   btnads7=null,btnads8=null,btnads9=null,btnadscancel=null,btnads0=null,btnadsenter=null;
-	ImageButton btnadsclass=null;
+	ImageButton btnads1=null, btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
+			btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadsclass=null,btnadscancel=null,btnadsenter=null;
 	ImageView ivquhuo=null;
 	Intent intent=null;
+	private boolean quhuo=false;//true使用取货码功能
 	private static int count=0;
 	private static String huo="";
 	private int pscount=0;
@@ -140,7 +140,7 @@ public class BusinesslandFragment extends Fragment
 				return false;
 			}
 		});
-		btnads1 = (Button) view.findViewById(R.id.btnads1);		
+		btnads1 = (ImageButton) view.findViewById(R.id.btnads1);		
 		btnads1.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -148,70 +148,70 @@ public class BusinesslandFragment extends Fragment
 		    	
 		    }
 		});
-		btnads2 = (Button) view.findViewById(R.id.btnads2);
+		btnads2 = (ImageButton) view.findViewById(R.id.btnads2);
 		btnads2.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("2",1);
 		    }
 		});
-		btnads3 = (Button) view.findViewById(R.id.btnads3);
+		btnads3 = (ImageButton) view.findViewById(R.id.btnads3);
 		btnads3.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("3",1);
 		    }
 		});
-		btnads4 = (Button) view.findViewById(R.id.btnads4);
+		btnads4 = (ImageButton) view.findViewById(R.id.btnads4);
 		btnads4.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("4",1);
 		    }
 		});
-		btnads5 = (Button) view.findViewById(R.id.btnads5);
+		btnads5 = (ImageButton) view.findViewById(R.id.btnads5);
 		btnads5.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("5",1);
 		    }
 		});
-		btnads6 = (Button) view.findViewById(R.id.btnads6);
+		btnads6 = (ImageButton) view.findViewById(R.id.btnads6);
 		btnads6.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("6",1);
 		    }
 		});
-		btnads7 = (Button) view.findViewById(R.id.btnads7);
+		btnads7 = (ImageButton) view.findViewById(R.id.btnads7);
 		btnads7.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("7",1);
 		    }
 		});
-		btnads8 = (Button) view.findViewById(R.id.btnads8);
+		btnads8 = (ImageButton) view.findViewById(R.id.btnads8);
 		btnads8.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("8",1);
 		    }
 		});
-		btnads9 = (Button) view.findViewById(R.id.btnads9);
+		btnads9 = (ImageButton) view.findViewById(R.id.btnads9);
 		btnads9.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("9",1);
 		    }
 		});
-		btnads0 = (Button) view.findViewById(R.id.btnads0);
+		btnads0 = (ImageButton) view.findViewById(R.id.btnads0);
 		btnads0.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	chuhuo("0",1);
 		    }
 		});
-		btnadscancel = (Button) view.findViewById(R.id.btnadscancel);
+		btnadscancel = (ImageButton) view.findViewById(R.id.btnadscancel);
 		btnadscancel.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -227,7 +227,7 @@ public class BusinesslandFragment extends Fragment
 		    	}
 		    }
 		});
-		btnadsenter = (Button) view.findViewById(R.id.btnadsenter);
+		btnadsenter = (ImageButton) view.findViewById(R.id.btnadsenter);
 		btnadsenter.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -265,7 +265,8 @@ public class BusinesslandFragment extends Fragment
 		    @Override
 		    public void onClick(View arg0) 
 		    {
-		    	quhuodialog();		    	
+		    	if(quhuo)
+		    		quhuodialog();		    	
 		    }
 		});
 		//*********************
@@ -275,12 +276,12 @@ public class BusinesslandFragment extends Fragment
 	    // 获取所有收入信息，并存储到List泛型集合中
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if((tb_inaccount!=null)&&(tb_inaccount.getCard()==1))
-		{
-			ivquhuo.setVisibility(View.VISIBLE);//打开
+    	{
+			quhuo=true;//打开
 		}
 		else
 		{
-			ivquhuo.setVisibility(View.GONE);//关闭
+			quhuo=false;//关闭
 		}
     	
 		return view;  

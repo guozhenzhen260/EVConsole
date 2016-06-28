@@ -16,7 +16,9 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 
 public class Busgoods extends Activity 
 {
@@ -26,13 +28,16 @@ public class Busgoods extends Activity
 	Vmc_ProductAdapter productAdapter=null;
 	GridView gvbusgoodsProduct=null;
 	String proclassID=null;
-	ImageButton imgbtnbusgoodsback=null;
-	private String[] proID = null;
-	private String[] productID = null;
-	private String[] proImage = null;
-    private String[] prosales = null;
-    private String[] procount = null;
-    
+	ImageView imgbtnbusgoodsback=null,imgback=null,imgnext=null;
+	TextView txtpage=null;
+	private String[] proID = null,pageproID=null;
+	private String[] productID = null,pageproductID = null;
+	private String[] productName = null,pageproductName = null;
+	private String[] proImage = null,pageproImage = null;
+	private String[] promarket = null,pagepromarket = null;
+    private String[] prosales = null,pageprosales = null;
+    private String[] procount = null,pageprocount = null;
+    int count=0,page=0,pageindex=0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,10 @@ public class Busgoods extends Activity
 		setContentView(R.layout.busgoods);
 		BusgoodsAct = this;
 		this.gvbusgoodsProduct=(GridView) findViewById(R.id.gvbusgoodsProduct);
-		this.imgbtnbusgoodsback=(ImageButton)findViewById(R.id.imgbtnbusgoodsback);
+		this.imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
+		this.imgback=(ImageView)findViewById(R.id.imgback);
+		this.imgnext=(ImageView)findViewById(R.id.imgnext);
+		this.txtpage=(TextView)findViewById(R.id.txtpage);
 //		//动态设置控件高度
 //    	//
 //    	DisplayMetrics  dm = new DisplayMetrics();  
@@ -100,6 +108,26 @@ public class Busgoods extends Activity
 		VmcProductThread vmcProductThread=new VmcProductThread();
     	vmcProductThread.execute();
     	
+    	imgback.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(pageindex>0)
+		    	{
+		    		pageindex--;
+		    		updategrid(pageindex);
+		    	}
+		    }
+		});
+        imgnext.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(pageindex<(page-1))
+		    	{
+		    		pageindex++;
+		    		updategrid(pageindex);
+		    	}
+		    }
+		});
 		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -169,15 +197,48 @@ public class Busgoods extends Activity
 		@Override
 		protected void onPostExecute(Vmc_ProductAdapter productAdapter) {
 			// TODO Auto-generated method stub
-			ProPictureAdapter adapter = new ProPictureAdapter(productAdapter.getProductName(),productAdapter.getPromarket(),productAdapter.getProsales(),productAdapter.getProImage(),productAdapter.getProcount(), Busgoods.this);// 创建pictureAdapter对象
-	    	gvbusgoodsProduct.setAdapter(adapter);// 为GridView设置数据源
-	    	proID=productAdapter.getProID();
+			proID=productAdapter.getProID();
 	    	productID=productAdapter.getProductID();
+	    	productName=productAdapter.getProductName();
 	    	proImage=productAdapter.getProImage();
+	    	promarket=productAdapter.getPromarket();
 	    	prosales=productAdapter.getProsales();
-	    	procount=productAdapter.getProcount();	    	
+	    	procount=productAdapter.getProcount();
+	    	count=proID.length;
+	        page=(count%3>0)?(count/3)+1:(count/3);
+	        pageindex=0;
+	        updategrid(pageindex);	    	
 		}
 				
 	}
+	
+	private void updategrid(int pagein)
+    {
+    	int max=((pagein*3+3)>count)?count:(pagein*3+3);
+    	int index=pagein*3;
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<count="+count+",page="+page+",pageindex="+pagein+"index="+index+"max="+max,"log.txt");
+    	StringBuilder info=new StringBuilder();
+    	info.append(pagein+1).append("/").append(page);    	
+    	txtpage.setText(info);
+    	pageproID=new String[max-index];
+    	pageproductID=new String[max-index];
+    	pageproductName=new String[max-index];
+    	pageproImage=new String[max-index];
+    	pagepromarket=new String[max-index];
+    	pageprosales=new String[max-index];
+    	pageprocount=new String[max-index];
+    	for(int i=0;index<max;i++,index++)
+        {
+    		pageproID[i]=proID[index];
+    		pageproductID[i]=productID[index];
+    		pageproductName[i]=productName[index];
+    		pageproImage[i]=proImage[index];
+    		pagepromarket[i]=promarket[index];
+    		pageprosales[i]=prosales[index];
+    		pageprocount[i]=procount[index];
+        }
+    	ProPictureAdapter adapter = new ProPictureAdapter(pageproductName,pagepromarket,pageprosales,pageproImage,pageprocount, Busgoods.this);// 创建pictureAdapter对象
+    	gvbusgoodsProduct.setAdapter(adapter);// 为GridView设置数据源      
+    }
 
 }

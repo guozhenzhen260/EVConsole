@@ -17,13 +17,14 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 
 public class BusgoodsClass extends Activity
 {
 	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // —”≥Ÿ5∑÷÷”	
 	public static BusgoodsClass BusgoodsClassAct=null;
 	GridView gvbusgoodsclass=null;
-	ImageButton imgbtnbusgoodsclassback=null;
+	ImageView imgbtnbusgoodsback=null;
 	String proclassID[];
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +63,8 @@ public class BusgoodsClass extends Activity
                 }
             }
         });
-	    imgbtnbusgoodsclassback=(ImageButton)findViewById(R.id.imgbtnbusgoodsclassback);
-	    imgbtnbusgoodsclassback.setOnClickListener(new OnClickListener() {
+	    imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
+	    imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	finish();
