@@ -38,6 +38,7 @@ public class BusZhier extends Activity
 	TextView txtbuszhiercount=null,txtbuszhiamerount=null,txtbuszhierrst=null,txtbuszhiertime=null;
 	ImageButton imgbtnbuszhierqxzf=null,imgbtnbuszhierqtzf=null;
 	ImageView ivbuszhier=null;
+	ImageView imgbtnbusgoodsback=null;
 	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60—”≥Ÿ5∑÷÷”
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
@@ -103,6 +104,15 @@ public class BusZhier extends Activity
 		imgbtnbuszhierqtzf.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
+		    	finishActivity();
+		    }
+		});
+		this.imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
+		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {		    	
+		    	if(BusgoodsSelect.BusgoodsSelectAct!=null)
+					BusgoodsSelect.BusgoodsSelectAct.finish(); 
 		    	finishActivity();
 		    }
 		});

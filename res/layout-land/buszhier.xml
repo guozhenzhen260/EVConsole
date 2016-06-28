@@ -2,10 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgjsqd"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zfbland" />
     <TextView
         android:id="@+id/txtbuszhiercount"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
+        android:layout_below="@+id/imgjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="integer"
@@ -15,7 +21,7 @@
         android:id="@+id/txtbuszhiersp"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhierjsqd"
+        android:layout_below="@+id/imgjsqd"
         android:layout_toRightOf="@+id/txtbuszhiercount"
         android:textSize="40sp"
         android:textStyle="bold"
@@ -26,7 +32,7 @@
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/txtbuszhiersp"
-        android:layout_below="@+id/ivbuszhierjsqd"
+        android:layout_below="@+id/imgjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="decimal"
@@ -50,34 +56,54 @@
         android:textStyle="bold"        
         android:textColor="#FF0000" 
         android:text="时间:" />
-	<ImageView 
-   	    android:id = "@+id/ivbuszhierb"
-   	    android:layout_width="329dp"
-		android:layout_height="329dp"	
-		android:layout_toLeftOf="@+id/ivbuszhier"
-		android:layout_below="@+id/txtbuszhierrst"	
-		android:src="@drawable/zhier"			
-   	/>
+	
 	<ImageView
 	    android:id="@+id/ivbuszhier"
-	    android:layout_width="329dp"
-        android:layout_height="329dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/txtbuszhierrst"	
-        android:src="@drawable/wutupian"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtbuszhiertime"	     
+        android:src="@drawable/zhierwaitland"
         />
+	<ImageView 
+   	    android:id = "@+id/ivbuszhierb"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbuszhiertime"	
+		android:layout_toRightOf="@+id/ivbuszhier"	
+		android:src="@drawable/zfbtsxxland"			
+   	/>
 	<ImageButton
         android:id="@+id/imgbtnbuszhierqxzf"
         android:layout_below="@+id/ivbuszhierb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qxzffang" />
+        android:src="@drawable/qxzffangland" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhierqtzf"
         android:layout_below="@+id/ivbuszhierb"
         android:layout_toRightOf="@+id/imgbtnbuszhierqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qtzffang" />
-
+        android:src="@drawable/qtzffangland" />
+	<ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgbackland" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgnextland" />       	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinishland" />
 </RelativeLayout>
