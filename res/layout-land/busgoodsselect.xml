@@ -2,17 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgcpxq"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/cpxqland" />
     <ImageView  
 	        android:id="@+id/ivbusgoodselProduct"  
-	        android:layout_width="305dp"   
-	        android:layout_height="405dp"   
+	        android:layout_width="430dp"   
+	        android:layout_height="390dp"   
+	        android:layout_below="@+id/imgcpxq" 
 	        android:layout_alignParentLeft="true"
 	     />	
 	<TextView
             android:id="@+id/txtbusgoodselName"
 	        android:layout_width="wrap_content" 
 	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/imgcpxq" 
 	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
+	        android:layout_marginLeft="20dp"
 	        android:textSize="40sp"
             android:textStyle="bold"
 	        />
@@ -22,10 +30,11 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/txtbusgoodselName"
 	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
+	        android:layout_marginLeft="20dp"
 	        android:textSize="40sp"
             android:textStyle="bold"
             android:textColor="#FF6633" 
-	        android:text="实付金额"
+	        android:text="零售价:"
 	        />		    
 	<TextView
             android:id="@+id/txtbusgoodselAmount"
@@ -38,63 +47,63 @@
 	        android:numeric="decimal"
 	        android:textColor="#FF6633" 
 	        android:text="0" />
-	<TextView
-            android:id="@+id/txtbusgoodselDes"
-	        android:layout_width="wrap_content" 
-	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
-	        android:layout_below="@+id/txtbusgoodselAmounttxt"
-	        android:textSize="20sp"
-            android:textStyle="bold"		        
-            android:text="产品描述"
-	        />      
-	<WebView
-            android:id="@+id/webproductDesc"
-            android:textSize="40sp"
-	        android:minWidth="150px"
-	        android:layout_toRightOf="@+id/txtbusgoodselDes"
-	        android:layout_below="@+id/txtbusgoodselAmount"
-			android:layout_width="wrap_content" 
-	        android:layout_height="370dp"
-	        android:text="" />
 	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselzhier"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbusgoodselProduct"
+		android:layout_marginLeft="20dp"
 		android:src="@drawable/zhier"			
    	/> 
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselweixing"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_alignParentBottom="true"
-		android:layout_toRightOf="@+id/ivbuszhiselzhier"
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselzhier"		
+		android:layout_marginLeft="20dp"
 		android:src="@drawable/weixing"		
    	/> 	
    	<ImageView 
    	    android:id = "@+id/ivbuszhiselamount"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_alignParentBottom="true"
-		android:layout_toRightOf="@+id/ivbuszhiselweixing"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselweixing"
+		android:layout_marginLeft="20dp"
 		android:src="@drawable/amount"		
    	/> 
    	<ImageView 
    	    android:id = "@+id/ivbuszhiseltihuo"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_alignParentBottom="true"
-		android:layout_toRightOf="@+id/ivbuszhiselamount"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselamount"
+		android:layout_marginLeft="20dp"	
 		android:src="@drawable/tihuopwd"			
    	/> 	
-	<ImageButton
-        android:id="@+id/imgbtnbusgoodselback"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:src="@drawable/busfinish" />
+	<ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgbackland" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgnextland" />       	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinishland" />
 
 </RelativeLayout>

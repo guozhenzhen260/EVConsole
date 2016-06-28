@@ -2,10 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgjsqd"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/xjzfland" />
     <TextView
         android:id="@+id/txtbuszhiamountcount"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
+        android:layout_below="@+id/imgjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="integer"
@@ -15,7 +21,7 @@
         android:id="@+id/txtbuszhiamountsp"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhiamountjsqd"
+        android:layout_below="@+id/imgjsqd"
         android:layout_toRightOf="@+id/txtbuszhiamountcount"
         android:textSize="40sp"
         android:textStyle="bold"
@@ -26,7 +32,7 @@
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/txtbuszhiamountsp"
-        android:layout_below="@+id/ivbuszhiamountjsqd"
+        android:layout_below="@+id/imgjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="decimal"
@@ -36,7 +42,7 @@
         android:id="@+id/txtbuszhiamountbill"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtbuszhiamountAmount"
+        android:layout_below="@+id/txtbuszhiamountcount"
         android:textSize="40sp"
         android:textStyle="bold"
         android:text="投币金额:"
@@ -46,7 +52,7 @@
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/txtbuszhiamountbill"
-        android:layout_below="@+id/txtbuszhiamountAmount"
+        android:layout_below="@+id/txtbuszhiamountcount"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="decimal"
@@ -61,13 +67,7 @@
         android:textStyle="bold"        
         android:textColor="#FF0000" 
         android:text="时间:" />	
-   	<ImageView 
-   	    android:id = "@+id/ivbuszhiamountbill"
-   	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_toRightOf="@+id/txtbuszhiamountAmount"		
-		android:src="@drawable/billonlyfang"			
-   	/>
+   	
    	<TextView
         android:id="@+id/txtbuszhiamounttsxx"
         android:layout_width="wrap_content" 
@@ -78,17 +78,45 @@
         android:textColor="#FF0000" 
         android:text="提示信息"
         />
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiamountbill"
+   	    android:layout_below="@+id/txtbuszhiamounttsxx"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"		
+		android:src="@drawable/billonlyfangland"			
+   	/>
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqxzf"
-        android:layout_below="@+id/txtbuszhiamounttsxx"
+        android:layout_below="@+id/ivbuszhiamountbill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qxzffang" />
+        android:src="@drawable/qxzffangland" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqtzf"
-        android:layout_below="@+id/imgbtnbuszhiamountqxzf"
+        android:layout_below="@+id/ivbuszhiamountbill"
+        android:layout_toRightOf="@+id/imgbtnbuszhiamountqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qtzffang" />
-
+        android:src="@drawable/qtzffangland" />
+	<ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgbackland" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgnextland" />       	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinishland" />
 </RelativeLayout>

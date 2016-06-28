@@ -27,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BusZhiAmount  extends Activity
@@ -39,6 +40,7 @@ public class BusZhiAmount  extends Activity
 	TextView txtbuszhiamountcount=null,txtbuszhiamountAmount=null,txtbuszhiamountbillAmount=null,txtbuszhiamounttime=null,
 			txtbuszhiamounttsxx=null;
 	ImageButton imgbtnbuszhiamountqxzf=null,imgbtnbuszhiamountqtzf=null;
+	ImageView imgbtnbusgoodsback=null;
 	float amount=0;//商品需要支付金额
 	float billmoney=0,coinmoney=0,money=0;//投币金额
 	float RealNote=0,RealCoin=0,RealAmount=0;//退币金额
@@ -111,6 +113,15 @@ public class BusZhiAmount  extends Activity
 		imgbtnbuszhiamountqtzf.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
+		    	finishActivity();
+		    }
+		});
+		this.imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
+		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {		    	
+		    	if(BusgoodsSelect.BusgoodsSelectAct!=null)
+					BusgoodsSelect.BusgoodsSelectAct.finish(); 
 		    	finishActivity();
 		    }
 		});

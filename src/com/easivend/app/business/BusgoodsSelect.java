@@ -27,10 +27,9 @@ public class BusgoodsSelect extends Activity
 {
 	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static BusgoodsSelect BusgoodsSelectAct=null;
-	ImageView ivbusgoodselProduct=null,imgbtnbusgoodselback=null;
+	ImageView ivbusgoodselProduct=null,imgbtnbusgoodsback=null;
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiseltihuo=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
-	WebView webproductDesc;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -81,25 +80,25 @@ public class BusgoodsSelect extends Activity
 		{
 			txtbusgoodselAmount.setText("已售罄");
 		}
-		//得到商品描述
-		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
-		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
-	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
-	    if(tb_vmc_product.getProductDesc().isEmpty()!=true) 
-	    {
-	    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
-		    WebSettings settings = webproductDesc.getSettings();
-		    settings.setSupportZoom(true);
-		    settings.setTextSize(WebSettings.TextSize.LARGEST);
-		    webproductDesc.getSettings().setSupportMultipleWindows(true);
-		    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
-		    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
-		    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
-	    }
-	    else
-	    {
-	    	webproductDesc.setVisibility(View.GONE);
-	    }
+//		//得到商品描述
+//		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
+//		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
+//	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
+//	    if(tb_vmc_product.getProductDesc().isEmpty()!=true) 
+//	    {
+//	    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
+//		    WebSettings settings = webproductDesc.getSettings();
+//		    settings.setSupportZoom(true);
+//		    settings.setTextSize(WebSettings.TextSize.LARGEST);
+//		    webproductDesc.getSettings().setSupportMultipleWindows(true);
+//		    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+//		    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+//		    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+//	    }
+//	    else
+//	    {
+//	    	webproductDesc.setVisibility(View.GONE);
+//	    }
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -160,6 +159,7 @@ public class BusgoodsSelect extends Activity
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
+    		int zhifucount=0;
     		//有打开提货码功能
     		if(tb_inaccount.getPrinter()==1)
     		{
@@ -170,6 +170,7 @@ public class BusgoodsSelect extends Activity
         			ivbuszhiselamount.setVisibility(View.GONE);//关闭
         			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
         			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+        			zhifucount++;
         		}
     			else
     			{
@@ -181,6 +182,7 @@ public class BusgoodsSelect extends Activity
             		else
             		{
             			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+            			zhifucount++;
             		}	
             		if(tb_inaccount.getZhifubaoer()!=1)
             		{
@@ -189,6 +191,7 @@ public class BusgoodsSelect extends Activity
             		else
             		{
             			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+            			zhifucount++;
             		}
             		if(tb_inaccount.getWeixing()!=1)
             		{
@@ -197,6 +200,7 @@ public class BusgoodsSelect extends Activity
             		else
             		{
             			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+            			zhifucount++;
             		}
     			}
     		}
@@ -211,6 +215,7 @@ public class BusgoodsSelect extends Activity
         		else
         		{
         			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+        			zhifucount++;
         		}	
         		if(tb_inaccount.getZhifubaoer()!=1)
         		{
@@ -219,6 +224,7 @@ public class BusgoodsSelect extends Activity
         		else
         		{
         			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+        			zhifucount++;
         		}
         		if(tb_inaccount.getWeixing()!=1)
         		{
@@ -227,11 +233,26 @@ public class BusgoodsSelect extends Activity
         		else
         		{
         			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+        			zhifucount++;
+        		}
+        		switch(zhifucount)
+        		{
+        			case 3:
+        				ivbuszhiselamount.setImageResource(R.drawable.amountnormalland);
+        				ivbuszhiselzhier.setImageResource(R.drawable.zhiernormalland);
+        				ivbuszhiselweixing.setImageResource(R.drawable.weixingnormalland);
+        				break;
+        			case 2:
+        			case 1:	
+        				ivbuszhiselamount.setImageResource(R.drawable.amountlargeland);
+        				ivbuszhiselzhier.setImageResource(R.drawable.zhierlargeland);
+        				ivbuszhiselweixing.setImageResource(R.drawable.weixinglargeland);
+        				break;	
         		}
     		}    		    			
     	}		
-		imgbtnbusgoodselback=(ImageButton)findViewById(R.id.imgbtnbusgoodselback);
-		imgbtnbusgoodselback.setOnClickListener(new OnClickListener() {
+    	imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
+    	imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	finish();
