@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.view.COMService;
@@ -1705,56 +1706,60 @@ public class HuodaoTest extends TabActivity
 				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set2=serializableMap2.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
-				//是出货操作
-				if(devopt==COMService.EV_CHUHUOCHILD)
+				int EV_TYPE=Set2.get("EV_TYPE");
+				if((EV_TYPE==EVprotocol.EV_BENTO_OPEN)||(EV_TYPE==EVprotocol.EV_COLUMN_OPEN))
 				{
-					device=(Integer)Set2.get("addr");//出货柜号						
-					hdid=(Integer)Set2.get("box");//货道id
-					status=Set2.get("result");//出货结果
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
-							
-					txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
-					//循环继续做货道配置操作
-					if(autochu)
+					//是出货操作
+					if(devopt==COMService.EV_CHUHUOCHILD)
 					{
-						//弹簧货道
-						if(cabinetTypepeivar==1)
+						device=(Integer)Set2.get("addr");//出货柜号						
+						hdid=(Integer)Set2.get("box");//货道id
+						status=Set2.get("result");//出货结果
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货结果"+"device=["+device+"],hdid=["+hdid+"],status=["+status+"]","log.txt");	
+								
+						txthuorst.setText("device=["+device+"],hdid=["+hdid+"],status=["+status+"]");
+						//循环继续做货道配置操作
+						if(autochu)
 						{
-							autohuofile(status);
+							//弹簧货道
+							if(cabinetTypepeivar==1)
+							{
+								autohuofile(status);
+							}
+							//升降机货道
+							else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+							{
+								autoelevatorfile(status);
+							}
 						}
-						//升降机货道
-						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+						
+						sethuorst(status);
+						//循环继续做出货操作
+						if(autohuonno)
 						{
-							autoelevatorfile(status);
+							setallhuorst();
+							//延时
+						    new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {            	
+					            	//出货下一个货道
+									if((huonno>0)&&(huonno<huonum))
+									{							
+										huonno++;
+										comsend(COMService.EV_CHUHUOCHILD,huonno);
+									}
+									else if(huonno>=huonum)
+									{							
+										huonno=1;
+										autohuonum++;
+										comsend(COMService.EV_CHUHUOCHILD,huonno);
+									}
+					            }
+	
+							}, 500);						
 						}
-					}
-					
-					sethuorst(status);
-					//循环继续做出货操作
-					if(autohuonno)
-					{
-						setallhuorst();
-						//延时
-					    new Handler().postDelayed(new Runnable() 
-						{
-				            @Override
-				            public void run() 
-				            {            	
-				            	//出货下一个货道
-								if((huonno>0)&&(huonno<huonum))
-								{							
-									huonno++;
-									comsend(COMService.EV_CHUHUOCHILD,huonno);
-								}
-								else if(huonno>=huonum)
-								{							
-									huonno=1;
-									autohuonum++;
-									comsend(COMService.EV_CHUHUOCHILD,huonno);
-								}
-				            }
-
-						}, 500);						
 					}
 				}
 				break;

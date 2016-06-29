@@ -55,8 +55,7 @@ public class COMService extends Service {
 	public static final int EV_COOLCHILD	= 6;	//制冷	
 	public static final int EV_HOTCHILD		= 7;	//加热
 	
-	public static final int EV_CHECKMAIN	= 8;	//货道查询	返回
-	public static final int EV_OPTMAIN  	= 9;	//货道操作返回
+	public static final int EV_CHECKMAIN	= 8;	//货道查询	返回	
 	public static final int EV_SETHUOCHILD	= 10;	//货道设置
 	
 	//=====================现金设备==================================
@@ -70,6 +69,8 @@ public class COMService extends Service {
 	public static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
 	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
 	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
+	
+	public static final int EV_OPTMAIN  	= 9;	//所有设备操作返回
 	
 	ActivityReceiver receiver;
 	LocalBroadcastManager localBroadreceiver;

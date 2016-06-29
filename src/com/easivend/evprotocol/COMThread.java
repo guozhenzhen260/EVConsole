@@ -40,8 +40,7 @@ public class COMThread implements Runnable
 	public static final int EV_BENTO_COOLCHILD 	= 6;	//快递柜制冷
 	public static final int EV_BENTO_HOTCHILD 	= 7;	//快递柜加热
 	
-	public static final int EV_BENTO_CHECKMAIN	= 8;	//快递柜查询返回
-	public static final int EV_BENTO_OPTMAIN	= 9;	//快递柜操作返回
+	public static final int EV_BENTO_CHECKMAIN	= 8;	//快递柜查询返回	
 	//=====================弹簧柜类型==============================================================================
 	public static final int EV_COLUMN_CHECKALLCHILD = 10;	//弹簧柜全部查询
 	public static final int EV_COLUMN_CHECKCHILD = 11;	//弹簧柜查询
@@ -63,6 +62,9 @@ public class COMThread implements Runnable
 	public static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
 	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
 	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
+	
+	
+	public static final int EV_BENTO_OPTMAIN	= 9;	//所有设备操作返回
 	
 	
 	private Handler mainhand=null,childhand=null;

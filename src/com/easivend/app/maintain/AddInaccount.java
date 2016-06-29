@@ -827,6 +827,7 @@ public class AddInaccount extends TabActivity
 							intent5.putExtra("opt", 0);	
 							intent5.setAction("android.intent.action.comsend");//action与接收器相同
 							comBroadreceiver.sendBroadcast(intent5);
+							cashopt=false;
 						}
 						finish();
 						break;
@@ -929,6 +930,7 @@ public class AddInaccount extends TabActivity
 	{
 		//扣钱
 	    //EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend((float)amount));
+		timer.shutdown(); 
 		if(amount>0)
 		{
 			Intent intent=new Intent();
@@ -950,6 +952,7 @@ public class AddInaccount extends TabActivity
 				intent.putExtra("opt", 0);	
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
+				cashopt=false;
 			}
 			finish();
 		}
