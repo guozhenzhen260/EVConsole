@@ -226,6 +226,16 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		localBroadreceiver.sendBroadcast(intent2);
 	}
 	
+	//步骤三、实现Business接口,传递提示信息
+	@Override
+	public void tishiInfo(int infotype) {
+		// TODO Auto-generated method stub
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<land提示类型="+infotype,"log.txt");
+		Intent intent3 = new Intent(BusLand.this, BusTishi.class);// 使用Accountflag窗口初始化Intent
+    	intent3.putExtra("infotype", infotype);
+    	startActivityForResult(intent3,REQUEST_CODE);// 打开Accountflag
+	}
+	
 	//=============
 	//Server服务相关
 	//=============	
@@ -370,6 +380,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
         setResult(MaintainActivity.RESULT_CANCELED,intent);
 		super.onDestroy();		
 	}
+
+	
 
 	
 

@@ -43,7 +43,7 @@ public class BusinesslandFragment extends Fragment
 	EditText txtadsTip=null;
 	ImageButton btnads1=null, btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
 			btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadsclass=null,btnadscancel=null,btnadsenter=null;
-	ImageView ivquhuo=null;
+	ImageView ivquhuo=null,ivgmys=null,ivczjx=null;
 	Intent intent=null;
 	private boolean quhuo=false;//true使用取货码功能
 	private static int count=0;
@@ -98,6 +98,7 @@ public class BusinesslandFragment extends Fragment
         void stoptimer();//关闭定时器
         void restarttimer();//重新打开定时器
         void quhuoBusiness(String PICKUP_CODE);//传递取货码
+        void tishiInfo(int infotype);//传递提示信息
     }
     @Override
     public void onDetach() {
@@ -258,6 +259,20 @@ public class BusinesslandFragment extends Fragment
                 	listterner.gotoBusiness(2,null);
 		    	}
 		    	
+		    }
+		});
+		ivgmys = (ImageView) view.findViewById(R.id.ivgmys);
+		ivgmys.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	listterner.tishiInfo(1);		    	
+		    }
+		});
+		ivczjx = (ImageView) view.findViewById(R.id.ivczjx);
+		ivczjx.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	listterner.tishiInfo(2);		    	
 		    }
 		});
 		ivquhuo = (ImageView) view.findViewById(R.id.ivquhuo);
