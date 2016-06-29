@@ -27,9 +27,7 @@ import android.widget.TextView;
 
 public class BusHuo extends Activity 
 {
-	private final int SPLASH_DISPLAY_LENGHT = 500; // 延迟2秒	
-	//进度对话框
-	ProgressDialog dialog= null;
+	private final int SPLASH_DISPLAY_LENGHT = 500; // 延迟2秒		
 	private String proID = null;
 	private String productID = null;
 	private String proType = null;
@@ -97,7 +95,7 @@ public class BusHuo extends Activity
 				+count+" zhifutype="+zhifutype,"log.txt");		
   	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
 		this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);
-		ivbushuoquhuo.setVisibility(View.GONE);
+		
 		
 		//****
 		//出货
@@ -134,7 +132,6 @@ public class BusHuo extends Activity
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt"); 
 		}
 		
-		dialog= ProgressDialog.show(BusHuo.this,"正在出货中","请稍候...");
 		new Handler().postDelayed(new Runnable() 
 		{
             @Override
@@ -215,7 +212,7 @@ public class BusHuo extends Activity
 				{
 					status=Set2.get("result");//出货结果
 					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<BusHuo出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","com.txt");	
-					dialog.dismiss();
+					
 					//不是自提密码的，才扣除存货余量
 					if(OrderDetail.getPayType()!=5)
 					{
@@ -226,19 +223,20 @@ public class BusHuo extends Activity
 					//出货成功
 					if(status==1)
 					{
-						txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品");
+						txtbushuoname.setText(proID+"["+prosales+"]"+"->出货完成，请到"+cabinetvar+"柜"+huodaoNo+"货道取商品!");
 						txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 						chuhuoLog(1);//记录日志
+						ivbushuoquhuo.setImageResource(R.drawable.chusuccessland);
 					}
 					else
 					{
-						txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，未扣钱");
+						txtbushuoname.setText(proID+"["+prosales+"]"+"->"+cabinetvar+"柜"+huodaoNo+"货道出货失败，您没有被扣款!");
 						txtbushuoname.setTextColor(android.graphics.Color.RED);
 						chuhuoLog(0);//记录日志
+						ivbushuoquhuo.setImageResource(R.drawable.chufailland);
 					}
 											
 					//3.退回找零页面
-					ivbushuoquhuo.setVisibility(View.VISIBLE);
 		 	    	new Handler().postDelayed(new Runnable() 
 					{
 	                    @Override

@@ -2,19 +2,49 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <TextView 
-         android:id="@+id/txtbushuoname" 
-         android:textSize="80sp" 
-         android:gravity="center" 
-         android:layout_width="wrap_content" 
-         android:layout_height="wrap_content" 
-    /> 
-
+    <ImageView
+	       android:id="@+id/imgchts"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/chtsland" />
+    
 	<ImageView 
    	    android:id = "@+id/ivbushuoquhuo"
-   	    android:layout_width="match_parent"
-		android:layout_height="match_parent"	
-		android:layout_below="@+id/lvbushuo"			
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/imgchts"	
+		android:src="@drawable/chuwaitland"				
    	/>
+	
+	 <TextView 
+         android:id="@+id/txtbushuoname" 
+         android:textSize="80sp" 
+         android:layout_centerHorizontal="true" 
+         android:layout_width="wrap_content" 
+         android:layout_height="wrap_content" 
+         android:layout_below="@+id/imgchts"
+    /> 
+    
+	 <ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgbackland" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgnextland" />       	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinishland" />
 
 </RelativeLayout>

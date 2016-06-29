@@ -2,11 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgjsqd"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/weiland" />
     <TextView
         android:id="@+id/txtbuszhiweicount"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhiweijsqd"
+        android:layout_below="@+id/imgjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="integer"
@@ -16,7 +21,7 @@
         android:id="@+id/txtbuszhiweisp"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivbuszhiweijsqd"
+        android:layout_below="@+id/imgjsqd"
         android:layout_toRightOf="@+id/txtbuszhiweicount"
         android:textSize="40sp"
         android:textStyle="bold"
@@ -27,7 +32,7 @@
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/txtbuszhiweisp"
-        android:layout_below="@+id/ivbuszhiweijsqd"
+        android:layout_below="@+id/imgjsqd"
         android:textSize="40sp"
         android:textStyle="bold"
         android:numeric="decimal"
@@ -51,34 +56,54 @@
         android:textStyle="bold"        
         android:textColor="#FF0000" 
         android:text="时间:" />
-	<ImageView 
-   	    android:id = "@+id/ivbuszhiweib"
-   	    android:layout_width="329dp"
-		android:layout_height="329dp"	
-		android:layout_toLeftOf="@+id/ivbuszhiwei"
-		android:layout_below="@+id/txtbuszhiweirst"	
-		android:src="@drawable/weixing"				
-   	/>
 	<ImageView
 	    android:id="@+id/ivbuszhiwei"
-	    android:layout_width="329dp"
-        android:layout_height="329dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/txtbuszhiweirst"	
-        android:src="@drawable/wutupian"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtbuszhiweitime"	
+        android:src="@drawable/zhierwaitland"
         />
+	<ImageView 
+   	    android:id = "@+id/ivbuszhiweib"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbuszhiweitime"	
+		android:layout_toRightOf="@+id/ivbuszhiwei"	
+		android:src="@drawable/weitsxxland"				
+   	/>
+	
 	<ImageButton
         android:id="@+id/imgbtnbuszhiweiqxzf"
         android:layout_below="@+id/ivbuszhiweib"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qxzffang" />
+        android:src="@drawable/qxzffangland" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiweiqtzf"
         android:layout_below="@+id/ivbuszhiweib"
         android:layout_toRightOf="@+id/imgbtnbuszhiweiqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qtzffang" />
-
+        android:src="@drawable/qtzffangland" />
+	<ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgbackland" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/imgnextland" />       	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinishland" />
 </RelativeLayout>

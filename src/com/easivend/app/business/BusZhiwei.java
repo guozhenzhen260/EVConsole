@@ -40,6 +40,7 @@ public class BusZhiwei extends Activity
 	TextView txtbuszhiweicount=null,txtbuszhiweirount=null,txtbuszhiweirst=null,txtbuszhiweitime=null;
 	ImageButton imgbtnbuszhiweiqxzf=null,imgbtnbuszhiweiqtzf=null;
 	ImageView ivbuszhiwei=null;
+	ImageView imgbtnbusgoodsback=null;
 	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60—”≥Ÿ5∑÷÷”
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
@@ -106,6 +107,15 @@ public class BusZhiwei extends Activity
 		    @Override
 		    public void onClick(View arg0) {
 		    	finishActivity();		    	
+		    }
+		});
+		this.imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
+		imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {		    	
+		    	if(BusgoodsSelect.BusgoodsSelectAct!=null)
+					BusgoodsSelect.BusgoodsSelectAct.finish(); 
+		    	finishActivity();
 		    }
 		});
 		//***********************

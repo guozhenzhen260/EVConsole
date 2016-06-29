@@ -140,15 +140,15 @@ public class Busgoods extends Activity
 		gvbusgoodsProduct.setOnItemClickListener(new OnItemClickListener() {// 为GridView设置项单击事件
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if(Integer.parseInt(procount[arg2])>0)
+            	if(Integer.parseInt(pageprocount[arg2])>0)
                 {
 	            	Intent intent = null;// 创建Intent对象                
 	            	intent = new Intent(Busgoods.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
-	            	intent.putExtra("proID", proID[arg2]);
-	            	intent.putExtra("productID", productID[arg2]);
-	            	intent.putExtra("proImage", proImage[arg2]);
-	            	intent.putExtra("prosales", prosales[arg2]);
-	            	intent.putExtra("procount", procount[arg2]);
+	            	intent.putExtra("proID", pageproID[arg2]);
+	            	intent.putExtra("productID", pageproductID[arg2]);
+	            	intent.putExtra("proImage", pageproImage[arg2]);
+	            	intent.putExtra("prosales", pageprosales[arg2]);
+	            	intent.putExtra("procount", pageprocount[arg2]);
 	            	intent.putExtra("proType", "1");//1代表通过商品ID出货,2代表通过货道出货
 	            	intent.putExtra("cabID", "");//出货柜号,proType=1时无效
 		        	intent.putExtra("huoID", "");//出货货道号,proType=1时无效

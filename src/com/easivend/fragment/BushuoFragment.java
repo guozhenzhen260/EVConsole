@@ -31,7 +31,6 @@ public class BushuoFragment extends Fragment
     private TextView txtbushuoname = null;
     private ImageView ivbushuoquhuo=null;
     private int tempx=0;
-    private String draw=null,info=null;
     private int cabinetvar=0,huodaoNo=0,cabinetTypevar=0;
     private vmc_columnDAO columnDAO =null; 
     //出货结果
