@@ -49,18 +49,6 @@ public class COMThread implements Runnable
 	public static final int EV_ELEVATOR_CHECKCHILD = 14;	//升降机柜查询
 	public static final int EV_ELEVATOR_OPENCHILD 	= 15;	//升降机柜出货
 	
-	//=====================现金设备==================================
-	public static final int EV_MDB_ENABLE 	= 22;	//MDB设备使能
-	public static final int EV_MDB_HEART 	= 23;	//MDB设备心跳
-	public static final int EV_MDB_B_INFO 	= 24;	//MDB纸币器信息
-	public static final int EV_MDB_C_INFO 	= 25;	//MDB硬币器信息
-	public static final int EV_MDB_COST 	= 26;	//MDB设备扣款
-	public static final int EV_MDB_PAYBACK = 27;	//MDB设备退币
-	public static final int EV_MDB_PAYOUT 	= 28;	//MDB设备找币
-	public static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
-	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
-	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
-	
 	//=====================基础返回值==================================
 	public static final int EV_BENTO_CHECKALLMAIN	= 2;//所有货道全部查询返回
 	public static final int EV_BENTO_CHECKMAIN	= 8;	//货道查询返回
@@ -756,7 +744,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain22); // 发送消息
 					
 					break;	
-				case EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
+				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
 					int bill=0;
 					int coin=0;
 					int opt=0;
@@ -790,7 +778,7 @@ public class COMThread implements Runnable
 						    	{
 									//往接口回调信息
 									allSet.clear();
-									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("EV_TYPE", EVprotocol.EV_MDB_ENABLE);
 									allSet.put("opt", ev_head10.getInt("opt"));
 									allSet.put("bill_result", ev_head10.getInt("bill_result"));
 									allSet.put("coin_result", ev_head10.getInt("coin_result"));								
@@ -800,7 +788,7 @@ public class COMThread implements Runnable
 						    	{
 						    		//往接口回调信息
 									allSet.clear();
-									allSet.put("EV_TYPE", EV_MDB_ENABLE);
+									allSet.put("EV_TYPE", EVprotocol.EV_MDB_ENABLE);
 									allSet.put("opt", ev_head10.getInt("opt"));
 						    		allSet.put("bill_result", 0);
 									allSet.put("coin_result", 0);
@@ -825,7 +813,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain10); // 发送消息
 					
 					break;
-				case EV_MDB_B_INFO://子线程接收主线程现金设备
+				case EVprotocol.EV_MDB_B_INFO://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec11=EVprotocol.EVmdbBillInfoCheck(ToolClass.getCom_id());
 					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec11.toString(),"com.txt");
@@ -842,7 +830,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_B_INFO);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_B_INFO);
 								allSet.put("acceptor", ev_head11.getInt("acceptor"));
 								allSet.put("dispenser", ev_head11.getInt("dispenser"));
 								allSet.put("code", ev_head11.getString("code"));
@@ -868,7 +856,7 @@ public class COMThread implements Runnable
 					    	{
 					    		//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_B_INFO);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_B_INFO);
 								allSet.put("acceptor", 0);
 								allSet.put("dispenser", 0);
 								allSet.put("code", 0);
@@ -890,7 +878,7 @@ public class COMThread implements Runnable
 					
 					break;
 					//纸币配置	
-				case EV_MDB_B_CON:
+				case EVprotocol.EV_MDB_B_CON:
 					//1.得到信息
 					JSONObject ev14=null;
 					try {
@@ -914,14 +902,14 @@ public class COMThread implements Runnable
 							if(ev_head14.getInt("is_success")>0)
 					    	{
 					    		allSet.clear();
-					    		allSet.put("EV_TYPE", EV_MDB_B_CON);
+					    		allSet.put("EV_TYPE", EVprotocol.EV_MDB_B_CON);
 					    		allSet.put("acceptor", ev_head14.getInt("acceptor"));
 					    		allSet.put("dispenser", ev_head14.getInt("dispenser"));
 					    	}
 					    	else
 					    	{
 					    		allSet.clear();
-					    		allSet.put("EV_TYPE", EV_MDB_B_CON);
+					    		allSet.put("EV_TYPE", EVprotocol.EV_MDB_B_CON);
 					    		allSet.put("acceptor", 0);
 					    		allSet.put("dispenser", 0);
 					    	}
@@ -937,7 +925,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain14); // 发送消息
 					
 					break;
-				case EV_MDB_C_INFO://子线程接收主线程现金设备
+				case EVprotocol.EV_MDB_C_INFO://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec12=EVprotocol.EVmdbCoinInfoCheck(ToolClass.getCom_id());
 					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec12.toString(),"com.txt");
@@ -954,7 +942,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_C_INFO);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_C_INFO);
 								allSet.put("acceptor", ev_head12.getInt("acceptor"));
 								allSet.put("dispenser", ev_head12.getInt("dispenser"));
 								allSet.put("code", ev_head12.getString("code"));
@@ -993,7 +981,7 @@ public class COMThread implements Runnable
 					
 					break;
 					//硬币配置	
-				case EV_MDB_C_CON:
+				case EVprotocol.EV_MDB_C_CON:
 					//1.得到信息
 					JSONObject ev15=null;
 					try {
@@ -1017,14 +1005,14 @@ public class COMThread implements Runnable
 							if(ev_head15.getInt("is_success")>0)
 					    	{
 					    		allSet.clear();
-					    		allSet.put("EV_TYPE", EV_MDB_C_CON);
+					    		allSet.put("EV_TYPE", EVprotocol.EV_MDB_C_CON);
 					    		allSet.put("acceptor", ev_head15.getInt("acceptor"));
 					    		allSet.put("dispenser", ev_head15.getInt("dispenser"));
 					    	}
 					    	else
 					    	{
 					    		allSet.clear();
-					    		allSet.put("EV_TYPE", EV_MDB_C_CON);
+					    		allSet.put("EV_TYPE", EVprotocol.EV_MDB_C_CON);
 					    		allSet.put("acceptor", 0);
 					    		allSet.put("dispenser", 0);
 					    	}
@@ -1040,7 +1028,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain15); // 发送消息
 					
 					break;	
-				case EV_MDB_PAYOUT:
+				case EVprotocol.EV_MDB_PAYOUT:
 					int bill16=0;
 					int coin16=0;
 					int billPay16=0;
@@ -1073,7 +1061,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_PAYOUT);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYOUT);
 								allSet.put("result", ev_head16.getInt("result"));
 								allSet.put("bill_changed", ev_head16.getInt("bill_changed"));
 								allSet.put("coin_changed", ev_head16.getInt("coin_changed"));
@@ -1082,7 +1070,7 @@ public class COMThread implements Runnable
 					    	{
 					    		//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_PAYOUT);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYOUT);
 								allSet.put("result", 0);
 					    		allSet.put("bill_changed", 0);
 								allSet.put("coin_changed", 0);								
@@ -1099,7 +1087,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain16); // 发送消息
 					
 					break;
-				case EV_MDB_HP_PAYOUT://Hopper找币接口
+				case EVprotocol.EV_MDB_HP_PAYOUT://Hopper找币接口
 					int no17=0;
 					int nums17=0;
 					//1.得到信息
@@ -1128,7 +1116,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_HP_PAYOUT);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_HP_PAYOUT);
 								allSet.put("result", ev_head17.getInt("result"));
 								allSet.put("changed", ev_head17.getInt("changed"));								
 					    	}
@@ -1136,7 +1124,7 @@ public class COMThread implements Runnable
 					    	{
 					    		//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_HP_PAYOUT);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_HP_PAYOUT);
 								allSet.put("result", 0);
 					    		allSet.put("changed", 0);					    		
 							}
@@ -1153,7 +1141,7 @@ public class COMThread implements Runnable
 					
 					break;
 				//交易页面使用	
-				case EV_MDB_HEART://子线程接收主线程现金设备
+				case EVprotocol.EV_MDB_HEART://子线程接收主线程现金设备
 					//1.得到信息					
 					String rec13=EVprotocol.EVmdbHeart(ToolClass.getCom_id());
 					ToolClass.Log(ToolClass.INFO,"EV_COM","API<<"+rec13.toString(),"com.txt");
@@ -1170,7 +1158,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_HEART);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_HEART);
 								allSet.put("bill_enable", ev_head13.getInt("bill_enable"));
 								allSet.put("bill_payback", ev_head13.getInt("bill_payback"));
 								allSet.put("bill_err", ev_head13.getInt("bill_err"));
@@ -1195,7 +1183,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_HEART);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_HEART);
 								allSet.put("bill_enable", 0);
 								allSet.put("bill_payback", 0);
 								allSet.put("bill_err", 1);
@@ -1227,7 +1215,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain13); // 发送消息
 					
 					break;
-				case EV_MDB_COST:
+				case EVprotocol.EV_MDB_COST:
 					int cost18=0;
 					//1.得到信息
 					JSONObject ev18=null;
@@ -1254,7 +1242,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_COST);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_COST);
 								allSet.put("result", ev_head18.getInt("result"));
 								allSet.put("bill_recv", ev_head18.getInt("bill_recv"));
 								allSet.put("coin_recv", ev_head18.getInt("coin_recv"));
@@ -1263,7 +1251,7 @@ public class COMThread implements Runnable
 					    	{
 					    		//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_COST);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_COST);
 								allSet.put("result", 0);
 					    		allSet.put("bill_recv", 0);
 								allSet.put("coin_recv", 0);								
@@ -1280,7 +1268,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain18); // 发送消息
 					
 					break;
-				case EV_MDB_PAYBACK:
+				case EVprotocol.EV_MDB_PAYBACK:
 					int bill19=0;
 					int coin19=0;
 					//1.得到信息
@@ -1309,7 +1297,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_PAYBACK);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYBACK);
 								allSet.put("result", ev_head19.getInt("result"));
 								allSet.put("bill_changed", ev_head19.getInt("bill_changed"));
 								allSet.put("coin_changed", ev_head19.getInt("coin_changed"));	
@@ -1318,7 +1306,7 @@ public class COMThread implements Runnable
 					    	{
 								//往接口回调信息
 								allSet.clear();
-								allSet.put("EV_TYPE", EV_MDB_PAYBACK);
+								allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYBACK);
 								allSet.put("result", 0);
 								allSet.put("bill_changed", 0);
 								allSet.put("coin_changed", 0);

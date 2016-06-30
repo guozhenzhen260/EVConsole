@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
@@ -167,7 +168,7 @@ public class BusZhiAmount  extends Activity
 				int EV_TYPE=Set.get("EV_TYPE");
 				switch(EV_TYPE)
 				{
-					case COMService.EV_MDB_ENABLE:	
+					case EVprotocol.EV_MDB_ENABLE:	
 						//打开失败,等待重新打开
 						if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==0) )
 						{
@@ -187,7 +188,7 @@ public class BusZhiAmount  extends Activity
 								//EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
 								//硬币器查询接口
 								Intent intent3=new Intent();
-						    	intent3.putExtra("EVWhat", COMService.EV_MDB_C_INFO);	
+						    	intent3.putExtra("EVWhat", EVprotocol.EV_MDB_C_INFO);	
 								intent3.setAction("android.intent.action.comsend");//action与接收器相同
 								comBroadreceiver.sendBroadcast(intent3);
 							}
@@ -195,17 +196,17 @@ public class BusZhiAmount  extends Activity
 							ToolClass.setCoin_err(0);
 						}
 						break;
-					case COMService.EV_MDB_B_INFO:
+					case EVprotocol.EV_MDB_B_INFO:
 						break;
-					case COMService.EV_MDB_C_INFO:
+					case EVprotocol.EV_MDB_C_INFO:
 						dispenser=(Integer)Set.get("dispenser");
 					    //Heart操作
 					    Intent intent4=new Intent();
-				    	intent4.putExtra("EVWhat", COMService.EV_MDB_HEART);
+				    	intent4.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
 						intent4.setAction("android.intent.action.comsend");//action与接收器相同
 						comBroadreceiver.sendBroadcast(intent4);
 						break;	
-					case COMService.EV_MDB_HEART://心跳查询
+					case EVprotocol.EV_MDB_HEART://心跳查询
 						Map<String,Object> obj=new LinkedHashMap<String, Object>();
 						obj.putAll(Set);
 						iszhienable=1;					
@@ -284,9 +285,9 @@ public class BusZhiAmount  extends Activity
 					  		}
 					  	}
 						break;
-					case COMService.EV_MDB_PAYOUT://找零			
+					case EVprotocol.EV_MDB_PAYOUT://找零			
 						break;	
-					case COMService.EV_MDB_PAYBACK://退币
+					case EVprotocol.EV_MDB_PAYBACK://退币
 						RealNote=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));	
 						RealCoin=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));	
 						RealAmount=RealNote+RealCoin;						
@@ -349,7 +350,7 @@ public class BusZhiAmount  extends Activity
 	                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 	                    	//Heart操作
 						    Intent intent2=new Intent();
-					    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+					    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
 							intent2.setAction("android.intent.action.comsend");//action与接收器相同
 							comBroadreceiver.sendBroadcast(intent2);
 	                    }
@@ -414,7 +415,7 @@ public class BusZhiAmount  extends Activity
 					//扣钱
 		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
 					Intent intent=new Intent();
-			    	intent.putExtra("EVWhat", COMService.EV_MDB_COST);	
+			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
 					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
 					intent.setAction("android.intent.action.comsend");//action与接收器相同
 					comBroadreceiver.sendBroadcast(intent);
@@ -440,7 +441,7 @@ public class BusZhiAmount  extends Activity
 			            	//退币
 		  	  	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
 		  					Intent intent=new Intent();
-		  			    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+		  			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
 		  					intent.putExtra("bill", 1);	
 		  					intent.putExtra("coin", 1);	
 		  					intent.setAction("android.intent.action.comsend");//action与接收器相同
@@ -478,7 +479,7 @@ public class BusZhiAmount  extends Activity
   			//退币
   	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
   			Intent intent=new Intent();
-	    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+	    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
 			intent.putExtra("bill", 1);	
 			intent.putExtra("coin", 1);	
 			intent.setAction("android.intent.action.comsend");//action与接收器相同
@@ -494,7 +495,7 @@ public class BusZhiAmount  extends Activity
   	private void BillEnable(int opt)
   	{  		 	
 		Intent intent=new Intent();
-		intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+		intent.putExtra("EVWhat", EVprotocol.EV_MDB_ENABLE);	
 		intent.putExtra("bill", 1);	
 		intent.putExtra("coin", 1);	
 		intent.putExtra("opt", opt);	

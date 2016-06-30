@@ -55,18 +55,6 @@ public class COMService extends Service {
 	public static final int EV_HOTCHILD		= 7;	//加热	
 	public static final int EV_SETHUOCHILD	= 10;	//货道设置
 	
-	//=====================现金设备==================================
-	public static final int EV_MDB_ENABLE 	= 22;	//MDB设备使能
-	public static final int EV_MDB_HEART 	= 23;	//MDB设备心跳
-	public static final int EV_MDB_B_INFO 	= 24;	//MDB纸币器信息
-	public static final int EV_MDB_C_INFO 	= 25;	//MDB硬币器信息
-	public static final int EV_MDB_COST 	= 26;	//MDB设备扣款
-	public static final int EV_MDB_PAYBACK = 27;	//MDB设备退币
-	public static final int EV_MDB_PAYOUT 	= 28;	//MDB设备找币
-	public static final int EV_MDB_B_CON 	= 29;	//MDB纸币器配置
-	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
-	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
-	
 	//=====================基础返回值==================================
 	public static final int EV_CHECKALLMAIN	= 2;	//所有货道全部查询返回
 	public static final int EV_CHECKMAIN	= 8;	//货道查询返回
@@ -342,10 +330,10 @@ public class COMService extends Service {
         		childhand.sendMessage(child6);	
 				break;
 			//现金设备使能禁能	
-			case EV_MDB_ENABLE:
+			case EVprotocol.EV_MDB_ENABLE:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 使能禁能","com.txt");
 				Message child8=childhand.obtainMessage();
-				child8.what=COMThread.EV_MDB_ENABLE;
+				child8.what=EVprotocol.EV_MDB_ENABLE;
         		JSONObject ev8=null;
 	    		try {
 	    			ev8=new JSONObject();
@@ -361,10 +349,10 @@ public class COMService extends Service {
         		childhand.sendMessage(child8);	
 				break;
 				//纸币器查询接口
-			case EV_MDB_B_INFO:
+			case EVprotocol.EV_MDB_B_INFO:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 纸币器查询接口","com.txt");
 				Message child9=childhand.obtainMessage();
-				child9.what=COMThread.EV_MDB_B_INFO;
+				child9.what=EVprotocol.EV_MDB_B_INFO;
         		JSONObject ev9=null;
 	    		ev9=new JSONObject();	    			
 				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev9.toString(),"com.txt");
@@ -372,16 +360,16 @@ public class COMService extends Service {
         		childhand.sendMessage(child9);	
 				break;
 			//纸币配置	
-			case EV_MDB_B_CON:
+			case EVprotocol.EV_MDB_B_CON:
 				Message child12=childhand.obtainMessage();
-				child12.what=COMThread.EV_MDB_B_CON;
+				child12.what=EVprotocol.EV_MDB_B_CON;
 				
 				JSONObject jsonObject12 = new JSONObject(); 
 				JSONObject EV_json12 = new JSONObject(); 
 				JSONArray ch_r12=new JSONArray();
 				JSONArray ch_d12=new JSONArray();
 				try {
-					jsonObject12.put("EV_type", EV_MDB_B_CON);
+					jsonObject12.put("EV_type", EVprotocol.EV_MDB_B_CON);
 					jsonObject12.put("port_id", ToolClass.getCom_id());
 					jsonObject12.put("acceptor", bundle.getInt("billtype"));
 					jsonObject12.put("dispenser", bundle.getInt("billtype"));
@@ -412,26 +400,26 @@ public class COMService extends Service {
         		childhand.sendMessage(child12);	
 				break;
 				//硬币器查询接口
-			case EV_MDB_C_INFO:
+			case EVprotocol.EV_MDB_C_INFO:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 硬币器查询接口","com.txt");
 				Message child10=childhand.obtainMessage();
-				child10.what=COMThread.EV_MDB_C_INFO;
+				child10.what=EVprotocol.EV_MDB_C_INFO;
         		JSONObject ev10=null;
 	    		ev10=new JSONObject();	    			
 				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev10.toString(),"com.txt");
 	    		child10.obj=ev10;
         		childhand.sendMessage(child10);	
 				break;	
-			case EV_MDB_C_CON:
+			case EVprotocol.EV_MDB_C_CON:
 				Message child13=childhand.obtainMessage();
-				child13.what=COMThread.EV_MDB_C_CON;
+				child13.what=EVprotocol.EV_MDB_C_CON;
 				
 				JSONObject jsonObject13 = new JSONObject(); 
 				JSONObject EV_json13 = new JSONObject(); 
 				JSONArray ch_r13=new JSONArray();
 				JSONArray ch_d13=new JSONArray();
 				try {
-					jsonObject13.put("EV_type", EV_MDB_C_CON);
+					jsonObject13.put("EV_type", EVprotocol.EV_MDB_C_CON);
 					jsonObject13.put("port_id", ToolClass.getCom_id());
 					jsonObject13.put("acceptor", bundle.getInt("acceptor"));
 					jsonObject13.put("dispenser", bundle.getInt("dispenser"));
@@ -477,10 +465,10 @@ public class COMService extends Service {
 	    		child13.obj=EV_json13;
         		childhand.sendMessage(child13);
 				break;
-			case EV_MDB_PAYOUT:
+			case EVprotocol.EV_MDB_PAYOUT:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService MDB设备找币","com.txt");
 				Message child14=childhand.obtainMessage();
-				child14.what=COMThread.EV_MDB_PAYOUT;
+				child14.what=EVprotocol.EV_MDB_PAYOUT;
         		JSONObject ev14=null;
 	    		try {
 	    			ev14=new JSONObject();
@@ -496,10 +484,10 @@ public class COMService extends Service {
 	    		child14.obj=ev14;
         		childhand.sendMessage(child14);	
 				break;
-			case EV_MDB_HP_PAYOUT:
+			case EVprotocol.EV_MDB_HP_PAYOUT:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService hopper硬币器找币","com.txt");
 				Message child15=childhand.obtainMessage();
-				child15.what=COMThread.EV_MDB_HP_PAYOUT;
+				child15.what=EVprotocol.EV_MDB_HP_PAYOUT;
         		JSONObject ev15=null;
 	    		try {
 	    			ev15=new JSONObject();
@@ -514,20 +502,20 @@ public class COMService extends Service {
         		childhand.sendMessage(child15);
 				break;
 				//心跳查询接口
-			case EV_MDB_HEART:
+			case EVprotocol.EV_MDB_HEART:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService EV_MDB_HEART接口","com.txt");
 				Message child11=childhand.obtainMessage();
-				child11.what=COMThread.EV_MDB_HEART;
+				child11.what=EVprotocol.EV_MDB_HEART;
         		JSONObject ev11=null;
 	    		ev11=new JSONObject();	    			
 				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev11.toString(),"com.txt");
 	    		child11.obj=ev11;
         		childhand.sendMessage(child11);	
 				break;
-			case EV_MDB_COST:
+			case EVprotocol.EV_MDB_COST:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 扣款接口","com.txt");
 				Message child16=childhand.obtainMessage();
-				child16.what=COMThread.EV_MDB_COST;
+				child16.what=EVprotocol.EV_MDB_COST;
         		JSONObject ev16=null;
 	    		try {
 	    			ev16=new JSONObject();	
@@ -540,10 +528,10 @@ public class COMService extends Service {
 	    		child16.obj=ev16;
         		childhand.sendMessage(child16);
 				break;
-			case EV_MDB_PAYBACK://退币按钮接口
+			case EVprotocol.EV_MDB_PAYBACK://退币按钮接口
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 退币按钮接口","com.txt");
 				Message child17=childhand.obtainMessage();
-				child17.what=COMThread.EV_MDB_PAYBACK;
+				child17.what=EVprotocol.EV_MDB_PAYBACK;
         		JSONObject ev17=null;
 	    		try {
 	    			ev17=new JSONObject();	

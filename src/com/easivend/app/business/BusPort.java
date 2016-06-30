@@ -297,7 +297,7 @@ BushuoFragInteraction
 		                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
 		                    	//Heart操作
 							    Intent intent2=new Intent();
-						    	intent2.putExtra("EVWhat", COMService.EV_MDB_HEART);
+						    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
 								intent2.setAction("android.intent.action.comsend");//action与接收器相同
 								comBroadreceiver.sendBroadcast(intent2);
 		                    }
@@ -678,7 +678,7 @@ BushuoFragInteraction
   			//退币
   	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
   			Intent intent=new Intent();
-	    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+	    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
 			intent.putExtra("bill", 1);	
 			intent.putExtra("coin", 1);	
 			intent.setAction("android.intent.action.comsend");//action与接收器相同
@@ -987,7 +987,7 @@ BushuoFragInteraction
 					//扣钱
 		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
 					Intent intent=new Intent();
-			    	intent.putExtra("EVWhat", COMService.EV_MDB_COST);	
+			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
 					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
 					intent.setAction("android.intent.action.comsend");//action与接收器相同
 					comBroadreceiver.sendBroadcast(intent);
@@ -1012,7 +1012,7 @@ BushuoFragInteraction
 			            	//退币
 			    	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
 		  					Intent intent=new Intent();
-		  			    	intent.putExtra("EVWhat", COMService.EV_MDB_PAYBACK);	
+		  			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
 		  					intent.putExtra("bill", 1);	
 		  					intent.putExtra("coin", 1);	
 		  					intent.setAction("android.intent.action.comsend");//action与接收器相同
@@ -1362,7 +1362,7 @@ BushuoFragInteraction
 				int EV_TYPE=Set.get("EV_TYPE");
 				switch(EV_TYPE)
 				{
-					case COMService.EV_MDB_ENABLE:	
+					case EVprotocol.EV_MDB_ENABLE:	
 						//打开
 						if((Integer)Set.get("opt")==1)
 						{
@@ -1385,7 +1385,7 @@ BushuoFragInteraction
 									//EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
 									//硬币器查询接口
 									Intent intent3=new Intent();
-							    	intent3.putExtra("EVWhat", COMService.EV_MDB_C_INFO);	
+							    	intent3.putExtra("EVWhat", EVprotocol.EV_MDB_C_INFO);	
 									intent3.setAction("android.intent.action.comsend");//action与接收器相同
 									comBroadreceiver.sendBroadcast(intent3);
 								}
@@ -1394,18 +1394,18 @@ BushuoFragInteraction
 							}		
 						}												
 						break;
-					case COMService.EV_MDB_B_INFO:
+					case EVprotocol.EV_MDB_B_INFO:
 						break;
-					case COMService.EV_MDB_C_INFO:
+					case EVprotocol.EV_MDB_C_INFO:
 						dispenser=(Integer)Set.get("dispenser");						
 					    //Heart操作
 					    Intent intent4=new Intent();
-				    	intent4.putExtra("EVWhat", COMService.EV_MDB_HEART);
+				    	intent4.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
 						intent4.setAction("android.intent.action.comsend");//action与接收器相同
 						comBroadreceiver.sendBroadcast(intent4);
 						iszhienable=1;
 						break;	
-					case COMService.EV_MDB_HEART://心跳查询
+					case EVprotocol.EV_MDB_HEART://心跳查询
 						Map<String,Object> obj=new LinkedHashMap<String, Object>();
 						obj.putAll(Set);
 						//纸币器页面
@@ -1486,9 +1486,9 @@ BushuoFragInteraction
 						  	}
 						}						
 						break;
-					case COMService.EV_MDB_PAYOUT://找零			
+					case EVprotocol.EV_MDB_PAYOUT://找零			
 						break;	
-					case COMService.EV_MDB_PAYBACK://退币
+					case EVprotocol.EV_MDB_PAYBACK://退币
 						RealNote=ToolClass.MoneyRec((Integer)Set.get("bill_changed"));	
 						RealCoin=ToolClass.MoneyRec((Integer)Set.get("coin_changed"));	
 						RealAmount=RealNote+RealCoin;						
@@ -1545,7 +1545,7 @@ BushuoFragInteraction
   	private void BillEnable(int opt)
   	{  		 	
 		Intent intent=new Intent();
-		intent.putExtra("EVWhat", COMService.EV_MDB_ENABLE);	
+		intent.putExtra("EVWhat", EVprotocol.EV_MDB_ENABLE);	
 		intent.putExtra("bill", 1);	
 		intent.putExtra("coin", 1);	
 		intent.putExtra("opt", opt);	
