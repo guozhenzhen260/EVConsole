@@ -34,20 +34,16 @@ public class COMThread implements Runnable
 	//=====================快递柜类型==============================================================================
 	public static final int EV_BENTO_CHECKALLCHILD = 1;	//快递柜全部查询	
 	public static final int EV_BENTO_CHECKCHILD = 3;	//快递柜查询
-	public static final int EV_BENTO_OPENCHILD 	= 4;	//快递柜出货
-	public static final int EV_BENTO_LIGHTCHILD = 5;	//快递柜照明
-	public static final int EV_BENTO_COOLCHILD 	= 6;	//快递柜制冷
-	public static final int EV_BENTO_HOTCHILD 	= 7;	//快递柜加热
 		
 	//=====================弹簧柜类型==============================================================================
-	public static final int EV_COLUMN_CHECKALLCHILD = 10;	//弹簧柜全部查询
-	public static final int EV_COLUMN_CHECKCHILD = 11;	//弹簧柜查询
-	public static final int EV_COLUMN_OPENCHILD 	= 12;	//弹簧柜出货
+	public static final int EV_COLUMN_CHECKALLCHILD = 40;	//弹簧柜全部查询
+	public static final int EV_COLUMN_CHECKCHILD = 41;	//弹簧柜查询
+	public static final int EV_COLUMN_OPENCHILD 	= 42;	//弹簧柜出货
 	
 	//=====================升降机柜类型==============================================================================
-	public static final int EV_ELEVATOR_CHECKALLCHILD = 13;	//升降机柜全部查询
-	public static final int EV_ELEVATOR_CHECKCHILD = 14;	//升降机柜查询
-	public static final int EV_ELEVATOR_OPENCHILD 	= 15;	//升降机柜出货
+	public static final int EV_ELEVATOR_CHECKALLCHILD = 43;	//升降机柜全部查询
+	public static final int EV_ELEVATOR_CHECKCHILD = 44;	//升降机柜查询
+	public static final int EV_ELEVATOR_OPENCHILD 	= 45;	//升降机柜出货
 	
 	//=====================基础返回值==================================
 	public static final int EV_CHECKALLMAIN	= 2;//所有货道全部查询返回
@@ -221,7 +217,7 @@ public class COMThread implements Runnable
 	  				tomain.obj=allSet;
 	  				mainhand.sendMessage(tomain); // 发送消息
 					break;
-				case EV_BENTO_OPENCHILD://子线程接收主线程格子开门
+				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 					//1.得到信息
 					JSONObject ev2=null;
 					try {
@@ -287,7 +283,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain2); // 发送消息
 					
 					break;
-				case EV_BENTO_LIGHTCHILD://子线程接收主线程照明
+				case EVprotocol.EV_BENTO_LIGHT://子线程接收主线程照明
 					//1.得到信息
 					JSONObject ev3=null;
 					try {
@@ -340,7 +336,7 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain3); // 发送消息
 					
 					break;
-				case EV_BENTO_COOLCHILD://子线程接收主线程制冷
+				case EVprotocol.EV_BENTO_COOL://子线程接收主线程制冷
 					//1.得到信息
 					JSONObject ev4=null;
 					try {
@@ -392,7 +388,7 @@ public class COMThread implements Runnable
 	  				tomain4.obj=allSet;
 	  				mainhand.sendMessage(tomain4); // 发送消息
 					break;	
-				case EV_BENTO_HOTCHILD://子线程接收主线程加热	
+				case EVprotocol.EV_BENTO_HOT://子线程接收主线程加热	
 					//1.得到信息
 					JSONObject ev5=null;
 					try {

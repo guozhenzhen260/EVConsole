@@ -206,7 +206,7 @@ public class COMService extends Service {
 	        	    if(listinfos3.getCabType()==5)
 	        		{
 	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
-	    				child3.what=COMThread.EV_BENTO_OPENCHILD;
+	    				child3.what=EVprotocol.EV_BENTO_OPEN;
 	    				ev3.put("column", bundle.getInt("column"));
 	        		}
 	        	    //弹簧货道
@@ -247,7 +247,7 @@ public class COMService extends Service {
 	        	    if(listinfos7.getCabType()==5)
 	        		{
 	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
-	    				child7.what=COMThread.EV_BENTO_OPENCHILD;
+	    				child7.what=EVprotocol.EV_BENTO_OPEN;
 	    				ev7.put("column", bundle.getInt("column"));
 	        		}
 	        	    //弹簧货道
@@ -276,7 +276,7 @@ public class COMService extends Service {
 			case EV_LIGHTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 照明","com.txt");
 				Message child4=childhand.obtainMessage();
-				child4.what=COMThread.EV_BENTO_LIGHTCHILD;
+				child4.what=EVprotocol.EV_BENTO_LIGHT;
         		JSONObject ev4=null;
 	    		try {
 	    			ev4=new JSONObject();
@@ -294,7 +294,7 @@ public class COMService extends Service {
 			case EV_COOLCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 制冷","com.txt");
 				Message child5=childhand.obtainMessage();
-				child5.what=COMThread.EV_BENTO_COOLCHILD;
+				child5.what=EVprotocol.EV_BENTO_COOL;
         		JSONObject ev5=null;
 	    		try {
 	    			ev5=new JSONObject();
@@ -312,7 +312,7 @@ public class COMService extends Service {
 			case EV_HOTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 加热","com.txt");
 				Message child6=childhand.obtainMessage();
-				child6.what=COMThread.EV_BENTO_HOTCHILD;
+				child6.what=EVprotocol.EV_BENTO_HOT;
         		JSONObject ev6=null;
 	    		try {
 	    			ev6=new JSONObject();
