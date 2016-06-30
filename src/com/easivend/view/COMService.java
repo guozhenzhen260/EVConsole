@@ -47,15 +47,12 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class COMService extends Service {
 	//=====================货道==================================
-	public static final int EV_CHECKALLCHILD= 1;	//查询全部柜子状态
-	public static final int EV_CHECKALLMAIN	= 2;	//查询全部柜子状态返回
+	public static final int EV_CHECKALLCHILD= 1;	//查询全部柜子状态	
 	public static final int EV_CHECKCHILD	= 3;	//货道查询	
 	public static final int EV_CHUHUOCHILD	= 4;	//货道出货	
 	public static final int EV_LIGHTCHILD	= 5;	//照明	
 	public static final int EV_COOLCHILD	= 6;	//制冷	
-	public static final int EV_HOTCHILD		= 7;	//加热
-	
-	public static final int EV_CHECKMAIN	= 8;	//货道查询	返回	
+	public static final int EV_HOTCHILD		= 7;	//加热	
 	public static final int EV_SETHUOCHILD	= 10;	//货道设置
 	
 	//=====================现金设备==================================
@@ -70,6 +67,9 @@ public class COMService extends Service {
 	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
 	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
 	
+	//=====================基础返回值==================================
+	public static final int EV_CHECKALLMAIN	= 2;	//所有货道全部查询返回
+	public static final int EV_CHECKMAIN	= 8;	//货道查询返回
 	public static final int EV_OPTMAIN  	= 9;	//所有设备操作返回
 	
 	ActivityReceiver receiver;

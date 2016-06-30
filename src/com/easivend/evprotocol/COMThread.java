@@ -32,15 +32,13 @@ import android.os.Message;
 public class COMThread implements Runnable 
 {
 	//=====================快递柜类型==============================================================================
-	public static final int EV_BENTO_CHECKALLCHILD = 1;	//快递柜全部查询
-	public static final int EV_BENTO_CHECKALLMAIN	= 2;//快递柜全部查询返回
+	public static final int EV_BENTO_CHECKALLCHILD = 1;	//快递柜全部查询	
 	public static final int EV_BENTO_CHECKCHILD = 3;	//快递柜查询
 	public static final int EV_BENTO_OPENCHILD 	= 4;	//快递柜开门
 	public static final int EV_BENTO_LIGHTCHILD = 5;	//快递柜照明
 	public static final int EV_BENTO_COOLCHILD 	= 6;	//快递柜制冷
 	public static final int EV_BENTO_HOTCHILD 	= 7;	//快递柜加热
-	
-	public static final int EV_BENTO_CHECKMAIN	= 8;	//快递柜查询返回	
+		
 	//=====================弹簧柜类型==============================================================================
 	public static final int EV_COLUMN_CHECKALLCHILD = 10;	//弹簧柜全部查询
 	public static final int EV_COLUMN_CHECKCHILD = 11;	//弹簧柜查询
@@ -63,7 +61,9 @@ public class COMThread implements Runnable
 	public static final int EV_MDB_C_CON 	= 30;	//MDB硬币器配置
 	public static final int EV_MDB_HP_PAYOUT = 31;	//hopper硬币器找零
 	
-	
+	//=====================基础返回值==================================
+	public static final int EV_BENTO_CHECKALLMAIN	= 2;//所有货道全部查询返回
+	public static final int EV_BENTO_CHECKMAIN	= 8;	//货道查询返回
 	public static final int EV_BENTO_OPTMAIN	= 9;	//所有设备操作返回
 	
 	
