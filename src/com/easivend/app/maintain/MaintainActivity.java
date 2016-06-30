@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
 import com.easivend.view.COMService;
@@ -400,7 +401,7 @@ public class MaintainActivity extends Activity
 			int EVWhat=bundle.getInt("EVWhat");
 			switch(EVWhat)
 			{
-			case COMService.EV_CHECKALLMAIN:
+			case COMThread.EV_CHECKALLMAIN:
 				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
 				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();

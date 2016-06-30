@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_cabinet;
@@ -1628,7 +1629,7 @@ public class HuodaoTest extends TabActivity
 			switch(EVWhat)
 			{
 			//货道查询
-			case COMService.EV_CHECKMAIN:
+			case COMThread.EV_CHECKMAIN:
 				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询="+Set,"com.txt");
@@ -1702,7 +1703,7 @@ public class HuodaoTest extends TabActivity
             	showhuodao();//显示货道列表				
 				break;
 			//操作返回	
-			case COMService.EV_OPTMAIN: 
+			case COMThread.EV_OPTMAIN: 
 				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set2=serializableMap2.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");

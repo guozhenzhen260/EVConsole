@@ -16,6 +16,7 @@ import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_productDAO;
+import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusgoodsFragment;
 import com.easivend.fragment.BusgoodsFragment.BusgoodsFragInteraction;
@@ -1355,7 +1356,7 @@ BushuoFragInteraction
 			switch(EVWhat)
 			{
 			//操作返回	
-			case COMService.EV_OPTMAIN: 
+			case COMThread.EV_OPTMAIN: 
 				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 综合设备操作="+Set,"com.txt");

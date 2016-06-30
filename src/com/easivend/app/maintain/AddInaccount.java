@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import com.easivend.view.COMService;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.example.evconsole.R;
 
@@ -522,7 +523,7 @@ public class AddInaccount extends TabActivity
 			switch(EVWhat)
 			{
 			//操作返回	
-			case COMService.EV_OPTMAIN: 
+			case COMThread.EV_OPTMAIN: 
 				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 现金设备操作="+Set,"com.txt");

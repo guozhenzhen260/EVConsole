@@ -34,7 +34,7 @@ public class COMThread implements Runnable
 	//=====================快递柜类型==============================================================================
 	public static final int EV_BENTO_CHECKALLCHILD = 1;	//快递柜全部查询	
 	public static final int EV_BENTO_CHECKCHILD = 3;	//快递柜查询
-	public static final int EV_BENTO_OPENCHILD 	= 4;	//快递柜开门
+	public static final int EV_BENTO_OPENCHILD 	= 4;	//快递柜出货
 	public static final int EV_BENTO_LIGHTCHILD = 5;	//快递柜照明
 	public static final int EV_BENTO_COOLCHILD 	= 6;	//快递柜制冷
 	public static final int EV_BENTO_HOTCHILD 	= 7;	//快递柜加热
@@ -50,9 +50,9 @@ public class COMThread implements Runnable
 	public static final int EV_ELEVATOR_OPENCHILD 	= 15;	//升降机柜出货
 	
 	//=====================基础返回值==================================
-	public static final int EV_BENTO_CHECKALLMAIN	= 2;//所有货道全部查询返回
-	public static final int EV_BENTO_CHECKMAIN	= 8;	//货道查询返回
-	public static final int EV_BENTO_OPTMAIN	= 9;	//所有设备操作返回
+	public static final int EV_CHECKALLMAIN	= 2;//所有货道全部查询返回
+	public static final int EV_CHECKMAIN	= 8;	//货道查询返回
+	public static final int EV_OPTMAIN	= 9;	//所有设备操作返回
 	
 	
 	private Handler mainhand=null,childhand=null;
@@ -148,7 +148,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain6=mainhand.obtainMessage();
-	  				tomain6.what=EV_BENTO_CHECKALLMAIN;							
+	  				tomain6.what=EV_CHECKALLMAIN;							
 	  				tomain6.obj=allSet;
 	  				mainhand.sendMessage(tomain6); // 发送消息
 					break;
@@ -217,7 +217,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain=mainhand.obtainMessage();
-	  				tomain.what=EV_BENTO_CHECKMAIN;							
+	  				tomain.what=EV_CHECKMAIN;							
 	  				tomain.obj=allSet;
 	  				mainhand.sendMessage(tomain); // 发送消息
 					break;
@@ -282,7 +282,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain2=mainhand.obtainMessage();
-	  				tomain2.what=EV_BENTO_OPTMAIN;							
+	  				tomain2.what=EV_OPTMAIN;							
 	  				tomain2.obj=allSet;
 	  				mainhand.sendMessage(tomain2); // 发送消息
 					
@@ -335,7 +335,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain3=mainhand.obtainMessage();
-	  				tomain3.what=EV_BENTO_OPTMAIN;							
+	  				tomain3.what=EV_OPTMAIN;							
 	  				tomain3.obj=allSet;
 	  				mainhand.sendMessage(tomain3); // 发送消息
 					
@@ -388,7 +388,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain4=mainhand.obtainMessage();
-	  				tomain4.what=EV_BENTO_OPTMAIN;							
+	  				tomain4.what=EV_OPTMAIN;							
 	  				tomain4.obj=allSet;
 	  				mainhand.sendMessage(tomain4); // 发送消息
 					break;	
@@ -440,7 +440,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain5=mainhand.obtainMessage();
-	  				tomain5.what=EV_BENTO_OPTMAIN;							
+	  				tomain5.what=EV_OPTMAIN;							
 	  				tomain5.obj=allSet;
 	  				mainhand.sendMessage(tomain5); // 发送消息
 					break;	
@@ -469,7 +469,7 @@ public class COMThread implements Runnable
 					
 					//3.向主线程返回信息
 	  				Message tomain7=mainhand.obtainMessage();
-	  				tomain7.what=EV_BENTO_CHECKALLMAIN;							
+	  				tomain7.what=EV_CHECKALLMAIN;							
 	  				tomain7.obj=allSet;
 	  				mainhand.sendMessage(tomain7); // 发送消息
 					break;
@@ -524,7 +524,7 @@ public class COMThread implements Runnable
 					
 					//3.向主线程返回信息
 	  				Message tomain8=mainhand.obtainMessage();
-	  				tomain8.what=EV_BENTO_CHECKMAIN;							
+	  				tomain8.what=EV_CHECKMAIN;							
 	  				tomain8.obj=allSet;
 	  				mainhand.sendMessage(tomain8); // 发送消息
 					break;
@@ -589,7 +589,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain9=mainhand.obtainMessage();
-	  				tomain9.what=EV_BENTO_OPTMAIN;							
+	  				tomain9.what=EV_OPTMAIN;							
 	  				tomain9.obj=allSet;
 	  				mainhand.sendMessage(tomain9); // 发送消息
 					
@@ -619,7 +619,7 @@ public class COMThread implements Runnable
 					
 					//3.向主线程返回信息
 	  				Message tomain21=mainhand.obtainMessage();
-	  				tomain21.what=EV_BENTO_CHECKALLMAIN;							
+	  				tomain21.what=EV_CHECKALLMAIN;							
 	  				tomain21.obj=allSet;
 	  				mainhand.sendMessage(tomain21); // 发送消息
 					break;	
@@ -674,7 +674,7 @@ public class COMThread implements Runnable
 					
 					//3.向主线程返回信息
 	  				Message tomain20=mainhand.obtainMessage();
-	  				tomain20.what=EV_BENTO_CHECKMAIN;							
+	  				tomain20.what=EV_CHECKMAIN;							
 	  				tomain20.obj=allSet;
 	  				mainhand.sendMessage(tomain20); // 发送消息
 					break;	
@@ -739,7 +739,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain22=mainhand.obtainMessage();
-	  				tomain22.what=EV_BENTO_OPTMAIN;							
+	  				tomain22.what=EV_OPTMAIN;							
 	  				tomain22.obj=allSet;
 	  				mainhand.sendMessage(tomain22); // 发送消息
 					
@@ -808,7 +808,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain10=mainhand.obtainMessage();
-	  				tomain10.what=EV_BENTO_OPTMAIN;							
+	  				tomain10.what=EV_OPTMAIN;							
 	  				tomain10.obj=allSet;
 	  				mainhand.sendMessage(tomain10); // 发送消息
 					
@@ -872,7 +872,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain11=mainhand.obtainMessage();
-	  				tomain11.what=EV_BENTO_OPTMAIN;							
+	  				tomain11.what=EV_OPTMAIN;							
 	  				tomain11.obj=allSet;
 	  				mainhand.sendMessage(tomain11); // 发送消息
 					
@@ -920,7 +920,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain14=mainhand.obtainMessage();
-	  				tomain14.what=EV_BENTO_OPTMAIN;							
+	  				tomain14.what=EV_OPTMAIN;							
 	  				tomain14.obj=allSet;
 	  				mainhand.sendMessage(tomain14); // 发送消息
 					
@@ -975,7 +975,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain12=mainhand.obtainMessage();
-	  				tomain12.what=EV_BENTO_OPTMAIN;							
+	  				tomain12.what=EV_OPTMAIN;							
 	  				tomain12.obj=allSet;
 	  				mainhand.sendMessage(tomain12); // 发送消息
 					
@@ -1023,7 +1023,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain15=mainhand.obtainMessage();
-	  				tomain15.what=EV_BENTO_OPTMAIN;							
+	  				tomain15.what=EV_OPTMAIN;							
 	  				tomain15.obj=allSet;
 	  				mainhand.sendMessage(tomain15); // 发送消息
 					
@@ -1082,7 +1082,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain16=mainhand.obtainMessage();
-	  				tomain16.what=EV_BENTO_OPTMAIN;							
+	  				tomain16.what=EV_OPTMAIN;							
 	  				tomain16.obj=allSet;
 	  				mainhand.sendMessage(tomain16); // 发送消息
 					
@@ -1135,7 +1135,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain17=mainhand.obtainMessage();
-	  				tomain17.what=EV_BENTO_OPTMAIN;							
+	  				tomain17.what=EV_OPTMAIN;							
 	  				tomain17.obj=allSet;
 	  				mainhand.sendMessage(tomain17); // 发送消息
 					
@@ -1210,7 +1210,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain13=mainhand.obtainMessage();
-	  				tomain13.what=EV_BENTO_OPTMAIN;							
+	  				tomain13.what=EV_OPTMAIN;							
 	  				tomain13.obj=allSet;
 	  				mainhand.sendMessage(tomain13); // 发送消息
 					
@@ -1263,7 +1263,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain18=mainhand.obtainMessage();
-	  				tomain18.what=EV_BENTO_OPTMAIN;							
+	  				tomain18.what=EV_OPTMAIN;							
 	  				tomain18.obj=allSet;
 	  				mainhand.sendMessage(tomain18); // 发送消息
 					
@@ -1318,7 +1318,7 @@ public class COMThread implements Runnable
 					}
 					//3.向主线程返回信息
 	  				Message tomain19=mainhand.obtainMessage();
-	  				tomain19.what=EV_BENTO_OPTMAIN;							
+	  				tomain19.what=EV_OPTMAIN;							
 	  				tomain19.obj=allSet;
 	  				mainhand.sendMessage(tomain19); // 发送消息
 					

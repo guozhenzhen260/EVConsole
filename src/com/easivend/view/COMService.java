@@ -55,10 +55,7 @@ public class COMService extends Service {
 	public static final int EV_HOTCHILD		= 7;	//加热	
 	public static final int EV_SETHUOCHILD	= 10;	//货道设置
 	
-	//=====================基础返回值==================================
-	public static final int EV_CHECKALLMAIN	= 2;	//所有货道全部查询返回
-	public static final int EV_CHECKMAIN	= 8;	//货道查询返回
-	public static final int EV_OPTMAIN  	= 9;	//所有设备操作返回
+	
 	
 	ActivityReceiver receiver;
 	LocalBroadcastManager localBroadreceiver;
@@ -104,7 +101,7 @@ public class COMService extends Service {
 			    {
 			    	//返回给activity广播
 					Intent recintent=new Intent();
-					recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
+					recintent.putExtra("EVWhat", COMThread.EV_CHECKALLMAIN);						
 					//传递数据
 			        SerializableMap myMap=new SerializableMap();
 			        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
@@ -579,7 +576,7 @@ public class COMService extends Service {
 				switch (msg.what)
 				{
 					//全部查询
-					case COMThread.EV_BENTO_CHECKALLMAIN://子线程接收主线程消息签到完成
+					case COMThread.EV_CHECKALLMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道全部查询返回="+msg.obj,"com.txt");
 						String tempno6=null; 
 						Map<String, Object> Set6= (Map<String, Object>) msg.obj;
@@ -650,7 +647,7 @@ public class COMService extends Service {
 				        	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜连接完成","com.txt");
 				        	//返回给activity广播
 							Intent recintent=new Intent();
-							recintent.putExtra("EVWhat", COMService.EV_CHECKALLMAIN);						
+							recintent.putExtra("EVWhat", COMThread.EV_CHECKALLMAIN);						
 							//传递数据
 					        SerializableMap myMap=new SerializableMap();
 					        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
@@ -662,11 +659,11 @@ public class COMService extends Service {
 						}												
 						break;
 					//查询
-					case COMThread.EV_BENTO_CHECKMAIN://子线程接收主线程消息签到完成
+					case COMThread.EV_CHECKMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回="+msg.obj,"com.txt");
 						//返回给activity广播
 						Intent recintent=new Intent();
-						recintent.putExtra("EVWhat", COMService.EV_CHECKMAIN);						
+						recintent.putExtra("EVWhat", COMThread.EV_CHECKMAIN);						
 						//传递数据
 				        SerializableMap myMap=new SerializableMap();
 				        myMap.setMap((Map<String, Integer>) msg.obj);//将map数据添加到封装的myMap<span></span>中
@@ -677,11 +674,11 @@ public class COMService extends Service {
 						localBroadreceiver.sendBroadcast(recintent);						
 						break;	
 					//操作完成	
-					case COMThread.EV_BENTO_OPTMAIN:
+					case COMThread.EV_OPTMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 综合操作="+msg.obj,"com.txt");	
 						//返回给activity广播
 						Intent recintent2=new Intent();
-						recintent2.putExtra("EVWhat", COMService.EV_OPTMAIN);						
+						recintent2.putExtra("EVWhat", COMThread.EV_OPTMAIN);						
 						//传递数据
 				        SerializableMap myMap2=new SerializableMap();
 				        myMap2.setMap((Map<String, Integer>) msg.obj);//将map数据添加到封装的myMap<span></span>中
