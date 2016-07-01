@@ -707,6 +707,7 @@ public class COMService extends Service {
 		EVprotocol.EVPortRelease(ToolClass.getBentcom());
 		EVprotocol.EVPortRelease(ToolClass.getColumncom());
 		EVprotocol.EVPortRelease(ToolClass.getCom());
+		EVprotocol.EVPortRelease(ToolClass.getExtracom());
 		//½â³ý×¢²á½ÓÊÕÆ÷
 		localBroadreceiver.unregisterReceiver(receiver);
 		super.onDestroy();

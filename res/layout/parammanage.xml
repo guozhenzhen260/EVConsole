@@ -89,15 +89,15 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="联网版"/>
+									android:text="冰山机型"/>
 						        
 						         <Switch   
 							       android:layout_marginTop="20dip"  
 							       android:id="@+id/switchisNet"  
 							       android:layout_width="wrap_content"  
 							       android:layout_height="wrap_content"  
-							       android:textOn="联网版"  
-							       android:textOff="单机版"  							           
+							       android:textOn="冰山机"  
+							       android:textOff="普通机"  							           
 							       android:layout_gravity="center_horizontal"/>    
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -115,15 +115,15 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="补货方式"/>
+									android:text="展示位"/>
 						        
 						        <Switch   
 							       android:layout_marginTop="20dip"  
 							       android:id="@+id/switchisbuhuo"  
 							       android:layout_width="wrap_content"  
 							       android:layout_height="wrap_content"  
-							       android:textOn="自动补货"  
-							       android:textOff="手动补货"  							           
+							       android:textOn="打开"  
+							       android:textOff="关闭"  							           
 							       android:layout_gravity="center_horizontal"/>   						            
 				            </LinearLayout>	        
 					    </TableRow>  

@@ -441,7 +441,6 @@ public class ParamManager extends TabActivity
 					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()+" marketAmount="+tb_inaccount.getMarketAmount()+" billAmount="+tb_inaccount.getBillAmount(),"log.txt"); 
 		    edtdevID.setText(tb_inaccount.getDevID().toString());
 		    edtdevhCode.setText(tb_inaccount.getDevhCode().toString());	  
-		    //switchisNet.setChecked(true);
 		    switchisNet.setChecked((tb_inaccount.getIsNet()==1)?true:false);
 		    switchisbuhuo.setChecked((tb_inaccount.getIsfenClass()==1)?true:false);
 		    switchisbuyCar.setChecked((tb_inaccount.getIsbuyCar()==1)?true:false);
