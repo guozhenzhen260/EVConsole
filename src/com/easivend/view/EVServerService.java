@@ -195,13 +195,48 @@ public class EVServerService extends Service {
 						break;					
 					case EVServerhttp.SETMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
-						//初始化二:获取商品分类信息
+						//初始化二:获取设备状态						
+		        		int bill_err=ToolClass.getBill_err();
+						int coin_err=ToolClass.getCoin_err();
+		    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备bill_err="+bill_err
+								+" coin_err="+coin_err,"server.txt");				
+		    			//
+			        	childhand=serverhttp.obtainHandler();
+			    		Message childmsg=childhand.obtainMessage();
+			    		childmsg.what=EVServerhttp.SETDEVSTATUCHILD;
+			    		JSONObject ev3=null;
+			    		try {
+			    			ev3=new JSONObject();
+			    			ev3.put("bill_err", bill_err);
+			    			ev3.put("coin_err", coin_err);	    			  			
+			    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev3.toString(),"server.txt");
+			    		} catch (JSONException e) {
+			    			// TODO Auto-generated catch block
+			    			e.printStackTrace();
+			    		}
+			    		childmsg.obj=ev3;
+			    		childhand.sendMessage(childmsg);
+						break;
+						//上传设备信息	
+					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service LAST_EDIT_TIME="+LAST_EDIT_TIME,"server.txt");
+						//初始化二.1:获取商品分类信息
 						childhand=serverhttp.obtainHandler();
-		        		Message childmsg=childhand.obtainMessage();
-		        		childmsg.what=EVServerhttp.SETCLASSCHILD;
-		        		childmsg.obj=LAST_EDIT_TIME;
-		        		childhand.sendMessage(childmsg);
-						break;					
+		        		Message childheartmsg5=childhand.obtainMessage();
+		        		childheartmsg5.what=EVServerhttp.SETCLASSCHILD;
+		        		childheartmsg5.obj=LAST_EDIT_TIME;
+		        		childhand.sendMessage(childheartmsg5);	
+						
+						break;	
 					//获取商品分类信息	
 					case EVServerhttp.SETERRFAILCLASSMAIN://子线程接收主线程消息获取商品分类信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
@@ -503,14 +538,6 @@ public class EVServerService extends Service {
 			        		childheartmsg3.obj=LAST_DEMO_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
-//						{
-//							//初始化七、发送货道上传命令到子线程中
-//							childhand=serverhttp.obtainHandler();
-//			        		Message childheartmsg3=childhand.obtainMessage();
-//			        		childheartmsg3.what=EVServerhttp.SETHUODAOSTATUCHILD;
-//			        		childheartmsg3.obj=columngrid();
-//			        		childhand.sendMessage(childheartmsg3);
-//						}
 						break;
 						//获取购买演示信息	
 					case EVServerhttp.SETERRFAILDEMOINFOMAIN://子线程接收主线程消息获取购买演示失败
@@ -583,26 +610,7 @@ public class EVServerService extends Service {
 						}
 							        		
 						break;
-					//上传设备信息	
-					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
-						//返回给activity广播
-						intent=new Intent();
-						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
-						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
-						localBroadreceiver.sendBroadcast(intent);
-						break;
-					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service LAST_EDIT_TIME="+LAST_EDIT_TIME,"server.txt");
-						//同步二、下载当前时间以后有更新的商品分类，商品，以及货道，同时上报各个状态
-						childhand=serverhttp.obtainHandler();
-		        		Message childheartmsg4=childhand.obtainMessage();
-		        		childheartmsg4.what=EVServerhttp.SETCLASSCHILD;
-		        		childheartmsg4.obj=LAST_EDIT_TIME;
-		        		childhand.sendMessage(childheartmsg4);	
 						
-						break;
 						//取货码比较特殊，不能用作复制的例子
 						//获取取货码返回	
 					case EVServerhttp.SETERRFAILPICKUPMAIN://子线程接收主线程上报取货码信息失败
