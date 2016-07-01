@@ -156,12 +156,31 @@
 			        android:textSize="40sp"
 					android:textStyle="bold"       
 			        android:layout_below="@id/tvip"        
-			        />   
+			        />
+			    <TextView
+			        android:id="@+id/tvextracom"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtip"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入外协设备串口号："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtextracom"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"  
+			        android:textSize="40sp"
+					android:textStyle="bold"      
+			        android:layout_below="@id/tvextracom"        
+			        />    
 			    <Button
 			        android:id="@+id/btnDel"
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
-			        android:layout_below="@id/txtip"
+			        android:layout_below="@id/txtextracom"
 			        android:background="@drawable/button_selector"
 			        android:text="清除商品信息" />   
         </RelativeLayout>

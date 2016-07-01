@@ -71,7 +71,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    String com=null,bentcom=null,columncom=null,server="";
+    String com=null,bentcom=null,columncom=null,extracom=null,server="";
     final static int REQUEST_CODE=1;   
     //获取货柜信息
    Map<String,Integer> huoSet=new HashMap<String,Integer>();
@@ -164,7 +164,7 @@ public class MaintainActivity extends Activity
             	ToolClass.ResstartPort(1);
             	ToolClass.ResstartPort(2);
             	ToolClass.ResstartPort(3);
-            	
+            	ToolClass.ResstartPort(4);
             	
             	//7.发送指令广播给COMService
         		Intent intent=new Intent();
@@ -184,15 +184,33 @@ public class MaintainActivity extends Activity
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
 		{
-	        com = list.get("com");
-	        bentcom = list.get("bentcom");
-	        columncom = list.get("columncom");
-	        server = list.get("server");//设置服务器路径
+			if(list.containsKey("com"))//设置现金串口号
+	        {
+				com = list.get("com");
+				ToolClass.setCom(com);
+	        }
+			if(list.containsKey("bentcom"))//设置格子柜串口号
+	        {
+				bentcom = list.get("bentcom");
+				ToolClass.setBentcom(bentcom);
+	        }
+			if(list.containsKey("columncom"))//设置主柜串口号
+	        {
+				columncom = list.get("columncom");
+				ToolClass.setColumncom(columncom);	
+	        }
+	        if(list.containsKey("extracom"))//设置外协串口号
+	        {
+	        	extracom = list.get("extracom");
+	        	ToolClass.setExtracom(extracom);	
+	        }
+	        if(list.containsKey("server"))//设置服务器路径
+	        {
+	        	server = list.get("server");
+	        }	        	        
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
-	        ToolClass.setCom(com);
-	        ToolClass.setBentcom(bentcom);
-	        ToolClass.setColumncom(columncom);		        
+	        
 	        //2.作文件备份
   	        ToolClass.ResetConfigFile();  
 		}

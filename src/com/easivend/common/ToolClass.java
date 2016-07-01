@@ -98,8 +98,8 @@ public class ToolClass
 	public final static int WARN=3;
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev包的地址
-	private static int bentcom_id=-1,com_id=-1,columncom_id=-1;//串口id号
-	private static String bentcom="",com="",columncom="";//串口描述符
+	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//串口id号
+	private static String bentcom="",com="",columncom="",extracom="";//串口描述符
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
@@ -160,6 +160,14 @@ public class ToolClass
 
 	public static void setColumncom(String columncom) {
 		ToolClass.columncom = columncom;
+	}
+	
+	public static String getExtracom() {
+		return extracom;
+	}
+
+	public static void setExtracom(String extracom) {
+		ToolClass.extracom = extracom;
 	}
 
 	public static Context getContext() {
@@ -248,6 +256,14 @@ public class ToolClass
 
 	public static void setCom_id(int com_id) {
 		ToolClass.com_id = com_id;
+	}
+	
+	public static int getExtracom_id() {
+		return extracom_id;
+	}
+
+	public static void setExtracom_id(int extracom_id) {
+		ToolClass.extracom_id = extracom_id;
 	}
 
 	//解析Map对象<String,Object>的数据集合
@@ -1208,7 +1224,7 @@ public class ToolClass
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String server,String isallopen) 
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String server,String isallopen) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1253,6 +1269,7 @@ public class ToolClass
 		            		(me.getKey().equals("com")!=true)
 		            	  &&(me.getKey().equals("bentcom")!=true)
 		            	  &&(me.getKey().equals("columncom")!=true)
+		            	  &&(me.getKey().equals("extracom")!=true)
 		            	  &&(me.getKey().equals("isallopen")!=true)
 		            	  &&(me.getKey().equals("server")!=true)
 		              )
@@ -1262,6 +1279,7 @@ public class ToolClass
 		        list2.put("com", com);
 		        list2.put("bentcom", bentcom);
 		        list2.put("columncom", columncom);
+		        list2.put("extracom", extracom);
 		        list2.put("isallopen", isallopen);
 		        list2.put("server", server);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
@@ -1280,6 +1298,7 @@ public class ToolClass
   	        	jsonObject.put("com", com);
   	        	jsonObject.put("bentcom", bentcom);
   	        	jsonObject.put("columncom", columncom);
+  	        	jsonObject.put("extracom", extracom);
   	        	jsonObject.put("isallopen", isallopen);
   	        	jsonObject.put("server", server);
   	        	String mapstrString=jsonObject.toString();
@@ -1520,7 +1539,7 @@ public class ToolClass
   			dirName.mkdirs(); 
   		 } 
 		String copyFile = copyDir+"easivendconfig.txt";
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+sDir+"选定,copy="+copyFile,"server.txt"); 
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 原文件"+sDir+"选定,copy目标文件="+copyFile,"server.txt"); 
 		  
 		copyFile(sDir,copyFile);
     }
@@ -2821,7 +2840,7 @@ public class ToolClass
 		return bentcom_id;
 	}
 	
-	//type=1是现金,2是格子柜，3是弹簧柜
+	//type=1是现金,2是格子柜，3是弹簧柜,4外协设备串口
 	public static void ResstartPort(int type)
 	{
 		if(type==1)//现金
@@ -2858,6 +2877,18 @@ public class ToolClass
 				String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
 				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom="+columncom,"com.txt");
 				ToolClass.setColumncom_id(ToolClass.Resetportid(columncom));
+			}
+		}
+		else if(type==4)
+		{
+			//打开外协设备串口
+			if(ToolClass.getExtracom().equals("")==false)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_COM","extracomSend="+ToolClass.getExtracom(),"com.txt");
+				EVprotocol.EVPortRelease(ToolClass.getExtracom());
+				String extracom = EVprotocol.EVPortRegister(ToolClass.getExtracom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","extracom="+extracom,"com.txt");
+				ToolClass.setExtracom_id(ToolClass.Resetportid(extracom));
 			}
 		}
 	}
