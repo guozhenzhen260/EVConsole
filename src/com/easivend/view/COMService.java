@@ -33,6 +33,7 @@ import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
+import com.easivend.evprotocol.ExtraCOMThread;
 import com.easivend.model.Tb_vmc_cabinet;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -59,9 +60,14 @@ public class COMService extends Service {
 	
 	ActivityReceiver receiver;
 	LocalBroadcastManager localBroadreceiver;
+	//普通串口线程
 	private ExecutorService thread=null;
     private Handler mainhand=null,childhand=null; 
     COMThread comserial=null;
+    //外设串口线程
+    private ExecutorService extrathread=null;
+    private Handler mainextrahand=null,childextrahand=null; 
+    ExtraCOMThread extracomserial=null;
     Map<String,Integer> huoSet=new LinkedHashMap<String,Integer>();
     private String[] cabinetID = null;//用来分离出货柜编号    
     private int huom = 0;// 定义一个开始标识
@@ -329,21 +335,43 @@ public class COMService extends Service {
 			//现金设备使能禁能	
 			case EVprotocol.EV_MDB_ENABLE:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 使能禁能","com.txt");
-				Message child8=childhand.obtainMessage();
-				child8.what=EVprotocol.EV_MDB_ENABLE;
-        		JSONObject ev8=null;
-	    		try {
-	    			ev8=new JSONObject();
-	    			ev8.put("bill", bundle.getInt("bill"));	
-	    			ev8.put("coin", bundle.getInt("coin"));
-	    			ev8.put("opt", bundle.getInt("opt"));
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev8.toString(),"com.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		child8.obj=ev8;
-        		childhand.sendMessage(child8);	
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child8=childextrahand.obtainMessage();
+					child8.what=EVprotocol.EV_MDB_ENABLE;
+	        		JSONObject ev8=null;
+		    		try {
+		    			ev8=new JSONObject();
+		    			ev8.put("bill", bundle.getInt("bill"));	
+		    			ev8.put("coin", bundle.getInt("coin"));
+		    			ev8.put("opt", bundle.getInt("opt"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceExtraSend0.1="+ev8.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child8.obj=ev8;
+		    		childextrahand.sendMessage(child8);	
+				}
+				else
+				{
+					Message child8=childhand.obtainMessage();
+					child8.what=EVprotocol.EV_MDB_ENABLE;
+	        		JSONObject ev8=null;
+		    		try {
+		    			ev8=new JSONObject();
+		    			ev8.put("bill", bundle.getInt("bill"));	
+		    			ev8.put("coin", bundle.getInt("coin"));
+		    			ev8.put("opt", bundle.getInt("opt"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev8.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child8.obj=ev8;
+	        		childhand.sendMessage(child8);	
+				}
 				break;
 				//纸币器查询接口
 			case EVprotocol.EV_MDB_B_INFO:
@@ -566,7 +594,7 @@ public class COMService extends Service {
 		super.onStart(intent, startId);
 		ToolClass.Log(ToolClass.INFO,"EV_COM","COMService start","com.txt");
 		//***********************
-		//线程进行vmserver操作
+		//线程进行vmserver与普通串口操作
 		//***********************
 		mainhand=new Handler()
 		{
@@ -692,10 +720,50 @@ public class COMService extends Service {
 			}
 			
 		};
-		//启动用户自己定义的类，启动线程
+		//启动用户自己定义的类，启动普通串口线程
 		comserial=new COMThread(mainhand);
   		thread=Executors.newFixedThreadPool(3);
-  		thread.execute(comserial);	
+  		thread.execute(comserial);
+  		
+  		
+  	    //***********************
+		//线程进行vmserver与外协串口操作
+		//***********************
+  		mainextrahand=new Handler()
+		{
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub				
+				switch (msg.what)
+				{						
+					//操作完成	
+					case COMThread.EV_OPTMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMExtraService 综合操作="+msg.obj,"com.txt");	
+						//返回给activity广播
+						Intent recintent2=new Intent();
+						recintent2.putExtra("EVWhat", COMThread.EV_OPTMAIN);						
+						//传递数据
+				        SerializableMap myMap2=new SerializableMap();
+				        myMap2.setMap((Map<String, Integer>) msg.obj);//将map数据添加到封装的myMap<span></span>中
+				        Bundle bundle2=new Bundle();
+				        bundle2.putSerializable("result", myMap2);
+				        recintent2.putExtras(bundle2);
+						recintent2.setAction("android.intent.action.comrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(recintent2);
+//						childextrahand=extracomserial.obtainHandler();
+//						Message child4=childextrahand.obtainMessage();
+//						child4.what=0x01;
+//		        		child4.obj="Thread send";
+//		        		childextrahand.sendMessage(child4);
+						break;
+				}				
+			}
+			
+		};				
+  	    //启动用户自己定义的类，启动外设串口线程
+  		extracomserial=new ExtraCOMThread(mainextrahand);
+  		extrathread=Executors.newFixedThreadPool(3);
+  		extrathread.execute(extracomserial);		
 	}
 	
 	

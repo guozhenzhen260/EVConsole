@@ -104,6 +104,7 @@ public class ToolClass
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
 	public static int goc=0;//是否使用出货确认板1是
+	public static int extraComType=0;//1使用冰山机型，2使用展示位
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
 	public static Map<String, String> selectlist=null;//保存选货按键id与商品id的对应关系
@@ -210,10 +211,33 @@ public class ToolClass
 		ToolClass.mark = mark;
 	}
 	
+	public static int setExtraComType(Context context) 
+	{
+		int isNet=0,isfenClass=0;
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		isNet = tb_inaccount.getIsNet();
+    		isfenClass = tb_inaccount.getIsfenClass();
+    		if(isNet==1)
+    			extraComType=1;
+    		else if(isfenClass==1)
+    			extraComType=2;
+    	}
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isNet="+isNet+"isfenClass="+isfenClass+"rst="+extraComType,"log.txt");	
+    	return extraComType;
+	}
+			
+	public static int getExtraComType() {
+		return extraComType;
+	}
+
 	public static int getGoc() {
 		return goc;
 	}
-
+	
 	public static void setGoc(Context context) 
 	{
 		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象

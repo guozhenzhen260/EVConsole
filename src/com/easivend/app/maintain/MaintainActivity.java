@@ -224,7 +224,9 @@ public class MaintainActivity extends Activity
 		//加载微信证书
 		ToolClass.setWeiCertFile();		
 		//加载goc
-		ToolClass.setGoc(MaintainActivity.this);	
+		ToolClass.setGoc(MaintainActivity.this);
+		//加载机型
+		ToolClass.setExtraComType(MaintainActivity.this);
 		//================
 		//九宫格相关
 		//================		
