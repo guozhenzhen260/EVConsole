@@ -376,13 +376,27 @@ public class COMService extends Service {
 				//纸币器查询接口
 			case EVprotocol.EV_MDB_B_INFO:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 纸币器查询接口","com.txt");
-				Message child9=childhand.obtainMessage();
-				child9.what=EVprotocol.EV_MDB_B_INFO;
-        		JSONObject ev9=null;
-	    		ev9=new JSONObject();	    			
-				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev9.toString(),"com.txt");
-	    		child9.obj=ev9;
-        		childhand.sendMessage(child9);	
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child9=childextrahand.obtainMessage();
+					child9.what=EVprotocol.EV_MDB_B_INFO;
+	        		JSONObject ev9=null;
+		    		ev9=new JSONObject();	    			
+					ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev9.toString(),"com.txt");
+		    		child9.obj=ev9;
+		    		childextrahand.sendMessage(child9);	
+				}
+				else
+				{
+					Message child9=childhand.obtainMessage();
+					child9.what=EVprotocol.EV_MDB_B_INFO;
+	        		JSONObject ev9=null;
+		    		ev9=new JSONObject();	    			
+					ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev9.toString(),"com.txt");
+		    		child9.obj=ev9;
+	        		childhand.sendMessage(child9);
+				}
 				break;
 			//纸币配置	
 			case EVprotocol.EV_MDB_B_CON:
@@ -427,13 +441,27 @@ public class COMService extends Service {
 				//硬币器查询接口
 			case EVprotocol.EV_MDB_C_INFO:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 硬币器查询接口","com.txt");
-				Message child10=childhand.obtainMessage();
-				child10.what=EVprotocol.EV_MDB_C_INFO;
-        		JSONObject ev10=null;
-	    		ev10=new JSONObject();	    			
-				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev10.toString(),"com.txt");
-	    		child10.obj=ev10;
-        		childhand.sendMessage(child10);	
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child10=childextrahand.obtainMessage();
+					child10.what=EVprotocol.EV_MDB_C_INFO;
+	        		JSONObject ev10=null;
+		    		ev10=new JSONObject();	    			
+					ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev10.toString(),"com.txt");
+		    		child10.obj=ev10;
+		    		childextrahand.sendMessage(child10);	
+				}
+				else
+				{
+					Message child10=childhand.obtainMessage();
+					child10.what=EVprotocol.EV_MDB_C_INFO;
+	        		JSONObject ev10=null;
+		    		ev10=new JSONObject();	    			
+					ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev10.toString(),"com.txt");
+		    		child10.obj=ev10;
+	        		childhand.sendMessage(child10);	
+				}
 				break;	
 			case EVprotocol.EV_MDB_C_CON:
 				Message child13=childhand.obtainMessage();
@@ -529,13 +557,27 @@ public class COMService extends Service {
 				//心跳查询接口
 			case EVprotocol.EV_MDB_HEART:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService EV_MDB_HEART接口","com.txt");
-				Message child11=childhand.obtainMessage();
-				child11.what=EVprotocol.EV_MDB_HEART;
-        		JSONObject ev11=null;
-	    		ev11=new JSONObject();	    			
-				ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev11.toString(),"com.txt");
-	    		child11.obj=ev11;
-        		childhand.sendMessage(child11);	
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child11=childextrahand.obtainMessage();
+					child11.what=EVprotocol.EV_MDB_HEART;
+	        		JSONObject ev11=null;
+		    		ev11=new JSONObject();	    			
+					ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev11.toString(),"com.txt");
+		    		child11.obj=ev11;
+		    		childextrahand.sendMessage(child11);	
+				}
+				else
+				{
+					Message child11=childhand.obtainMessage();
+					child11.what=EVprotocol.EV_MDB_HEART;
+	        		JSONObject ev11=null;
+		    		ev11=new JSONObject();	    			
+					ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev11.toString(),"com.txt");
+		    		child11.obj=ev11;
+	        		childhand.sendMessage(child11);
+				}
 				break;
 			case EVprotocol.EV_MDB_COST:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 扣款接口","com.txt");
