@@ -640,20 +640,41 @@ public class COMService extends Service {
 				break;
 			case EVprotocol.EV_MDB_PAYBACK://退币按钮接口
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 退币按钮接口","com.txt");
-				Message child17=childhand.obtainMessage();
-				child17.what=EVprotocol.EV_MDB_PAYBACK;
-        		JSONObject ev17=null;
-	    		try {
-	    			ev17=new JSONObject();	
-	    			ev17.put("bill", bundle.getInt("bill"));
-	    			ev17.put("coin", bundle.getInt("coin"));
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev17.toString(),"com.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		child17.obj=ev17;
-        		childhand.sendMessage(child17);
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child17=childextrahand.obtainMessage();
+					child17.what=EVprotocol.EV_MDB_PAYBACK;
+	        		JSONObject ev17=null;
+		    		try {
+		    			ev17=new JSONObject();	
+		    			ev17.put("bill", bundle.getInt("bill"));
+		    			ev17.put("coin", bundle.getInt("coin"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev17.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child17.obj=ev17;
+		    		childextrahand.sendMessage(child17);	
+				}
+				else
+				{
+					Message child17=childhand.obtainMessage();
+					child17.what=EVprotocol.EV_MDB_PAYBACK;
+	        		JSONObject ev17=null;
+		    		try {
+		    			ev17=new JSONObject();	
+		    			ev17.put("bill", bundle.getInt("bill"));
+		    			ev17.put("coin", bundle.getInt("coin"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev17.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child17.obj=ev17;
+	        		childhand.sendMessage(child17);
+				}
 				break;	
 			}			
 		}
@@ -835,11 +856,6 @@ public class COMService extends Service {
 				        recintent2.putExtras(bundle2);
 						recintent2.setAction("android.intent.action.comrec");//action与接收器相同
 						localBroadreceiver.sendBroadcast(recintent2);
-//						childextrahand=extracomserial.obtainHandler();
-//						Message child4=childextrahand.obtainMessage();
-//						child4.what=0x01;
-//		        		child4.obj="Thread send";
-//		        		childextrahand.sendMessage(child4);
 						break;
 				}				
 			}
