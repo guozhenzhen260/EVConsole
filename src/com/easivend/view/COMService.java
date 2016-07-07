@@ -520,22 +520,45 @@ public class COMService extends Service {
 				break;
 			case EVprotocol.EV_MDB_PAYOUT:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService MDB设备找币","com.txt");
-				Message child14=childhand.obtainMessage();
-				child14.what=EVprotocol.EV_MDB_PAYOUT;
-        		JSONObject ev14=null;
-	    		try {
-	    			ev14=new JSONObject();
-	    			ev14.put("bill", bundle.getInt("bill"));	
-	    			ev14.put("coin", bundle.getInt("coin"));
-	    			ev14.put("billPay", bundle.getInt("billPay"));
-	    			ev14.put("coinPay", bundle.getInt("coinPay"));
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev14.toString(),"com.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		child14.obj=ev14;
-        		childhand.sendMessage(child14);	
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child14=childextrahand.obtainMessage();
+					child14.what=EVprotocol.EV_MDB_PAYOUT;
+	        		JSONObject ev14=null;
+		    		try {
+		    			ev14=new JSONObject();
+		    			ev14.put("bill", bundle.getInt("bill"));	
+		    			ev14.put("coin", bundle.getInt("coin"));
+		    			ev14.put("billPay", bundle.getInt("billPay"));
+		    			ev14.put("coinPay", bundle.getInt("coinPay"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev14.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child14.obj=ev14;
+		    		childextrahand.sendMessage(child14);	
+				}
+				else
+				{
+					Message child14=childhand.obtainMessage();
+					child14.what=EVprotocol.EV_MDB_PAYOUT;
+	        		JSONObject ev14=null;
+		    		try {
+		    			ev14=new JSONObject();
+		    			ev14.put("bill", bundle.getInt("bill"));	
+		    			ev14.put("coin", bundle.getInt("coin"));
+		    			ev14.put("billPay", bundle.getInt("billPay"));
+		    			ev14.put("coinPay", bundle.getInt("coinPay"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev14.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child14.obj=ev14;
+	        		childhand.sendMessage(child14);	
+				}
 				break;
 			case EVprotocol.EV_MDB_HP_PAYOUT:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService hopper硬币器找币","com.txt");
@@ -581,19 +604,39 @@ public class COMService extends Service {
 				break;
 			case EVprotocol.EV_MDB_COST:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 扣款接口","com.txt");
-				Message child16=childhand.obtainMessage();
-				child16.what=EVprotocol.EV_MDB_COST;
-        		JSONObject ev16=null;
-	    		try {
-	    			ev16=new JSONObject();	
-	    			ev16.put("cost", bundle.getInt("cost"));
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev16.toString(),"com.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		child16.obj=ev16;
-        		childhand.sendMessage(child16);
+				if(ToolClass.getExtraComType()==1)
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child16=childextrahand.obtainMessage();
+					child16.what=EVprotocol.EV_MDB_COST;
+	        		JSONObject ev16=null;
+		    		try {
+		    			ev16=new JSONObject();	
+		    			ev16.put("cost", bundle.getInt("cost"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev16.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child16.obj=ev16;
+		    		childextrahand.sendMessage(child16);	
+				}
+				else
+				{
+					Message child16=childhand.obtainMessage();
+					child16.what=EVprotocol.EV_MDB_COST;
+	        		JSONObject ev16=null;
+		    		try {
+		    			ev16=new JSONObject();	
+		    			ev16.put("cost", bundle.getInt("cost"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev16.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child16.obj=ev16;
+	        		childhand.sendMessage(child16);
+				}
 				break;
 			case EVprotocol.EV_MDB_PAYBACK://退币按钮接口
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 退币按钮接口","com.txt");

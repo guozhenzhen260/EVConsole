@@ -30,6 +30,7 @@ public class VboxProtocol {
     public static final int VBOX_PAYOUT_RPT    = 0x07;
     public static final int VBOX_HUODAO_RPT    = 0x0E;
     public static final int VBOX_VENDOUT_RPT    = 0x08;
+    public static final int VBOX_COST_RPT    = 0x10;
     public static final int VBOX_INFO_RPT    = 0x11;
     public static final int VBOX_ACTION_RPT    = 0x0B;
     public static final int VBOX_BUTTON_RPT    = 0x0C;
