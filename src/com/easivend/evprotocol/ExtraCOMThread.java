@@ -74,7 +74,20 @@ public class ExtraCOMThread implements Runnable {
 			@Override
 			public void handleMessage(Message msg) {
 				switch (msg.what)
-				{				
+				{	
+				//冰山柜	
+				case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
+					//1.得到信息
+					JSONObject ev7=null;
+					try {
+						ev7 = new JSONObject(msg.obj.toString());
+						int cabinet=ev7.getInt("cabinet");
+						devopt=COMThread.EV_BENTO_CHECKCHILD;						
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					break;
 				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能					
 					//1.得到信息
 					JSONObject ev=null;
@@ -361,6 +374,14 @@ public class ExtraCOMThread implements Runnable {
 									//ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraPOLL<<"+resjson.toString(),"com.txt");
 									switch(devopt)
 									{
+										case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
+											if(cmdSend==false)
+											{
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadCHECKCHILDSend0.2>>","com.txt");
+												VboxProtocol.VboxGetHuoDao(ToolClass.getExtracom_id(),0);
+												cmdSend=true;
+											}
+											break;										
 										case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 											if(cmdSend==false)
 											{
@@ -512,29 +533,29 @@ public class ExtraCOMThread implements Runnable {
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadStatusRpt<<bv_st"+bv_st+"cc_st="+cc_st+"vmc_st="+vmc_st+"coin_remain="+coin_remain,"com.txt");
 									break;	
 								case VboxProtocol.VBOX_HUODAO_RPT://货道信息
-									int[] huodao=new int[21];
-									huodao[0]=ev_head6.getInt("huodao1");
-									huodao[1]=ev_head6.getInt("huodao2");
-									huodao[2]=ev_head6.getInt("huodao3");
-									huodao[3]=ev_head6.getInt("huodao4");
-									huodao[4]=ev_head6.getInt("huodao5");
-									huodao[5]=ev_head6.getInt("huodao6");
-									huodao[6]=ev_head6.getInt("huodao7");
-									huodao[7]=ev_head6.getInt("huodao8");
-									huodao[8]=ev_head6.getInt("huodao9");
-									huodao[9]=ev_head6.getInt("huodao10");
-									huodao[10]=ev_head6.getInt("huodao11");
-									huodao[11]=ev_head6.getInt("huodao12");
-									huodao[12]=ev_head6.getInt("huodao13");
-									huodao[13]=ev_head6.getInt("huodao14");
-									huodao[14]=ev_head6.getInt("huodao15");
-									huodao[15]=ev_head6.getInt("huodao16");
-									huodao[16]=ev_head6.getInt("huodao17");
-									huodao[17]=ev_head6.getInt("huodao18");
-									huodao[18]=ev_head6.getInt("huodao19");
-									huodao[19]=ev_head6.getInt("huodao20");
-									huodao[20]=ev_head6.getInt("huodao21");
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoRpt<<"+huodao,"com.txt");
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodao<<"+resjson.toString(),"com.txt");
+									//往接口回调信息
+									allSet.clear();
+									allSet.put("EV_TYPE", VboxProtocol.VBOX_HUODAO_RPT);
+									allSet.put("cool", 0);
+									allSet.put("hot", 0);
+									allSet.put("light", 0);
+									for(int i=1;i<22;i++)
+									{
+										allSet.put(String.valueOf(i), 1);								
+									}		
+									if(cmdSend)
+									{
+										//消除变量值
+										devopt=0;
+										cmdSend=false;
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoRpt<<"+allSet,"com.txt");
+										//3.向主线程返回信息
+										Message tomain=mainhand.obtainMessage();
+						  				tomain.what=COMThread.EV_CHECKMAIN;							
+						  				tomain.obj=allSet;
+						  				mainhand.sendMessage(tomain); // 发送消息
+									}
 									break;								
 								case VboxProtocol.VBOX_INFO_RPT:
 									int infotype=ev_head6.getInt("type");

@@ -34,6 +34,7 @@ import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.evprotocol.ExtraCOMThread;
+import com.easivend.evprotocol.VboxProtocol;
 import com.easivend.model.Tb_vmc_cabinet;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -157,43 +158,64 @@ public class COMService extends Service {
 				}
 				break;    
 			//货道查询	
-			case EV_CHECKCHILD:
-				
-				childhand=comserial.obtainHandler();
-        		Message child2=childhand.obtainMessage();
-        		//查找货道类型
+			case EV_CHECKCHILD:				
+				//查找货道类型
         		vmc_cabinetDAO cabinetDAO2 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
         	    // 获取所有收入信息，并存储到List泛型集合中
         	    Tb_vmc_cabinet listinfos2 = cabinetDAO2.findScrollData(String.valueOf(bundle.getInt("cabinet")));
-        		//格子柜
-        	    if(listinfos2.getCabType()==5)
-        		{
-        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
-        			child2.what=COMThread.EV_BENTO_CHECKCHILD;
-        		}
-        	    //弹簧货道
-        		else if(listinfos2.getCabType()==1)
-        		{
-        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
-        			child2.what=COMThread.EV_COLUMN_CHECKCHILD;
-        		}
-        	    //升降机货道
-        		else if((listinfos2.getCabType()==2)||(listinfos2.getCabType()==3)||(listinfos2.getCabType()==4))
-        		{
-        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
-        			child2.what=COMThread.EV_ELEVATOR_CHECKCHILD;
-        		}
-        		JSONObject ev2=null;
-	    		try {
-	    			ev2=new JSONObject();
-	    			ev2.put("cabinet", bundle.getInt("cabinet"));	    			  			
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev2.toString(),"com.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		child2.obj=ev2;
-        		childhand.sendMessage(child2);
+        	    
+        	    if((ToolClass.getExtraComType()==1)&&(listinfos2.getCabType()==4))
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child2=childextrahand.obtainMessage();
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+					child2.what=COMThread.EV_BENTO_CHECKCHILD;
+					JSONObject ev2=null;
+		    		try {
+		    			ev2=new JSONObject();
+		    			ev2.put("cabinet", bundle.getInt("cabinet"));	    			  			
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev2.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child2.obj=ev2;
+		    		childextrahand.sendMessage(child2);	
+				}
+				else
+				{       
+					childhand=comserial.obtainHandler();
+	        		Message child2=childhand.obtainMessage();	        		
+	        	    //格子柜
+	        	    if(listinfos2.getCabType()==5)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+	        			child2.what=COMThread.EV_BENTO_CHECKCHILD;
+	        		}
+	        	    //弹簧货道
+	        		else if(listinfos2.getCabType()==1)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+	        			child2.what=COMThread.EV_COLUMN_CHECKCHILD;
+	        		}
+	        	    //升降机货道
+	        		else if((listinfos2.getCabType()==2)||(listinfos2.getCabType()==3))
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+	        			child2.what=COMThread.EV_ELEVATOR_CHECKCHILD;
+	        		}
+	        		JSONObject ev2=null;
+		    		try {
+		    			ev2=new JSONObject();
+		    			ev2.put("cabinet", bundle.getInt("cabinet"));	    			  			
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev2.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child2.obj=ev2;
+	        		childhand.sendMessage(child2);
+				}
 				break;
 			//货道出货	
 			case EV_CHUHUOCHILD:		
@@ -841,7 +863,22 @@ public class COMService extends Service {
 			public void handleMessage(Message msg) {
 				// TODO Auto-generated method stub				
 				switch (msg.what)
-				{						
+				{	
+					//查询
+					case COMThread.EV_CHECKMAIN://子线程接收主线程消息签到完成
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回="+msg.obj,"com.txt");
+						//返回给activity广播
+						Intent recintent=new Intent();
+						recintent.putExtra("EVWhat", COMThread.EV_CHECKMAIN);						
+						//传递数据
+				        SerializableMap myMap=new SerializableMap();
+				        myMap.setMap((Map<String, Integer>) msg.obj);//将map数据添加到封装的myMap<span></span>中
+				        Bundle bundle=new Bundle();
+				        bundle.putSerializable("result", myMap);
+				        recintent.putExtras(bundle);
+						recintent.setAction("android.intent.action.comrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(recintent);						
+						break;
 					//操作完成	
 					case COMThread.EV_OPTMAIN:
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMExtraService 综合操作="+msg.obj,"com.txt");	
