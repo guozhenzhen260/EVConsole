@@ -21,10 +21,10 @@ public class ExtraCOMThread implements Runnable {
 	public static final int EV_OPTMAIN	= 9;	//所有设备操作返回
 	Timer timer = new Timer(); 
 	private static Map<String,Object> allSet = new LinkedHashMap<String,Object>() ;
-	boolean onInit=false;
-	boolean cmdSend=false;//true发送的命令，等待ACK确认
+	int onInit=0;//0表示没有初始化，其他值表示正在初始化的阶段
+	boolean cmdSend=false;//true发送的命令，等待ACK确认,这个值只用于需要回复ACK的命令
 	int devopt=0;//命令状态值	
-	int statusnum=0;//20发送一次get_status
+	int statusnum=0;//达到一个值时发送一次get_status
 	//现金设备使能禁能
 	int bill=0;
 	int coin=0;
@@ -76,12 +76,22 @@ public class ExtraCOMThread implements Runnable {
 				switch (msg.what)
 				{	
 				//冰山柜	
+				case COMThread.EV_BENTO_CHECKALLCHILD://子线程接收主线程冰山全部查询消息		
+					//1.得到信息
+					JSONObject ev6=null;
+					try {
+						ev6 = new JSONObject(msg.obj.toString());
+						devopt=COMThread.EV_BENTO_CHECKALLCHILD;						
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					break;
 				case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
 					//1.得到信息
 					JSONObject ev7=null;
 					try {
 						ev7 = new JSONObject(msg.obj.toString());
-						int cabinet=ev7.getInt("cabinet");
 						devopt=COMThread.EV_BENTO_CHECKCHILD;						
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
@@ -246,6 +256,22 @@ public class ExtraCOMThread implements Runnable {
 									{
 										switch(devopt)
 										{
+											case VboxProtocol.VBOX_HUODAO_IND:
+												if(onInit==2)
+												{
+													devopt=VboxProtocol.VBOX_SALEPRICE_IND;
+													cmdSend=false;
+													onInit=3;//saleprice_ind阶段
+												}
+												break;
+											case VboxProtocol.VBOX_SALEPRICE_IND:	
+												if(onInit==3)
+												{
+													devopt=COMThread.EV_BENTO_CHECKCHILD;
+													cmdSend=false;
+													onInit=4;//get_huodao阶段
+												}
+												break;
 											case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadENABLERec<<bill="+bill+"coin="+coin+"opt="+opt,"com.txt");
 												//消除变量值
@@ -311,6 +337,22 @@ public class ExtraCOMThread implements Runnable {
 									{
 										switch(devopt)
 										{
+											case VboxProtocol.VBOX_HUODAO_IND:
+												if(onInit==2)
+												{
+													devopt=VboxProtocol.VBOX_SALEPRICE_IND;
+													cmdSend=false;
+													onInit=3;//saleprice_ind阶段
+												}
+												break;
+											case VboxProtocol.VBOX_SALEPRICE_IND:	
+												if(onInit==3)
+												{
+													devopt=COMThread.EV_BENTO_CHECKCHILD;
+													cmdSend=false;
+													onInit=4;//get_huodao阶段
+												}
+												break;
 											case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadENABLERec<<bill="+bill+"coin="+coin+"opt="+opt,"com.txt");
 												//消除变量值
@@ -374,6 +416,60 @@ public class ExtraCOMThread implements Runnable {
 									//ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraPOLL<<"+resjson.toString(),"com.txt");
 									switch(devopt)
 									{
+										//准备初始化阶段
+										case COMThread.EV_BENTO_CHECKALLCHILD://子线程接收主线程冰山柜全部查询消息
+											if(cmdSend==false)
+											{
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadCHECKALLCHILDSend0.2>>","com.txt");
+												VboxProtocol.VboxGetSetup(ToolClass.getExtracom_id());
+												onInit=1;//setup阶段
+												cmdSend=true;
+											}
+											break;
+										case VboxProtocol.VBOX_HUODAO_IND:
+											if((onInit==2)&&(cmdSend==false))
+											{
+												JSONArray arr=new JSONArray();
+												for(int i=1;i<22;i++)
+												{
+													JSONObject obj=new JSONObject();
+													obj.put("id", i);
+													arr.put(obj);
+												}
+												JSONObject zhuheobj=new JSONObject();
+												zhuheobj.put("port", ToolClass.getExtracom_id());
+												zhuheobj.put("sp_id", arr);										
+												zhuheobj.put("device", 0);
+												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+												JSONObject reqStr=new JSONObject();
+												reqStr.put("EV_json", zhuheobj);
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoind<<"+reqStr,"com.txt");
+												VboxProtocol.VboxHuodaolInd(ToolClass.getExtracom_id(),reqStr.toString());
+												cmdSend=true;
+											}
+											break;
+										case VboxProtocol.VBOX_SALEPRICE_IND:
+											if((onInit==3)&&(cmdSend==false))
+											{
+												JSONArray arr=new JSONArray();
+												for(int i=1;i<22;i++)
+												{
+													JSONObject obj=new JSONObject();
+													obj.put("id", 1);
+													arr.put(obj);
+												}
+												JSONObject zhuheobj=new JSONObject();
+												zhuheobj.put("port", ToolClass.getExtracom_id());
+												zhuheobj.put("sp_id", arr);										
+												zhuheobj.put("device", 0);
+												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+												JSONObject reqStr=new JSONObject();
+												reqStr.put("EV_json", zhuheobj);
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSalepriceind<<"+reqStr,"com.txt");
+												VboxProtocol.VboxSalePriceInd(ToolClass.getExtracom_id(),reqStr.toString());
+												cmdSend=true;
+											}
+											break;
 										case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
 											if(cmdSend==false)
 											{
@@ -461,6 +557,13 @@ public class ExtraCOMThread implements Runnable {
 								case VboxProtocol.VBOX_VMC_SETUP://开机setup的信息
 									int hd_num=ev_head6.getInt("hd_num");
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSetupRpt<<hd_num="+hd_num,"com.txt");
+									//初始化1.Get_Setup
+									if((onInit==1)&&(cmdSend))
+									{
+										devopt=VboxProtocol.VBOX_HUODAO_IND;
+										cmdSend=false;
+										onInit=2;//huodao_ind阶段
+									}
 									break;
 								case VboxProtocol.VBOX_PAYIN_RPT://投币信息
 									int dt=ev_head6.getInt("dt");
@@ -511,7 +614,9 @@ public class ExtraCOMThread implements Runnable {
 									
 									break;	
 								case VboxProtocol.VBOX_ACTION_RPT://心跳不用处理
-								case VboxProtocol.VBOX_REQUEST://数据请求不用处理	
+									break;
+								case VboxProtocol.VBOX_REQUEST://数据请求不用处理
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<","com.txt");
 									break;	
 								case VboxProtocol.VBOX_BUTTON_RPT://按键消息
 									int type=ev_head6.getInt("type");
@@ -544,17 +649,31 @@ public class ExtraCOMThread implements Runnable {
 									{
 										allSet.put(String.valueOf(i), 1);								
 									}		
-									if(cmdSend)
+									//表示是第一次初始化完成
+									if(onInit==4)
 									{
 										//消除变量值
 										devopt=0;
 										cmdSend=false;
+										onInit=0;
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoInit<<"+allSet,"com.txt");
+										//3.向主线程返回信息
+										Message tomain=mainhand.obtainMessage();
+						  				tomain.what=COMThread.EV_CHECKALLMAIN;							
+						  				tomain.obj=allSet;
+						  				mainhand.sendMessage(tomain); // 发送消息
+									}
+									else if(cmdSend)
+									{
+										//消除变量值
+										devopt=0;
+										cmdSend=false;										
 										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoRpt<<"+allSet,"com.txt");
 										//3.向主线程返回信息
 										Message tomain=mainhand.obtainMessage();
 						  				tomain.what=COMThread.EV_CHECKMAIN;							
 						  				tomain.obj=allSet;
-						  				mainhand.sendMessage(tomain); // 发送消息
+						  				mainhand.sendMessage(tomain); // 发送消息										
 									}
 									break;								
 								case VboxProtocol.VBOX_INFO_RPT:

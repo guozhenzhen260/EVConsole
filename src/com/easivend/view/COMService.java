@@ -120,41 +120,62 @@ public class COMService extends Service {
 			    }
 			    else
 				{					
-			    	childhand=comserial.obtainHandler();
-	        		Message childrec=childhand.obtainMessage();
-	        		//查找货道类型
+			    	//查找货道类型
 	        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
 	        		// 获取所有收入信息，并存储到List泛型集合中
 	        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
-	        		//格子柜
-	        	    if(listinfosrec.getCabType()==5)
-	        		{
-	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
-	        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
-	        		}
-	        	    //弹簧货道
-	        	    else if(listinfosrec.getCabType()==1)
-	        		{
-	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
-	        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
-	        		}
-	        	    //升降机货道
-	        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3)||(listinfosrec.getCabType()==4))
-	        		{
-	        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
-	        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
-	        		}
-	        		JSONObject evrec=null;
-		    		try {
-		    			evrec=new JSONObject();
-		    			evrec.put("cabinet", cabinetID[huom]);	    			  			
-		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
-		    		} catch (JSONException e) {
-		    			// TODO Auto-generated catch block
-		    			e.printStackTrace();
-		    		}
-		    		childrec.obj=evrec;
-	        		childhand.sendMessage(childrec);	        	
+	        	    if((ToolClass.getExtraComType()==1)&&(listinfosrec.getCabType()==4))
+					{
+						childextrahand=extracomserial.obtainHandler();
+						Message childrec=childextrahand.obtainMessage();
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜查询="+String.valueOf(bundle.getInt("cabinet")),"com.txt");
+						childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+						JSONObject evrec=null;
+			    		try {
+			    			evrec=new JSONObject();
+			    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+			    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+			    		} catch (JSONException e) {
+			    			// TODO Auto-generated catch block
+			    			e.printStackTrace();
+			    		}
+			    		childrec.obj=evrec;
+			    		childextrahand.sendMessage(childrec);	
+					}
+					else
+					{	        	    
+		        	    childhand=comserial.obtainHandler();
+		        		Message childrec=childhand.obtainMessage();
+		        		//格子柜
+		        	    if(listinfosrec.getCabType()==5)
+		        		{
+		        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
+		        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+		        		}
+		        	    //弹簧货道
+		        	    else if(listinfosrec.getCabType()==1)
+		        		{
+		        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
+		        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
+		        		}
+		        	    //升降机货道
+		        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3))
+		        		{
+		        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
+		        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
+		        		}
+		        		JSONObject evrec=null;
+			    		try {
+			    			evrec=new JSONObject();
+			    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+			    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+			    		} catch (JSONException e) {
+			    			// TODO Auto-generated catch block
+			    			e.printStackTrace();
+			    		}
+			    		childrec.obj=evrec;
+		        		childhand.sendMessage(childrec);
+					}
 				}
 				break;    
 			//货道查询	
@@ -762,41 +783,62 @@ public class COMService extends Service {
 				        //2.继续获取所有货道号
 				        if(huom<cabinetID.length)
 				        {					        	
-				        	childhand=comserial.obtainHandler();
-			        		Message childrec=childhand.obtainMessage();
-			        		//查找货道类型
+				        	//查找货道类型
 			        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(COMService.this);// 创建InaccountDAO对象
 			        		// 获取所有收入信息，并存储到List泛型集合中
 			        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
-			        		//格子柜
-			        	    if(listinfosrec.getCabType()==5)
-			        		{
-			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
-			        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
-			        		}
-			        	    //弹簧货道
-			        	    else if(listinfosrec.getCabType()==1)
-			        		{
-			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
-			        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
-			        		}
-			        	    //升降机货道
-			        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3)||(listinfosrec.getCabType()==4))
-			        		{
-			        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
-			        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
-			        		}
-			        		JSONObject evrec=null;
-				    		try {
-				    			evrec=new JSONObject();
-				    			evrec.put("cabinet", cabinetID[huom]);	    			  			
-				    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
-				    		} catch (JSONException e) {
-				    			// TODO Auto-generated catch block
-				    			e.printStackTrace();
-				    		}
-				    		childrec.obj=evrec;
-			        		childhand.sendMessage(childrec);
+			        	    if((ToolClass.getExtraComType()==1)&&(listinfosrec.getCabType()==4))
+			        	    {
+			        	    	childextrahand=extracomserial.obtainHandler();
+			        	    	Message childrec=childextrahand.obtainMessage();
+			        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜查询="+cabinetID[huom],"com.txt");
+			        	    	childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+			        	    	JSONObject evrec=null;
+					    		try {
+					    			evrec=new JSONObject();
+					    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+					    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+					    		} catch (JSONException e) {
+					    			// TODO Auto-generated catch block
+					    			e.printStackTrace();
+					    		}
+					    		childrec.obj=evrec;
+			        	    	childextrahand.sendMessage(childrec);	
+			        	    }
+			        	    else
+			        	    {
+				        	    childhand=comserial.obtainHandler();
+				        		Message childrec=childhand.obtainMessage();
+				        		//格子柜
+				        	    if(listinfosrec.getCabType()==5)
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
+				        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+				        		}
+				        	    //弹簧货道
+				        	    else if(listinfosrec.getCabType()==1)
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
+				        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
+				        		}
+				        	    //升降机货道
+				        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3))
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
+				        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
+				        		}
+				        		JSONObject evrec=null;
+					    		try {
+					    			evrec=new JSONObject();
+					    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+					    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+					    		} catch (JSONException e) {
+					    			// TODO Auto-generated catch block
+					    			e.printStackTrace();
+					    		}
+					    		childrec.obj=evrec;
+				        		childhand.sendMessage(childrec);
+			        	    }
 				        }
 				        else
 				        {
@@ -864,6 +906,110 @@ public class COMService extends Service {
 				// TODO Auto-generated method stub				
 				switch (msg.what)
 				{	
+					//全部查询
+					case COMThread.EV_CHECKALLMAIN://子线程接收主线程消息签到完成
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道全部查询返回="+msg.obj,"com.txt");
+						String tempno6=null; 
+						Map<String, Object> Set6= (Map<String, Object>) msg.obj;
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回解析...","com.txt");
+						//输出内容
+				        Set<Entry<String, Object>> allmap6=Set6.entrySet();  //实例化
+				        Iterator<Entry<String, Object>> iter6=allmap6.iterator();
+				        while(iter6.hasNext())
+				        {
+				            Entry<String, Object> me=iter6.next();
+				            if(
+				               (me.getKey().equals("cabinet")!=true)&&(me.getKey().equals("cool")!=true)
+				               &&(me.getKey().equals("hot")!=true)&&(me.getKey().equals("light")!=true)
+				               &&(me.getKey().equals("EV_TYPE")!=true)
+				            )   
+				            {
+				            	if(Integer.parseInt(me.getKey())<10)
+				    				tempno6="0"+me.getKey();
+				    			else 
+				    				tempno6=me.getKey();
+				            	
+				            	huoSet.put(cabinetID[huom]+tempno6,(Integer)me.getValue());
+				            }
+				        } 
+				        ToolClass.Log(ToolClass.INFO,"EV_COM","COMService<<"+huoSet.size()+"货道状态:"+huoSet.toString(),"com.txt");	
+				        huom++;
+				        //2.继续获取所有货道号
+				        if(huom<cabinetID.length)
+				        {					        	
+				        	//查找货道类型
+			        		vmc_cabinetDAO cabinetDAOrec = new vmc_cabinetDAO(COMService.this);// 创建InaccountDAO对象
+			        		// 获取所有收入信息，并存储到List泛型集合中
+			        	    Tb_vmc_cabinet listinfosrec = cabinetDAOrec.findScrollData(cabinetID[huom]);
+			        	    if((ToolClass.getExtraComType()==1)&&(listinfosrec.getCabType()==4))
+			        	    {
+			        	    	childextrahand=extracomserial.obtainHandler();
+			        	    	Message childrec=childextrahand.obtainMessage();
+			        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜查询="+cabinetID[huom],"com.txt");
+			        	    	childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+			        	    	JSONObject evrec=null;
+					    		try {
+					    			evrec=new JSONObject();
+					    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+					    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+					    		} catch (JSONException e) {
+					    			// TODO Auto-generated catch block
+					    			e.printStackTrace();
+					    		}
+					    		childrec.obj=evrec;
+			        	    	childextrahand.sendMessage(childrec);	
+			        	    }
+			        	    else
+			        	    {
+				        	    childhand=comserial.obtainHandler();
+				        		Message childrec=childhand.obtainMessage();
+				        		//格子柜
+				        	    if(listinfosrec.getCabType()==5)
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜查询="+cabinetID[huom],"com.txt");
+				        			childrec.what=COMThread.EV_BENTO_CHECKALLCHILD;
+				        		}
+				        	    //弹簧货道
+				        	    else if(listinfosrec.getCabType()==1)
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道柜查询="+cabinetID[huom],"com.txt");
+				        			childrec.what=COMThread.EV_COLUMN_CHECKALLCHILD;
+				        		}
+				        	    //升降机货道
+				        		else if((listinfosrec.getCabType()==2)||(listinfosrec.getCabType()==3))
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机柜查询="+cabinetID[huom],"com.txt");
+				        			childrec.what=COMThread.EV_ELEVATOR_CHECKALLCHILD;
+				        		}
+				        		JSONObject evrec=null;
+					    		try {
+					    			evrec=new JSONObject();
+					    			evrec.put("cabinet", cabinetID[huom]);	    			  			
+					    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+evrec.toString(),"com.txt");
+					    		} catch (JSONException e) {
+					    			// TODO Auto-generated catch block
+					    			e.printStackTrace();
+					    		}
+					    		childrec.obj=evrec;
+				        		childhand.sendMessage(childrec);
+			        	    }
+				        }
+				        else
+				        {
+				        	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子柜连接完成","com.txt");
+				        	//返回给activity广播
+							Intent recintent=new Intent();
+							recintent.putExtra("EVWhat", COMThread.EV_CHECKALLMAIN);						
+							//传递数据
+					        SerializableMap myMap=new SerializableMap();
+					        myMap.setMap(huoSet);//将map数据添加到封装的myMap<span></span>中
+					        Bundle bundle=new Bundle();
+					        bundle.putSerializable("result", myMap);
+					        recintent.putExtras(bundle);
+							recintent.setAction("android.intent.action.comrec");//action与接收器相同
+							localBroadreceiver.sendBroadcast(recintent);
+						}												
+						break;
 					//查询
 					case COMThread.EV_CHECKMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询返回="+msg.obj,"com.txt");
