@@ -455,7 +455,7 @@ public class ExtraCOMThread implements Runnable {
 												for(int i=1;i<22;i++)
 												{
 													JSONObject obj=new JSONObject();
-													obj.put("id", 1);
+													obj.put("id", 10);
 													arr.put(obj);
 												}
 												JSONObject zhuheobj=new JSONObject();
@@ -623,7 +623,11 @@ public class ExtraCOMThread implements Runnable {
 									if(type==0)
 										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<Game","com.txt");
 									else if(type==1)
-										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<Huodao","com.txt");
+									{
+										int btntype=ev_head6.getInt("type");
+										int btnvalue=ev_head6.getInt("value");
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<btntype="+btntype+"btnvalue="+btnvalue,"com.txt");
+									}
 									else if(type==2)
 										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<sp","com.txt");
 									else if(type==4)
