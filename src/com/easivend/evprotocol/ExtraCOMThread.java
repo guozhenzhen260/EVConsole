@@ -420,62 +420,121 @@ public class ExtraCOMThread implements Runnable {
 										case COMThread.EV_BENTO_CHECKALLCHILD://子线程接收主线程冰山柜全部查询消息
 											if(cmdSend==false)
 											{
-												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadCHECKALLCHILDSend0.2>>","com.txt");
-												VboxProtocol.VboxGetSetup(ToolClass.getExtracom_id());
-												onInit=1;//setup阶段
-												cmdSend=true;
+												if(++statusnum>5)
+												{
+													statusnum=0;
+													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadGetSetup>>","com.txt");
+													VboxProtocol.VboxGetSetup(ToolClass.getExtracom_id());
+													onInit=1;//setup阶段
+													cmdSend=true;
+												}
+												else
+												{
+													ToolClass.Log(ToolClass.INFO,"EV_COM","Threadstatusnumwait="+statusnum,"com.txt");
+													if(F7==1)
+													{
+														VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+													}
+												}
 											}
 											break;
 										case VboxProtocol.VBOX_HUODAO_IND:
 											if((onInit==2)&&(cmdSend==false))
 											{
-												JSONArray arr=new JSONArray();
-												for(int i=1;i<22;i++)
+												if(++statusnum>5)
 												{
-													JSONObject obj=new JSONObject();
-													obj.put("id", i);
-													arr.put(obj);
+													statusnum=0;
+													JSONArray arr=new JSONArray();
+													for(int i=1;i<22;i++)
+													{
+														JSONObject obj=new JSONObject();
+														obj.put("id", i);
+														arr.put(obj);
+													}
+													JSONObject zhuheobj=new JSONObject();
+													zhuheobj.put("port", ToolClass.getExtracom_id());
+													zhuheobj.put("sp_id", arr);										
+													zhuheobj.put("device", 0);
+													zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+													JSONObject reqStr=new JSONObject();
+													reqStr.put("EV_json", zhuheobj);
+													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoind>>"+reqStr,"com.txt");
+													VboxProtocol.VboxHuodaolInd(ToolClass.getExtracom_id(),reqStr.toString());
+													cmdSend=true;
 												}
-												JSONObject zhuheobj=new JSONObject();
-												zhuheobj.put("port", ToolClass.getExtracom_id());
-												zhuheobj.put("sp_id", arr);										
-												zhuheobj.put("device", 0);
-												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
-												JSONObject reqStr=new JSONObject();
-												reqStr.put("EV_json", zhuheobj);
-												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoind<<"+reqStr,"com.txt");
-												VboxProtocol.VboxHuodaolInd(ToolClass.getExtracom_id(),reqStr.toString());
-												cmdSend=true;
+												else
+												{
+													ToolClass.Log(ToolClass.INFO,"EV_COM","Threadstatusnumwait="+statusnum,"com.txt");
+													if(F7==1)
+													{
+														VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+													}
+												}
 											}
 											break;
 										case VboxProtocol.VBOX_SALEPRICE_IND:
 											if((onInit==3)&&(cmdSend==false))
 											{
-												JSONArray arr=new JSONArray();
-												for(int i=1;i<22;i++)
+												if(++statusnum>5)
 												{
-													JSONObject obj=new JSONObject();
-													obj.put("id", 10);
-													arr.put(obj);
+													statusnum=0;
+													JSONArray arr=new JSONArray();
+													for(int i=1;i<22;i++)
+													{
+														JSONObject obj=new JSONObject();
+														obj.put("id", 10);
+														arr.put(obj);
+													}
+													JSONObject zhuheobj=new JSONObject();
+													zhuheobj.put("port", ToolClass.getExtracom_id());
+													zhuheobj.put("sp_id", arr);										
+													zhuheobj.put("device", 0);
+													zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+													JSONObject reqStr=new JSONObject();
+													reqStr.put("EV_json", zhuheobj);
+													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSalepriceind>>"+reqStr,"com.txt");
+													VboxProtocol.VboxSalePriceInd(ToolClass.getExtracom_id(),reqStr.toString());
+													cmdSend=true;
 												}
-												JSONObject zhuheobj=new JSONObject();
-												zhuheobj.put("port", ToolClass.getExtracom_id());
-												zhuheobj.put("sp_id", arr);										
-												zhuheobj.put("device", 0);
-												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
-												JSONObject reqStr=new JSONObject();
-												reqStr.put("EV_json", zhuheobj);
-												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSalepriceind<<"+reqStr,"com.txt");
-												VboxProtocol.VboxSalePriceInd(ToolClass.getExtracom_id(),reqStr.toString());
-												cmdSend=true;
+												else
+												{
+													ToolClass.Log(ToolClass.INFO,"EV_COM","Threadstatusnumwait="+statusnum,"com.txt");
+													if(F7==1)
+													{
+														VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+													}
+												}	
 											}
 											break;
 										case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
 											if(cmdSend==false)
 											{
-												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadCHECKCHILDSend0.2>>","com.txt");
-												VboxProtocol.VboxGetHuoDao(ToolClass.getExtracom_id(),0);
-												cmdSend=true;
+												//初始化
+												if(onInit==4)
+												{
+													if(++statusnum>5)
+													{
+														statusnum=0;
+														ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadGetHuodao>>","com.txt");
+														VboxProtocol.VboxGetHuoDao(ToolClass.getExtracom_id(),0);
+														cmdSend=true;
+													}
+													else
+													{
+														ToolClass.Log(ToolClass.INFO,"EV_COM","Threadstatusnumwait="+statusnum,"com.txt");
+														if(F7==1)
+														{
+															VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+														}
+													}
+												}
+												//正常GetHuodao
+												else
+												{
+													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadGetHuodao>>","com.txt");
+													VboxProtocol.VboxGetHuoDao(ToolClass.getExtracom_id(),0);
+													cmdSend=true;
+												}
 											}
 											break;										
 										case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
@@ -556,10 +615,10 @@ public class ExtraCOMThread implements Runnable {
 									break;
 								case VboxProtocol.VBOX_VMC_SETUP://开机setup的信息
 									int hd_num=ev_head6.getInt("hd_num");
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSetupRpt<<hd_num="+hd_num,"com.txt");
 									//初始化1.Get_Setup
 									if((onInit==1)&&(cmdSend))
 									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSetupRpt<<hd_num="+hd_num,"com.txt");
 										devopt=VboxProtocol.VBOX_HUODAO_IND;
 										cmdSend=false;
 										onInit=2;//huodao_ind阶段
@@ -616,7 +675,7 @@ public class ExtraCOMThread implements Runnable {
 								case VboxProtocol.VBOX_ACTION_RPT://心跳不用处理
 									break;
 								case VboxProtocol.VBOX_REQUEST://数据请求不用处理
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<","com.txt");
+									//ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<","com.txt");
 									break;	
 								case VboxProtocol.VBOX_BUTTON_RPT://按键消息
 									int type=ev_head6.getInt("type");
