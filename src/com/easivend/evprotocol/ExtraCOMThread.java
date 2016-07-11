@@ -193,6 +193,10 @@ public class ExtraCOMThread implements Runnable {
 						e1.printStackTrace();
 					}					
 					break;	
+				case VboxProtocol.VBOX_PROTOCOL:
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMThread 冰山柜关闭","com.txt");
+					timer.shutdown();
+					break;
 				}
 			}
 		};	
@@ -233,7 +237,7 @@ public class ExtraCOMThread implements Runnable {
         	{
 	        	//ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraThread Timer["+Thread.currentThread().getId()+"]","com.txt");
 	        	String resjson = VboxProtocol.VboxReadMsg(ToolClass.getExtracom_id(),100);
-	        	
+	        	//ToolClass.Log(ToolClass.INFO,"EV_COM","Threadresjson<<"+resjson.toString(),"com.txt");
 	        	//2.重新组包
 				try {
 					JSONObject jsonObject6 = new JSONObject(resjson); 
@@ -258,7 +262,7 @@ public class ExtraCOMThread implements Runnable {
 							switch(mt)
 							{
 								case VboxProtocol.VBOX_ACK_RPT:	
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraACK<<ACK","com.txt");
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraACK<<ACK,cmd="+cmdSend+"devopt="+devopt+"onInit="+onInit,"com.txt");
 									if(cmdSend)
 									{
 										switch(devopt)

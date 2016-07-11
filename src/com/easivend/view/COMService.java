@@ -1060,6 +1060,17 @@ public class COMService extends Service {
 		EVprotocol.EVPortRelease(ToolClass.getColumncom());
 		EVprotocol.EVPortRelease(ToolClass.getCom());
 		EVprotocol.EVPortRelease(ToolClass.getExtracom());
+		if(ToolClass.getExtraComType()==1)
+		{
+			childextrahand=extracomserial.obtainHandler();
+			Message child2=childextrahand.obtainMessage();
+			ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜关闭","com.txt");
+			child2.what=VboxProtocol.VBOX_PROTOCOL;
+			JSONObject ev2=null;
+    		ev2=new JSONObject();	    			
+			child2.obj=ev2;
+    		childextrahand.sendMessage(child2);
+		}
 		//解除注册接收器
 		localBroadreceiver.unregisterReceiver(receiver);
 		super.onDestroy();
