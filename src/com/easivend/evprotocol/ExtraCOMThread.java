@@ -4,6 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,42 +22,22 @@ public class ExtraCOMThread implements Runnable {
 
 	private Handler mainhand=null,childhand=null;
 	public static final int EV_OPTMAIN	= 9;	//所有设备操作返回
-	Timer timer = new Timer(); 
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	private static Map<String,Object> allSet = new LinkedHashMap<String,Object>() ;
 	int onInit=0;//0表示没有初始化，其他值表示正在初始化的阶段
 	boolean cmdSend=false;//true发送的命令，等待ACK确认,这个值只用于需要回复ACK的命令
 	int devopt=0;//命令状态值	
-	int statusnum=0;//达到一个值时发送一次get_status
 	//现金设备使能禁能
 	int bill=0;
 	int coin=0;
 	int opt=0;
-	//现金设备金额	
-	int coin_remain=0;//硬币器当前储币金额	以分为单位
-	int payback_value=0;//找零金额
-	
-	int g_holdValue = 0;//当前暂存纸币金额 以分为单位
-	int coin_recv=0;//硬币器当前收币金额	以分为单位
-	int bill_recv=0;//纸币器当前收币金额	以分为单位
-	
+	//现金设备金额		
 	int cost_value=0;//现金设备扣款金额
 	
 	int billPay=0;//纸币退币金额
 	int coinPay=0;//硬币退币金额
 	
-	
-	/*********************************************************************************************************
-	** Function name:     	GetAmountMoney
-	** Descriptions:	    投币总金额
-	** input parameters:    无
-	** output parameters:   无
-	** Returned value:      无
-	*********************************************************************************************************/
-	int GetAmountMoney()
-	{	
-		return coin_recv + bill_recv + g_holdValue;
-	}
-	
+		
 	public ExtraCOMThread(Handler mainhand) {
 		this.mainhand=mainhand;		
 	}
@@ -213,12 +196,36 @@ public class ExtraCOMThread implements Runnable {
 				}
 			}
 		};	
-		timer.scheduleAtFixedRate(task, 5000, 100);       // timeTask
+		timer.scheduleWithFixedDelay(task, 5000, 100,TimeUnit.MILLISECONDS);       // timeTask
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop		 
 	}
 	
 	TimerTask task = new TimerTask() 
 	{ 
+		int onInit=0;//0表示没有初始化，其他值表示正在初始化的阶段
+		boolean cmdSend=false;//true发送的命令，等待ACK确认,这个值只用于需要回复ACK的命令
+		int statusnum=0;//达到一个值时发送一次get_status
+		//现金设备金额	
+		int coin_remain=0;//硬币器当前储币金额	以分为单位
+		int payback_value=0;//找零金额
+		
+		int g_holdValue = 0;//当前暂存纸币金额 以分为单位
+		int coin_recv=0;//硬币器当前收币金额	以分为单位
+		int bill_recv=0;//纸币器当前收币金额	以分为单位
+			
+		
+		/*********************************************************************************************************
+		** Function name:     	GetAmountMoney
+		** Descriptions:	    投币总金额
+		** input parameters:    无
+		** output parameters:   无
+		** Returned value:      无
+		*********************************************************************************************************/
+		int GetAmountMoney()
+		{	
+			return coin_recv + bill_recv + g_holdValue;
+		}
+		
         @Override 
         public void run() 
         { 
