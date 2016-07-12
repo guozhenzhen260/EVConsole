@@ -207,7 +207,7 @@ public class BusHuo extends Activity
 			case COMThread.EV_OPTMAIN: 
 				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set2=serializableMap2.getMap();
-				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道操作="+Set2,"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusHuo 货道操作="+Set2,"com.txt");
 				int EV_TYPE=Set2.get("EV_TYPE");
 				if((EV_TYPE==EVprotocol.EV_BENTO_OPEN)||(EV_TYPE==EVprotocol.EV_COLUMN_OPEN))
 				{
@@ -272,6 +272,12 @@ public class BusHuo extends Activity
 					}, 3000);
 					break;
 				}
+			//按钮返回
+			case COMThread.EV_BUTTONMAIN:
+				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set=serializableMap.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusHuo 按键操作="+Set,"com.txt");
+				break;
 			}			
 		}
 

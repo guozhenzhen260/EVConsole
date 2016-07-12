@@ -319,7 +319,13 @@ public class BusZhiAmount  extends Activity
 						break; 	
 					default:break;	
 				}
-				break;			
+				break;	
+				//按钮返回
+			case COMThread.EV_BUTTONMAIN:
+				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set2=serializableMap2.getMap();
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusAmount 按键操作="+Set2,"com.txt");
+				break;
 			}			
 		}
 
