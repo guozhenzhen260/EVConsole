@@ -1040,6 +1040,21 @@ public class COMService extends Service {
 						recintent2.setAction("android.intent.action.comrec");//action与接收器相同
 						localBroadreceiver.sendBroadcast(recintent2);
 						break;
+						//按钮返回
+					case COMThread.EV_BUTTONMAIN:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMExtraService 综合操作="+msg.obj,"com.txt");	
+						//返回给activity广播
+						Intent recintent3=new Intent();
+						recintent3.putExtra("EVWhat", COMThread.EV_BUTTONMAIN);
+						//传递数据
+				        SerializableMap myMap3=new SerializableMap();
+				        myMap3.setMap((Map<String, Integer>) msg.obj);//将map数据添加到封装的myMap<span></span>中
+				        Bundle bundle3=new Bundle();
+				        bundle3.putSerializable("result", myMap3);
+				        recintent3.putExtras(bundle3);
+						recintent3.setAction("android.intent.action.comrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(recintent3);
+						break;	
 				}				
 			}
 			

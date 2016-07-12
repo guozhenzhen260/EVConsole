@@ -2930,4 +2930,18 @@ public class ToolClass
 		myToast.show();
 	}
 	
+	//ÅÐ¶Ï×Ö·û´®ÊÇ·ñÎª¿Õtrue¿Õ£¬false·Ç¿Õ
+	public static boolean isEmpty(String str)
+	{
+		boolean result=true;
+		if(str!=null)
+		{
+			if((str.isEmpty()==false)&&(str.equals("")==false))
+			{
+				result=false;
+			}
+		}
+		return result;
+	}
+	
 }

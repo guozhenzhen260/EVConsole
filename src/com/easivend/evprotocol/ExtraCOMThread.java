@@ -343,7 +343,7 @@ public class ExtraCOMThread implements Runnable {
 									}
 									break;
 								case VboxProtocol.VBOX_NAK_RPT:	
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraNAK<<NAK","com.txt");
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraNAK<<NAK,cmd="+cmdSend+"devopt="+devopt+"onInit="+onInit,"com.txt");
 									if(cmdSend)
 									{
 										switch(devopt)
@@ -689,19 +689,41 @@ public class ExtraCOMThread implements Runnable {
 									//ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<","com.txt");
 									break;	
 								case VboxProtocol.VBOX_BUTTON_RPT://按键消息
-									int type=ev_head6.getInt("type");
+									//往接口回调信息
+									allSet.clear();
+									int type=ev_head6.getInt("type");									
 									if(type==0)
+									{
 										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<Game","com.txt");
+										allSet.put("EV_TYPE", COMThread.EV_BUTTONRPT_GAME);
+									}
 									else if(type==1)
 									{
 										int btntype=ev_head6.getInt("type");
 										int btnvalue=ev_head6.getInt("value");
-										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<btntype="+btntype+"btnvalue="+btnvalue,"com.txt");
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<Huodaobtntype="+btntype+"btnvalue="+btnvalue,"com.txt");
+										allSet.put("EV_TYPE", COMThread.EV_BUTTONRPT_HUODAO);
+										allSet.put("btnvalue", btnvalue);
 									}
 									else if(type==2)
-										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<sp","com.txt");
+									{
+										int btntype=ev_head6.getInt("type");
+										int btnvalue=ev_head6.getInt("value");
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<Spbtntype="+btntype+"btnvalue="+btnvalue,"com.txt");
+										allSet.put("EV_TYPE", COMThread.EV_BUTTONRPT_SP);
+										allSet.put("btnvalue", btnvalue);
+									}
 									else if(type==4)
-										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<return","com.txt");
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadButtonRpt<<Return","com.txt");
+										allSet.put("EV_TYPE", COMThread.EV_BUTTONRPT_RETURN);
+									}
+									
+									//3.向主线程返回信息
+					  				Message tomain19=mainhand.obtainMessage();
+					  				tomain19.what=COMThread.EV_BUTTONMAIN;							
+					  				tomain19.obj=allSet;
+					  				mainhand.sendMessage(tomain19); // 发送消息
 									break;
 								case VboxProtocol.VBOX_STATUS_RPT://整机状态
 									int bv_st=ev_head6.getInt("bv_st");

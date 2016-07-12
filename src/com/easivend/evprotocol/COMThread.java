@@ -45,10 +45,17 @@ public class COMThread implements Runnable
 	public static final int EV_ELEVATOR_CHECKCHILD = 44;	//升降机柜查询
 	public static final int EV_ELEVATOR_OPENCHILD 	= 45;	//升降机柜出货
 	
+	//=====================各种类型按键信息==============================================================================
+	public static final int EV_BUTTONRPT_GAME = 50;		//游戏按键
+	public static final int EV_BUTTONRPT_HUODAO = 51;	//上报货道id
+	public static final int EV_BUTTONRPT_SP = 52;	    //上报商品id
+	public static final int EV_BUTTONRPT_RETURN = 53;	//退币按键
+	
 	//=====================基础返回值==================================
 	public static final int EV_CHECKALLMAIN	= 2;//所有货道全部查询返回
 	public static final int EV_CHECKMAIN	= 8;	//货道查询返回
 	public static final int EV_OPTMAIN	= 9;	//所有设备操作返回
+	public static final int EV_BUTTONMAIN	= 7;	//所有按钮返回
 	
 	
 	private Handler mainhand=null,childhand=null;

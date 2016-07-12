@@ -56,17 +56,23 @@ public class BusTishi extends Activity
 	   		 //购买演示
 	   		 if(infotype==1)
 	   		 {
-	   			 if(tb_inaccount.getDemo().isEmpty()==false)
+	   			 if(tb_inaccount.getDemo()!=null)
 	   			 {
-	   				 info=tb_inaccount.getDemo();
+		   			 if(tb_inaccount.getDemo().isEmpty()==false)
+		   			 {
+		   				 info=tb_inaccount.getDemo();
+		   			 }
 	   			 }
 	   		 }
 	   		 //活动信息
 	   		 else if(infotype==2)
 	   		 {
-	   			 if(tb_inaccount.getEvent().isEmpty()==false)
+	   			 if(tb_inaccount.getEvent()!=null)
 	   			 {
-	   				 info=tb_inaccount.getEvent();
+		   			 if(tb_inaccount.getEvent().isEmpty()==false)
+		   			 {
+		   				 info=tb_inaccount.getEvent();
+		   			 }
 	   			 }
 	   		 }
 	   	 }
