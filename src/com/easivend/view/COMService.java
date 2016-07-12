@@ -1042,7 +1042,7 @@ public class COMService extends Service {
 						break;
 						//按钮返回
 					case COMThread.EV_BUTTONMAIN:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMExtraService 综合操作="+msg.obj,"com.txt");	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMExtraService 按键操作="+msg.obj,"com.txt");	
 						//返回给activity广播
 						Intent recintent3=new Intent();
 						recintent3.putExtra("EVWhat", COMThread.EV_BUTTONMAIN);

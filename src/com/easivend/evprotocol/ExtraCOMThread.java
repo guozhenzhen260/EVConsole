@@ -230,7 +230,7 @@ public class ExtraCOMThread implements Runnable {
 			return coin_recv + bill_recv + g_holdValue;
 		}
 		
-		
+		int hd_num=0;//货道数量
 		int  decimalPlaces=1;//基本单位1角,2分,0元
 		//设置decimalPlaces比例因子
 		void setDecimal(int decimal_places)
@@ -527,7 +527,7 @@ public class ExtraCOMThread implements Runnable {
 										case COMThread.EV_BENTO_CHECKALLCHILD://子线程接收主线程冰山柜全部查询消息
 											if(cmdSend==false)
 											{
-												if(++statusnum>5)
+												if(++statusnum>2)
 												{
 													statusnum=0;
 													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadGetSetup>>","com.txt");
@@ -548,11 +548,11 @@ public class ExtraCOMThread implements Runnable {
 										case VboxProtocol.VBOX_HUODAO_IND:
 											if((onInit==2)&&(cmdSend==false))
 											{
-												if(++statusnum>5)
+												if(++statusnum>2)
 												{
 													statusnum=0;
 													JSONArray arr=new JSONArray();
-													for(int i=1;i<22;i++)
+													for(int i=1;i<(hd_num+1);i++)
 													{
 														JSONObject obj=new JSONObject();
 														obj.put("id", i);
@@ -582,14 +582,14 @@ public class ExtraCOMThread implements Runnable {
 										case VboxProtocol.VBOX_SALEPRICE_IND:
 											if((onInit==3)&&(cmdSend==false))
 											{
-												if(++statusnum>5)
+												if(++statusnum>2)
 												{
 													statusnum=0;
 													JSONArray arr=new JSONArray();
-													for(int i=1;i<22;i++)
+													for(int i=1;i<(hd_num+1);i++)
 													{
 														JSONObject obj=new JSONObject();
-														obj.put("id", MoneySend(100));
+														obj.put("id", MoneySend(56800));
 														arr.put(obj);
 													}
 													JSONObject zhuheobj=new JSONObject();
@@ -619,7 +619,7 @@ public class ExtraCOMThread implements Runnable {
 												//初始化
 												if(onInit==4)
 												{
-													if(++statusnum>5)
+													if(++statusnum>2)
 													{
 														statusnum=0;
 														ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadGetHuodao>>","com.txt");
@@ -724,7 +724,8 @@ public class ExtraCOMThread implements Runnable {
 									//初始化1.Get_Setup
 									if((onInit==1)&&(cmdSend))
 									{
-										int decimal_places=ev_head6.getInt("decimal_places");										
+										hd_num=ev_head6.getInt("hd_num");
+										int decimal_places=ev_head6.getInt("decimal_places");											
 										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSetupRpt<<"+ev_head6,"com.txt");
 										setDecimal(decimal_places);
 										devopt=VboxProtocol.VBOX_HUODAO_IND;
@@ -838,10 +839,13 @@ public class ExtraCOMThread implements Runnable {
 									allSet.put("cool", 0);
 									allSet.put("hot", 0);
 									allSet.put("light", 0);
-									for(int i=1;i<22;i++)
+									JSONArray arr=ev_head6.getJSONArray("huodao");//返回json数组
+									//ToolClass.Log(ToolClass.INFO,"EV_JNI","API<<货道2:"+arr.toString());
+									for(int i=0;i<arr.length();i++)
 									{
-										allSet.put(String.valueOf(i), 1);								
-									}		
+										JSONObject object2=arr.getJSONObject(i);
+										allSet.put(String.valueOf(object2.getInt("no")), object2.getInt("remain"));								
+									}											
 									//表示是第一次初始化完成
 									if(onInit==4)
 									{
