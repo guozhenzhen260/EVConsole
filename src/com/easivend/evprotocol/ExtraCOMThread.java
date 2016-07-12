@@ -230,6 +230,102 @@ public class ExtraCOMThread implements Runnable {
 			return coin_recv + bill_recv + g_holdValue;
 		}
 		
+		
+		int  decimalPlaces=1;//基本单位1角,2分,0元
+		//设置decimalPlaces比例因子
+		void setDecimal(int decimal_places)
+		{
+			if(decimal_places==0)
+			{
+				 decimalPlaces=1;
+			}
+		}
+		/***********************************************************
+		vmc内部处理都是以分为单位，但是在上传给pc时需要转换
+
+		decimalPlaces=1以角为单位
+			例如，需要上传给pc的是200分,
+			200*10=2000
+			2000/100=20角，即上传20角
+			
+		decimalPlaces=2以分为单位
+			例如，需要上传给pc的是200分,
+			200*100=20000
+			20000/100=200分，即上传200分	
+
+		decimalPlaces=0以元为单位
+			例如，需要上传给pc的是200分,
+			200=200
+			200/100=2元，即上传2元	
+		***************************************************************/
+		int   MoneySend(int sendMoney)
+		{
+			int tempMoney=0;
+			
+			//公式2: 上传ScaledValue = ActualValue元/(10-DecimalPlaces次方)
+			if(decimalPlaces==1)
+			{
+				//tempMoney = sendMoney*10;
+				//tempMoney = tempMoney/100;
+				tempMoney = sendMoney/10;
+			}
+			else if(decimalPlaces==2)
+			{
+				tempMoney = sendMoney;
+			}
+			else if(decimalPlaces==0)
+			{
+				//tempMoney = sendMoney;
+				//tempMoney = tempMoney/100;
+				tempMoney = sendMoney/100;
+			}
+			//例如:600分=6元
+			return tempMoney;
+		}
+		
+		/***********************************************************
+		vmc内部处理都是以分为单位，所以接收pc传下来的数据时需要转换
+
+		decimalPlaces=1以角为单位
+			例如，pc下传是20角,
+			20*100=2000
+			2000/10=200分，即接收200分
+			
+		decimalPlaces=2以分为单位
+			例如，pc下传是200分,
+			200*100=20000
+			20000/100=200分，即接收200分	
+
+		decimalPlaces=0以元为单位
+			例如，pc下传是2元,
+			2*100=200
+			200=200分，即接收200分
+		***************************************************************/
+		int   MoneyRec(int recMoney)
+		{
+			int tempMoney;
+			
+			tempMoney = recMoney;
+			//公式1:  ActualValue元 =下载ScaledValue*(10-DecimalPlaces次方)
+			if(decimalPlaces==1)
+			{
+				//tempMoney = tempMoney*100;
+				//tempMoney = tempMoney/10;
+				tempMoney = tempMoney*10;
+			}
+			else if(decimalPlaces==2)
+			{
+				tempMoney = tempMoney;
+			}
+			else if(decimalPlaces==0)
+			{
+				tempMoney = tempMoney*100;
+				//tempMoney = tempMoney;
+			}
+			//例如:6元=600分	
+			return tempMoney;
+		}
+		
         @Override 
         public void run() 
         { 
@@ -493,7 +589,7 @@ public class ExtraCOMThread implements Runnable {
 													for(int i=1;i<22;i++)
 													{
 														JSONObject obj=new JSONObject();
-														obj.put("id", 10);
+														obj.put("id", MoneySend(100));
 														arr.put(obj);
 													}
 													JSONObject zhuheobj=new JSONObject();
@@ -560,7 +656,7 @@ public class ExtraCOMThread implements Runnable {
 											if(cmdSend==false)
 											{
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPAYOUTSend0.2>>bill="+bill+"coin="+coin+"billPay="+billPay+"coinPay="+coinPay,"com.txt");
-												VboxProtocol.VboxPayoutInd(ToolClass.getExtracom_id(),0,coinPay/10,2);
+												VboxProtocol.VboxPayoutInd(ToolClass.getExtracom_id(),0,MoneySend(coinPay),2);
 												cmdSend=true;
 											}											
 											break;
@@ -604,7 +700,7 @@ public class ExtraCOMThread implements Runnable {
 											if(cmdSend==false)
 											{
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadCOSTSend0.2>>cost="+cost_value,"com.txt");
-												VboxProtocol.VboxCostInd(ToolClass.getExtracom_id(),0,cost_value/10,2);
+												VboxProtocol.VboxCostInd(ToolClass.getExtracom_id(),0,MoneySend(cost_value),2);
 												cmdSend=true;
 											}
 											break;	
@@ -625,11 +721,12 @@ public class ExtraCOMThread implements Runnable {
 									}
 									break;
 								case VboxProtocol.VBOX_VMC_SETUP://开机setup的信息
-									int hd_num=ev_head6.getInt("hd_num");
 									//初始化1.Get_Setup
 									if((onInit==1)&&(cmdSend))
 									{
-										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSetupRpt<<hd_num="+hd_num,"com.txt");
+										int decimal_places=ev_head6.getInt("decimal_places");										
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSetupRpt<<"+ev_head6,"com.txt");
+										setDecimal(decimal_places);
 										devopt=VboxProtocol.VBOX_HUODAO_IND;
 										cmdSend=false;
 										onInit=2;//huodao_ind阶段
@@ -640,11 +737,11 @@ public class ExtraCOMThread implements Runnable {
 									int value=ev_head6.getInt("value");
 									if(dt==0)
 									{
-										coin_recv+=value*10;
+										coin_recv+=MoneyRec(value);
 									}
 									else if(dt==100)
 									{
-										g_holdValue=value*10;
+										g_holdValue=MoneyRec(value);
 									}
 									else if(dt==101)
 									{
@@ -652,23 +749,23 @@ public class ExtraCOMThread implements Runnable {
 									}
 									else if(dt==1)
 									{
-										bill_recv+=value*10;
+										bill_recv+=MoneyRec(value);
 										g_holdValue=0;
 									}
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayinRpt<<dt="+dt+"value="+(value*10)+"GetAmountMoney="+GetAmountMoney(),"com.txt");
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayinRpt<<dt="+dt+"value="+MoneyRec(value)+"GetAmountMoney="+GetAmountMoney(),"com.txt");
 									break;	
 								case VboxProtocol.VBOX_PAYOUT_RPT://找币信息
-									payback_value=ev_head6.getInt("value")*10; 
+									payback_value=MoneyRec(ev_head6.getInt("value")); 
 									g_holdValue = 0;//当前暂存纸币金额 以分为单位
 									bill_recv=0;//纸币器当前收币金额	以分为单位
-									coin_recv=ev_head6.getInt("total_value")*10; ;//硬币器当前收币金额	以分为单位
+									coin_recv=MoneyRec(ev_head6.getInt("total_value"));//硬币器当前收币金额	以分为单位
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<payback_value="+payback_value+"GetAmountMoney="+GetAmountMoney(),"com.txt");
 									break;
 								case VboxProtocol.VBOX_COST_RPT://扣款信息
-									cost_value=ev_head6.getInt("value")*10; 
+									cost_value=MoneyRec(ev_head6.getInt("value")); 
 									g_holdValue = 0;//当前暂存纸币金额 以分为单位
 									bill_recv=0;//纸币器当前收币金额	以分为单位
-									coin_recv=ev_head6.getInt("total_value")*10; ;//硬币器当前收币金额	以分为单位
+									coin_recv=MoneyRec(ev_head6.getInt("total_value"));//硬币器当前收币金额	以分为单位
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadCostRpt<<cost_value="+cost_value+"GetAmountMoney="+GetAmountMoney(),"com.txt");
 									//往接口回调信息
 									allSet.clear();
@@ -730,7 +827,7 @@ public class ExtraCOMThread implements Runnable {
 									int cc_st=ev_head6.getInt("cc_st");
 									int vmc_st=ev_head6.getInt("vmc_st");
 									int change=ev_head6.getInt("change");
-									coin_remain=change*10;
+									coin_remain=MoneyRec(change);
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadStatusRpt<<bv_st"+bv_st+"cc_st="+cc_st+"vmc_st="+vmc_st+"coin_remain="+coin_remain,"com.txt");
 									break;	
 								case VboxProtocol.VBOX_HUODAO_RPT://货道信息
