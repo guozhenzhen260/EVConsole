@@ -421,7 +421,7 @@ public class BusinesslandFragment extends Fragment
 		    	if(tb_inaccount!=null)
                 {
                     String Pwd=tb_inaccount.getMainPwd().toString();
-                    if(Pwd.isEmpty())
+                    if(ToolClass.isEmptynull(Pwd))
                     {
                         //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<=null","log.txt");
                         istrue="83718557".equals(dialoginte.getText().toString());
@@ -506,7 +506,7 @@ public class BusinesslandFragment extends Fragment
 				// TODO Auto-generated method stub
 				String PICKUP_CODE=dialoginte.getText().toString();
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码="+PICKUP_CODE,"log.txt");
-				if(PICKUP_CODE.isEmpty()!=true)
+				if(ToolClass.isEmptynull(PICKUP_CODE)!=true)
 				{
 					//步骤二、fragment向activity发送回调信息
 		        	listterner.quhuoBusiness(PICKUP_CODE);

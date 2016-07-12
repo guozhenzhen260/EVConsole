@@ -418,7 +418,7 @@ public class HuodaoTest extends TabActivity
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		    	if (edtcolumn.getText().toString().isEmpty()!=true)	
+		    	if(ToolClass.isEmptynull(edtcolumn.getText().toString())!=true)
 		    	{
 		    		comsend(COMService.EV_CHUHUOCHILD,Integer.parseInt(edtcolumn.getText().toString()));
 			    }
@@ -1865,7 +1865,7 @@ public class HuodaoTest extends TabActivity
 				//Toast.makeText(HuodaoTest.this, "数值="+dialogspincabtype.getSelectedItemId(), Toast.LENGTH_LONG).show();
 				String no = dialogcab.getText().toString();
 		    	int type = (int)dialogspincabtype.getSelectedItemId()+1;
-		    	if ((no.isEmpty()!=true)&&(type!=0))
+		    	if((ToolClass.isEmptynull(no)!=true)&&(type!=0))
 		    	{
 		    		addabinet(no,type);
 		    	}

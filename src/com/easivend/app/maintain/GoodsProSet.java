@@ -72,7 +72,7 @@ public class GoodsProSet extends Activity
 		proID=bundle.getString("proID");
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID,"log.txt");
 		//如果商品ID有存在则刷新页面为修改商品的页面
-		if(proID.isEmpty()!=true)
+		if(ToolClass.isEmptynull(proID)!=true)
 		{
 			vmc_productDAO productDAO = new vmc_productDAO(GoodsProSet.this);// 创建InaccountDAO对象
 		    // 获取所有收入信息，并存储到List泛型集合中
@@ -153,7 +153,7 @@ public class GoodsProSet extends Activity
 		    	float salesPrice = Float.parseFloat(edtsalesPrice.getText().toString());
 		    	int shelfLife= 0;
 		    	String selectKey=edtselectKey.getText().toString();
-		    	if(edtshelfLife.getText().toString().isEmpty()!=true)
+		    	if(ToolClass.isEmptynull(edtshelfLife.getText().toString())!=true)
 		    		shelfLife = Integer.parseInt(edtshelfLife.getText().toString());		    	
 		    	String productDesc = "";
 		    	//商品类别
@@ -161,9 +161,9 @@ public class GoodsProSet extends Activity
 		    	String classID= strInfo.substring(0, strInfo.indexOf('<'));// 从收入信息中截取收入编号
 		    	String attBatch1=imgDir;
 		    	String attBatch2="";
-		    	String attBatch3="";		    	    	
-		    	if ((productID.isEmpty()!=true)&&(productName.isEmpty()!=true)
-		    			&&(edtmarketPrice.getText().toString().isEmpty()!=true)		    				    			
+		    	String attBatch3="";
+		    	if((ToolClass.isEmptynull(productID)!=true)&&(ToolClass.isEmptynull(productName)!=true)
+		    			&&(ToolClass.isEmptynull(edtmarketPrice.getText().toString())!=true)	    				    			
 		    		)
 		    	{
 		    		boolean update=false;
@@ -200,7 +200,7 @@ public class GoodsProSet extends Activity
 				            //创建Tb_inaccount对象
 			    			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(productID, productName,productDesc,marketPrice,
 			    					salesPrice,shelfLife,date,date,attBatch1,attBatch2,attBatch3,0,0);
-			    			if(proID.isEmpty()==true)
+			    			if(ToolClass.isEmptynull(proID)==true)
 			    			{
 			    				productDAO.add(tb_vmc_product,classID);// 添加商品信息
 			    				ToolClass.addOptLog(GoodsProSet.this,0,"添加商品:"+productID+productName);

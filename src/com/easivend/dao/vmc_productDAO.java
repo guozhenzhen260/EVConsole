@@ -120,7 +120,7 @@ public class vmc_productDAO
 	 		//如果需要进行商品分类
 	 		if(classID.equals("")!=true)
 	 		{
-	 			if(clsID.isEmpty()==true)//如果原先没有商品分类
+	 			if(ToolClass.isEmptynull(clsID)==true)//如果原先没有商品分类
 	 			{
 	 				db.execSQL(
 	 						"insert into vmc_classproduct" +
@@ -146,7 +146,7 @@ public class vmc_productDAO
 	 		//不需要进行商品分类
 	 		else
 	 		{
-	 			if(clsID.isEmpty()!=true)//如果原先有商品分类
+	 			if(ToolClass.isEmptynull(clsID)!=true)//如果原先有商品分类
 	 			{
 	 				db.execSQL(
 							"delete from vmc_classproduct " +

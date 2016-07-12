@@ -403,8 +403,8 @@ public class Order extends TabActivity
 	{		
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
-				(!edtordergridstart.getText().toString().isEmpty())
-			  &&(!edtordergridstart.getText().toString().isEmpty())
+				(!ToolClass.isEmptynull(edtordergridstart.getText().toString()))
+			  &&(!ToolClass.isEmptynull(edtordergridend.getText().toString()))
 			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
 		  )
 		{
@@ -509,8 +509,8 @@ public class Order extends TabActivity
 		//orderDAO.deteleall();
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
-				(!edtordergridstart.getText().toString().isEmpty())
-			  &&(!edtordergridstart.getText().toString().isEmpty())
+				(!ToolClass.isEmptynull(edtordergridstart.getText().toString()))
+			  &&(!ToolClass.isEmptynull(edtordergridend.getText().toString()))
 			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
 		  )
 		{

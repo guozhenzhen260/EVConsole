@@ -376,7 +376,7 @@ public class EVServerService extends Service {
 			        		//刚开机时的时间
 			        		//1>>刚开机只设置一次时间：这样刚开机不会下载一次程序，只有在开机之后，后台设置升级程序，才会下载
 			        		//2>>以后都不会再设置时间
-			        		if(LAST_VERSION_TIME.isEmpty())
+			        		if(ToolClass.isEmptynull(LAST_VERSION_TIME))
 			        		{		
 			        			LAST_VERSION_TIME=ToolClass.getLasttime();
 			        		}
@@ -769,8 +769,8 @@ public class EVServerService extends Service {
 		{
 			JSONObject object2=arr1.getJSONObject(i);
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品="+i+"txt="+object2.toString(),"server.txt");
-			
-			String product_Class_NO=(object2.getString("product_Class_NO").isEmpty())?"0":object2.getString("product_Class_NO");
+			                         
+			String product_Class_NO=(ToolClass.isEmptynull(object2.getString("product_Class_NO")))?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			String product_TXT=object2.getString("product_TXT");
 			//用于签到完成后，更新商品信息时间段

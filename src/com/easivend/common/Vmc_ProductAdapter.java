@@ -42,10 +42,10 @@ public class Vmc_ProductAdapter
  	    // 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_product表中
  	    vmc_productDAO productdao = new vmc_productDAO(context);
  	    //无过滤条件查询
- 	    if(param.isEmpty()==true)
+ 	    if(ToolClass.isEmptynull(param)==true)
  	    {
  	    	//分类查询
- 	    	if(classID.isEmpty()!=true)	
+ 	    	if(ToolClass.isEmptynull(classID)!=true)
  	    	{
  			    // 获取所有收入信息，并存储到List泛型集合中
  			    listinfos = productdao.getScrollData(classID);

@@ -386,11 +386,11 @@ public class ParamManager extends TabActivity
     	int language = (switchlanguage.isChecked()==true)?1:0;
     	String rstTime = edtrstTime.getText().toString();
     	int rstDay = 0;
-    	if(edtrstDay.getText().toString().isEmpty()!=true)
+    	if(ToolClass.isEmptynull(edtrstDay.getText().toString())!=true)
     		rstDay = Integer.parseInt(edtrstDay.getText().toString());
     	int baozhiProduct = (switchbaozhiProduct.isChecked()==true)?1:0;
     	int emptyProduct = (switchemptyProduct.isChecked()==true)?1:0;
-    	if ((devID.isEmpty()!=true)&&(devhCode.isEmpty()!=true)    				    			
+    	if((ToolClass.isEmptynull(devID)!=true)&&(ToolClass.isEmptynull(devhCode)!=true)
     		)
     	{
     		try 

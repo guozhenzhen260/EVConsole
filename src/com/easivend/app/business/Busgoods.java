@@ -182,7 +182,7 @@ public class Busgoods extends Activity
 			// 商品表中的所有商品信息补充到商品数据结构数组中
 	    	productAdapter=new Vmc_ProductAdapter();
 	    	//如果存在商品分类id
-			if((proclassID!=null)&&(proclassID.isEmpty()!=true))
+	    	if(ToolClass.isEmptynull(proclassID)!=true)
 			{
 				productAdapter.showProInfo(Busgoods.this,"","",proclassID);  
 			}

@@ -1460,7 +1460,7 @@ public class ToolClass
   	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
   	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
   	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
-  	        	if(object2.get("ALI_OTHER_PARTNER").toString().isEmpty())
+  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
   	        	{
   	        		list2.put("isalisub", "0");
   	        	}
@@ -1474,7 +1474,7 @@ public class ToolClass
   	        	list2.put("weimch_id", object2.get("WX_MCHID").toString());
   	        	list2.put("weikey", object2.get("WX_KEY").toString());
   	        	list2.put("weisubmch_id", object2.get("WX_OTHER_MCHID").toString());
-  	        	if(object2.get("WX_OTHER_MCHID").toString().isEmpty())
+  	        	if(ToolClass.isEmptynull(object2.get("WX_OTHER_MCHID").toString()))
   	        	{
   	        		list2.put("isweisub", "0");
   	        	}
@@ -1499,7 +1499,7 @@ public class ToolClass
   	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL"));
   	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY"));
   	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER"));
-  	        	if(object2.get("ALI_OTHER_PARTNER").toString().isEmpty())
+  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
   	        	{
   	        		jsonObject.put("isalisub", "0");
   	        	}
@@ -1513,7 +1513,7 @@ public class ToolClass
   	        	jsonObject.put("weimch_id", object2.get("WX_MCHID"));
   	        	jsonObject.put("weikey", object2.get("WX_KEY"));
   	        	jsonObject.put("weisubmch_id", object2.get("WX_OTHER_MCHID"));
-  	        	if(object2.get("WX_OTHER_MCHID").toString().isEmpty())
+  	        	if(ToolClass.isEmptynull(object2.get("WX_OTHER_MCHID").toString()))
   	        	{
   	        		jsonObject.put("isweisub", "0");
   	        	}
@@ -2930,8 +2930,8 @@ public class ToolClass
 		myToast.show();
 	}
 	
-	//ÅÐ¶Ï×Ö·û´®ÊÇ·ñÎª¿Õtrue¿Õ£¬false·Ç¿Õ
-	public static boolean isEmpty(String str)
+	//ÅÐ¶Ï×Ö·û´®ÊÇ·ñÎª¿Õ:true¿Õ£¬false·Ç¿Õ
+	public static boolean isEmptynull(String str)
 	{
 		boolean result=true;
 		if(str!=null)

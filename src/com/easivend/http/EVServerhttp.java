@@ -1531,7 +1531,7 @@ public class EVServerhttp implements Runnable {
 						//第三步，把图片名字保存到json中
 						zhuheobj.put("AttImg", ToolClass.getImgFile(ATT_ID));
 						zhuheproductArray.put(zhuheobj);
-						if(ATT_ID.isEmpty())
+						if(ToolClass.isEmptynull(ATT_ID))
 						{
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]无图片","server.txt");
 						}
@@ -3144,8 +3144,8 @@ public class EVServerhttp implements Runnable {
   		zhuheobj.put("AttImg", "");
   		  		
   		try
-  		{	
-  			if((devID.isEmpty()==false)&&(devID.equals(VMC_NO)))
+  		{	   
+  			if((ToolClass.isEmptynull(devID)==false)&&(devID.equals(VMC_NO)))
   			{  				
   				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
   			    //创建Tb_inaccount对象 

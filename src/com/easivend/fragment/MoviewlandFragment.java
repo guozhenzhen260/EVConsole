@@ -372,7 +372,7 @@ public class MoviewlandFragment extends Fragment {
     		 //购买演示
     		 if(infotype==1)
     		 {
-    			 if(ToolClass.isEmpty(tb_inaccount.getDemo())==false)
+    			 if(ToolClass.isEmptynull(tb_inaccount.getDemo())==false)
 	    		 {
     				 info=tb_inaccount.getDemo();
     			 }	 
@@ -380,7 +380,7 @@ public class MoviewlandFragment extends Fragment {
     		 //活动信息
     		 else if(infotype==2)
     		 {    			 
-				 if(ToolClass.isEmpty(tb_inaccount.getEvent())==false)
+				 if(ToolClass.isEmptynull(tb_inaccount.getEvent())==false)
     			 {
     				 info=tb_inaccount.getEvent();
     			 }    			 

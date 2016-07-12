@@ -214,7 +214,7 @@ public class BusZhitihuo extends Activity
 						String oldstr=oldpwd.getText().toString();
 						String newstr=newpwd.getText().toString();
 						String newstr2=newpwd2.getText().toString();
-						if((newstr.equals("")==true)||(oldstr.isEmpty())||(newstr2.isEmpty()))
+						if((ToolClass.isEmptynull(newstr))||(ToolClass.isEmptynull(oldstr))||(ToolClass.isEmptynull(newstr2)))
 						{
 							restarttimer();//重新打开定时器
 							// 弹出信息提示
