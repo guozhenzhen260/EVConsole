@@ -27,6 +27,9 @@ public class ExtraCOMThread implements Runnable {
 	int onInit=0;//0表示没有初始化，其他值表示正在初始化的阶段
 	boolean cmdSend=false;//true发送的命令，等待ACK确认,这个值只用于需要回复ACK的命令
 	int devopt=0;//命令状态值	
+	//货道出货
+	int cabinet=0;
+	int column=0;
 	//现金设备使能禁能
 	int bill=0;
 	int coin=0;
@@ -81,6 +84,19 @@ public class ExtraCOMThread implements Runnable {
 						e1.printStackTrace();
 					}
 					break;
+				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
+					//1.得到信息
+					JSONObject ev2=null;
+					try {
+						ev2 = new JSONObject(msg.obj.toString());
+						cabinet=ev2.getInt("cabinet");
+						column=ev2.getInt("column");
+						devopt=EVprotocol.EV_BENTO_OPEN;						
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					break;	
 				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能					
 					//1.得到信息
 					JSONObject ev=null;
@@ -379,6 +395,11 @@ public class ExtraCOMThread implements Runnable {
 													onInit=4;//get_huodao阶段
 												}
 												break;
+											case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
+												//消除变量值
+												devopt=0;
+												cmdSend=false;
+												break;
 											case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadENABLERec<<bill="+bill+"coin="+coin+"opt="+opt,"com.txt");
 												//消除变量值
@@ -460,6 +481,11 @@ public class ExtraCOMThread implements Runnable {
 													onInit=4;//get_huodao阶段
 												}
 												break;
+											case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
+												//消除变量值
+												devopt=0;
+												cmdSend=false;
+												break;	
 											case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadENABLERec<<bill="+bill+"coin="+coin+"opt="+opt,"com.txt");
 												//消除变量值
@@ -643,7 +669,15 @@ public class ExtraCOMThread implements Runnable {
 													cmdSend=true;
 												}
 											}
-											break;										
+											break;	
+										case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
+											if(cmdSend==false)
+											{
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSend0.2=cabinet="+cabinet+"column="+column,"com.txt");
+												VboxProtocol.VboxVendoutInd(ToolClass.getExtracom_id(), 0, 2, column, 2, 0);
+												cmdSend=true;
+											}
+											break;
 										case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 											if(cmdSend==false)
 											{
@@ -761,6 +795,36 @@ public class ExtraCOMThread implements Runnable {
 									bill_recv=0;//纸币器当前收币金额	以分为单位
 									coin_recv=MoneyRec(ev_head6.getInt("total_value"));//硬币器当前收币金额	以分为单位
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<payback_value="+payback_value+"GetAmountMoney="+GetAmountMoney(),"com.txt");
+									break;
+								case VboxProtocol.VBOX_VENDOUT_RPT://出货结果
+									int status=ev_head6.getInt("status");
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutRpt<<column="+column+"status="+status,"com.txt");
+									//出货成功
+									if(status==0)
+									{
+										//往接口回调信息
+										allSet.clear();
+										allSet.put("EV_TYPE", EVprotocol.EV_BENTO_OPEN);
+										allSet.put("addr", 1);//柜子地址
+										allSet.put("box", column);//格子地址
+										allSet.put("result", 1);
+									}
+									//出货失败
+									else
+									{
+										//往接口回调信息
+										allSet.clear();
+										allSet.put("EV_TYPE", EVprotocol.EV_BENTO_OPEN);
+										allSet.put("addr", 0);//柜子地址
+										allSet.put("box", 0);//格子地址
+										allSet.put("result", 0);
+									}
+									//3.向主线程返回信息
+					  				Message tomain2=mainhand.obtainMessage();
+					  				tomain2.what=EV_OPTMAIN;							
+					  				tomain2.obj=allSet;
+					  				mainhand.sendMessage(tomain2); // 发送消息
+									
 									break;
 								case VboxProtocol.VBOX_COST_RPT://扣款信息
 									cost_value=MoneyRec(ev_head6.getInt("value")); 

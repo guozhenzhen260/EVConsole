@@ -240,48 +240,72 @@ public class COMService extends Service {
 				break;
 			//货道出货	
 			case EV_CHUHUOCHILD:		
-				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMService cabinet="+bundle.getInt("cabinet"),"com.txt");
-				Message child3=childhand.obtainMessage();
 				//查找货道类型
         		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
         	    // 获取所有收入信息，并存储到List泛型集合中
         	    Tb_vmc_cabinet listinfos3 = cabinetDAO3.findScrollData(String.valueOf(bundle.getInt("cabinet")));
-        		
-        		JSONObject ev3=null;
-	    		try {
-	    			ev3=new JSONObject();
-	    			ev3.put("cabinet", bundle.getInt("cabinet"));	
-	    			//格子柜
-	        	    if(listinfos3.getCabType()==5)
-	        		{
-	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
-	    				child3.what=EVprotocol.EV_BENTO_OPEN;
-	    				ev3.put("column", bundle.getInt("column"));
-	        		}
-	        	    //弹簧货道
-	        	    else if(listinfos3.getCabType()==1)
-	        		{
-	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
-	    				child3.what=COMThread.EV_COLUMN_OPENCHILD;
-	    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
-	        		}
-	        	    //升降机货道
-	        		else if((listinfos3.getCabType()==2)||(listinfos3.getCabType()==3)||(listinfos3.getCabType()==4))
-	        		{
-	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机出货","com.txt");
-	    				child3.what=COMThread.EV_ELEVATOR_OPENCHILD;
-	    				ev3.put("column", ToolClass.elevatorChuhuo(bundle.getInt("column")));
-	        		}	
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
-	    		} catch (JSONException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-	    		child3.obj=ev3;
-        		childhand.sendMessage(child3);	
+        	  
+        	    if((ToolClass.getExtraComType()==1)&&(listinfos3.getCabType()==4))
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child3=childextrahand.obtainMessage();
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜出货","com.txt");					
+	    			child3.what=EVprotocol.EV_BENTO_OPEN;
+					JSONObject ev3=null;
+		    		try {
+		    			ev3=new JSONObject();
+		    			ev3.put("cabinet", bundle.getInt("cabinet"));
+		    			ev3.put("column", bundle.getInt("column"));		    				
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child3.obj=ev3;
+		    		childextrahand.sendMessage(child3);	
+				}
+				else
+				{
+	        	    //ToolClass.Log(ToolClass.INFO,"EV_COM","COMService cabinet="+bundle.getInt("cabinet"),"com.txt");
+	        	    childhand=comserial.obtainHandler();
+	        	    Message child3=childhand.obtainMessage();				
+	        		JSONObject ev3=null;
+		    		try {
+		    			ev3=new JSONObject();
+		    			ev3.put("cabinet", bundle.getInt("cabinet"));	
+		    			//格子柜
+		        	    if(listinfos3.getCabType()==5)
+		        		{
+		        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 格子出货","com.txt");
+		    				child3.what=EVprotocol.EV_BENTO_OPEN;
+		    				ev3.put("column", bundle.getInt("column"));
+		        		}
+		        	    //弹簧货道
+		        	    else if(listinfos3.getCabType()==1)
+		        		{
+		        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
+		    				child3.what=COMThread.EV_COLUMN_OPENCHILD;
+		    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
+		        		}
+		        	    //升降机货道
+		        		else if((listinfos3.getCabType()==2)||(listinfos3.getCabType()==3))
+		        		{
+		        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机出货","com.txt");
+		    				child3.what=COMThread.EV_ELEVATOR_OPENCHILD;
+		    				ev3.put("column", ToolClass.elevatorChuhuo(bundle.getInt("column")));
+		        		}	
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child3.obj=ev3;
+	        		childhand.sendMessage(child3);	
+				}
 				break;
 			//货道设置
 			case EV_SETHUOCHILD:		
+				childhand=comserial.obtainHandler();
 				Message child7=childhand.obtainMessage();
 				//查找货道类型
         		vmc_cabinetDAO cabinetDAO7 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
@@ -324,6 +348,7 @@ public class COMService extends Service {
 			//快递柜照明	
 			case EV_LIGHTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 照明","com.txt");
+				childhand=comserial.obtainHandler();
 				Message child4=childhand.obtainMessage();
 				child4.what=EVprotocol.EV_BENTO_LIGHT;
         		JSONObject ev4=null;
@@ -342,6 +367,7 @@ public class COMService extends Service {
 			//快递柜制冷	
 			case EV_COOLCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 制冷","com.txt");
+				childhand=comserial.obtainHandler();
 				Message child5=childhand.obtainMessage();
 				child5.what=EVprotocol.EV_BENTO_COOL;
         		JSONObject ev5=null;
@@ -360,6 +386,7 @@ public class COMService extends Service {
 			//快递柜加热	
 			case EV_HOTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 加热","com.txt");
+				childhand=comserial.obtainHandler();
 				Message child6=childhand.obtainMessage();
 				child6.what=EVprotocol.EV_BENTO_HOT;
         		JSONObject ev6=null;
@@ -399,6 +426,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child8=childhand.obtainMessage();
 					child8.what=EVprotocol.EV_MDB_ENABLE;
 	        		JSONObject ev8=null;
@@ -432,6 +460,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child9=childhand.obtainMessage();
 					child9.what=EVprotocol.EV_MDB_B_INFO;
 	        		JSONObject ev9=null;
@@ -443,6 +472,7 @@ public class COMService extends Service {
 				break;
 			//纸币配置	
 			case EVprotocol.EV_MDB_B_CON:
+				childhand=comserial.obtainHandler();
 				Message child12=childhand.obtainMessage();
 				child12.what=EVprotocol.EV_MDB_B_CON;
 				
@@ -497,6 +527,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child10=childhand.obtainMessage();
 					child10.what=EVprotocol.EV_MDB_C_INFO;
 	        		JSONObject ev10=null;
@@ -507,6 +538,7 @@ public class COMService extends Service {
 				}
 				break;	
 			case EVprotocol.EV_MDB_C_CON:
+				childhand=comserial.obtainHandler();
 				Message child13=childhand.obtainMessage();
 				child13.what=EVprotocol.EV_MDB_C_CON;
 				
@@ -585,6 +617,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child14=childhand.obtainMessage();
 					child14.what=EVprotocol.EV_MDB_PAYOUT;
 	        		JSONObject ev14=null;
@@ -605,6 +638,7 @@ public class COMService extends Service {
 				break;
 			case EVprotocol.EV_MDB_HP_PAYOUT:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService hopper硬币器找币","com.txt");
+				childhand=comserial.obtainHandler();
 				Message child15=childhand.obtainMessage();
 				child15.what=EVprotocol.EV_MDB_HP_PAYOUT;
         		JSONObject ev15=null;
@@ -636,6 +670,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child11=childhand.obtainMessage();
 					child11.what=EVprotocol.EV_MDB_HEART;
 	        		JSONObject ev11=null;
@@ -666,6 +701,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child16=childhand.obtainMessage();
 					child16.what=EVprotocol.EV_MDB_COST;
 	        		JSONObject ev16=null;
@@ -703,6 +739,7 @@ public class COMService extends Service {
 				}
 				else
 				{
+					childhand=comserial.obtainHandler();
 					Message child17=childhand.obtainMessage();
 					child17.what=EVprotocol.EV_MDB_PAYBACK;
 	        		JSONObject ev17=null;
