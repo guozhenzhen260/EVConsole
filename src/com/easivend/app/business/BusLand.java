@@ -177,7 +177,12 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		// TODO Auto-generated method stub
 		isbus=true;
 	    recLen=SPLASH_DISPLAY_LENGHT;
-		//switchMovie();
+	    //=============
+  		//COM服务相关
+  		//=============
+  		//5.解除注册接收器
+  		comBroadreceiver.unregisterReceiver(comreceiver);
+  		
 		switch(buslevel)
 		{
 			case 1:
@@ -450,7 +455,14 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode,"log.txt");		
-		if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
+    	//4.注册接收器
+		//comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		//comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+		
+    	if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
 			OrderDetail.addLog(BusLand.this);	

@@ -270,11 +270,11 @@ public class BusZhiAmount  extends Activity
 					  		}
 					  	}
 					  	
-					  	if(money>0)
+					  	txtbuszhiamountbillAmount.setText(String.valueOf(money));
+				  		if(money>0)
 					  	{					  		
 					  		iszhiamount=1;
 					  		recLen = 180;//有投币后倒计时不用计算了
-					  		txtbuszhiamountbillAmount.setText(String.valueOf(money));
 					  		OrderDetail.setSmallNote(billmoney);
 					  		OrderDetail.setSmallConi(coinmoney);
 					  		OrderDetail.setSmallAmount(money);
@@ -479,7 +479,7 @@ public class BusZhiAmount  extends Activity
   	private void finishActivity()
   	{
   		timer.shutdown(); 
-  		if(iszhiamount==1)
+  		if((iszhiamount==1)&&(money>0))
   		{
   			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
   			OrderDetail.setPayStatus(2);//支付失败
