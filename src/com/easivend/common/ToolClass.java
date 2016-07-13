@@ -617,6 +617,29 @@ public class ToolClass
   
     } 
     /**
+     * 递归删除productImage文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteproductImageFile()
+    {
+    	String  sDir =null;
+    	 try {
+    		  sDir = ToolClass.getEV_DIR()+File.separator+"productImage";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllZIPFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * 递归删除ZIP文件和文件夹
      * @param file    要删除的根目录
      */
