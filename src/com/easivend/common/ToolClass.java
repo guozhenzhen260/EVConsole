@@ -1007,11 +1007,41 @@ public class ToolClass
         	//如果不存在，则开始保存图片
         	if(!fileName.exists())
         	{  
+        		//1.保存原版图片
         		CompressFormat format= Bitmap.CompressFormat.JPEG;  
     	        int quality = 100;  
     	        OutputStream stream = null;  
-    	        stream = new FileOutputStream(fileName);      	         
+    	        stream = new FileOutputStream(fileName);     	        
     	        fileext=bmp.compress(format, quality, stream); 
+    	        //2.压缩裁剪图片
+ 	    	   //如果我们把它设为true，那么BitmapFactory.decodeFile(String path, Options opt)并不会真的返回一个Bitmap给你，
+ 	    	   //它仅仅会把它的宽，高取回来给你，这样就不会占用太多的内存
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                //这段代码之后，options.outWidth 和 options.outHeight就是我们想要的宽和高了
+                Bitmap bmptmp = BitmapFactory.decodeFile(fileName.toString(), options);
+                //按比例收缩和压缩他的值，这样可以减低内存使用
+                // 缩放的比例，缩放是很难按准备的比例进行缩放的，其值表明缩放的倍数，
+                //SDK中建议其值是2的指数值,值越大会导致图片不清晰 
+                int inSampleSize = options.outWidth / 350;
+                options.inSampleSize = inSampleSize; 
+                //在图片不变形的情况下获取到图片指定大小的缩略图呢
+                //那么我们需要先计算一下缩放之后，图片的高度是多少,就能显示这么大的长和宽的图片
+                int height = options.outHeight * 350 / options.outWidth;
+                options.outWidth = 350;
+                options.outHeight = height;              
+                //为了节约内存我们还可以使用下面的几个字段
+                options.inPreferredConfig = Bitmap.Config.ARGB_4444;// 默认是Bitmap.Config.ARGB_8888
+                /* 下面两个字段需要组合使用 */
+                options.inPurgeable = true;
+                options.inInputShareable = true;
+                /* 这样才能真正的返回一个Bitmap给你 */
+                options.inJustDecodeBounds = false;
+                Bitmap bmp2 = BitmapFactory.decodeFile(fileName.toString(), options);
+                //3.保存裁剪版图片
+        		stream = new FileOutputStream(fileName);     	        
+    	        fileext=bmp2.compress(format, quality, stream); 
+    	        stream.close();
     	    }  
         	else
         		fileext=false;
@@ -2181,16 +2211,16 @@ public class ToolClass
      * @param url
      * @return
      */
-     public static Bitmap getLoacalBitmap(String url) {
-          try {
-               FileInputStream fis = new FileInputStream(url);
-               return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
+	public static Bitmap getLoacalBitmap(String url) {
+        try {
+             FileInputStream fis = new FileInputStream(url);
+             return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
 
-            } catch (FileNotFoundException e) {
-               e.printStackTrace();
-               return null;
-          }
-     }
+          } catch (FileNotFoundException e) {
+             e.printStackTrace();
+             return null;
+        }
+   }
      
      /**
       * @方法功能说明: 生成二维码图片,实际使用时要初始化sweepIV,不然会报空指针错误
