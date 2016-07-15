@@ -615,7 +615,7 @@ public class ExtraCOMThread implements Runnable {
 													for(int i=1;i<(hd_num+1);i++)
 													{
 														JSONObject obj=new JSONObject();
-														obj.put("id", MoneySend(56800));
+														obj.put("id", MoneySend(100));//56800
 														arr.put(obj);
 													}
 													JSONObject zhuheobj=new JSONObject();
@@ -846,6 +846,26 @@ public class ExtraCOMThread implements Runnable {
 									
 									break;	
 								case VboxProtocol.VBOX_ACTION_RPT://心跳不用处理
+									//往接口回调信息
+									allSet.clear();
+									int action=ev_head6.getInt("action");									
+									//  心跳                     出货开始                 出币开始
+									if((action==0)||(action==1)||(action==2))
+									{										
+									}
+									else if(action==5)
+									{
+										int actvalue=ev_head6.getInt("value");
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<维护模式","com.txt");
+										allSet.put("EV_TYPE", COMThread.EV_BUTTONRPT_MAINTAIN);
+										allSet.put("btnvalue", actvalue);
+										//3.向主线程返回信息
+						  				Message tomain19=mainhand.obtainMessage();
+						  				tomain19.what=COMThread.EV_BUTTONMAIN;							
+						  				tomain19.obj=allSet;
+						  				mainhand.sendMessage(tomain19); // 发送消息
+									}
+									
 									break;
 								case VboxProtocol.VBOX_REQUEST://数据请求不用处理
 									//ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<","com.txt");

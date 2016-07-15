@@ -151,7 +151,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 	
-	//步骤三、实现Business接口,打开密码框
+	//步骤三、实现Business接口,关闭交易界面
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
@@ -379,7 +379,12 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 						    ToolClass.failToast("抱歉，本商品已售完！");					
 					    }
 					}				
-				    
+					//上报维护模式按键
+					else if(EV_TYPE==COMThread.EV_BUTTONRPT_MAINTAIN)
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 维护模式","com.txt");
+						finishBusiness();
+					}
 					break;
 				
 			}			

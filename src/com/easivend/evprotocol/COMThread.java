@@ -50,6 +50,7 @@ public class COMThread implements Runnable
 	public static final int EV_BUTTONRPT_HUODAO = 51;	//上报货道id
 	public static final int EV_BUTTONRPT_SP = 52;	    //上报商品id
 	public static final int EV_BUTTONRPT_RETURN = 53;	//退币按键
+	public static final int EV_BUTTONRPT_MAINTAIN = 54;	//维护模式
 	
 	//=====================基础返回值==================================
 	public static final int EV_CHECKALLMAIN	= 2;//所有货道全部查询返回
