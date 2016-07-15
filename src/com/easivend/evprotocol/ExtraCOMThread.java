@@ -615,7 +615,7 @@ public class ExtraCOMThread implements Runnable {
 													for(int i=1;i<(hd_num+1);i++)
 													{
 														JSONObject obj=new JSONObject();
-														obj.put("id", MoneySend(100));//56800
+														obj.put("id", MoneySend(56800));//
 														arr.put(obj);
 													}
 													JSONObject zhuheobj=new JSONObject();

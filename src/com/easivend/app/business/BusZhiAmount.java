@@ -286,6 +286,9 @@ public class BusZhiAmount  extends Activity
 					  		}
 					  	}
 						break;
+					case EVprotocol.EV_MDB_COST://扣款流程
+						money-=amount;//扣款
+						payback();
 					case EVprotocol.EV_MDB_PAYOUT://找零			
 						break;	
 					case EVprotocol.EV_MDB_PAYBACK://退币
@@ -425,55 +428,60 @@ public class BusZhiAmount  extends Activity
 			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
 					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
 					intent.setAction("android.intent.action.comsend");//action与接收器相同
-					comBroadreceiver.sendBroadcast(intent);
-					money-=amount;
+					comBroadreceiver.sendBroadcast(intent);					
 				}
 				//出货失败,不扣钱
 				else
-				{					
-				}
-				//2.更新投币金额
-  				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款money="+money,"log.txt");
-  				txtbuszhiamountbillAmount.setText(String.valueOf(money));
-  				  				
-  				//还有余额退币
-  				if(money>0)
-  				{
-  					dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
-  					new Handler().postDelayed(new Runnable() 
-					{
-			            @Override
-			            public void run() 
-			            {            	
-			            	//退币
-		  	  	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
-		  					Intent intent=new Intent();
-		  			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
-		  					intent.putExtra("bill", 1);	
-		  					intent.putExtra("coin", 1);	
-		  					intent.setAction("android.intent.action.comsend");//action与接收器相同
-		  					comBroadreceiver.sendBroadcast(intent);
-			            }
-
-					}, 500);  					
-				}
-  			    //没剩下余额了，不退币
-  				else
-  				{  					
-			    	OrderDetail.addLog(BusZhiAmount.this);			    	
-			    	//打开纸币硬币器					
-				    new Handler().postDelayed(new Runnable() 
-					{
-			            @Override
-			            public void run() 
-			            {            	
-			            	finish();
-			            }
-
-					}, 500);
-  				}
+				{	
+					payback();
+				}				
   			}			
   		}
+  	}
+  	
+  	//出货完成后，进入退币流程
+  	private void payback()
+  	{
+		//2.更新投币金额
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款money="+money,"log.txt");
+		txtbuszhiamountbillAmount.setText(String.valueOf(money));
+		  				
+		//还有余额退币
+		if(money>0)
+		{
+			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
+			new Handler().postDelayed(new Runnable() 
+			{
+	            @Override
+	            public void run() 
+	            {            	
+	            	//退币
+  	  	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+  					Intent intent=new Intent();
+  			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
+  					intent.putExtra("bill", 1);	
+  					intent.putExtra("coin", 1);	
+  					intent.setAction("android.intent.action.comsend");//action与接收器相同
+  					comBroadreceiver.sendBroadcast(intent);
+	            }
+
+			}, 500);  					
+		}
+	    //没剩下余额了，不退币
+		else
+		{  					
+	    	OrderDetail.addLog(BusZhiAmount.this);			    	
+	    	//打开纸币硬币器					
+		    new Handler().postDelayed(new Runnable() 
+			{
+	            @Override
+	            public void run() 
+	            {            	
+	            	finish();
+	            }
+
+			}, 500);
+		}
   	}
     //结束界面
   	private void finishActivity()
