@@ -116,6 +116,7 @@ BushuoFragInteraction
 	//==现金支付页面相关
 	//=================
 	private int queryLen = 0; 
+	private int billdev=1;//是否需要打开纸币器,1需要
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令，2本次投币已经结束
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
     private int dispenser=0;//0无,1hopper,2mdb
@@ -686,11 +687,11 @@ BushuoFragInteraction
 			comBroadreceiver.sendBroadcast(intent);
   		} 
   		else 
-  		{
-  			clearamount();
+  		{  			
   			//关闭纸币硬币器
   	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);   
   			BillEnable(0);
+  			clearamount();
   			viewSwitch(BUSPORT, null);
 		} 	    
 	    
@@ -1153,6 +1154,7 @@ BushuoFragInteraction
   	    queryLen = 0; 
   	    iszhienable=0;//1发送打开指令,0还没发送打开指令
   	    isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
+  	    billdev=1;//是否需要打开纸币器,1需要
   	    dispenser=0;//0无,1hopper,2mdb
   		billmoney=0;coinmoney=0;money=0;//投币金额
   		amount=0;//商品需要支付金额
@@ -1269,8 +1271,12 @@ BushuoFragInteraction
 				break;
 			case BUSZHIAMOUNT://现金支付
 				isbus=false;
-				//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
-				BillEnable(1);
+				//Heart操作
+			    Intent intent2=new Intent();
+		    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
+				intent2.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent2);
+				
 				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo(); 
 				zhifutype="0";
 				out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
@@ -1280,6 +1286,17 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiamountFragment);
+	            //延时
+			    new Handler().postDelayed(new Runnable() 
+				{
+		            @Override
+		            public void run() 
+		            {   
+		            	//打开纸币器
+						BillEnable(1);
+		            }
+
+				}, 1500);
 				break;	
 			case BUSZHIER://支付宝支付
 				isbus=false;
@@ -1381,9 +1398,27 @@ BushuoFragInteraction
 								if((Integer)Set.get("coin_result")==0)
 									ToolClass.setCoin_err(2);
 								con++;
+								billdev=0;
 							}
+							//纸币器故障
+							else if( ((Integer)Set.get("bill_result")==0)&&((Integer)Set.get("coin_result")==1) )
+							{
+								listterner.BusportTsxx("提示信息：[纸币器]无法使用");
+								//第一次打开才发送coninfo，以后就不再操作这个了
+								if(iszhienable==0)
+								{
+									//EVprotocolAPI.EV_mdbCoinInfoCheck(ToolClass.getCom_id());
+									//硬币器查询接口
+									Intent intent3=new Intent();
+							    	intent3.putExtra("EVWhat", EVprotocol.EV_MDB_C_INFO);	
+									intent3.setAction("android.intent.action.comsend");//action与接收器相同
+									comBroadreceiver.sendBroadcast(intent3);
+								}
+								ToolClass.setBill_err(2);
+								ToolClass.setCoin_err(0);
+							}	
 							//打开成功
-							else
+							else 
 							{
 								//第一次打开才发送coninfo，以后就不再操作这个了
 								if(iszhienable==0)
@@ -1414,14 +1449,19 @@ BushuoFragInteraction
 					case EVprotocol.EV_MDB_HEART://心跳查询
 						Map<String,Object> obj=new LinkedHashMap<String, Object>();
 						obj.putAll(Set);
+						String bill_enable="";
+						String coin_enable="";
+						String hopperString="";
+						int bill_err=ToolClass.getvmcStatus(obj,1);
+						int coin_err=ToolClass.getvmcStatus(obj,2);	
+						//遇到纸币器故障时，不操作纸币器了
+						if(bill_err>0)
+						{
+							billdev=0;
+						}
 						//纸币器页面
 						if(iszhienable==1)
-						{
-							String bill_enable="";
-							String coin_enable="";
-							String hopperString="";
-							int bill_err=ToolClass.getvmcStatus(obj,1);
-							int coin_err=ToolClass.getvmcStatus(obj,2);		
+						{								
 							ToolClass.setBill_err(bill_err);
 							ToolClass.setCoin_err(coin_err);
 							if(bill_err>0)
@@ -1555,7 +1595,7 @@ BushuoFragInteraction
   	{  		 	
 		Intent intent=new Intent();
 		intent.putExtra("EVWhat", EVprotocol.EV_MDB_ENABLE);	
-		intent.putExtra("bill", 1);	
+		intent.putExtra("bill", billdev);	
 		intent.putExtra("coin", 1);	
 		intent.putExtra("opt", opt);	
 		intent.setAction("android.intent.action.comsend");//action与接收器相同
