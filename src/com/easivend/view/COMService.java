@@ -89,6 +89,9 @@ public class COMService extends Service {
 			int EVWhat=bundle.getInt("EVWhat");
 			switch(EVWhat)
 			{
+			//*************************************************************	
+			//货道设备模块:查询类，按键等主动上报类，值是使用COMThread包中，范围1-10，40-60
+			//*************************************************************	
 			//查询全部货道状态
 			case EV_CHECKALLCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道查询全部","com.txt");
@@ -238,6 +241,13 @@ public class COMService extends Service {
 	        		childhand.sendMessage(child2);
 				}
 				break;
+			/**************************************************************	
+			 *货道设备模块:出货类，
+			 * EVprotocol.EV_BENTO_OPEN=11	
+			 * COMThread.EV_COLUMN_OPENCHILD=42	
+			 * COMThread.EV_ELEVATOR_OPENCHILD=45		
+			 */
+			//*************************************************************/		
 			//货道出货	
 			case EV_CHUHUOCHILD:		
 				//查找货道类型
@@ -331,7 +341,7 @@ public class COMService extends Service {
 	    				ev7.put("column", bundle.getInt("column"));
 	        		}
 	        	    //升降机货道
-	        		else if((listinfos7.getCabType()==2)||(listinfos7.getCabType()==3)||(listinfos7.getCabType()==4))
+	        		else if((listinfos7.getCabType()==2)||(listinfos7.getCabType()==3))
 	        		{
 	        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机出货","com.txt");
 	    				child7.what=COMThread.EV_ELEVATOR_OPENCHILD;
@@ -345,6 +355,12 @@ public class COMService extends Service {
 	    		child7.obj=ev7;
         		childhand.sendMessage(child7);	
 				break;	
+			/*
+			 * 设备控制模块
+			 * EVprotocol.EV_BENTO_LIGHT=13
+			 * EVprotocol.EV_BENTO_COOL=14
+			 * EVprotocol.EV_BENTO_HOT=15
+			 * */	
 			//快递柜照明	
 			case EV_LIGHTCHILD:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 照明","com.txt");
@@ -402,6 +418,9 @@ public class COMService extends Service {
 	    		child6.obj=ev6;
         		childhand.sendMessage(child6);	
 				break;
+			//*************************************	
+			//现金设备模块，值是使用EVprotocol包中，范围21-31
+			//*************************************	
 			//现金设备使能禁能	
 			case EVprotocol.EV_MDB_ENABLE:
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 使能禁能","com.txt");

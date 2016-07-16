@@ -34,7 +34,7 @@ import android.widget.TextView;
 
 public class BusZhiAmount  extends Activity
 {
-	private final int SPLASH_DISPLAY_LENGHT = 500; // 延迟1.5秒
+	private final int SPLASH_DISPLAY_LENGHT = 1500; // 延迟1.5秒
 	//进度对话框
 	ProgressDialog dialog= null;
 	public static BusZhiAmount BusZhiAmountAct=null;
@@ -324,6 +324,8 @@ public class BusZhiAmount  extends Activity
 						}
 						break;
 					case EVprotocol.EV_MDB_COST://扣款流程
+						float cost=ToolClass.MoneyRec((Integer)Set.get("cost"));	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusAmount 扣款="+cost,"com.txt");
 						money-=amount;//扣款
 						payback();
 					case EVprotocol.EV_MDB_PAYOUT://找零			
@@ -403,7 +405,7 @@ public class BusZhiAmount  extends Activity
 	                    }
                     }
                     //发送打开纸币硬币器指令
-                    else if(iszhienable==0)
+                    else if(iszhienable==0) 
                     {
                     	queryLen++;
 	                    if(queryLen>=10)

@@ -85,8 +85,11 @@ public class COMThread implements Runnable
 			public void handleMessage(Message msg) {
 				devopt=msg.what;
 				switch (msg.what)
-				{
+				{				
 				//格子柜
+				/*查询类，返回值都是
+				 * COMThread.EV_CHECKALLMAIN=2
+				 * COMThread.EV_CHECKMAIN=8*/
 				case EV_BENTO_CHECKALLCHILD://子线程接收主线程格子查询消息		
 					//1.得到信息
 					JSONObject ev6=null;
@@ -225,6 +228,7 @@ public class COMThread implements Runnable
 	  				tomain.obj=allSet;
 	  				mainhand.sendMessage(tomain); // 发送消息
 					break;
+					
 				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 					//1.得到信息
 					JSONObject ev2=null;
@@ -449,6 +453,9 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain5); // 发送消息
 					break;	
 				//弹簧柜	
+				/*查询类，返回值都是
+				 * COMThread.EV_CHECKALLMAIN=2
+				 * COMThread.EV_CHECKMAIN=8*/	
 				case EV_COLUMN_CHECKALLCHILD://子线程接收主线程弹簧全部查询消息	
 					//1.得到信息
 					JSONObject ev7=null;
@@ -599,6 +606,9 @@ public class COMThread implements Runnable
 					
 					break;
 					//升降机
+				/*查询类，返回值都是
+				 * COMThread.EV_CHECKALLMAIN=2
+				 * COMThread.EV_CHECKMAIN=8*/	
 				case EV_ELEVATOR_CHECKALLCHILD://子线程接收主线程升降机全部查询消息	
 					//1.得到信息
 					JSONObject ev21=null;
@@ -1248,6 +1258,7 @@ public class COMThread implements Runnable
 								allSet.clear();
 								allSet.put("EV_TYPE", EVprotocol.EV_MDB_COST);
 								allSet.put("result", ev_head18.getInt("result"));
+								allSet.put("cost", ev_head18.getInt("cost"));
 								allSet.put("bill_recv", ev_head18.getInt("bill_recv"));
 								allSet.put("coin_recv", ev_head18.getInt("coin_recv"));
 							}	

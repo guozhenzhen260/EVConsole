@@ -1533,6 +1533,8 @@ BushuoFragInteraction
 						}						
 						break;
 					case EVprotocol.EV_MDB_COST://扣款流程
+						float cost=ToolClass.MoneyRec((Integer)Set.get("cost"));	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 扣款="+cost,"com.txt");
 						money-=amount;//扣款
 						payback();								
 					case EVprotocol.EV_MDB_PAYOUT://找零			
