@@ -770,6 +770,9 @@ public class ExtraCOMThread implements Runnable {
 										onInit=2;//huodao_ind阶段
 									}
 									break;
+								//*************************************	
+								//现金设备模块，值是使用EVprotocol包中，范围21-31
+								//*************************************		
 								case VboxProtocol.VBOX_PAYIN_RPT://投币信息
 									int dt=ev_head6.getInt("dt");
 									int value=ev_head6.getInt("value");
@@ -837,6 +840,11 @@ public class ExtraCOMThread implements Runnable {
 										mainhand.sendMessage(tomain19); // 发送消息
 									}
 									break;
+								/*设备操作返回值，都是
+								 * COMThread.EV_OPTMAIN=9
+								 * 二级返回信息：
+								 * 出货EVprotocol.EV_BENTO_OPEN=11
+								 */		
 								case VboxProtocol.VBOX_VENDOUT_RPT://出货结果
 									int status=ev_head6.getInt("status");
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutRpt<<column="+column+"status="+status,"com.txt");
@@ -957,6 +965,9 @@ public class ExtraCOMThread implements Runnable {
 									coin_remain=MoneyRec(change);
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadStatusRpt<<bv_st="+bill_err+"cc_st="+coin_err+"vmc_st="+vmc_st+"coin_remain="+coin_remain,"com.txt");
 									break;	
+								/*货道查询类，返回值都是
+								 * COMThread.EV_CHECKALLMAIN=2
+								 * COMThread.EV_CHECKMAIN=8*/	
 								case VboxProtocol.VBOX_HUODAO_RPT://货道信息
 									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodao<<"+resjson.toString(),"com.txt");
 									//往接口回调信息

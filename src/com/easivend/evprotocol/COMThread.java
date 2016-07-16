@@ -228,7 +228,13 @@ public class COMThread implements Runnable
 	  				tomain.obj=allSet;
 	  				mainhand.sendMessage(tomain); // 发送消息
 					break;
-					
+				/*设备操作返回值，都是
+				 * COMThread.EV_OPTMAIN=9
+				 * 二级返回信息：
+				 * 格子柜开门EVprotocol.EV_BENTO_OPEN=11
+				 * EVprotocol.EV_BENTO_LIGHT=13
+				 * EVprotocol.EV_BENTO_COOL=14
+				 * EVprotocol.EV_BENTO_HOT=15*/	
 				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 					//1.得到信息
 					JSONObject ev2=null;
@@ -539,6 +545,10 @@ public class COMThread implements Runnable
 	  				tomain8.obj=allSet;
 	  				mainhand.sendMessage(tomain8); // 发送消息
 					break;
+				/*设备操作返回值，都是
+				 * COMThread.EV_OPTMAIN=9
+				 * 二级返回信息：
+				 * 开门EVprotocol.EV_COLUMN_OPEN=16*/	
 				case EV_COLUMN_OPENCHILD://子线程接收主线程弹簧出货
 					//1.得到信息
 					JSONObject ev9=null;
@@ -692,6 +702,10 @@ public class COMThread implements Runnable
 	  				tomain20.obj=allSet;
 	  				mainhand.sendMessage(tomain20); // 发送消息
 					break;	
+				/*设备操作返回值，都是
+				 * COMThread.EV_OPTMAIN=9
+				 * 二级返回信息：
+				 * 开门EVprotocol.EV_COLUMN_OPEN=16*/		
 				case EV_ELEVATOR_OPENCHILD://子线程接收主线程升降机出货
 					//1.得到信息
 					JSONObject ev22=null;
@@ -758,6 +772,9 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain22); // 发送消息
 					
 					break;	
+				//*************************************	
+				//现金设备模块，值是使用EVprotocol包中，范围21-31
+				//*************************************		
 				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
 					int bill=0;
 					int coin=0;

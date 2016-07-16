@@ -48,7 +48,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class COMService extends Service {
-	//=====================货道==================================
+	//=====================货道(格子，弹簧，升降机，冰山)===================
 	public static final int EV_CHECKALLCHILD= 1;	//查询全部柜子状态	
 	public static final int EV_CHECKCHILD	= 3;	//货道查询	
 	public static final int EV_CHUHUOCHILD	= 4;	//货道出货	
