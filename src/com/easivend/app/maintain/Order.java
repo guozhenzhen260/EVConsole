@@ -198,7 +198,7 @@ public class Order extends TabActivity
             	txtproductNameValue.setText(productName[position]);
             	txtsalesPriceValue.setText(salesPrice[position]);
             	txtcabIDValue.setText(cabID[position]);
-            	txtcolumnIDValue.setText(columnID[position]);
+            	txtcolumnIDValue.setText(columnID[position]);            	
             }
         });
     	edtordergridstart = (EditText) findViewById(R.id.edtordergridstart);// 获取时间文本框

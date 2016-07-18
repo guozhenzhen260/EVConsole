@@ -409,13 +409,13 @@ public class BusZhiwei extends Activity
 				//出货失败,退钱
 				else
 				{
+					OrderDetail.setRealStatus(1);//记录退币成功
+					OrderDetail.setRealCard(amount);//记录退币金额
+					OrderDetail.addLog(BusZhiwei.this);	
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
 					dialog= ProgressDialog.show(BusZhiwei.this,"正在退款中","请稍候...");
 					////退款
-					payoutzhiwei();
-					OrderDetail.setRealStatus(1);//记录退币成功
-					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusZhiwei.this);						
+					payoutzhiwei();										
 				}
 			}			
 		}

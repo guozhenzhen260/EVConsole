@@ -139,7 +139,7 @@ public class DogService extends Service {
 	        	
 	        	//整理日志文件用
 	        	ToolClass.Log(ToolClass.INFO,"EV_DOG","logno["+Thread.currentThread().getId()+"]="+logno,"dog.txt");
-	        	if(logno<2)//5760
+	        	if(logno<5760)//5760
 	        	{
 	        		logno++;
 	        	}

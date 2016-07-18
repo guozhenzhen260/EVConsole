@@ -1013,12 +1013,12 @@ BushuoFragInteraction
 				//出货失败,退钱
 				else
 				{	
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");
-					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-					payoutzhier();//退款操作
 					OrderDetail.setRealStatus(1);//记录退币成功
 					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusPort.this);					
+					OrderDetail.addLog(BusPort.this);
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");					
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhier();//退款操作	
 				}
     			break;
     		//微信页面	
@@ -1034,12 +1034,12 @@ BushuoFragInteraction
 				//出货失败,退钱
 				else
 				{	
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
-					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-					payoutzhiwei();//退款操作
 					OrderDetail.setRealStatus(1);//记录退币成功
 					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusPort.this);					
+					OrderDetail.addLog(BusPort.this);	
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhiwei();//退款操作									
 				}
     			break;	
     		//取货码页面		
