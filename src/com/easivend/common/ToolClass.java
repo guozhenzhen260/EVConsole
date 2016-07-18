@@ -416,9 +416,24 @@ public class ToolClass
     	File fileName=null;
     	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
                 + "HH:mm:ss"); //精确到毫秒 
-        String datetime = tempDate.format(new java.util.Date()).toString();  
-        
     	
+    	//当前时间
+//        String datetime = tempDate.format(new java.util.Date()).toString();  
+//        ParsePosition pos = new ParsePosition(0);  
+//    	Date d1 = (Date) tempDate.parse(datetime, pos); 
+//    	ToolClass.Log(ToolClass.INFO,"EV_DOG","当前时间="+datetime+",="+d1.getTime(),"dog.txt");
+    	 
+    	//起始时间
+        Calendar todayStart = Calendar.getInstance();  
+        todayStart.set(Calendar.HOUR_OF_DAY, 0);  
+        todayStart.set(Calendar.MINUTE, 0);  
+        todayStart.set(Calendar.SECOND, 0);  
+        todayStart.set(Calendar.MILLISECOND, 0); 
+        Date date = todayStart.getTime(); 
+        String starttime=tempDate.format(date);
+        ParsePosition posstart = new ParsePosition(0);  
+    	Date dstart = (Date) tempDate.parse(starttime, posstart);
+    	ToolClass.Log(ToolClass.INFO,"EV_DOG","起始时间="+starttime+",="+dstart.getTime(),"dog.txt");
         try {
         	  sDir = ToolClass.getEV_DIR()+File.separator+"logs";
         	  
@@ -434,52 +449,81 @@ public class ToolClass
         	fileName=new File(sDir+File.separator+"log.txt"); 
         	if(fileName.exists())
         	{  
-        		System.out.println(" 判断重命名文件log.txt");
-            	String logdatetime = getFileCreated(fileName);
-            	int inter=getInterval(logdatetime,datetime); 
-            	if(inter>=4)
+        		String logdatetime = getFileCreated(fileName);
+        		ParsePosition poslog = new ParsePosition(0);  
+				Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+				ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件log.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+        		//判断是否文件早于今天
+            	if(dlog.getTime()<=dstart.getTime())
             	{
+            		ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件log重分割","dog.txt"); 
             		updatefile(fileName,sDir);
+            	}
+            	else
+            	{
+            		ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件log排除","dog.txt"); 
             	}
     	    }
         	//3.如果存在dog文件，则判断
         	fileName=new File(sDir+File.separator+"dog.txt"); 
         	if(fileName.exists())
         	{  
-        		System.out.println(" 判断重命名文件dog.txt");
         		String logdatetime = getFileCreated(fileName);
-            	int inter=getInterval(logdatetime,datetime); 
-            	if(inter>=4)
+        		ParsePosition poslog = new ParsePosition(0);  
+        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件dog.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+        		
+        		//判断是否文件早于今天
+        		if(dlog.getTime()<=dstart.getTime())
             	{
+        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件dog重分割","dog.txt"); 
             		updatefile(fileName,sDir);
             	}
+        		else
+        		{
+        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件dog排除","dog.txt"); 
+        		}
     	    } 
         	//4.如果存在server文件，则判断
         	fileName=new File(sDir+File.separator+"server.txt"); 
         	if(fileName.exists())
         	{  
-        		System.out.println(" 判断重命名文件server.txt");
         		String logdatetime = getFileCreated(fileName);
-            	int inter=getInterval(logdatetime,datetime); 
-            	if(inter>=4)
+        		ParsePosition poslog = new ParsePosition(0);  
+        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件server.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+        		//判断是否文件早于今天
+        		if(dlog.getTime()<=dstart.getTime())
             	{
+        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件server重分割","dog.txt"); 
             		updatefile(fileName,sDir);
             	}
+        		else
+        		{
+        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件server排除","dog.txt"); 
+        		}
     	    }
         	//5.如果存在com文件，则判断
         	fileName=new File(sDir+File.separator+"com.txt"); 
         	if(fileName.exists())
         	{  
-        		System.out.println(" 判断重命名文件com.txt");
         		String logdatetime = getFileCreated(fileName);
-            	int inter=getInterval(logdatetime,datetime); 
-            	if(inter>=4)
+        		ParsePosition poslog = new ParsePosition(0);  
+        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断重命名文件com.txt时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+        		//判断是否文件早于今天
+        		if(dlog.getTime()<=dstart.getTime())
             	{
+        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件com重分割","dog.txt"); 
             		updatefile(fileName,sDir);
             	}
+        		else
+        		{
+        			ToolClass.Log(ToolClass.INFO,"EV_DOG"," 文件com排除","dog.txt"); 
+        		}
     	    }
         	//6.将目录下的所有文件，如果有超出半个月的，全部删除
-        	delFiles(dirName,datetime);
+        	delFiles(dirName);
         	
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,78 +548,7 @@ public class ToolClass
          return res;
     }
 	
-	 /**
-     * 判断与当前时间差距多久,createtime是文件创建时间,datetime是当前时间
-     * 传入的时间格式必须类似于2012-8-21 17:53:20这样的格式  
-     * 返回值：1秒，2分，3时，4天，5半个月
-     */
-    public static int getInterval(String createtime,String datetime) 
-	 { 
-	        String interval = null;  
-	        int inter=0;
-	        
-	        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-	        
-	        ParsePosition pos = new ParsePosition(0);  
-	        Date d1 = (Date) sd.parse(createtime, pos); 
-	        System.out.println(" 文件创建时间2="+createtime+",="+d1.getTime());
-	        
-	        ParsePosition posnow = new ParsePosition(0);  
-	        Date dnow = (Date) sd.parse(datetime, posnow);
-	        System.out.println(" 当前时间="+datetime+",="+dnow.getTime());
-	          
-	        //用现在距离1970年的时间间隔new Date().getTime()减去以前的时间距离1970年的时间间隔d1.getTime()得出的就是以前的时间与现在时间的时间间隔  
-	        long time = dnow.getTime() - d1.getTime();// 得出的时间间隔是毫秒  
-	        
-        	  
-	        if(time/1000 < 60 && time/1000 >= 0) 
-	        {  
-	        //如果时间间隔小于60秒则显示多少秒前  
-	        	if(time/1000>0)
-	        	{
-		            int se = (int) (time/1000);  
-		            interval = se + "秒前";  
-		            inter=1;
-	        	}	        	
-	        }
-	        else if(time/60000 < 60 && time/60000 >= 0)
-	        {  
-	            //如果时间间隔小于60分钟则显示多少分钟前  
-	        	if(time/60000>0)
-	        	{
-		            int m = (int) (time/60000);//得出的时间间隔的单位是分钟  
-		            interval = m + "分钟前"; 
-		            inter=2;
-	        	}
-	        }
-	        else if(time/3600000 < 24 && time/3600000 >= 0) 
-	        {  
-	            //如果时间间隔小于24小时则显示多少小时前  
-	        	if(time/3600000>0)
-	        	{
-		            int h = (int) (time/3600000);//得出的时间间隔的单位是小时  
-		            interval = h + "小时前";  
-		            inter=3;
-	        	}
-	        }
-	        else if(time/86400000 < 15 && time/86400000 >= 0)
-	        {  
-	        	//如果时间间隔小于15天则显示多少天前  
-	        	if(time/86400000>0)
-	        	{
-		            int d = (int) (time/86400000);//得出的时间间隔的单位是小时 
-		            interval = d + "天前";  
-		            inter=4;
-	        	}
-	        } 
-	        else
-	        {
-	        	interval = "过了半个月了"; 
-	            inter=5;
-			}
-	        System.out.println(" 时间相差="+time+",interval="+interval);
-	        return inter;  
-	 }
+	 
 	 
 	//重命名文件名fileName原文件名,sDir是目录
     public static void updatefile(File fileName,String  sDir)
@@ -811,8 +784,27 @@ public class ToolClass
 	
 	 /* 遍历目录内文件列表， file是目录名，datetime是当前时间，如果超过半个月，就删除掉这个文件
 	  * */  
-    public static void delFiles(File file,String datetime) 
+    public static void delFiles(File file) 
     {  
+    	//1.设置起始时间和结束时间
+    	SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+    	
+    	//本周起始时间
+        Calendar todayStart = Calendar.getInstance(); 
+        todayStart.setFirstDayOfWeek(Calendar.MONDAY);  
+        todayStart.set(Calendar.HOUR_OF_DAY, 0);  
+        todayStart.set(Calendar.MINUTE, 0);  
+        todayStart.set(Calendar.SECOND, 0);  
+        todayStart.set(Calendar.MILLISECOND, 0); 
+        todayStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); 
+        //再推前两周
+        todayStart.add(Calendar.WEEK_OF_YEAR, -2);
+        Date date = todayStart.getTime(); 
+        String starttime=tempDate.format(date);
+        ParsePosition posstart = new ParsePosition(0);  
+    	Date dstart = (Date) tempDate.parse(starttime, posstart);
+    	ToolClass.Log(ToolClass.INFO,"EV_DOG","保存日志的起始时间="+starttime+",="+dstart.getTime(),"dog.txt");
+    	
     	//遍历这个文件夹里的所有文件
 		File[] files = file.listFiles();
 		if (files.length > 0) 
@@ -821,18 +813,24 @@ public class ToolClass
 			{
 			  if(!files[i].isDirectory())
 			  {		
-				    System.out.println(" 判断删除目录内文件="+files[i].toString()); 
-				    //3.如果存在dog文件，则判断
+				    //3.如果存在文件，则判断
 		        	File fileName=new File(files[i].toString()); 
 		        	if(fileName.exists())
 		        	{  
 		        		String logdatetime = getFileCreated(fileName);
-		            	int inter=getInterval(logdatetime,datetime); 
-		            	if(inter>=5)
+		        		ParsePosition poslog = new ParsePosition(0);  
+		        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+		        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+		        		//判断是否文件早于本周
+		        		if(dlog.getTime()<=dstart.getTime())
 		            	{
-		            		System.out.println(" 该文件删除");
+		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dog.txt");
 		            		fileName.delete();		            		
 		            	}
+		        		else
+		        		{
+		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dog.txt");
+		        		}
 		    	    } 
 			  }
 			}
