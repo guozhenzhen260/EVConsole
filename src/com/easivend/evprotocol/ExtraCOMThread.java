@@ -895,6 +895,8 @@ public class ExtraCOMThread implements Runnable {
 					  				mainhand.sendMessage(tomain18); // 发送消息
 									
 									break;	
+								case VboxProtocol.VBOX_ADMIN_RPT://维护模式不用处理	
+									break;
 								case VboxProtocol.VBOX_ACTION_RPT://心跳不用处理
 									//往接口回调信息
 									allSet.clear();

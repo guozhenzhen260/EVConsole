@@ -33,6 +33,7 @@ public class VboxProtocol {
     public static final int VBOX_REQUEST        = 0x09;
     public static final int VBOX_COST_RPT    = 0x10;
     public static final int VBOX_INFO_RPT    = 0x11;
+    public static final int VBOX_ADMIN_RPT    = 0x0A;
     public static final int VBOX_ACTION_RPT    = 0x0B;
     public static final int VBOX_BUTTON_RPT    = 0x0C;
     public static final int VBOX_STATUS_RPT    = 0x0D;
