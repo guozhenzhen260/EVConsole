@@ -182,7 +182,14 @@ public class ExtraCOMThread implements Runnable {
 					break;	
 					//交易页面使用	
 				case EVprotocol.EV_MDB_HEART://子线程接收主线程现金设备
-					devopt=EVprotocol.EV_MDB_HEART;	
+					if(devopt==0)
+					{
+						devopt=EVprotocol.EV_MDB_HEART;	
+					}
+					else
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHEART>>BUSYOTHER","com.txt");
+					}
 					break;
 				case EVprotocol.EV_MDB_COST:					
 					//1.得到信息
