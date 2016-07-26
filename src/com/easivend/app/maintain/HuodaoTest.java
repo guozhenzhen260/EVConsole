@@ -418,7 +418,7 @@ public class HuodaoTest extends TabActivity
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		    	if (edtcolumn.getText().toString().isEmpty()!=true)	
+		    	if(ToolClass.isEmptynull(edtcolumn.getText().toString())!=true)
 		    	{
 		    		comsend(COMService.EV_CHUHUOCHILD,Integer.parseInt(edtcolumn.getText().toString()));
 			    }
@@ -1440,7 +1440,7 @@ public class HuodaoTest extends TabActivity
 							gethuofile();
 						}
 						//升降机货道
-						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
 						{
 							getelevatorfile();
 						}
@@ -1476,7 +1476,7 @@ public class HuodaoTest extends TabActivity
 										    	gethuofile();
 					    					}
 					    					//升降机货道
-					    					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+					    					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
 					    					{
 					    						setelevatorfile();
 					    						getelevatorfile();
@@ -1524,7 +1524,7 @@ public class HuodaoTest extends TabActivity
 										    		autophysic=57;
 										    	}
 										    	//升降机货道
-										    	else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+										    	else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
 										    	{
 										    		autophysic=11;
 										    	}
@@ -1728,7 +1728,7 @@ public class HuodaoTest extends TabActivity
 								autohuofile(status);
 							}
 							//升降机货道
-							else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+							else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
 							{
 								autoelevatorfile(status);
 							}
@@ -1865,7 +1865,7 @@ public class HuodaoTest extends TabActivity
 				//Toast.makeText(HuodaoTest.this, "数值="+dialogspincabtype.getSelectedItemId(), Toast.LENGTH_LONG).show();
 				String no = dialogcab.getText().toString();
 		    	int type = (int)dialogspincabtype.getSelectedItemId()+1;
-		    	if ((no.isEmpty()!=true)&&(type!=0))
+		    	if((ToolClass.isEmptynull(no)!=true)&&(type!=0))
 		    	{
 		    		addabinet(no,type);
 		    	}
@@ -2060,8 +2060,8 @@ public class HuodaoTest extends TabActivity
 		//所有货道返回值，只有1代表成功，4代表已售完，其他值都是失败
 		//******************************************
 		
-		//弹簧货道或者格子柜
-		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5))
+		//弹簧货道或者格子柜或者冰山柜
+		if((cabinetTypepeivar==1)||(cabinetTypepeivar==5)||(cabinetTypepeivar==4))
 		{
 			switch(status)
 			{
@@ -2088,7 +2088,7 @@ public class HuodaoTest extends TabActivity
 			}
 		}
 		//升降机货道
-		else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3)||(cabinetTypepeivar==4))
+		else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
 		{
 			switch(status)
 			{

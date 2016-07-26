@@ -152,20 +152,20 @@ public class HuodaoSet extends Activity
 		    	int pathCount= 0;
 		    	int pathRemain= 0;
 		    	String tihuoPwd="";
-		    	if(edttihuoPwd.getText().toString().isEmpty()!=true)
+		    	if(ToolClass.isEmptynull(edttihuoPwd.getText().toString())!=true)
 		    		tihuoPwd= edttihuoPwd.getText().toString();
-		    	if(edthuopathCount.getText().toString().isEmpty()!=true)
+		    	if(ToolClass.isEmptynull(edthuopathCount.getText().toString())!=true)
 		    		pathCount= Integer.parseInt(edthuopathCount.getText().toString());
-		    	if(edthuopathRemain.getText().toString().isEmpty()!=true)
+		    	if(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
 		    		pathRemain= Integer.parseInt(edthuopathRemain.getText().toString());
 		    	
 		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道cabineID="+cabID+" columnID="+huoID+"tihuoPwd="+tihuoPwd+" productID="
     					+productID+" pathCount="+pathCount+" pathRemain="+pathRemain+" columnStatus="+huostatus,"log.txt");
     			
-		    	if ((productID.isEmpty()!=true)&&(edthuopathCount.getText().toString().isEmpty()!=true)
-		    			&&(edthuopathRemain.getText().toString().isEmpty()!=true)
+		    	if((ToolClass.isEmptynull(productID)!=true)&&(ToolClass.isEmptynull(edthuopathCount.getText().toString())!=true)
+		    			&&(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
 		    			&&(pathCount>0)
-		    		)
+		    			)
 		    	{
 		    		try 
 		    		{
@@ -379,13 +379,13 @@ public class HuodaoSet extends Activity
 		{
 			int tempCount= 0;
 	    	int tempRemain= 0;
-	    	if(edthuopathCount.getText().toString().isEmpty()!=true)
+	    	if(ToolClass.isEmptynull(edthuopathCount.getText().toString())!=true)
 	    		tempCount= Integer.parseInt(edthuopathCount.getText().toString());
-	    	if(edthuopathRemain.getText().toString().isEmpty()!=true)
+	    	if(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
 	    		tempRemain= Integer.parseInt(edthuopathRemain.getText().toString());
 	    	
-			if ((edthuopathCount.getText().toString().isEmpty()!=true)
-	    			&&(edthuopathRemain.getText().toString().isEmpty()!=true)
+	    	if((ToolClass.isEmptynull(edthuopathCount.getText().toString())!=true)
+	    			&&(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
 	    			&&(tempCount>0)&&(tempRemain>0)
 	    		)//正常
 	    		huostatus="1";

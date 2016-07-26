@@ -99,7 +99,7 @@ public class BusgoodsFragment extends Fragment
 		this.txtpage=(TextView)view.findViewById(R.id.txtpage);
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proclassID="+proclassID,"log.txt");
 		//如果存在商品分类id
-		if((proclassID!=null)&&(proclassID.isEmpty()!=true))
+		if(ToolClass.isEmptynull(proclassID)!=true)
 		{
 			//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proclassID查询");
 			// 商品表中的所有商品信息补充到商品数据结构数组中

@@ -124,7 +124,7 @@ public class BusgoodsselectFragment extends Fragment
 		webproductDesc = (WebView) view.findViewById(R.id.webproductDesc); 
 		vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
 	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
-	    if(tb_vmc_product.getProductDesc().isEmpty()!=true)
+	    if(ToolClass.isEmptynull(tb_vmc_product.getProductDesc())!=true)
 	    {
 	    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
 		    WebSettings settings = webproductDesc.getSettings();

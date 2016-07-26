@@ -408,12 +408,12 @@ public class BusZhier extends Activity
 				//出货失败,退钱
 				else
 				{	
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
-					dialog= ProgressDialog.show(BusZhier.this,"正在退款中","请稍候...");
-					payoutzhier();//退款操作
 					OrderDetail.setRealStatus(1);//记录退币成功
 					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusZhier.this);					
+					OrderDetail.addLog(BusZhier.this);	
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
+					dialog= ProgressDialog.show(BusZhier.this,"正在退款中","请稍候...");
+					payoutzhier();//退款操作									
 				}				
 			}			
 		}

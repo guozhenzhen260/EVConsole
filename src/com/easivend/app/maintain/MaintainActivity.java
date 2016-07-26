@@ -31,6 +31,7 @@ import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusLand;
 import com.easivend.app.business.BusPort;
+import com.easivend.app.business.BusZhitihuo;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -224,7 +225,9 @@ public class MaintainActivity extends Activity
 		//加载微信证书
 		ToolClass.setWeiCertFile();		
 		//加载goc
-		ToolClass.setGoc(MaintainActivity.this);	
+		ToolClass.setGoc(MaintainActivity.this);
+		//加载机型
+		ToolClass.setExtraComType(MaintainActivity.this);
 		//================
 		//九宫格相关
 		//================		
@@ -440,7 +443,24 @@ public class MaintainActivity extends Activity
 		        intent2.putExtras(bundle2);
 				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
 				localBroadreceiver.sendBroadcast(intent2);  
-	    		break;				
+	    		break;	
+	    		//按钮返回
+			case COMThread.EV_BUTTONMAIN:
+				SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+				Map<String, Integer> Set2=serializableMap2.getMap();				
+				int EV_TYPE=Set2.get("EV_TYPE");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 按键操作="+Set2,"com.txt");
+				//上报维护模式按键
+				if(EV_TYPE==COMThread.EV_BUTTONRPT_MAINTAIN)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 维护模式","com.txt");
+					if(issale==false)
+					{
+						// 弹出信息提示
+			            Toast.makeText(MaintainActivity.this, "〖本机处于维护模式，不能同步〗！", Toast.LENGTH_SHORT).show();
+					}
+				}
+				break;
 			}			
 		}
 

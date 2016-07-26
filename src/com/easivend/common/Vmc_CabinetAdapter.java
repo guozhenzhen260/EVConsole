@@ -11,7 +11,7 @@ public class Vmc_CabinetAdapter
 {
 	private String[] cabinetID = null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
-	private String[] cabType={"0无货道","1弹簧货道","2 升降机","3 升降机","4 升降机","5格子柜"};
+	private String[] cabType={"0无货道","1弹簧货道","2 升降机","3 升降机","4 冰山机","5格子柜"};
 	// 显示商品分类信息,一般给spinner使用，用来选择货柜编号
 	public String[] showSpinInfo(Context context) 
 	{	  

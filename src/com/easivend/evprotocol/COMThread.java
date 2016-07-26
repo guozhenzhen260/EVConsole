@@ -45,10 +45,18 @@ public class COMThread implements Runnable
 	public static final int EV_ELEVATOR_CHECKCHILD = 44;	//升降机柜查询
 	public static final int EV_ELEVATOR_OPENCHILD 	= 45;	//升降机柜出货
 	
+	//=====================各种类型按键信息==============================================================================
+	public static final int EV_BUTTONRPT_GAME = 50;		//游戏按键
+	public static final int EV_BUTTONRPT_HUODAO = 51;	//上报货道id
+	public static final int EV_BUTTONRPT_SP = 52;	    //上报商品id
+	public static final int EV_BUTTONRPT_RETURN = 53;	//退币按键
+	public static final int EV_BUTTONRPT_MAINTAIN = 54;	//维护模式
+	
 	//=====================基础返回值==================================
 	public static final int EV_CHECKALLMAIN	= 2;//所有货道全部查询返回
 	public static final int EV_CHECKMAIN	= 8;	//货道查询返回
 	public static final int EV_OPTMAIN	= 9;	//所有设备操作返回
+	public static final int EV_BUTTONMAIN	= 7;	//所有按钮返回
 	
 	
 	private Handler mainhand=null,childhand=null;
@@ -77,8 +85,11 @@ public class COMThread implements Runnable
 			public void handleMessage(Message msg) {
 				devopt=msg.what;
 				switch (msg.what)
-				{
+				{				
 				//格子柜
+				/*查询类，返回值都是
+				 * COMThread.EV_CHECKALLMAIN=2
+				 * COMThread.EV_CHECKMAIN=8*/
 				case EV_BENTO_CHECKALLCHILD://子线程接收主线程格子查询消息		
 					//1.得到信息
 					JSONObject ev6=null;
@@ -217,6 +228,13 @@ public class COMThread implements Runnable
 	  				tomain.obj=allSet;
 	  				mainhand.sendMessage(tomain); // 发送消息
 					break;
+				/*设备操作返回值，都是
+				 * COMThread.EV_OPTMAIN=9
+				 * 二级返回信息：
+				 * 格子柜开门EVprotocol.EV_BENTO_OPEN=11
+				 * EVprotocol.EV_BENTO_LIGHT=13
+				 * EVprotocol.EV_BENTO_COOL=14
+				 * EVprotocol.EV_BENTO_HOT=15*/	
 				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 					//1.得到信息
 					JSONObject ev2=null;
@@ -441,6 +459,9 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain5); // 发送消息
 					break;	
 				//弹簧柜	
+				/*查询类，返回值都是
+				 * COMThread.EV_CHECKALLMAIN=2
+				 * COMThread.EV_CHECKMAIN=8*/	
 				case EV_COLUMN_CHECKALLCHILD://子线程接收主线程弹簧全部查询消息	
 					//1.得到信息
 					JSONObject ev7=null;
@@ -524,6 +545,10 @@ public class COMThread implements Runnable
 	  				tomain8.obj=allSet;
 	  				mainhand.sendMessage(tomain8); // 发送消息
 					break;
+				/*设备操作返回值，都是
+				 * COMThread.EV_OPTMAIN=9
+				 * 二级返回信息：
+				 * 开门EVprotocol.EV_COLUMN_OPEN=16*/	
 				case EV_COLUMN_OPENCHILD://子线程接收主线程弹簧出货
 					//1.得到信息
 					JSONObject ev9=null;
@@ -591,6 +616,9 @@ public class COMThread implements Runnable
 					
 					break;
 					//升降机
+				/*查询类，返回值都是
+				 * COMThread.EV_CHECKALLMAIN=2
+				 * COMThread.EV_CHECKMAIN=8*/	
 				case EV_ELEVATOR_CHECKALLCHILD://子线程接收主线程升降机全部查询消息	
 					//1.得到信息
 					JSONObject ev21=null;
@@ -674,6 +702,10 @@ public class COMThread implements Runnable
 	  				tomain20.obj=allSet;
 	  				mainhand.sendMessage(tomain20); // 发送消息
 					break;	
+				/*设备操作返回值，都是
+				 * COMThread.EV_OPTMAIN=9
+				 * 二级返回信息：
+				 * 开门EVprotocol.EV_COLUMN_OPEN=16*/		
 				case EV_ELEVATOR_OPENCHILD://子线程接收主线程升降机出货
 					//1.得到信息
 					JSONObject ev22=null;
@@ -740,6 +772,9 @@ public class COMThread implements Runnable
 	  				mainhand.sendMessage(tomain22); // 发送消息
 					
 					break;	
+				//*************************************	
+				//现金设备模块，值是使用EVprotocol包中，范围21-31
+				//*************************************		
 				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能
 					int bill=0;
 					int coin=0;
@@ -1240,6 +1275,7 @@ public class COMThread implements Runnable
 								allSet.clear();
 								allSet.put("EV_TYPE", EVprotocol.EV_MDB_COST);
 								allSet.put("result", ev_head18.getInt("result"));
+								allSet.put("cost", ev_head18.getInt("cost"));
 								allSet.put("bill_recv", ev_head18.getInt("bill_recv"));
 								allSet.put("coin_recv", ev_head18.getInt("coin_recv"));
 							}	

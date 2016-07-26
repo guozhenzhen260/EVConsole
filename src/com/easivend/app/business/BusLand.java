@@ -1,15 +1,21 @@
 package com.easivend.app.business;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.easivend.app.business.BusHuo.COMReceiver;
 import com.easivend.app.business.BusPort.EVServerReceiver;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
+import com.easivend.evprotocol.COMThread;
+import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
@@ -50,6 +56,12 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     //Server服务相关
   	LocalBroadcastManager localBroadreceiver;
   	EVServerReceiver receiver;
+    //=================
+    //COM服务相关
+    //=================
+  	LocalBroadcastManager comBroadreceiver;
+  	COMReceiver comreceiver;
+  	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -71,6 +83,13 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.vmserverrec");
 		localBroadreceiver.registerReceiver(receiver,filter);
+		
+		//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
 		//初始化默认fragment
 		initView();		
 		timer.scheduleWithFixedDelay(new Runnable() { 
@@ -132,7 +151,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	    recLen=SPLASH_DISPLAY_LENGHT;
 	}
 	
-	//步骤三、实现Business接口,打开密码框
+	//步骤三、实现Business接口,关闭交易界面
 	@Override
 	public void finishBusiness() {
 		// TODO Auto-generated method stub
@@ -158,7 +177,12 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		// TODO Auto-generated method stub
 		isbus=true;
 	    recLen=SPLASH_DISPLAY_LENGHT;
-		//switchMovie();
+	    //=============
+  		//COM服务相关
+  		//=============
+  		//5.解除注册接收器
+  		comBroadreceiver.unregisterReceiver(comreceiver);
+  		
 		switch(buslevel)
 		{
 			case 1:
@@ -288,6 +312,86 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 
 	}
 	
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//操作返回	
+			case COMThread.EV_BUTTONMAIN: 
+					SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+					Map<String, Integer> Set2=serializableMap2.getMap();
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 按键操作="+Set2,"com.txt");
+					int EV_TYPE=Set2.get("EV_TYPE");
+					//上报货道按键
+					if(EV_TYPE==COMThread.EV_BUTTONRPT_HUODAO)
+					{
+						//跳转商品
+						//发送出货指令
+				        String proID = null;
+				    	String productID = null;
+				    	String proImage = null;
+				    	String cabID = null;
+				    	String huoID = null;
+				        String prosales = null;
+				        
+						cabID="1";
+					    int huono=Set2.get("btnvalue");
+					    huoID=(huono<=9)?("0"+huono):String.valueOf(huono);
+					    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
+					    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
+					    if(tb_inaccount!=null)
+					    {	
+						    productID=tb_inaccount.getProductID().toString();
+						    prosales=String.valueOf(tb_inaccount.getSalesPrice());
+						    proImage=tb_inaccount.getAttBatch1();
+						    proID=productID+"-"+tb_inaccount.getProductName().toString();
+						    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+									+productID+" proType="
+									+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+									+"1","log.txt");						    
+
+				        	Map<String, String>str=new HashMap<String, String>();
+				        	str.put("proID", proID);
+				        	str.put("productID", productID);
+				        	str.put("proImage", proImage);
+				        	str.put("prosales", prosales);
+				        	str.put("procount", "1");
+				        	str.put("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
+				        	str.put("cabID", cabID);//出货柜号,proType=1时无效
+				        	str.put("huoID", huoID);//出货货道号,proType=1时无效
+				        	gotoBusiness(3,str);
+					    }
+					    else
+					    {
+					    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+									+productID+" proType="
+									+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+									+"1","log.txt");						    
+						    // 弹出信息提示
+						    ToolClass.failToast("抱歉，本商品已售完！");					
+					    }
+					}				
+					//上报维护模式按键
+					else if(EV_TYPE==COMThread.EV_BUTTONRPT_MAINTAIN)
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 维护模式","com.txt");
+						finishBusiness();
+					}
+					break;
+				
+			}			
+		}
+
+	}
+	
 	//返回到广告页面
 	public void switchMovie() {
 		// TODO Auto-generated method stub
@@ -356,7 +460,14 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode,"log.txt");		
-		if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
+    	//4.注册接收器
+		//comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		//comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+		
+    	if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
 			OrderDetail.addLog(BusLand.this);	
@@ -375,6 +486,11 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		//=============
 		//5.解除注册接收器
 		localBroadreceiver.unregisterReceiver(receiver);
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

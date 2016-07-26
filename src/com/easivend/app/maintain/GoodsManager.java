@@ -155,7 +155,7 @@ public class GoodsManager extends TabActivity
 		    {
 		    	String strclassid = edtclassid.getText().toString();
 		    	String strclassname = edtclassname.getText().toString();
-		    	if ((strclassid.isEmpty()!=true)&&(strclassname.isEmpty()!=true))
+		    	if((ToolClass.isEmptynull(strclassid)!=true)&&(ToolClass.isEmptynull(strclassname)!=true))
 		    	{
 		    		try 
 		    		{
@@ -189,7 +189,7 @@ public class GoodsManager extends TabActivity
 		    {
 		    	String strclassid = edtclassid.getText().toString();
 		    	String strclassname = edtclassname.getText().toString();
-		    	if ((strclassid.isEmpty()!=true)&&(strclassname.isEmpty()!=true))
+		    	if((ToolClass.isEmptynull(strclassid)!=true)&&(ToolClass.isEmptynull(strclassname)!=true))
 		    	{
 		        	// 创建InaccountDAO对象
 		        	vmc_classDAO classDAO = new vmc_classDAO(GoodsManager.this);
@@ -215,7 +215,7 @@ public class GoodsManager extends TabActivity
 		    {
 		    	final String strclassid = edtclassid.getText().toString();
 		    	final String strclassname = edtclassname.getText().toString();
-		    	if ((strclassid.isEmpty()!=true)&&(strclassname.isEmpty()!=true))
+		    	if((ToolClass.isEmptynull(strclassid)!=true)&&(ToolClass.isEmptynull(strclassname)!=true))
 		    	{
 			    	//创建警告对话框
 			    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)
@@ -312,8 +312,7 @@ public class GoodsManager extends TabActivity
     	btnprodel.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0)
-		    {
-		    	if (txtproidValue.getText().toString().isEmpty()!=true)
+		    {   if(ToolClass.isEmptynull(txtproidValue.getText().toString())!=true)
 		    	{
 			    	//创建警告对话框
 			    	Dialog alert=new AlertDialog.Builder(GoodsManager.this)

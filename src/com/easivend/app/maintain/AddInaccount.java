@@ -819,6 +819,9 @@ public class AddInaccount extends TabActivity
 						ercheck=false;
 						break;
 					case EVprotocol.EV_MDB_COST://扣钱
+						float cost=ToolClass.MoneyRec((Integer)Set.get("cost"));	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款="+cost,"com.txt");
+						
 						//如果已经打开了现金设备，则关闭它
 						if(cashopt)
 						{

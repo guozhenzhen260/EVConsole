@@ -208,8 +208,8 @@ public class LogOpt extends Activity {
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
-				(!edtloggridstart.getText().toString().isEmpty())
-			  &&(!edtloggridend.getText().toString().isEmpty())
+				(!ToolClass.isEmptynull(edtloggridstart.getText().toString()))
+			  &&(!ToolClass.isEmptynull(edtloggridend.getText().toString()))
 			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
 		  )
 		{
@@ -292,8 +292,8 @@ public class LogOpt extends Activity {
 	{
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<start:"+ToolClass.getDayOfMonth(mYear, mMon, mDay)+"end:"+ToolClass.getDayOfMonth(eYear, eMon, eDay)+"时间大小="+ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay)),"log.txt");
 		if(
-				(!edtloggridstart.getText().toString().isEmpty())
-			  &&(!edtloggridend.getText().toString().isEmpty())
+				(!ToolClass.isEmptynull(edtloggridstart.getText().toString()))
+			  &&(!ToolClass.isEmptynull(edtloggridend.getText().toString()))
 			  &&(ToolClass.dateCompare(ToolClass.getDayOfMonth(mYear, mMon, mDay),ToolClass.getDayOfMonth(eYear, eMon, eDay))<0)
 		  )
 		{
