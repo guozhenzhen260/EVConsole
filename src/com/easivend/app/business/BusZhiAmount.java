@@ -526,7 +526,12 @@ public class BusZhiAmount  extends Activity
   	private void finishActivity()
   	{
   		timer.shutdown(); 
-  		if((iszhiamount==1)&&(money>0))
+  		//如果本次投币已经结束，可以购买，则不进行退币操作
+  		if(iszhienable==2)
+  		{
+  			ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusLand 退币按钮无效","com.txt");
+  		}
+  		else if((iszhiamount==1)&&(money>0))
   		{
   			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
   			OrderDetail.setPayStatus(2);//支付失败

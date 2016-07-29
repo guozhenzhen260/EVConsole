@@ -338,8 +338,12 @@ public class BusZhier extends Activity
 	//结束界面
 	private void finishActivity()
 	{
-		//如果需要撤销，必须作撤销操作
-		if(iszhier>0)
+		//如果本次扫码已经结束，可以购买，则不进行退款操作
+    	if(iszhier==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhier退币按钮无效","log.txt");
+    	}
+    	else if(iszhier==1)
 			deletezhier();
 		else 
 		{

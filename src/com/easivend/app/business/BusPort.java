@@ -672,8 +672,13 @@ BushuoFragInteraction
 	//步骤三、实现Buszhiamount接口,转到首页面
 	@Override
 	public void BuszhiamountFinish() {
-		// TODO Auto-generated method stub	
-		if(iszhiamount==1)
+		// TODO Auto-generated method stub
+		//如果本次投币已经结束，可以购买，则不进行退币操作
+		if(iszhienable==2)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 退币按钮无效","com.txt");
+		}
+		else if(iszhiamount==1)
   		{
   			dialog= ProgressDialog.show(BusPort.this,"正在退币中","请稍候...");
   			OrderDetail.setPayStatus(2);//支付失败
@@ -706,7 +711,12 @@ BushuoFragInteraction
     @Override
 	public void BuszhierFinish() {
 		// TODO Auto-generated method stub
-    	if(iszhier>0)
+    	//如果本次扫码已经结束，可以购买，则不进行退款操作
+    	if(iszhier==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhier退币按钮无效","log.txt");
+    	}
+    	else if(iszhier==1)
 			deletezhier();
 		else 
 		{
@@ -832,7 +842,12 @@ BushuoFragInteraction
   	@Override
 	public void BuszhiweiFinish() {
 		// TODO Auto-generated method stub
-  		if(iszhiwei>0)
+  		//如果本次扫码已经结束，可以购买，则不进行退款操作
+    	if(iszhiwei==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
+    	}
+    	else if(iszhiwei==1)
 			deletezhiwei();
 		else 
 		{

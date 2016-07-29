@@ -340,7 +340,12 @@ public class BusZhiwei extends Activity
 	//结束界面
 	private void finishActivity()
 	{	
-		if(iszhiwei>0)
+		//如果本次扫码已经结束，可以购买，则不进行退款操作
+    	if(iszhiwei==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
+    	}
+    	else if(iszhiwei==1)
 			deletezhiwei();
 		else 
 		{

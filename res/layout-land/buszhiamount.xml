@@ -80,20 +80,21 @@
         />
    	<ImageView 
    	    android:id = "@+id/ivbuszhiamountbill"
-   	    android:layout_below="@+id/txtbuszhiamounttsxx"
+   	    android:layout_centerHorizontal="true"
+   	    android:layout_below="@+id/imgjsqd"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"		
 		android:src="@drawable/billonlyfangland"			
    	/>
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqxzf"
-        android:layout_below="@+id/ivbuszhiamountbill"
+        android:layout_above="@+id/imgback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qxzffangland" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqtzf"
-        android:layout_below="@+id/ivbuszhiamountbill"
+        android:layout_above="@+id/imgback"
         android:layout_toRightOf="@+id/imgbtnbuszhiamountqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

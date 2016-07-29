@@ -60,27 +60,28 @@
 	    android:id="@+id/ivbuszhiwei"
 	    android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtbuszhiweitime"	
+        android:layout_centerHorizontal="true"
+   	    android:layout_below="@+id/imgjsqd"	
         android:src="@drawable/zhierwaitland"
         />
 	<ImageView 
    	    android:id = "@+id/ivbuszhiweib"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
-		android:layout_below="@+id/txtbuszhiweitime"	
+		android:layout_below="@+id/imgjsqd" 
 		android:layout_toRightOf="@+id/ivbuszhiwei"	
 		android:src="@drawable/weitsxxland"				
    	/>
 	
 	<ImageButton
         android:id="@+id/imgbtnbuszhiweiqxzf"
-        android:layout_below="@+id/ivbuszhiweib"
+        android:layout_above="@+id/imgback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qxzffangland" />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiweiqtzf"
-        android:layout_below="@+id/ivbuszhiweib"
+        android:layout_above="@+id/imgback"
         android:layout_toRightOf="@+id/imgbtnbuszhiweiqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
