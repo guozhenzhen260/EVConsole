@@ -1595,6 +1595,7 @@ public class HuodaoTest extends TabActivity
 				
 				intent.putExtra("cabinet", cabinetsetvar);	
 				intent.putExtra("column", opt);	
+				intent.putExtra("cost", 0);
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
 				break;
