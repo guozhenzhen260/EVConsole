@@ -133,20 +133,29 @@ public class BusHuo extends Activity
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt"); 
 		}
 		
+		
 		new Handler().postDelayed(new Runnable() 
 		{
             @Override
             public void run() 
             {	  
+            	//2.计算货物金额
+        		float cost=0;
+        		if(zhifutype==0)
+        		{
+        			cost=prosales;
+        		}
         		ToolClass.Log(ToolClass.INFO,"EV_JNI",
         		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-        		    	+" column="+huodaoNo		    	
+        		    	+" column="+huodaoNo
+        		    	+" cost="+cost
         		    	,"log.txt");
         		Intent intent = new Intent();
         		//4.发送指令广播给COMService
         		intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
         		intent.putExtra("cabinet", cabinetvar);	
         		intent.putExtra("column", huodaoNo);	
+        		intent.putExtra("cost", ToolClass.MoneySend(cost));
         		intent.setAction("android.intent.action.comsend");//action与接收器相同
         		comBroadreceiver.sendBroadcast(intent);
             }

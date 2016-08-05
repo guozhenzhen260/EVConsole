@@ -975,15 +975,23 @@ BushuoFragInteraction
 	public void BushuoChuhuoOpt(int cabinetvar, int huodaoNo,int cabinetTypevar) {
 		// TODO Auto-generated method stub
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<busport商品cabID="+cabinetvar+"huoID="+huodaoNo+"cabType="+cabinetTypevar,"log.txt");
-		ToolClass.Log(ToolClass.INFO,"EV_JNI",
+    	//2.计算货物金额
+		float cost=0;
+		if(Integer.parseInt(zhifutype)==0)
+		{
+			cost=amount;
+		}
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI",
 		    	"[APPsend>>]cabinet="+String.valueOf(cabinetvar)
-		    	+" column="+huodaoNo		    	
+		    	+" column="+huodaoNo
+		    	+" cost="+cost
 		    	,"log.txt");
 		Intent intent = new Intent();
 		//4.发送指令广播给COMService
 		intent.putExtra("EVWhat", COMService.EV_CHUHUOCHILD);	
 		intent.putExtra("cabinet", cabinetvar);	
 		intent.putExtra("column", huodaoNo);	
+		intent.putExtra("cost", ToolClass.MoneySend(cost));
 		intent.setAction("android.intent.action.comsend");//action与接收器相同
 		comBroadreceiver.sendBroadcast(intent);
     }
