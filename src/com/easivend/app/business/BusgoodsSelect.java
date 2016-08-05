@@ -208,7 +208,7 @@ public class BusgoodsSelect extends Activity
     		else
     		{
     			ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
-    			if(tb_inaccount.getAmount()!=1)
+    			if(tb_inaccount.getAmount()==0)
         		{
         			ivbuszhiselamount.setVisibility(View.GONE);//关闭
         		}
@@ -217,7 +217,7 @@ public class BusgoodsSelect extends Activity
         			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
         			zhifucount++;
         		}	
-        		if(tb_inaccount.getZhifubaoer()!=1)
+        		if(tb_inaccount.getZhifubaoer()==0)
         		{
         			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
         		}
@@ -226,7 +226,7 @@ public class BusgoodsSelect extends Activity
         			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
         			zhifucount++;
         		}
-        		if(tb_inaccount.getWeixing()!=1)
+        		if(tb_inaccount.getWeixing()==0)
         		{
         			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
         		}

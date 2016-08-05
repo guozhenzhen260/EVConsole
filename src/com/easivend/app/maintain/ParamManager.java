@@ -28,6 +28,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TabHost;
@@ -43,7 +45,9 @@ public class ParamManager extends TabActivity
 	private static final int TIME_DIALOG_ID = 0;// 创建时间对话框常量
 	private EditText edtdevID=null,edtdevhCode=null,edtmainPwd=null,edtrstTime=null,edtrstDay=null,edtmarketAmount=null,edtbillAmount=null;
 	private Switch switchisNet = null,switchisbuhuo=null,switchisbuyCar = null,switchisqiangbuy=null,switchlanguage = null,switchbaozhiProduct = null,switchemptyProduct = null,switchamount = null,switchcard = null,
-			switchzhifubaofaca = null,switchzhifubaoer = null,switchweixing = null,switchprinter = null;    
+			switchzhifubaofaca = null,switchweixing = null,switchprinter = null;    
+	private RadioGroup zhifubaogrp=null;
+	private RadioButton rbtnclose=null,rbtnzhifubao1=null,rbtnzhifubao2=null;
 	private Spinner spinparamsort=null;
 	private Button btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnzhifubaofaca=null,
 			btnzhifubaoer=null,btnweixing=null,btnprinter=null;	
@@ -191,19 +195,26 @@ public class ParamManager extends TabActivity
             
             
         });
-    	switchzhifubaoer = (Switch)findViewById(R.id.switchzhifubaoer);
-    	switchzhifubaoer.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+    	this.zhifubaogrp = (RadioGroup) super.findViewById(R.id.zhifubaogrp);
+        this.rbtnclose = (RadioButton) super.findViewById(R.id.rbtnclose);
+        this.rbtnzhifubao1 = (RadioButton) super.findViewById(R.id.rbtnzhifubao1);
+        this.rbtnzhifubao2 = (RadioButton) super.findViewById(R.id.rbtnzhifubao2);
+        this.zhifubaogrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				// TODO Auto-generated method stub
-				btnzhifubaoer.setEnabled(isChecked);	
-			}  
-            
-            
-        });
-    	switchweixing = (Switch)findViewById(R.id.switchweixing);
+				if(ParamManager.this.rbtnclose.getId()==checkedId)
+				{
+					btnzhifubaoer.setEnabled(false);		
+				}
+				else
+				{
+					btnzhifubaoer.setEnabled(true);		
+				}	
+			}
+		});
+        switchweixing = (Switch)findViewById(R.id.switchweixing);
     	switchweixing.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -380,7 +391,19 @@ public class ParamManager extends TabActivity
     	int amount = (switchamount.isChecked()==true)?1:0;
     	int card = (switchcard.isChecked()==true)?1:0;
     	int zhifubaofaca = (switchzhifubaofaca.isChecked()==true)?1:0;
-    	int zhifubaoer = (switchzhifubaoer.isChecked()==true)?1:0;
+    	int zhifubaoer=0;
+    	if(rbtnclose.isChecked())
+    	{
+    		zhifubaoer=0;
+    	}
+    	else if(rbtnzhifubao1.isChecked())
+    	{
+    		zhifubaoer=1;
+    	}
+    	else if(rbtnzhifubao2.isChecked())
+    	{
+    		zhifubaoer=2;
+    	}
     	int weixing = (switchweixing.isChecked()==true)?1:0;
     	int printer = (switchprinter.isChecked()==true)?1:0;
     	int language = (switchlanguage.isChecked()==true)?1:0;
@@ -479,7 +502,18 @@ public class ParamManager extends TabActivity
 		    switchamount.setChecked((tb_inaccount.getAmount()==1)?true:false);
 		    switchcard.setChecked((tb_inaccount.getCard()==1)?true:false);
 		    switchzhifubaofaca.setChecked((tb_inaccount.getZhifubaofaca()==1)?true:false);
-		    switchzhifubaoer.setChecked((tb_inaccount.getZhifubaoer()==1)?true:false);
+		    if(tb_inaccount.getZhifubaoer()==0)
+		    {
+		    	rbtnclose.setChecked(true);
+		    }
+		    else if(tb_inaccount.getZhifubaoer()==1)
+		    {
+		    	rbtnzhifubao1.setChecked(true);
+		    }
+		    else if(tb_inaccount.getZhifubaoer()==2)
+		    {
+		    	rbtnzhifubao2.setChecked(true);
+		    }
 		    switchweixing.setChecked((tb_inaccount.getWeixing()==1)?true:false);
 		    switchprinter.setChecked((tb_inaccount.getPrinter()==1)?true:false);
     	}
