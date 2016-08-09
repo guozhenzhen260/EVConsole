@@ -39,6 +39,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -113,6 +114,7 @@ public class ToolClass
 	public static Context context=null;//本应用context
 	private static int ServerVer=0;//0旧的后台，1一期的后台
 	public static String version="";//本机版本号
+	 
 	
 	public static String getVersion() {
 		String curVersion=null;
@@ -1074,12 +1076,62 @@ public class ToolClass
     }
     
     /**
+     * 读取出货时广告文件
+     */
+    public static Bitmap ReadAdshuoFile() 
+    {
+    	String  sDir =null;
+    	Bitmap bitmap=null;
+    	sDir = ToolClass.getEV_DIR()+File.separator+"adshuo"+File.separator;
+    	File dirName = new File(sDir);
+	   	//如果目录不存在，则创建目录
+	   	if (!dirName.exists()) 
+	   	{  
+          //按照指定的路径创建文件夹  
+   		  dirName.mkdirs(); 
+        }
+	    //遍历这个文件夹里的所有文件
+  		File file = new File(sDir);
+  		File[] files = file.listFiles();
+  		if (files.length > 0)
+  		{
+  			//初始化广告列表
+  			List<String> mHuoList =  new ArrayList<String>(); //保存出货页面广告列表
+  			for (int i = 0; i < files.length; i++) 
+			{
+			  if(!files[i].isDirectory())
+			  {		
+				  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
+				  mHuoList.add(files[i].toString());
+			  }
+			}  
+  			//选择需要显示的广告
+  			if(mHuoList.size()>0)
+  			{
+  				Random r=new Random(); 
+  				int curIndex = r.nextInt(mHuoList.size()); 
+  				/*为什么图片一定要转化为 Bitmap格式的！！ */
+		        bitmap = ToolClass.getLoacalBitmap(mHuoList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
+		        
+  			}
+  		}
+    	return bitmap;
+    }
+    
+    /**
      * 读取广告文件
      */
     public static String ReadAdsFile() 
     {
     	String  sDir =null;
     	sDir = ToolClass.getEV_DIR()+File.separator+"ads"+File.separator;
+    	File dirName = new File(sDir);
+	   	//如果目录不存在，则创建目录
+	   	if (!dirName.exists()) 
+	   	{  
+          //按照指定的路径创建文件夹  
+   		  dirName.mkdirs(); 
+        }
     	return sDir;
     }
     

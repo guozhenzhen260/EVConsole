@@ -17,6 +17,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -89,14 +90,21 @@ public class BusHuo extends Activity
 		count=OrderDetail.getShouldNo();//数量
 		zhifutype=OrderDetail.getPayType();
 		txtbushuoname=(TextView)findViewById(R.id.txtbushuoname);
-		
+				
   	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
   	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
-		this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);
-		
+  	    Bitmap bitmap=ToolClass.ReadAdshuoFile();
+  	    if(bitmap!=null)
+  	    {
+  	    	this.ivbushuoquhuo.setImageBitmap(bitmap);// 设置图像的二进制值
+  	    }
+  	    else
+  	    {
+  	    	this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);
+  	    }
 		
 		//****
 		//出货

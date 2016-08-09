@@ -227,7 +227,7 @@ public class MaintainActivity extends Activity
 		//加载goc
 		ToolClass.setGoc(MaintainActivity.this);
 		//加载机型
-		ToolClass.setExtraComType(MaintainActivity.this);
+		ToolClass.setExtraComType(MaintainActivity.this);		
 		//================
 		//九宫格相关
 		//================		

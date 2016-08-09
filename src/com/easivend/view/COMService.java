@@ -266,7 +266,7 @@ public class COMService extends Service {
 		    			ev3=new JSONObject();
 		    			ev3.put("cabinet", bundle.getInt("cabinet"));
 		    			ev3.put("column", bundle.getInt("column"));	
-		    			ev3.put("cost", bundle.getFloat("cost"));	
+		    			ev3.put("cost", bundle.getInt("cost"));	
 		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
 		    		} catch (JSONException e) {
 		    			// TODO Auto-generated catch block

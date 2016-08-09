@@ -30,6 +30,7 @@ public class ExtraCOMThread implements Runnable {
 	//货道出货
 	int cabinet=0;
 	int column=0;
+	int cost=0;
 	//现金设备使能禁能
 	int bill=0;
 	int coin=0;
@@ -91,6 +92,7 @@ public class ExtraCOMThread implements Runnable {
 						ev2 = new JSONObject(msg.obj.toString());
 						cabinet=ev2.getInt("cabinet");
 						column=ev2.getInt("column");
+						cost=ev2.getInt("cost");
 						devopt=EVprotocol.EV_BENTO_OPEN;						
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
@@ -683,7 +685,7 @@ public class ExtraCOMThread implements Runnable {
 										case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 											if(cmdSend==false)
 											{
-												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutind>>cabinet="+cabinet+"column="+column,"com.txt");
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutind>>cabinet="+cabinet+"column="+column+"cost="+cost,"com.txt");
 												VboxProtocol.VboxVendoutInd(ToolClass.getExtracom_id(), 0, 2, column, 2, 0);
 												cmdSend=true;
 											}
