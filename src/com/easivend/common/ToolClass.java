@@ -56,10 +56,12 @@ import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusZhiAmount;
 import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.ParamManager;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocol;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_system_parameter;
@@ -213,23 +215,15 @@ public class ToolClass
 		ToolClass.mark = mark;
 	}
 	
-	public static int setExtraComType(Context context) 
+	public static void setExtraComType(Context context) 
 	{
-		int isNet=0,isfenClass=0;
-		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+		//查找货道类型
+		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
 	    // 获取所有收入信息，并存储到List泛型集合中
-    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-    	if(tb_inaccount!=null)
-    	{
-    		isNet = tb_inaccount.getIsNet();
-    		isfenClass = tb_inaccount.getIsfenClass();
-    		if(isNet==1)
-    			extraComType=1;
-    		else if(isfenClass==1)
-    			extraComType=2;
-    	}
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isNet="+isNet+"isfenClass="+isfenClass+"rst="+extraComType,"log.txt");	
-    	return extraComType;
+	    if(cabinetDAO3.findUBoxData())
+	    {
+	    	extraComType=1;
+	    }	
 	}
 			
 	public static int getExtraComType() {
@@ -1101,8 +1095,12 @@ public class ToolClass
 			{
 			  if(!files[i].isDirectory())
 			  {		
-				  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
-				  mHuoList.add(files[i].toString());
+				  //是否图片文件
+				  if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
+				  {
+					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
+					  mHuoList.add(files[i].toString());
+				  }
 			  }
 			}  
   			//选择需要显示的广告

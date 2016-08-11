@@ -96,16 +96,16 @@ public class BusHuo extends Activity
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
   	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
+  	    this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);  	    
   	    Bitmap bitmap=ToolClass.ReadAdshuoFile();
-  	    if(bitmap!=null)
-  	    {
-  	    	this.ivbushuoquhuo.setImageBitmap(bitmap);// 设置图像的二进制值
-  	    }
-  	    else
-  	    {
-  	    	this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);
-  	    }
-		
+	    if(bitmap!=null)
+	    {
+	    	this.ivbushuoquhuo.setImageBitmap(bitmap);// 设置图像的二进制值
+	    }
+	    else
+	    {
+	    	ivbushuoquhuo.setImageResource(R.drawable.chuwaitland);
+	    }
 		//****
 		//出货
 		//****
@@ -264,7 +264,8 @@ public class BusHuo extends Activity
 	        	            Intent intentrec=new Intent();
 	        	            intentrec.putExtra("status", status);//出货结果
 	                    	if(zhifutype==0)//现金支付
-	                    	{                        			
+	                    	{           
+	                    		intentrec.putExtra("cabinetvar", cabinetvar);//出货柜号	                    		
 	            	            BusHuo.this.setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
 	                		}
 	                    	else if(zhifutype==3)//支付宝二维码

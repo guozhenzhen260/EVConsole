@@ -91,6 +91,30 @@ public class vmc_cabinetDAO
         return tb_inaccount;// 返回集合
     }
     
+    /**
+     * 获取是否存在冰山机型
+     *     
+     * @return
+     */
+    public boolean findUBoxData() 
+    {
+    	boolean rst=false;
+        db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        // 获取所有收入信息
+        Cursor cursor = db.rawQuery("select cabID,cabType from vmc_cabinet where cabType=4", new String[] {});
+        //遍历所有的收入信息
+        if (cursor.moveToNext()) 
+        {	
+        	rst=true;
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}  
+ 		db.close(); 
+        return rst;// 返回集合
+    }
+    
     //删除该柜
   	public void detele(String cabID) 
   	{       

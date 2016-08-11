@@ -1899,6 +1899,7 @@ public class HuodaoTest extends TabActivity
         	Tb_vmc_cabinet tb_vmc_cabinet = new Tb_vmc_cabinet(no,type);
         	cabinetDAO.add(tb_vmc_cabinet);// 添加收入信息
         	showabinet();//显示柜信息
+        	ToolClass.setExtraComType(HuodaoTest.this);	
         	ToolClass.addOptLog(HuodaoTest.this,0,"添加柜:"+no);
         	// 弹出信息提示
             Toast.makeText(HuodaoTest.this, "〖货柜〗数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -1976,7 +1977,8 @@ public class HuodaoTest extends TabActivity
 				            
 				            vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
 				            cabinetDAO.detele(String.valueOf(cabinetsetvar));// 删除该柜信息
-				            ToolClass.addOptLog(HuodaoTest.this,2,"删除柜:"+cabinetsetvar);
+				            ToolClass.setExtraComType(HuodaoTest.this);	
+				            ToolClass.addOptLog(HuodaoTest.this,2,"删除柜:"+cabinetsetvar);				            
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();						            
 				            finish();
@@ -2024,7 +2026,19 @@ public class HuodaoTest extends TabActivity
 		    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
 		    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoTest.this);
 		    				localBroadreceiver.sendBroadcast(intent2);
-	    					// 弹出信息提示
+	    					//=========
+		    				//COM串口相关
+		    				//=========
+		    				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+    				    	"[APPsend>>]全部补货cabinet="+String.valueOf(cabinetsetvar)
+    				    	,"log.txt");
+    						//4.发送指令广播给COMService
+    						Intent intent=new Intent();
+    						intent.putExtra("EVWhat", COMThread.VBOX_HUODAO_SET_INDALLCHILD);
+    						intent.putExtra("cabinet", cabinetsetvar);	
+    						intent.setAction("android.intent.action.comsend");//action与接收器相同
+    						comBroadreceiver.sendBroadcast(intent);
+		    				// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	
 	    				}
     		      }

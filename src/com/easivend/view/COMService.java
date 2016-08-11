@@ -51,11 +51,12 @@ public class COMService extends Service {
 	//=====================货道(格子，弹簧，升降机，冰山)===================
 	public static final int EV_CHECKALLCHILD= 1;	//查询全部柜子状态	
 	public static final int EV_CHECKCHILD	= 3;	//货道查询	
-	public static final int EV_CHUHUOCHILD	= 4;	//货道出货	
+	public static final int EV_CHUHUOCHILD	= 4;	//货道出货		
 	public static final int EV_LIGHTCHILD	= 5;	//照明	
 	public static final int EV_COOLCHILD	= 6;	//制冷	
 	public static final int EV_HOTCHILD		= 7;	//加热	
 	public static final int EV_SETHUOCHILD	= 10;	//货道设置
+	
 	
 	
 	
@@ -355,7 +356,32 @@ public class COMService extends Service {
 	    		}
 	    		child7.obj=ev7;
         		childhand.sendMessage(child7);	
-				break;	
+				break;
+			case COMThread.VBOX_HUODAO_SET_INDALLCHILD:
+				//查找货道类型
+        		vmc_cabinetDAO cabinetDAO4 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
+        	    // 获取所有收入信息，并存储到List泛型集合中
+        	    Tb_vmc_cabinet listinfos4 = cabinetDAO4.findScrollData(String.valueOf(bundle.getInt("cabinet")));
+        	  
+        	    if((ToolClass.getExtraComType()==1)&&(listinfos4.getCabType()==4))
+				{
+					childextrahand=extracomserial.obtainHandler();
+					Message child3=childextrahand.obtainMessage();
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 冰山柜全部补货","com.txt");					
+	    			child3.what=COMThread.VBOX_HUODAO_SET_INDALLCHILD;
+					JSONObject ev3=null;
+		    		try {
+		    			ev3=new JSONObject();
+		    			ev3.put("cabinet", bundle.getInt("cabinet"));
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
+		    		} catch (JSONException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    		child3.obj=ev3;
+		    		childextrahand.sendMessage(child3);	
+				}
+				break;
 			/*
 			 * 设备控制模块
 			 * EVprotocol.EV_BENTO_LIGHT=13
