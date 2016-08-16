@@ -249,8 +249,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec2=EVprotocol.EVBentoOpen(ToolClass.getBentcom_id(), cabinet,column);
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec2.toString(),"com.txt");
@@ -563,8 +563,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec9.toString(),"com.txt");
@@ -720,8 +720,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec22=EVprotocol.EVtrade(ToolClass.getColumncom_id(),3,cabinet,column,ToolClass.getGoc());
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec22.toString(),"com.txt");

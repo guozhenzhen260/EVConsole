@@ -122,8 +122,8 @@
 					            android:layout_height="wrap_content"
 					            android:layout_gravity="center"
 					            android:gravity="center_horizontal"
-					            android:text="出货测试"
-					            android:textSize="45sp"
+					            android:text="出货测试(超时时间:弹簧机2分30,升降机4分钟)"
+					            android:textSize="37sp"
 					            android:textStyle="bold" />
 					    </TableRow>			
 					    <View                              

@@ -97,6 +97,7 @@ public class HuodaoTest extends TabActivity
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0;//当前柜号
+	private int cabinetTypepeivar=0;//当前柜类型
 	private int devopt=0;//操作类型，出货，照明，制冷，加热	
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
@@ -125,7 +126,6 @@ public class HuodaoTest extends TabActivity
 	private TextView txtlight=null,txtcold=null,txthot=null;
 	private Switch switchlight = null,switcold = null,switchhot = null;	
 	//货道配置页面
-	private int cabinetpeivar=0,cabinetTypepeivar=0;
 	private Switch btnhuosetc1=null,btnhuosetc2=null,btnhuosetc3=null,btnhuosetc4=null,
 			btnhuosetc5=null,btnhuosetc6=null,btnhuosetc7=null,btnhuosetc8=null,
 			btnhuoset11=null,btnhuoset12=null,btnhuoset13=null,btnhuoset14=null,btnhuoset15=null,
@@ -217,7 +217,8 @@ public class HuodaoTest extends TabActivity
 					if(cabinetID!=null)
 					{
 						barhuomanager.setVisibility(View.VISIBLE); 
-						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetsetvar=Integer.parseInt(cabinetID[arg2]);
+						cabinetTypepeivar=cabinetType[arg2]; 
 						spinhuotestCab.setSelection(arg2);
 						queryhuodao();					
 					}	
@@ -401,6 +402,7 @@ public class HuodaoTest extends TabActivity
 					if(cabinetID!=null)
 					{
 						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetTypepeivar=cabinetType[arg2]; 
 						spinhuosetCab.setSelection(arg2);
 						queryhuodao();	
 					}	
@@ -1432,7 +1434,7 @@ public class HuodaoTest extends TabActivity
 					//只有有柜号的时候，才请求加载柜内货道信息
 					if(cabinetID!=null)
 					{
-						cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
 						cabinetTypepeivar=cabinetType[arg2]; 
 						//弹簧货道
 						if(cabinetTypepeivar==1)
@@ -1926,6 +1928,7 @@ public class HuodaoTest extends TabActivity
 	    //只有有柜号的时候，才请求加载柜内货道信息
 		if(cabinetID.length>0)
 		{
+			cabinetsetvar=Integer.parseInt(cabinetID[0]); 
 			cabinetTypepeivar=cabinetType[0]; 
 		}
 	}
