@@ -30,6 +30,7 @@ public class ExtraCOMThread implements Runnable {
 	//货道出货
 	int cabinet=0;
 	int column=0;
+	int cost=0;
 	//现金设备使能禁能
 	int bill=0;
 	int coin=0;
@@ -84,6 +85,17 @@ public class ExtraCOMThread implements Runnable {
 						e1.printStackTrace();
 					}
 					break;
+				case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线程冰山柜全部补货消息	
+					//1.得到信息
+					JSONObject ev8=null;
+					try {
+						ev8 = new JSONObject(msg.obj.toString());
+						devopt=COMThread.VBOX_HUODAO_SET_INDALLCHILD;						
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					break;
 				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 					//1.得到信息
 					JSONObject ev2=null;
@@ -91,12 +103,13 @@ public class ExtraCOMThread implements Runnable {
 						ev2 = new JSONObject(msg.obj.toString());
 						cabinet=ev2.getInt("cabinet");
 						column=ev2.getInt("column");
+						cost=ev2.getInt("cost");
 						devopt=EVprotocol.EV_BENTO_OPEN;						
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					break;	
+					break;						
 				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能					
 					//1.得到信息
 					JSONObject ev=null;
@@ -404,6 +417,11 @@ public class ExtraCOMThread implements Runnable {
 													onInit=4;//get_huodao阶段
 												}
 												break;
+											case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线全部补货
+												//消除变量值
+												devopt=0;
+												cmdSend=false;
+												break;
 											case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 												//消除变量值
 												devopt=0;
@@ -439,7 +457,25 @@ public class ExtraCOMThread implements Runnable {
 											case EVprotocol.EV_MDB_PAYBACK://退币
 												//消除变量值
 												//devopt=0;//在pyout_rpt处理
-												//cmdSend=false;												
+												//cmdSend=false;
+												if(GetAmountMoney()==0)
+												{
+													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<EV_MDB_PAYBACK="+payback_value,"com.txt");
+													//消除变量值
+													devopt=0;
+													cmdSend=false;
+													//往接口回调信息
+													allSet.clear();
+													allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYBACK);
+													allSet.put("result", 1);
+													allSet.put("bill_changed", 0);
+													allSet.put("coin_changed", payback_value);
+													//3.向主线程返回信息
+									  				Message tomain19=mainhand.obtainMessage();
+									  				tomain19.what=EV_OPTMAIN;							
+									  				tomain19.obj=allSet;
+									  				mainhand.sendMessage(tomain19); // 发送消息
+												}
 												break;
 										}
 									}
@@ -466,6 +502,11 @@ public class ExtraCOMThread implements Runnable {
 													onInit=4;//get_huodao阶段
 												}
 												break;
+											case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线全部补货
+												//消除变量值
+												devopt=0;
+												cmdSend=false;
+												break;	
 											case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 												//消除变量值
 												devopt=0;
@@ -680,11 +721,39 @@ public class ExtraCOMThread implements Runnable {
 												}
 											}
 											break;	
+										case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线全部补货
+											if(cmdSend==false)
+											{
+												JSONArray arr=new JSONArray();
+												for(int i=1;i<(hd_num+1);i++)
+												{
+													JSONObject obj=new JSONObject();
+													obj.put("id", 20);
+													arr.put(obj);
+												}
+												JSONObject zhuheobj=new JSONObject();
+												zhuheobj.put("port", ToolClass.getExtracom_id());
+												zhuheobj.put("sp_id", arr);										
+												zhuheobj.put("device", 0);
+												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+												JSONObject reqStr=new JSONObject();
+												reqStr.put("EV_json", zhuheobj);
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoSetInd>>"+reqStr,"com.txt");
+												VboxProtocol.VboxHuodaoSetInd(ToolClass.getExtracom_id(),reqStr.toString());
+												cmdSend=true;
+											}
+											break;
 										case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 											if(cmdSend==false)
 											{
-												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutind>>cabinet="+cabinet+"column="+column,"com.txt");
-												VboxProtocol.VboxVendoutInd(ToolClass.getExtracom_id(), 0, 2, column, 2, 0);
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutind>>cabinet="+cabinet+"column="+column+"cost="+cost,"com.txt");
+												int temptype=0;
+												int tempcost=MoneySend(cost);
+												if(tempcost==0)
+													temptype=2;
+												else
+													temptype=0;
+												VboxProtocol.VboxVendoutInd(ToolClass.getExtracom_id(), 0, 2, column, temptype, tempcost);
 												cmdSend=true;
 											}
 											break;
@@ -783,6 +852,7 @@ public class ExtraCOMThread implements Runnable {
 								case VboxProtocol.VBOX_PAYIN_RPT://投币信息
 									int dt=ev_head6.getInt("dt");
 									int value=ev_head6.getInt("value");
+									int totalvalue=ev_head6.getInt("total_value");
 									if(dt==0)
 									{
 										coin_recv+=MoneyRec(value);
@@ -794,13 +864,38 @@ public class ExtraCOMThread implements Runnable {
 									else if(dt==101)
 									{
 										g_holdValue=0;
+										bill_recv=0;
+										coin_recv=MoneyRec(totalvalue);
 									}
 									else if(dt==1)
 									{
 										bill_recv+=MoneyRec(value);
 										g_holdValue=0;
 									}
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayinRpt<<dt="+dt+"value="+MoneyRec(value)+"GetAmountMoney="+GetAmountMoney(),"com.txt");
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayinRpt<<dt="+dt+"value="+MoneyRec(value)+"GetAmountMoney="+GetAmountMoney()+"json="+resjson.toString(),"com.txt");
+									//退币命令
+									if(devopt==EVprotocol.EV_MDB_PAYBACK)
+									{
+										if(GetAmountMoney()==0)
+										{
+											payback_value=MoneyRec(value);
+											ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<EV_MDB_PAYBACK="+payback_value,"com.txt");
+											//消除变量值
+											devopt=0;
+											cmdSend=false;
+											//往接口回调信息
+											allSet.clear();
+											allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYBACK);
+											allSet.put("result", 1);
+											allSet.put("bill_changed", 0);
+											allSet.put("coin_changed", payback_value);
+											//3.向主线程返回信息
+											Message tomain19=mainhand.obtainMessage();
+											tomain19.what=EV_OPTMAIN;							
+											tomain19.obj=allSet;
+											mainhand.sendMessage(tomain19); // 发送消息
+										}
+									}
 									break;	
 								case VboxProtocol.VBOX_PAYOUT_RPT://找币信息
 									payback_value=MoneyRec(ev_head6.getInt("value")); 
@@ -852,9 +947,13 @@ public class ExtraCOMThread implements Runnable {
 								 * 二级返回信息：
 								 * 出货EVprotocol.EV_BENTO_OPEN=11
 								 */		
-								case VboxProtocol.VBOX_VENDOUT_RPT://出货结果
+								case VboxProtocol.VBOX_VENDOUT_RPT://出货结果									
 									int status=ev_head6.getInt("status");
-									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutRpt<<column="+column+"status="+status,"com.txt");
+									int vend_cost=MoneyRec(ev_head6.getInt("cost"));//扣款金额
+									g_holdValue = 0;//当前暂存纸币金额 以分为单位
+									bill_recv=0;//纸币器当前收币金额	以分为单位
+									coin_recv=MoneyRec(ev_head6.getInt("total_value"));//硬币器当前收币金额	以分为单位
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadVendoutRpt<<column="+column+"status="+status+"vend_cost="+vend_cost+"GetAmountMoney="+GetAmountMoney(),"com.txt");
 									//出货成功
 									if(status==0)
 									{

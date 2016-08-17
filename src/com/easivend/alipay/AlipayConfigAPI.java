@@ -45,7 +45,14 @@ public class AlipayConfigAPI {
     	str=list.get("isalisub");    	
     	AlipayConfig.setIsalisub(Float.parseFloat(str));
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isalisub="+AlipayConfig.getIsalisub(),"log.txt");
-    	    	
+    	 
+    	if(list.containsKey("aliprivateKey"))//设置私钥
+        {
+    		str=list.get("aliprivateKey");
+    		AlipayConfig.setAliprivateKey(str);
+    		//私钥，每个商户号都对应唯一的，在本程序里面用来作RSA签名参数
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<aliprivateKey="+AlipayConfig.getAliprivateKey(),"log.txt");
+        }
     }
     
     //生成支付请求消息

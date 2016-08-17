@@ -190,7 +190,7 @@ public class BusgoodsselectFragment extends Fragment
     	if(tb_inaccount!=null)
     	{
     		int zhifucount=0;
-    		if(tb_inaccount.getAmount()!=1)
+    		if(tb_inaccount.getAmount()==0)
     		{
     			ivbuszhiselamount.setVisibility(View.GONE);//关闭
     		}
@@ -199,7 +199,7 @@ public class BusgoodsselectFragment extends Fragment
     			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
     			zhifucount++;
     		}	
-    		if(tb_inaccount.getZhifubaoer()!=1)
+    		if(tb_inaccount.getZhifubaoer()==0)
     		{
     			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
     		}
@@ -208,7 +208,7 @@ public class BusgoodsselectFragment extends Fragment
     			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
     			zhifucount++;
     		}
-    		if(tb_inaccount.getWeixing()!=1)
+    		if(tb_inaccount.getWeixing()==0)
     		{
     			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
     		}

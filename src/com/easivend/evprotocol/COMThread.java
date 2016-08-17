@@ -44,7 +44,9 @@ public class COMThread implements Runnable
 	public static final int EV_ELEVATOR_CHECKALLCHILD = 43;	//升降机柜全部查询
 	public static final int EV_ELEVATOR_CHECKCHILD = 44;	//升降机柜查询
 	public static final int EV_ELEVATOR_OPENCHILD 	= 45;	//升降机柜出货
-	
+	//=====================冰山柜类型==============================================================================
+	public static final int VBOX_HUODAO_SET_INDALLCHILD 	= 46;	//全部补货
+	public static final int VBOX_HUODAO_SET_INDCHILD 	= 47;	//单道补货
 	//=====================各种类型按键信息==============================================================================
 	public static final int EV_BUTTONRPT_GAME = 50;		//游戏按键
 	public static final int EV_BUTTONRPT_HUODAO = 51;	//上报货道id
@@ -247,8 +249,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec2=EVprotocol.EVBentoOpen(ToolClass.getBentcom_id(), cabinet,column);
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec2.toString(),"com.txt");
@@ -561,8 +563,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec9.toString(),"com.txt");
@@ -718,8 +720,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec22=EVprotocol.EVtrade(ToolClass.getColumncom_id(),3,cabinet,column,ToolClass.getGoc());
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec22.toString(),"com.txt");

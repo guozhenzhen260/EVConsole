@@ -97,6 +97,7 @@ public class HuodaoTest extends TabActivity
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
 	private int cabinetsetvar=0;//当前柜号
+	private int cabinetTypepeivar=0;//当前柜类型
 	private int devopt=0;//操作类型，出货，照明，制冷，加热	
 	Map<String, Integer> huoSet= new LinkedHashMap<String,Integer>();
 	private int huonum=0;//本柜货道数量
@@ -125,7 +126,6 @@ public class HuodaoTest extends TabActivity
 	private TextView txtlight=null,txtcold=null,txthot=null;
 	private Switch switchlight = null,switcold = null,switchhot = null;	
 	//货道配置页面
-	private int cabinetpeivar=0,cabinetTypepeivar=0;
 	private Switch btnhuosetc1=null,btnhuosetc2=null,btnhuosetc3=null,btnhuosetc4=null,
 			btnhuosetc5=null,btnhuosetc6=null,btnhuosetc7=null,btnhuosetc8=null,
 			btnhuoset11=null,btnhuoset12=null,btnhuoset13=null,btnhuoset14=null,btnhuoset15=null,
@@ -217,7 +217,8 @@ public class HuodaoTest extends TabActivity
 					if(cabinetID!=null)
 					{
 						barhuomanager.setVisibility(View.VISIBLE); 
-						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetsetvar=Integer.parseInt(cabinetID[arg2]);
+						cabinetTypepeivar=cabinetType[arg2]; 
 						spinhuotestCab.setSelection(arg2);
 						queryhuodao();					
 					}	
@@ -401,6 +402,7 @@ public class HuodaoTest extends TabActivity
 					if(cabinetID!=null)
 					{
 						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetTypepeivar=cabinetType[arg2]; 
 						spinhuosetCab.setSelection(arg2);
 						queryhuodao();	
 					}	
@@ -1432,7 +1434,7 @@ public class HuodaoTest extends TabActivity
 					//只有有柜号的时候，才请求加载柜内货道信息
 					if(cabinetID!=null)
 					{
-						cabinetpeivar=Integer.parseInt(cabinetID[arg2]); 
+						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
 						cabinetTypepeivar=cabinetType[arg2]; 
 						//弹簧货道
 						if(cabinetTypepeivar==1)
@@ -1595,6 +1597,7 @@ public class HuodaoTest extends TabActivity
 				
 				intent.putExtra("cabinet", cabinetsetvar);	
 				intent.putExtra("column", opt);	
+				intent.putExtra("cost", 0);
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
 				break;
@@ -1898,6 +1901,7 @@ public class HuodaoTest extends TabActivity
         	Tb_vmc_cabinet tb_vmc_cabinet = new Tb_vmc_cabinet(no,type);
         	cabinetDAO.add(tb_vmc_cabinet);// 添加收入信息
         	showabinet();//显示柜信息
+        	ToolClass.setExtraComType(HuodaoTest.this);	
         	ToolClass.addOptLog(HuodaoTest.this,0,"添加柜:"+no);
         	// 弹出信息提示
             Toast.makeText(HuodaoTest.this, "〖货柜〗数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -1924,6 +1928,7 @@ public class HuodaoTest extends TabActivity
 	    //只有有柜号的时候，才请求加载柜内货道信息
 		if(cabinetID.length>0)
 		{
+			cabinetsetvar=Integer.parseInt(cabinetID[0]); 
 			cabinetTypepeivar=cabinetType[0]; 
 		}
 	}
@@ -1975,7 +1980,8 @@ public class HuodaoTest extends TabActivity
 				            
 				            vmc_cabinetDAO cabinetDAO = new vmc_cabinetDAO(HuodaoTest.this);
 				            cabinetDAO.detele(String.valueOf(cabinetsetvar));// 删除该柜信息
-				            ToolClass.addOptLog(HuodaoTest.this,2,"删除柜:"+cabinetsetvar);
+				            ToolClass.setExtraComType(HuodaoTest.this);	
+				            ToolClass.addOptLog(HuodaoTest.this,2,"删除柜:"+cabinetsetvar);				            
 	    					// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "柜删除成功！", Toast.LENGTH_SHORT).show();						            
 				            finish();
@@ -2023,7 +2029,19 @@ public class HuodaoTest extends TabActivity
 		    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
 		    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoTest.this);
 		    				localBroadreceiver.sendBroadcast(intent2);
-	    					// 弹出信息提示
+	    					//=========
+		    				//COM串口相关
+		    				//=========
+		    				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+    				    	"[APPsend>>]全部补货cabinet="+String.valueOf(cabinetsetvar)
+    				    	,"log.txt");
+    						//4.发送指令广播给COMService
+    						Intent intent=new Intent();
+    						intent.putExtra("EVWhat", COMThread.VBOX_HUODAO_SET_INDALLCHILD);
+    						intent.putExtra("cabinet", cabinetsetvar);	
+    						intent.setAction("android.intent.action.comsend");//action与接收器相同
+    						comBroadreceiver.sendBroadcast(intent);
+		    				// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	
 	    				}
     		      }

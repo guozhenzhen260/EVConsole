@@ -39,6 +39,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -55,10 +56,12 @@ import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusZhiAmount;
 import com.easivend.app.maintain.HuodaoSet;
 import com.easivend.app.maintain.ParamManager;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocol;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_log;
 import com.easivend.model.Tb_vmc_system_parameter;
@@ -113,6 +116,7 @@ public class ToolClass
 	public static Context context=null;//本应用context
 	private static int ServerVer=0;//0旧的后台，1一期的后台
 	public static String version="";//本机版本号
+	 
 	
 	public static String getVersion() {
 		String curVersion=null;
@@ -211,23 +215,15 @@ public class ToolClass
 		ToolClass.mark = mark;
 	}
 	
-	public static int setExtraComType(Context context) 
+	public static void setExtraComType(Context context) 
 	{
-		int isNet=0,isfenClass=0;
-		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+		//查找货道类型
+		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
 	    // 获取所有收入信息，并存储到List泛型集合中
-    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-    	if(tb_inaccount!=null)
-    	{
-    		isNet = tb_inaccount.getIsNet();
-    		isfenClass = tb_inaccount.getIsfenClass();
-    		if(isNet==1)
-    			extraComType=1;
-    		else if(isfenClass==1)
-    			extraComType=2;
-    	}
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isNet="+isNet+"isfenClass="+isfenClass+"rst="+extraComType,"log.txt");	
-    	return extraComType;
+	    if(cabinetDAO3.findUBoxData())
+	    {
+	    	extraComType=1;
+	    }	
 	}
 			
 	public static int getExtraComType() {
@@ -1074,12 +1070,66 @@ public class ToolClass
     }
     
     /**
+     * 读取出货时广告文件
+     */
+    public static Bitmap ReadAdshuoFile() 
+    {
+    	String  sDir =null;
+    	Bitmap bitmap=null;
+    	sDir = ToolClass.getEV_DIR()+File.separator+"adshuo"+File.separator;
+    	File dirName = new File(sDir);
+	   	//如果目录不存在，则创建目录
+	   	if (!dirName.exists()) 
+	   	{  
+          //按照指定的路径创建文件夹  
+   		  dirName.mkdirs(); 
+        }
+	    //遍历这个文件夹里的所有文件
+  		File file = new File(sDir);
+  		File[] files = file.listFiles();
+  		if (files.length > 0)
+  		{
+  			//初始化广告列表
+  			List<String> mHuoList =  new ArrayList<String>(); //保存出货页面广告列表
+  			for (int i = 0; i < files.length; i++) 
+			{
+			  if(!files[i].isDirectory())
+			  {		
+				  //是否图片文件
+				  if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
+				  {
+					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
+					  mHuoList.add(files[i].toString());
+				  }
+			  }
+			}  
+  			//选择需要显示的广告
+  			if(mHuoList.size()>0)
+  			{
+  				Random r=new Random(); 
+  				int curIndex = r.nextInt(mHuoList.size()); 
+  				/*为什么图片一定要转化为 Bitmap格式的！！ */
+		        bitmap = ToolClass.getLoacalBitmap(mHuoList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
+		        
+  			}
+  		}
+    	return bitmap;
+    }
+    
+    /**
      * 读取广告文件
      */
     public static String ReadAdsFile() 
     {
     	String  sDir =null;
     	sDir = ToolClass.getEV_DIR()+File.separator+"ads"+File.separator;
+    	File dirName = new File(sDir);
+	   	//如果目录不存在，则创建目录
+	   	if (!dirName.exists()) 
+	   	{  
+          //按照指定的路径创建文件夹  
+   		  dirName.mkdirs(); 
+        }
     	return sDir;
     }
     

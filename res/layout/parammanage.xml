@@ -542,7 +542,7 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="支付宝当面付"/>
+									android:text="第三方卡具"/>
 						        
 						         <Switch   
 							       android:layout_marginTop="20dip"  
@@ -575,17 +575,28 @@
 				            	    android:minWidth="160px"	    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="支付宝二维码"/>
-						        
-						         <Switch   
-							       android:layout_marginTop="20dip"  
-							       android:id="@+id/switchzhifubaoer"  
-							       android:layout_width="wrap_content"  
-							       android:layout_height="wrap_content"  
-							       android:textOn="使用"  
-							       android:textOff="不使用"  							           
-							       android:layout_gravity="center_horizontal"/> 
-							    <Button
+									android:text="支付宝"/>
+						        <RadioGroup    
+							        android:id="@+id/zhifubaogrp"
+							        android:layout_width="wrap_content"
+							        android:layout_height="wrap_content"							        
+							        android:orientation="horizontal"
+							        android:layout_marginTop="20dip"  
+							        android:checkedButton="@+id/rbtnclose">
+							        <RadioButton
+							            android:id="@+id/rbtnclose"
+							            android:text="不使用"
+							        />  
+							        <RadioButton
+							            android:id="@+id/rbtnzhifubao1"
+							            android:text="1.0版支付宝"
+							        /> 
+							        <RadioButton
+							            android:id="@+id/rbtnzhifubao2"
+							            android:text="2.0版支付宝口碑"
+							        />                  
+								</RadioGroup>
+						        <Button
 						             android:id="@+id/btnzhifubaoer"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 

@@ -10,8 +10,10 @@ import java.util.concurrent.TimeUnit;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
@@ -457,17 +459,33 @@ public class BusZhiAmount  extends Activity
   			{
   				Bundle bundle=data.getExtras();
   				int status=bundle.getInt("status");//出货结果1成功,0失败
+  				int cabinetvar=bundle.getInt("cabinetvar");//出货柜号
+  				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<出货返回status="+status+"cabinetvar="+cabinetvar,"log.txt");
   				//1.
   				//出货成功,扣钱
 				if(status==1)
 				{
-					//扣钱
-		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
-					Intent intent=new Intent();
-			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
-					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
-					intent.setAction("android.intent.action.comsend");//action与接收器相同
-					comBroadreceiver.sendBroadcast(intent);					
+					//查找货道类型
+	        		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(BusZhiAmount.this);// 创建InaccountDAO对象
+	        	    // 获取所有收入信息，并存储到List泛型集合中
+	        	    Tb_vmc_cabinet listinfos3 = cabinetDAO3.findScrollData(String.valueOf(cabinetvar));
+	        	    //针对冰山机器，不用扣钱
+	        	    if((ToolClass.getExtraComType()==1)&&(listinfos3.getCabType()==4))
+	        	    {
+	        	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","COMBusAmount 扣款="+amount,"log.txt");
+						money-=amount;//扣款
+						payback();
+	        	    }
+	        	    else
+	        	    {
+						//扣钱
+			  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
+						Intent intent=new Intent();
+				    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
+						intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
+						intent.setAction("android.intent.action.comsend");//action与接收器相同
+						comBroadreceiver.sendBroadcast(intent);	
+	        	    }
 				}
 				//出货失败,不扣钱
 				else
