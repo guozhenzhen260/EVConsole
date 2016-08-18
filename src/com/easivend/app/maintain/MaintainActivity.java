@@ -18,6 +18,10 @@ package com.easivend.app.maintain;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
@@ -76,7 +80,8 @@ public class MaintainActivity extends Activity
     String com=null,bentcom=null,columncom=null,extracom=null,server="";
     final static int REQUEST_CODE=1;   
     //获取货柜信息
-   Map<String,Integer> huoSet=new HashMap<String,Integer>();
+   //Map<String,Integer> huoSet=new HashMap<String,Integer>();
+    SerializableMap serializableMap = null;
     //Dog服务相关
     int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
 	private final int SPLASH_DISPLAY_LENGHT = 5000; // 延迟5秒
@@ -89,6 +94,8 @@ public class MaintainActivity extends Activity
 	//COM服务相关
 	LocalBroadcastManager comBroadreceiver;
 	COMReceiver comreceiver;
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -110,7 +117,9 @@ public class MaintainActivity extends Activity
 		}
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
-						
+		//获取本应用context
+		ToolClass.setContext(getApplicationContext());
+		
 		//==========
 		//Dog服务相关
 		//==========
@@ -134,11 +143,10 @@ public class MaintainActivity extends Activity
 		}, SPLASH_DISPLAY_LENGHT);
 		
 		
-		
 		//=============
 		//Server服务相关
 		//=============
-		//3.开启服务
+	    //3.开启服务
 		startService(new Intent(MaintainActivity.this,EVServerService.class));
 		//4.注册接收器
 		localBroadreceiver = LocalBroadcastManager.getInstance(this);
@@ -325,7 +333,7 @@ public class MaintainActivity extends Activity
 		{
 			if(resultCode==MaintainActivity.RESULT_CANCELED)
 			{				
-							}	
+			}	
 			else if(resultCode==MaintainActivity.RESULT_OK)
 			{	
 				//从配置文件获取数据
@@ -366,6 +374,7 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=签到成功","log.txt");			
 				if(dialog.isShowing())
 					dialog.dismiss();
+				timer.scheduleWithFixedDelay(task, 10, 5*60, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
 					issale=true;
@@ -388,6 +397,7 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=失败，网络故障","log.txt");	
 				if(dialog.isShowing())
 					dialog.dismiss();
+				timer.scheduleWithFixedDelay(task, 10, 5*60, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
 					issale=true;
@@ -428,7 +438,7 @@ public class MaintainActivity extends Activity
 			{
 			case COMThread.EV_CHECKALLMAIN:
 				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
-				SerializableMap serializableMap = (SerializableMap) bundle.get("result");
+				serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部="+Set,"com.txt");	
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
@@ -469,6 +479,112 @@ public class MaintainActivity extends Activity
 		}
 
 	}
+	
+	//调用倒计时定时器
+	TimerTask task = new TimerTask() { 
+        @Override 
+        public void run() {         	
+            runOnUiThread(new Runnable() {      // UI thread 
+                @Override 
+                public void run() 
+                {
+                	Boolean bool=false;                	
+                	//==========
+                	//Dog服务相关
+                	//==========
+                	bool=ToolClass.isServiceRunning("com.easivend.view.DogService");
+                	ToolClass.Log(ToolClass.INFO,"EV_DOG","DogService:"+bool,"dog.txt");
+                	if(bool==false)
+                	{
+                		//启动服务
+                		startService(new Intent(MaintainActivity.this,DogService.class));
+                		//dogBroadreceiver.getInstance(this);
+                		//延时1s
+                		new Handler().postDelayed(new Runnable() 
+                		{
+                			@Override
+                			public void run() 
+                			{      
+                				//从配置文件获取数据
+                				Map<String, String> list=ToolClass.ReadConfigFile();
+                				if(list!=null)
+                				{
+                			        if(list.containsKey("isallopen"))
+                			        {
+                			        	//发送指令广播给DogService
+                			    		Intent intent=new Intent();
+                			    		intent.putExtra("isallopen", isallopen);
+                			    		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
+                			    		//dogBroadreceiver.sendBroadcast(intent); 
+                			    		sendBroadcast(intent); 
+                			        }
+                				}
+                			}
+
+                		}, 1000);
+                	}
+                	//=============
+                	//COM服务相关
+                	//=============
+                	bool=ToolClass.isServiceRunning("com.easivend.view.COMService");
+                	ToolClass.Log(ToolClass.INFO,"EV_DOG","COMService:"+bool,"dog.txt");
+                	if(bool==false)
+                	{
+                		//3.开启服务
+                		startService(new Intent(MaintainActivity.this,COMService.class));
+                		//4.注册接收器
+                		IntentFilter comfilter=new IntentFilter();
+                		comfilter.addAction("android.intent.action.comrec");
+                		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+                	}
+                	
+                	//=============
+                	//Server服务相关
+                	//=============
+                	bool=ToolClass.isServiceRunning("com.easivend.view.EVServerService");
+                	ToolClass.Log(ToolClass.INFO,"EV_DOG","EVServerService:"+bool,"dog.txt");
+                	if(bool==false)
+                	{
+                		//3.开启服务
+                		startService(new Intent(MaintainActivity.this,EVServerService.class));
+                		//4.注册接收器
+                		IntentFilter filter=new IntentFilter();
+                		filter.addAction("android.intent.action.vmserverrec");
+                		localBroadreceiver.registerReceiver(receiver,filter);
+                		//延时1s
+                		new Handler().postDelayed(new Runnable() 
+                		{
+                			@Override
+                			public void run() 
+                			{      
+                				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
+                				Map<String, Integer> Set=serializableMap.getMap();
+                				ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部="+Set,"com.txt");	
+                				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<vmserversend","log.txt");
+                		    	//*******
+                				//服务器同步
+                				//*******
+                				Intent intent2=new Intent(); 
+                				intent2.putExtra("EVWhat", EVServerhttp.SETCHILD);
+                				intent2.putExtra("vmc_no", vmcmap.get("vmc_no"));
+                				intent2.putExtra("vmc_auth_code", vmcmap.get("vmc_auth_code"));
+                				//传递数据
+                		        final SerializableMap myMap=new SerializableMap();
+                		        myMap.setMap(Set);//将map数据添加到封装的myMap<span></span>中
+                		        Bundle bundle2=new Bundle();
+                		        bundle2.putSerializable("huoSet", myMap);
+                		        intent2.putExtras(bundle2);
+                				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+                				localBroadreceiver.sendBroadcast(intent2); 
+                			}
+
+                		}, 1000);
+                	}
+                	
+                } 
+            }); 
+        } 
+    };
 	
 	@Override
 	protected void onDestroy() {		

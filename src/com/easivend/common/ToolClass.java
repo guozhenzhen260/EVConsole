@@ -76,6 +76,9 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -3044,5 +3047,22 @@ public class ToolClass
 		}
 		return result;
 	}
+	
+	//ºÏ≤‚Service «∑Ò“—∆Ù∂Ø
+	 public static boolean isServiceRunning(String serviceClassName)
+	 { 
+        final ActivityManager activityManager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE); 
+        final List<RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE); 
+
+        for (RunningServiceInfo runningServiceInfo : services) 
+        { 
+        	ToolClass.Log(ToolClass.INFO,"EV_DOG","service appName:"+runningServiceInfo.service.getClassName()+"-->pack:"+runningServiceInfo.service.getPackageName(),"dog.txt");
+            if (runningServiceInfo.service.getClassName().equals(serviceClassName))
+            { 
+                return true; 
+            } 
+        } 
+        return false; 
+	 }
 	
 }

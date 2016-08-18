@@ -95,8 +95,7 @@ public class EVServerService extends Service {
 				SerializableMap serializableMap = (SerializableMap) bundle.get("huoSet");
 				huoSet=serializableMap.getMap();
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
-						+"huoSet="+huoSet.toString(),"server.txt");
-				ToolClass.setContext(context);
+						+"huoSet="+huoSet.toString(),"server.txt");				
 				//处理接收到的内容,发送签到命令到子线程中
 				//初始化一:发送签到指令
 	        	childhand=serverhttp.obtainHandler();
