@@ -36,6 +36,7 @@ import com.easivend.common.PictureAdapter;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
+import com.tencent.bugly.crashreport.CrashReport;
 
 
 import android.os.Bundle;
@@ -94,6 +95,9 @@ public class MaintainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.maintain);	
+		//bugly加载调试模式,false发布版本用,true调试版本用
+		//CrashReport.testJavaCrash();这条语句用来测试奔溃
+		CrashReport.initCrashReport(getApplicationContext(), "900048192", false);		
 		//取得屏幕的长和宽，进行比较设置横竖屏的变量
 		Display display = getWindowManager().getDefaultDisplay();  
 		int width = display.getWidth();  

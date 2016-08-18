@@ -226,7 +226,7 @@ BushuoFragInteraction
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busport);		
 		//设置横屏还是竖屏的布局策略
-		this.setRequestedOrientation(ToolClass.getOrientation());
+		this.setRequestedOrientation(ToolClass.getOrientation());		 
 		//=============
 		//Server服务相关
 		//=============
