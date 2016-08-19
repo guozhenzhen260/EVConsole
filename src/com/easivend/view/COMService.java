@@ -83,7 +83,7 @@ public class COMService extends Service {
 	public class ActivityReceiver extends BroadcastReceiver {
 
 		@Override
-		public void onReceive(Context context, Intent intent)
+		public synchronized void onReceive(Context context, Intent intent)
 		{
 			// TODO Auto-generated method stub
 			Bundle bundle=intent.getExtras();

@@ -252,7 +252,6 @@ public class ExtraCOMThread implements Runnable {
 		int coin_err=0;//硬币器故障状态
 		//现金设备金额	
 		int coin_remain=0;//硬币器当前储币金额	以分为单位
-		int payback_value=0;//找零金额
 		
 		int g_holdValue = 0;//当前暂存纸币金额 以分为单位
 		int coin_recv=0;//硬币器当前收币金额	以分为单位
@@ -523,7 +522,7 @@ public class ExtraCOMThread implements Runnable {
 												//cmdSend=false;
 												if(GetAmountMoney()==0)
 												{
-													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<EV_MDB_PAYBACK="+payback_value,"com.txt");
+													ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<EV_MDB_PAYBACK="+0,"com.txt");
 													//消除变量值
 													devopt=0;
 													cmdSend=false;
@@ -532,7 +531,7 @@ public class ExtraCOMThread implements Runnable {
 													allSet.put("EV_TYPE", EVprotocol.EV_MDB_PAYBACK);
 													allSet.put("result", 1);
 													allSet.put("bill_changed", 0);
-													allSet.put("coin_changed", payback_value);
+													allSet.put("coin_changed", 0);
 													//3.向主线程返回信息
 									  				Message tomain19=mainhand.obtainMessage();
 									  				tomain19.what=EV_OPTMAIN;							
@@ -941,7 +940,7 @@ public class ExtraCOMThread implements Runnable {
 									{
 										if(GetAmountMoney()==0)
 										{
-											payback_value=MoneyRec(value);
+											int payback_value=MoneyRec(value);
 											ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPayoutRpt<<EV_MDB_PAYBACK="+payback_value,"com.txt");
 											//消除变量值
 											devopt=0;
@@ -961,7 +960,7 @@ public class ExtraCOMThread implements Runnable {
 									}
 									break;	
 								case VboxProtocol.VBOX_PAYOUT_RPT://找币信息
-									payback_value=MoneyRec(ev_head6.getInt("value")); 
+									int payback_value=MoneyRec(ev_head6.getInt("value")); 
 									g_holdValue = 0;//当前暂存纸币金额 以分为单位
 									bill_recv=0;//纸币器当前收币金额	以分为单位
 									coin_recv=MoneyRec(ev_head6.getInt("total_value"));//硬币器当前收币金额	以分为单位
