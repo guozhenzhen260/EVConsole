@@ -1,0 +1,9 @@
+diff a/src/com/easivend/app/business/BusLand.java b/src/com/easivend/app/business/BusLand.java	(rejected hunks)
+@@ -467,6 +467,7 @@
+ 		comfilter.addAction("android.intent.action.comrec");
+ 		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+ 		
++		
+     	if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
+ 		{
+ 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ȡ����ҳ��","log.txt");

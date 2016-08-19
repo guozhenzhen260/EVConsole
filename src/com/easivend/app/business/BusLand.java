@@ -349,6 +349,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 					    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
 					    if(tb_inaccount!=null)
 					    {	
+					    	switchBusiness();
 						    productID=tb_inaccount.getProductID().toString();
 						    prosales=String.valueOf(tb_inaccount.getSalesPrice());
 						    proImage=tb_inaccount.getAttBatch1();
@@ -466,6 +467,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 		IntentFilter comfilter=new IntentFilter();
 		comfilter.addAction("android.intent.action.comrec");
 		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+		
 		
     	if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
 		{
