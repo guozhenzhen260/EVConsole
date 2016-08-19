@@ -4,7 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -24,22 +26,8 @@ public class ExtraCOMThread implements Runnable {
 	public static final int EV_OPTMAIN	= 9;	//所有设备操作返回
 	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	private static Map<String,Object> allSet = new LinkedHashMap<String,Object>() ;
-	int onInit=0;//0表示没有初始化，其他值表示正在初始化的阶段
-	boolean cmdSend=false;//true发送的命令，等待ACK确认,这个值只用于需要回复ACK的命令
-	int devopt=0;//命令状态值	
-	//货道出货
-	int cabinet=0;
-	int column=0;
-	int cost=0;
-	//现金设备使能禁能
-	int bill=0;
-	int coin=0;
-	int opt=0;
-	//现金设备金额		
-	int cost_value=0;//现金设备扣款金额
+	private BlockingQueue<String> link = new LinkedBlockingQueue<String>() ;
 	
-	int billPay=0;//纸币退币金额
-	int coinPay=0;//硬币退币金额
 	
 		
 	public ExtraCOMThread(Handler mainhand) {
@@ -68,61 +56,60 @@ public class ExtraCOMThread implements Runnable {
 					JSONObject ev6=null;
 					try {
 						ev6 = new JSONObject(msg.obj.toString());
-						devopt=COMThread.EV_BENTO_CHECKALLCHILD;						
+						ev6.put("devopt", COMThread.EV_BENTO_CHECKALLCHILD);					
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					link.offer(ev6.toString());
 					break;
 				case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
 					//1.得到信息
 					JSONObject ev7=null;
 					try {
 						ev7 = new JSONObject(msg.obj.toString());
-						devopt=COMThread.EV_BENTO_CHECKCHILD;						
+						ev7.put("devopt", COMThread.EV_BENTO_CHECKCHILD);
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					link.offer(ev7.toString());
 					break;
 				case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线程冰山柜全部补货消息	
 					//1.得到信息
 					JSONObject ev8=null;
 					try {
 						ev8 = new JSONObject(msg.obj.toString());
-						devopt=COMThread.VBOX_HUODAO_SET_INDALLCHILD;						
+						ev8.put("devopt", COMThread.VBOX_HUODAO_SET_INDALLCHILD);
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					link.offer(ev8.toString());
 					break;
 				case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 					//1.得到信息
 					JSONObject ev2=null;
 					try {
 						ev2 = new JSONObject(msg.obj.toString());
-						cabinet=ev2.getInt("cabinet");
-						column=ev2.getInt("column");
-						cost=ev2.getInt("cost");
-						devopt=EVprotocol.EV_BENTO_OPEN;						
+						ev2.put("devopt", EVprotocol.EV_BENTO_OPEN);					
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					link.offer(ev2.toString());
 					break;						
 				case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能					
 					//1.得到信息
 					JSONObject ev=null;
 					try {
-						ev = new JSONObject(msg.obj.toString());
-						bill=ev.getInt("bill");
-						coin=ev.getInt("coin");
-						opt=ev.getInt("opt");
-						devopt=EVprotocol.EV_MDB_ENABLE;						
+						ev = new JSONObject(msg.obj.toString());	
+						ev.put("devopt", EVprotocol.EV_MDB_ENABLE);					
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace(); 
-					}										
+					}
+					link.offer(ev.toString());
 					break;
 				case EVprotocol.EV_MDB_B_INFO://子线程接收主线程现金设备
 					//往接口回调信息
@@ -183,51 +170,49 @@ public class ExtraCOMThread implements Runnable {
 					JSONObject ev16=null;
 					try {
 						ev16 = new JSONObject(msg.obj.toString());
-						bill=ev16.getInt("bill");
-						coin=ev16.getInt("coin");
-						billPay=ev16.getInt("billPay");
-						coinPay=ev16.getInt("coinPay");	
-						devopt=EVprotocol.EV_MDB_PAYOUT;
+						ev16.put("devopt", EVprotocol.EV_MDB_PAYOUT);
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}				
+					}	
+					link.offer(ev16.toString());
 					break;	
 					//交易页面使用	
-				case EVprotocol.EV_MDB_HEART://子线程接收主线程现金设备
-					if(devopt==0)
-					{
-						devopt=EVprotocol.EV_MDB_HEART;	
-					}
-					else
-					{
-						ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHEART>>BUSYOTHER","com.txt");
-					}
+				case EVprotocol.EV_MDB_HEART://子线程接收主线程现金设备					
+					//1.得到信息
+					JSONObject ev3=null;
+					try {
+						ev3 = new JSONObject(msg.obj.toString());
+						ev3.put("devopt", EVprotocol.EV_MDB_HEART);
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}	
+					link.offer(ev3.toString());
 					break;
 				case EVprotocol.EV_MDB_COST:					
 					//1.得到信息
 					JSONObject ev18=null;
 					try {
-						ev18 = new JSONObject(msg.obj.toString());
-						cost_value=ev18.getInt("cost");
-						devopt=EVprotocol.EV_MDB_COST;						
+						ev18 = new JSONObject(msg.obj.toString());						
+						ev18.put("devopt", EVprotocol.EV_MDB_COST);
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					link.offer(ev18.toString());
 					break;	
 				case EVprotocol.EV_MDB_PAYBACK:
 					//1.得到信息
 					JSONObject ev19=null;
 					try {
 						ev19 = new JSONObject(msg.obj.toString());
-						bill=ev19.getInt("bill");
-						coin=ev19.getInt("coin");
-						devopt=EVprotocol.EV_MDB_PAYBACK;						
+						ev19.put("devopt", EVprotocol.EV_MDB_PAYBACK);
 					} catch (JSONException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}					
+					}	
+					link.offer(ev19.toString());
 					break;	
 				case VboxProtocol.VBOX_PROTOCOL:
 					ToolClass.Log(ToolClass.INFO,"EV_COM","COMThread 冰山柜关闭","com.txt");
@@ -242,6 +227,24 @@ public class ExtraCOMThread implements Runnable {
 	
 	TimerTask task = new TimerTask() 
 	{ 
+		int devopt=0;//命令状态值
+		//货道出货
+		int cabinet=0;
+		int column=0;
+		int cost=0;
+		//现金设备使能禁能
+		int bill=0;
+		int coin=0;
+		int opt=0;
+
+		int billPay=0;//纸币退币金额
+		int coinPay=0;//硬币退币金额
+		
+		//现金设备金额		
+		int cost_value=0;//现金设备扣款金额
+		
+		
+		
 		int onInit=0;//0表示没有初始化，其他值表示正在初始化的阶段
 		boolean cmdSend=false;//true发送的命令，等待ACK确认,这个值只用于需要回复ACK的命令
 		int statusnum=0;//达到一个值时发送一次get_status
@@ -369,6 +372,66 @@ public class ExtraCOMThread implements Runnable {
         { 
         	if(ToolClass.getExtraComType()>0)
         	{
+        		//1.查找有没有什么命令下发
+        		String str=link.poll();
+        		if(str!=null)
+        		{
+        			JSONObject ev6=null;
+					try {
+						ev6 = new JSONObject(str);
+						int tempdevopt=Integer.parseInt(ev6.get("devopt").toString());	
+						switch(tempdevopt)
+						{
+							//子线程接收主线程格子开门
+							case EVprotocol.EV_BENTO_OPEN:
+								cabinet=ev6.getInt("cabinet");
+								column=ev6.getInt("column");
+								cost=ev6.getInt("cost");
+								devopt=tempdevopt;
+								break;
+							//子线程接收主线程现金设备使能禁能		
+							case EVprotocol.EV_MDB_ENABLE:
+								bill=ev6.getInt("bill");
+								coin=ev6.getInt("coin");
+								opt=ev6.getInt("opt");
+								devopt=tempdevopt;
+								break;
+							//MDB设备找币	
+							case EVprotocol.EV_MDB_PAYOUT:
+								billPay=ev6.getInt("billPay");
+								coinPay=ev6.getInt("coinPay");	
+								devopt=tempdevopt;
+								break;
+								//交易页面使用	
+							case EVprotocol.EV_MDB_HEART:
+								if(devopt==0)
+								{
+									devopt=tempdevopt;	
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHEART>>BUSYOTHER","com.txt");
+								}
+								break;
+							//扣款	
+							case EVprotocol.EV_MDB_COST:
+								cost_value=ev6.getInt("cost");
+								devopt=tempdevopt;
+								break;
+							default:
+								devopt=tempdevopt;
+								break;
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraThread devopt=["+devopt+"]","com.txt");
+						
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+        		}
+        		
+        		
+        		//2.与vmc轮询
 	        	//ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraThread Timer["+Thread.currentThread().getId()+"]","com.txt");
 	        	String resjson = VboxProtocol.VboxReadMsg(ToolClass.getExtracom_id(),100);
 	        	//ToolClass.Log(ToolClass.INFO,"EV_COM","Threadresjson<<"+resjson.toString(),"com.txt");

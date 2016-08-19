@@ -493,7 +493,7 @@ public class MaintainActivity extends Activity
                 	//Dog服务相关
                 	//==========
                 	bool=ToolClass.isServiceRunning("com.easivend.view.DogService");
-                	ToolClass.Log(ToolClass.INFO,"EV_DOG","DogService:"+bool,"dog.txt");
+                	ToolClass.Log(ToolClass.INFO,"EV_DOG","Check DogService:"+bool,"dog.txt");
                 	if(bool==false)
                 	{
                 		//启动服务
@@ -527,7 +527,7 @@ public class MaintainActivity extends Activity
                 	//COM服务相关
                 	//=============
                 	bool=ToolClass.isServiceRunning("com.easivend.view.COMService");
-                	ToolClass.Log(ToolClass.INFO,"EV_DOG","COMService:"+bool,"dog.txt");
+                	ToolClass.Log(ToolClass.INFO,"EV_DOG","Check COMService:"+bool,"dog.txt");
                 	if(bool==false)
                 	{
                 		//3.开启服务
@@ -542,7 +542,7 @@ public class MaintainActivity extends Activity
                 	//Server服务相关
                 	//=============
                 	bool=ToolClass.isServiceRunning("com.easivend.view.EVServerService");
-                	ToolClass.Log(ToolClass.INFO,"EV_DOG","EVServerService:"+bool,"dog.txt");
+                	ToolClass.Log(ToolClass.INFO,"EV_DOG","Check EVServerService:"+bool,"dog.txt");
                 	if(bool==false)
                 	{
                 		//3.开启服务
