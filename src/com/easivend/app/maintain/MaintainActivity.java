@@ -173,7 +173,7 @@ public class MaintainActivity extends Activity
             @Override
             public void run() 
             {      
-            	dialog= ProgressDialog.show(MaintainActivity.this,"正在同步服务器","请稍候片刻...");
+            	dialog= ProgressDialog.show(MaintainActivity.this,"正在同步货道","请稍候片刻...");
             	ToolClass.ResstartPort(1);
             	ToolClass.ResstartPort(2);
             	ToolClass.ResstartPort(3);
@@ -437,6 +437,9 @@ public class MaintainActivity extends Activity
 			switch(EVWhat)
 			{
 			case COMThread.EV_CHECKALLMAIN:
+				if(dialog.isShowing())
+					dialog.dismiss();
+				dialog= ProgressDialog.show(MaintainActivity.this,"正在同步服务器","请稍候片刻...");
 				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
 				serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();

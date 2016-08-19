@@ -224,6 +224,7 @@ public class EVServerhttp implements Runnable {
                           //如果请求成功
 							result = response;	//获取返回的字符串
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","一期的后台","server.txt");
 							JSONObject object;
 							try {
 								object = new JSONObject(result);
@@ -368,17 +369,13 @@ public class EVServerhttp implements Runnable {
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok3]","server.txt");
 									JSONObject jsonObject = new JSONObject(result); 
 									if(jsonObject.has("ProductClassList")==true)
-									{
-										ToolClass.Log(ToolClass.INFO,"EV_SERVER","旧的后台","server.txt");
-										ToolClass.setServerVer(0);
+									{										
 										tomain3.what=SETCLASSMAIN;
 										tomain3.obj=result;	
 										mainhand.sendMessage(tomain3); // 发送消息
 									}
 									else if(jsonObject.has("List")==true)
-									{
-										ToolClass.Log(ToolClass.INFO,"EV_SERVER","一期的后台","server.txt");
-										ToolClass.setServerVer(1);
+									{										
 										ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok4]准备更新商品分类...","server.txt");
 										classArray(result);
 										if(classarr.length()>0)
