@@ -60,7 +60,8 @@ public class BusZhier extends Activity
     Zhifubaohttp zhifubaohttp=null;
     private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
-	@Override
+    private int ispayoutopt=0;//1正在进行退币操作
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -138,11 +139,32 @@ public class BusZhier extends Activity
 					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
 						txtbuszhierrst.setText("交易结果:重试"+msg.obj.toString()+con);
 						con++;
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusZhier.this);
+							ispayoutopt=0;
+							//结束交易页面
+							txtbuszhierrst.setText("交易结果:退款失败");
+							dialog.dismiss();
+							finish();
+						}
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
-//						txtbuszhierrst.setText("交易结果:退款成功");
-//						dialog.dismiss();
-//						finish();
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusZhier.this);
+							ispayoutopt=0;
+							//结束交易页面
+							txtbuszhierrst.setText("交易结果:退款成功");
+							dialog.dismiss();
+							finish();
+						}
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
 //						txtbuszhierrst.setText("交易结果:撤销成功");
@@ -166,7 +188,19 @@ public class BusZhier extends Activity
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
 						//txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
-						txtbuszhierrst.setText("交易结果:请扫描二维码");
+						txtbuszhierrst.setText("交易结果:二维码异常");
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusZhier.this);
+							ispayoutopt=0;
+							//结束交易页面
+							txtbuszhierrst.setText("交易结果:退款失败");
+							dialog.dismiss();
+							finish();
+						}
 						break;	
 				}				
 			}
@@ -286,10 +320,7 @@ public class BusZhier extends Activity
 			}
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
-  		}
-  		txtbuszhierrst.setText("交易结果:退款成功");
-		dialog.dismiss();
-		finish();
+  		}  		
 	}
 	//调用倒计时定时器
 	TimerTask task = new TimerTask() { 
@@ -412,9 +443,7 @@ public class BusZhier extends Activity
 				//出货失败,退钱
 				else
 				{	
-					OrderDetail.setRealStatus(1);//记录退币成功
-					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusZhier.this);	
+					ispayoutopt=1;
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
 					dialog= ProgressDialog.show(BusZhier.this,"正在退款中","请稍候...");
 					payoutzhier();//退款操作									

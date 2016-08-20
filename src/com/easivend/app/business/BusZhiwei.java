@@ -147,6 +147,7 @@ public class BusZhiwei extends Activity
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.addLog(BusZhiwei.this);
+							ispayoutopt=0;
 							//结束交易页面
 							txtbuszhiweirst.setText("交易结果:退款失败");
 							dialog.dismiss();
@@ -160,6 +161,7 @@ public class BusZhiwei extends Activity
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusZhiwei.this);
+							ispayoutopt=0;
 							//结束交易页面
 							txtbuszhiweirst.setText("交易结果:退款成功");
 							dialog.dismiss();
@@ -195,6 +197,7 @@ public class BusZhiwei extends Activity
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.addLog(BusZhiwei.this);
+							ispayoutopt=0;
 							//结束交易页面
 							txtbuszhiweirst.setText("交易结果:退款失败");
 							dialog.dismiss();
