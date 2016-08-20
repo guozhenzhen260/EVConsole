@@ -62,7 +62,8 @@ public class BusZhiwei extends Activity
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
-	@Override
+    private int ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -140,11 +141,30 @@ public class BusZhiwei extends Activity
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
 						txtbuszhiweirst.setText("交易结果:重试"+msg.obj.toString()+con);
 						con++;
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusZhiwei.this);
+							//结束交易页面
+							txtbuszhiweirst.setText("交易结果:退款失败");
+							dialog.dismiss();
+							finish();
+						}
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
-//						txtbuszhiweirst.setText("交易结果:退款成功");
-//						dialog.dismiss();
-//						finish();
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusZhiwei.this);
+							//结束交易页面
+							txtbuszhiweirst.setText("交易结果:退款成功");
+							dialog.dismiss();
+							finish();
+						}
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
 //						txtbuszhiweirst.setText("交易结果:撤销成功");
@@ -168,7 +188,18 @@ public class BusZhiwei extends Activity
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息		
 						//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
-						txtbuszhiweirst.setText("交易结果:请扫描二维码");
+						txtbuszhiweirst.setText("交易结果:二维码异常");
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusZhiwei.this);
+							//结束交易页面
+							txtbuszhiweirst.setText("交易结果:退款失败");
+							dialog.dismiss();
+							finish();
+						}
 						break;		
 				}				
 			}
@@ -261,10 +292,7 @@ public class BusZhiwei extends Activity
 			}
 			childmsg.obj=ev;
 			childhand.sendMessage(childmsg);
-  		}
-  		txtbuszhiweirst.setText("交易结果:退款成功");
-		dialog.dismiss();
-		finish();
+  		}  		
 	}
 	//撤销交易
 	private void deletezhiwei()
@@ -414,9 +442,7 @@ public class BusZhiwei extends Activity
 				//出货失败,退钱
 				else
 				{
-					OrderDetail.setRealStatus(1);//记录退币成功
-					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusZhiwei.this);	
+					ispayoutopt=1;
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款amount="+amount,"log.txt");
 					dialog= ProgressDialog.show(BusZhiwei.this,"正在退款中","请稍候...");
 					////退款

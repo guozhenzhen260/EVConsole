@@ -193,9 +193,9 @@ public class Zhifubaohttp implements Runnable
 				       }	
 				    	//使用2.0版本的支付宝口碑
 				       else if(zhifubaotype==2)	
-				       {
-				    	   String rsp=AlipayAPI.PostAliBuy(sPara);
+				       {				    	   
 				    	   try {
+				    		    String rsp=AlipayAPI.PostAliBuy(sPara);
 					   			JSONObject response=new JSONObject(rsp);
 					   			JSONObject obj=new JSONObject(response.get("alipay_trade_precreate_response").toString());
 					   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+obj.toString(),"log.txt");
@@ -215,7 +215,7 @@ public class Zhifubaohttp implements Runnable
 					   			}
 					   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");				           
 					   			mainhand.sendMessage(tomain); // 发送消息
-					   		} catch (JSONException e) {
+					   		} catch (Exception e) {
 					   			// TODO Auto-generated catch block
 					   			e.printStackTrace();
 					   		   //向主线程返回信息
@@ -307,9 +307,9 @@ public class Zhifubaohttp implements Runnable
 			       }
 			       //使用2.0版本的支付宝口碑
 			       else if(zhifubaotype==2)	
-			       {
-			    	   String rsp=AlipayAPI.PostAliQuery(sPara2);
+			       {			    	   
 			    	   try {
+			    		    String rsp=AlipayAPI.PostAliQuery(sPara2);
 				   			JSONObject response=new JSONObject(rsp);
 				   			JSONObject obj=new JSONObject(response.get("alipay_trade_query_response").toString());
 				   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+obj.toString(),"log.txt");
@@ -338,7 +338,7 @@ public class Zhifubaohttp implements Runnable
 				   			}
 				   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");				           
 				   			mainhand.sendMessage(tomain); // 发送消息
-				   		} catch (JSONException e) {
+				   		} catch (Exception e) {
 				   			// TODO Auto-generated catch block
 				   			e.printStackTrace();
 				   			//向主线程返回信息
@@ -419,9 +419,9 @@ public class Zhifubaohttp implements Runnable
 			    	} 
 			    	//使用2.0版本的支付宝口碑
 			        else if(zhifubaotype==2)	
-			        {
-			    	   String rsp=AlipayAPI.PostAliPayout(sPara3);
+			        {			    	   
 			    	   try {
+			    		    String rsp=AlipayAPI.PostAliPayout(sPara3);
 				   			JSONObject response=new JSONObject(rsp);
 				   			JSONObject obj=new JSONObject(response.get("alipay_trade_refund_response").toString());
 				   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+obj.toString(),"log.txt");
@@ -440,7 +440,7 @@ public class Zhifubaohttp implements Runnable
 				   			}
 				   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");				           
 				   			mainhand.sendMessage(tomain); // 发送消息
-				   		} catch (JSONException e) {
+				   		} catch (Exception e) {
 				   			// TODO Auto-generated catch block
 				   			e.printStackTrace();
 				   			//向主线程返回信息
@@ -522,9 +522,9 @@ public class Zhifubaohttp implements Runnable
 			    	}
 			    	//使用2.0版本的支付宝口碑
 			        else if(zhifubaotype==2)	
-			        {
-			    	   String rsp=AlipayAPI.PostAliDelete(sPara4);
+			        {			    	   
 			    	   try {
+			    		    String rsp=AlipayAPI.PostAliDelete(sPara4);
 				   			JSONObject response=new JSONObject(rsp);
 				   			JSONObject obj=new JSONObject(response.get("alipay_trade_cancel_response").toString());
 				   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+obj.toString(),"log.txt");
@@ -543,7 +543,7 @@ public class Zhifubaohttp implements Runnable
 				   			}
 				   			ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");				           
 				   			mainhand.sendMessage(tomain); // 发送消息
-				   		} catch (JSONException e) {
+				   		} catch (Exception e) {
 				   			// TODO Auto-generated catch block
 				   			e.printStackTrace();
 				   			//向主线程返回信息

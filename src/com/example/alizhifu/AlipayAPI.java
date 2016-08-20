@@ -101,6 +101,7 @@ public class AlipayAPI
 	
 	//生成查询请求消息
     public static String PostAliQuery(Map<String, String> list) 
+    		throws Exception
     {
     	String rsp=null;
     	
@@ -289,7 +290,7 @@ public class AlipayAPI
     
     //AES加密
     static String doPost(String url, Map<String, String> params, String charset,
-            int connectTimeout, int readTimeout) throws IOException {
+            int connectTimeout, int readTimeout) throws Exception {
 		String ctype = "application/x-www-form-urlencoded;charset=" + charset;
 		//AES加密
 		String query = buildQuery(params, charset);
@@ -304,7 +305,7 @@ public class AlipayAPI
     
     //发送
     public static String doPost(String urlstr, String ctype, byte[] contents, int connectTimeout,
-            int readTimeout) throws IOException 
+            int readTimeout) throws Exception 
     {
 		String content=null;    	
 		
