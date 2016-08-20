@@ -134,6 +134,7 @@ BushuoFragInteraction
     Zhifubaohttp zhifubaohttp=null;
     private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
+    private int ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
     //=================
   	//==微信支付页面相关
   	//=================
@@ -454,14 +455,37 @@ BushuoFragInteraction
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
 						listterner.BusportTsxx("交易结果:重试"+msg.obj.toString()+con);
-						con++;						
+						con++;	
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
-//						listterner.BusportTsxx("交易结果:退款成功");
-//						dialog.dismiss();
-//						//清数据
-//						clearamount();						
-//						recLen=10;	
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款成功");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
 //						listterner.BusportTsxx("交易结果:撤销成功");
@@ -484,6 +508,21 @@ BushuoFragInteraction
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息
 						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
+						listterner.BusportTsxx("交易结果:二维码异常");
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;		
 				}				
 			}
@@ -932,11 +971,7 @@ BushuoFragInteraction
 	  		}
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
-  		}
-  		dialog.dismiss();
-		//清数据
-		clearamount();						
-		recLen=10;
+  		}  		
   	}
   	
 	//撤销交易
@@ -1057,9 +1092,7 @@ BushuoFragInteraction
 				//出货失败,退钱
 				else
 				{	
-					OrderDetail.setRealStatus(1);//记录退币成功
-					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusPort.this);	
+					ispayoutopt=1;
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
 					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
 					payoutzhiwei();//退款操作									
