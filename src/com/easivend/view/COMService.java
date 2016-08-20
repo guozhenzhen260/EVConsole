@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,11 +65,11 @@ public class COMService extends Service {
 	ActivityReceiver receiver;
 	LocalBroadcastManager localBroadreceiver;
 	//普通串口线程
-	private ExecutorService thread=null;
+	private Thread thread=null;
     private Handler mainhand=null,childhand=null; 
     COMThread comserial=null;
     //外设串口线程
-    private ExecutorService extrathread=null;
+    private Thread extrathread=null;
     private Handler mainextrahand=null,childextrahand=null; 
     ExtraCOMThread extracomserial=null;
     Map<String,Integer> huoSet=new LinkedHashMap<String,Integer>();
@@ -975,8 +977,8 @@ public class COMService extends Service {
 		};
 		//启动用户自己定义的类，启动普通串口线程
 		comserial=new COMThread(mainhand);
-  		thread=Executors.newFixedThreadPool(3);
-  		thread.execute(comserial);
+  		thread=new Thread(comserial,"thread");
+  		thread.start();	
   		
   		
   	    //***********************
@@ -1144,8 +1146,35 @@ public class COMService extends Service {
 		};				
   	    //启动用户自己定义的类，启动外设串口线程
   		extracomserial=new ExtraCOMThread(mainextrahand);
-  		extrathread=Executors.newFixedThreadPool(3);
-  		extrathread.execute(extracomserial);		
+  		extrathread=new Thread(extracomserial,"extrathread");
+  		extrathread.start();
+  		
+  		
+  		//*************
+  		//启动线程监控定时器
+  		//*************
+  		ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+  		timer.scheduleWithFixedDelay(new Runnable() { 
+	        @Override 
+	        public void run() { 
+	        	Boolean bool=false;   
+	        	//监控普通串口线程
+	        	bool=thread.isAlive();
+	        	if(bool==false)
+	        	{
+	        		thread=new Thread(comserial,"thread");
+	          		thread.start();		
+	        	}
+	        	
+	        	//监控外设串口线程
+	        	bool=extrathread.isAlive();
+	        	if(bool==false)
+	        	{
+	        		extrathread=new Thread(extracomserial,"extrathread");
+	          		extrathread.start();	
+	        	}
+	        } 
+	    },5*60,15*60,TimeUnit.SECONDS);       // 10*60timeTask  
 	}
 	
 	

@@ -56,7 +56,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class EVServerService extends Service {
 	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
-	private ExecutorService thread=null;
+	private Thread thread=null;
     private Handler mainhand=null,childhand=null;  
     private String vmc_no=null;
     private String vmc_auth_code=null;
@@ -653,8 +653,8 @@ public class EVServerService extends Service {
 		};
 		//启动用户自己定义的类，启动线程
   		serverhttp=new EVServerhttp(mainhand);
-  		thread=Executors.newFixedThreadPool(3);
-  		thread.execute(serverhttp);	
+  		thread=new Thread(serverhttp,"thread");
+  		thread.start();
   		//启动设备同步定时器
   		ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
   		timer.scheduleWithFixedDelay(new Runnable() { 
@@ -709,6 +709,45 @@ public class EVServerService extends Service {
 	        	}
 	        } 
 	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+  		
+  		//*************
+  		//启动线程监控定时器
+  		//*************
+  		ScheduledExecutorService terminal = Executors.newScheduledThreadPool(1);
+  		terminal.scheduleWithFixedDelay(new Runnable() { 
+	        @Override 
+	        public void run() { 
+	        	Boolean bool=false;   
+	        	//监控后台服务线程
+	        	bool=thread.isAlive();
+	        	if(bool==false)
+	        	{
+	        		thread=new Thread(serverhttp,"thread");
+	          		thread.start();
+   
+    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+    						+"huoSet="+huoSet.toString(),"server.txt");				
+    				//处理接收到的内容,发送签到命令到子线程中
+    				//初始化一:发送签到指令
+    	        	childhand=serverhttp.obtainHandler();
+    	    		Message childmsg=childhand.obtainMessage();
+    	    		childmsg.what=EVServerhttp.SETCHILD;
+    	    		JSONObject ev=null;
+    	    		try {
+    	    			ev=new JSONObject();
+    	    			ev.put("vmc_no", vmc_no);
+    	    			ev.put("vmc_auth_code", vmc_auth_code);
+    	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev.toString(),"server.txt");
+    	    		} catch (JSONException e) {
+    	    			// TODO Auto-generated catch block
+    	    			e.printStackTrace();
+    	    		}
+    	    		childmsg.obj=ev;
+    	    		childhand.sendMessage(childmsg);
+    	    		ischeck=false;
+	        	}	        	
+	        } 
+	    },5*60,15*60,TimeUnit.SECONDS);       // 10*60timeTask 
 	}	
 	
 	//更新商品分类信息

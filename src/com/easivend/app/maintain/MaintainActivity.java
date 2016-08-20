@@ -374,7 +374,7 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=Ç©µ½³É¹¦","log.txt");			
 				if(dialog.isShowing())
 					dialog.dismiss();
-				timer.scheduleWithFixedDelay(task, 10, 5*60, TimeUnit.SECONDS);       // timeTask 
+				timer.scheduleWithFixedDelay(task, 5*60,15*60, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
 					issale=true;
