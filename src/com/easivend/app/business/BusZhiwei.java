@@ -190,7 +190,6 @@ public class BusZhiwei extends Activity
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息		
 						//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
-						txtbuszhiweirst.setText("交易结果:二维码异常");
 						if(ispayoutopt==1)
 						{
 							//记录日志退币完成

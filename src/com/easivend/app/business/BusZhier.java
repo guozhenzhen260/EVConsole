@@ -188,7 +188,6 @@ public class BusZhier extends Activity
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
 						//txtbuszhierrst.setText("交易结果:"+msg.obj.toString());
-						txtbuszhierrst.setText("交易结果:二维码异常");
 						if(ispayoutopt==1)
 						{
 							//记录日志退币完成

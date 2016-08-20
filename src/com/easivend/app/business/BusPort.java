@@ -450,7 +450,6 @@ BushuoFragInteraction
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息						
 						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
-						listterner.BusportTsxx("交易结果:二维码异常");
 						if(ispayoutopt==1)
 						{
 							//记录日志退币完成
@@ -546,7 +545,6 @@ BushuoFragInteraction
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息
 						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
-						listterner.BusportTsxx("交易结果:二维码异常");
 						if(ispayoutopt==1)
 						{
 							//记录日志退币完成
@@ -1069,6 +1067,7 @@ BushuoFragInteraction
     @Override
 	public void BushuoFinish(int status) {
     	// TODO Auto-generated method stub
+    	recLen=SPLASH_DISPLAY_LENGHT;
     	switch(OrderDetail.getPayType())
     	{
     		//现金页面
