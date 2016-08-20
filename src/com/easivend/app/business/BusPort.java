@@ -398,13 +398,36 @@ BushuoFragInteraction
 					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
 						listterner.BusportTsxx("交易结果:重试"+msg.obj.toString()+con);
 						con++;
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
-//						listterner.BusportTsxx("交易结果:退款成功");
-//						dialog.dismiss();
-//						//清数据
-//						clearamount();						
-//						recLen=10;						
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款成功");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
 //						listterner.BusportTsxx("交易结果:撤销成功");
@@ -427,6 +450,21 @@ BushuoFragInteraction
 					case Zhifubaohttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Zhifubaohttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息						
 						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
+						listterner.BusportTsxx("交易结果:二维码异常");
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;	
 				}				
 			}
@@ -867,11 +905,7 @@ BushuoFragInteraction
 	  		}
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
-  		}
-  		dialog.dismiss();
-		//清数据
-		clearamount();						
-		recLen=10;
+  		}  		
   	}
     
     //=======================
@@ -1071,9 +1105,7 @@ BushuoFragInteraction
 				//出货失败,退钱
 				else
 				{	
-					OrderDetail.setRealStatus(1);//记录退币成功
-					OrderDetail.setRealCard(amount);//记录退币金额
-					OrderDetail.addLog(BusPort.this);
+					ispayoutopt=1;
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");					
 					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
 					payoutzhier();//退款操作	
