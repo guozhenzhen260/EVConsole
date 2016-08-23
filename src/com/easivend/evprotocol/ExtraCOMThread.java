@@ -221,7 +221,7 @@ public class ExtraCOMThread implements Runnable {
 				}
 			}
 		};	
-		timer.scheduleWithFixedDelay(task, 5000, 100,TimeUnit.MILLISECONDS);       // timeTask
+		timer.scheduleWithFixedDelay(task, 2000, 50,TimeUnit.MILLISECONDS);       // timeTask
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop		 
 	}
 	
@@ -449,17 +449,39 @@ public class ExtraCOMThread implements Runnable {
 					int str_evType6 =  ev_head6.getInt("EV_type");
 					if(str_evType6==VboxProtocol.VBOX_PROTOCOL)
 					{
+						//ToolClass.Log(ToolClass.INFO,"EV_COM","Threadresjson<<"+ev_head6.toString(),"com.txt");
 						int mt= ev_head6.getInt("mt");
 						if(mt == VboxProtocol.VBOX_TIMEOUT || mt == VboxProtocol.VBOX_DATA_ERROR)
 						{
-							//ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraAPI<<ERROR="+mt,"com.txt");
+							if(mt == VboxProtocol.VBOX_DATA_ERROR)
+							{
+								ToolClass.Log(ToolClass.INFO,"EV_COM","ExtraAPI<<ERROR="+mt,"com.txt");
+							}
 				        }
 						else
 						{
 							//1.发送ACK
 							int F7=ev_head6.getInt("F7");
-							if(F7 == 1 && mt != VboxProtocol.VBOX_POLL){
-			                    VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+							if(F7 == 1)
+							{
+								//Request在type=1中需要回复NAK,其他回复ACK
+								if(mt == VboxProtocol.VBOX_REQUEST)
+								{
+									int reqtype=ev_head6.getInt("type");
+									if(reqtype==1)
+									{
+										VboxProtocol.VboxSendNak(ToolClass.getExtracom_id());
+									}
+									else
+									{
+										VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+									}	
+								}
+								//非poll才需要回复ACK，poll在下面单独处理
+								else if(mt != VboxProtocol.VBOX_POLL )
+								{
+									VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+								}			                    
 			                }
 							
 							switch(mt)
@@ -477,6 +499,9 @@ public class ExtraCOMThread implements Runnable {
 													cmdSend=false;
 													onInit=3;//saleprice_ind阶段
 												}
+												//单指令
+												else
+												{}
 												break;
 											case VboxProtocol.VBOX_SALEPRICE_IND:	
 												if(onInit==3)
@@ -485,6 +510,9 @@ public class ExtraCOMThread implements Runnable {
 													cmdSend=false;
 													onInit=4;//get_huodao阶段
 												}
+												//单指令
+												else
+												{}
 												break;
 											case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线全部补货
 												//消除变量值
@@ -562,6 +590,9 @@ public class ExtraCOMThread implements Runnable {
 													cmdSend=false;
 													onInit=3;//saleprice_ind阶段
 												}
+												//单指令
+												else
+												{}
 												break;
 											case VboxProtocol.VBOX_SALEPRICE_IND:	
 												if(onInit==3)
@@ -570,6 +601,9 @@ public class ExtraCOMThread implements Runnable {
 													cmdSend=false;
 													onInit=4;//get_huodao阶段
 												}
+												//单指令
+												else
+												{}
 												break;
 											case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线全部补货
 												//消除变量值
@@ -690,8 +724,16 @@ public class ExtraCOMThread implements Runnable {
 													}
 												}
 											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case VboxProtocol.VBOX_HUODAO_IND:
+											//初始化
 											if((onInit==2)&&(cmdSend==false))
 											{
 												if(++statusnum>2)
@@ -724,8 +766,37 @@ public class ExtraCOMThread implements Runnable {
 													}
 												}
 											}
+											//单指令
+											else if(cmdSend==false)
+											{
+												JSONArray arr=new JSONArray();
+												for(int i=1;i<(hd_num+1);i++)
+												{
+													JSONObject obj=new JSONObject();
+													obj.put("id", i);
+													arr.put(obj);
+												}
+												JSONObject zhuheobj=new JSONObject();
+												zhuheobj.put("port", ToolClass.getExtracom_id());
+												zhuheobj.put("sp_id", arr);										
+												zhuheobj.put("device", 0);
+												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+												JSONObject reqStr=new JSONObject();
+												reqStr.put("EV_json", zhuheobj);
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHuodaoind>>"+reqStr,"com.txt");
+												VboxProtocol.VboxHuodaolInd(ToolClass.getExtracom_id(),reqStr.toString());
+												cmdSend=true;
+											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case VboxProtocol.VBOX_SALEPRICE_IND:
+											//初始化
 											if((onInit==3)&&(cmdSend==false))
 											{
 												if(++statusnum>2)
@@ -758,6 +829,34 @@ public class ExtraCOMThread implements Runnable {
 													}
 												}	
 											}
+											//单指令
+											else if(cmdSend==false)
+											{
+												JSONArray arr=new JSONArray();
+												for(int i=1;i<(hd_num+1);i++)
+												{
+													JSONObject obj=new JSONObject();
+													obj.put("id", MoneySend(56800));//
+													arr.put(obj);
+												}
+												JSONObject zhuheobj=new JSONObject();
+												zhuheobj.put("port", ToolClass.getExtracom_id());
+												zhuheobj.put("sp_id", arr);										
+												zhuheobj.put("device", 0);
+												zhuheobj.put("EV_type", VboxProtocol.VBOX_PROTOCOL);
+												JSONObject reqStr=new JSONObject();
+												reqStr.put("EV_json", zhuheobj);
+												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadSalepriceind>>"+reqStr,"com.txt");
+												VboxProtocol.VboxSalePriceInd(ToolClass.getExtracom_id(),reqStr.toString());
+												cmdSend=true;	
+											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case COMThread.EV_BENTO_CHECKCHILD://子线程接收主线程冰山柜查询消息	
 											if(cmdSend==false)
@@ -789,6 +888,13 @@ public class ExtraCOMThread implements Runnable {
 													cmdSend=true;
 												}
 											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;	
 										case COMThread.VBOX_HUODAO_SET_INDALLCHILD://子线程接收主线全部补货
 											if(cmdSend==false)
@@ -811,6 +917,13 @@ public class ExtraCOMThread implements Runnable {
 												VboxProtocol.VboxHuodaoSetInd(ToolClass.getExtracom_id(),reqStr.toString());
 												cmdSend=true;
 											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case EVprotocol.EV_BENTO_OPEN://子线程接收主线程格子开门
 											if(cmdSend==false)
@@ -825,6 +938,13 @@ public class ExtraCOMThread implements Runnable {
 												VboxProtocol.VboxVendoutInd(ToolClass.getExtracom_id(), 0, 2, column, temptype, tempcost);
 												cmdSend=true;
 											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case EVprotocol.EV_MDB_ENABLE://子线程接收主线程现金设备使能禁能	
 											if(cmdSend==false)
@@ -833,6 +953,13 @@ public class ExtraCOMThread implements Runnable {
 												VboxProtocol.VboxControlInd(ToolClass.getExtracom_id(),2,opt);
 												cmdSend=true;
 											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case EVprotocol.EV_MDB_PAYOUT://MDB设备找币
 											if(cmdSend==false)
@@ -840,7 +967,14 @@ public class ExtraCOMThread implements Runnable {
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPAYOUTind>>bill="+bill+"coin="+coin+"billPay="+billPay+"coinPay="+coinPay,"com.txt");
 												VboxProtocol.VboxPayoutInd(ToolClass.getExtracom_id(),0,MoneySend(coinPay),2);
 												cmdSend=true;
-											}											
+											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;
 										case EVprotocol.EV_MDB_HEART://心跳查询接口
 											ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadHEART>>","com.txt");
@@ -885,6 +1019,13 @@ public class ExtraCOMThread implements Runnable {
 												VboxProtocol.VboxCostInd(ToolClass.getExtracom_id(),0,MoneySend(cost_value),2);
 												cmdSend=true;
 											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
+											}
 											break;	
 										case EVprotocol.EV_MDB_PAYBACK://退币
 											if(cmdSend==false)
@@ -892,6 +1033,13 @@ public class ExtraCOMThread implements Runnable {
 												ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadPAYBACK>>bill="+bill+"coin="+coin,"com.txt");
 												VboxProtocol.VboxControlInd(ToolClass.getExtracom_id(),6,0);
 												cmdSend=true;
+											}
+											else if(cmdSend==true)
+											{
+												if(F7==1)
+												{
+													VboxProtocol.VboxSendAck(ToolClass.getExtracom_id());
+												}
 											}
 											break;
 										default:
@@ -1092,10 +1240,49 @@ public class ExtraCOMThread implements Runnable {
 						  				tomain19.obj=allSet;
 						  				mainhand.sendMessage(tomain19); // 发送消息
 									}
+									else if(action==6)//中断
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<PC中断重连","com.txt");
+									}
 									
 									break;
 								case VboxProtocol.VBOX_REQUEST://数据请求不用处理
-									//ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<","com.txt");
+									//ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadRequest<<"+resjson.toString(),"com.txt");
+									int reqtype=ev_head6.getInt("type");	
+									if(reqtype==1)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求初始化本机","com.txt");
+									}
+									else if(reqtype==2)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求下发当前时间","com.txt");
+									}
+									else if(reqtype==3)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求下发销售时间段","com.txt");
+									}
+									else if(reqtype==4)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求HUODAO_IND","com.txt");
+										devopt=VboxProtocol.VBOX_HUODAO_IND;
+										cmdSend=false;
+									}
+									else if(reqtype==5)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求POSITION_IND","com.txt");
+									}
+									else if(reqtype==6)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求SALEPRICE_IND","com.txt");
+										devopt=VboxProtocol.VBOX_SALEPRICE_IND;
+										cmdSend=false;
+									}
+									else if(reqtype==7)
+									{
+										ToolClass.Log(ToolClass.INFO,"EV_COM","ThreadAction<<请求HUO_SET_IND","com.txt");
+										devopt=COMThread.VBOX_HUODAO_SET_INDALLCHILD;
+										cmdSend=false;
+									}
 									break;	
 								case VboxProtocol.VBOX_BUTTON_RPT://按键消息
 									//往接口回调信息

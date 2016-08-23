@@ -85,6 +85,8 @@ public class VboxProtocol {
 
     //基础协议
     public  native static String VboxSendAck(int port);
+    
+    public  native static String VboxSendNak(int port);
 
     public  native static String VboxReadMsg(int port,int timeout);
 
