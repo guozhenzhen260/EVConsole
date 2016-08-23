@@ -80,11 +80,12 @@
         />
    	<ImageView 
    	    android:id = "@+id/ivbuszhiamountbill"
-   	    android:layout_centerHorizontal="true"
+   	    android:layout_toRightOf="@+id/txtbuszhiamountsp"
+   	    android:layout_marginLeft="170dp"
    	    android:layout_below="@+id/imgjsqd"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"		
-		android:src="@drawable/billonlyfangland"			
+		android:src="@drawable/billcoin"			
    	/>
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqxzf"

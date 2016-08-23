@@ -63,8 +63,8 @@ public final class R {
         public static final int amountnormalland=0x7f020020;
         public static final int amountsmall=0x7f020021;
         public static final int amountsmallland=0x7f020022;
-        public static final int billonlyfang=0x7f020023;
-        public static final int billonlyfangland=0x7f020024;
+        public static final int billcoin=0x7f020023;
+        public static final int billonlyfang=0x7f020024;
         public static final int busfinish=0x7f020025;
         public static final int busfinishland=0x7f020026;
         public static final int button_selector=0x7f020027;

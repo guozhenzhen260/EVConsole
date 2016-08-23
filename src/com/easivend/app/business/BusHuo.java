@@ -95,7 +95,6 @@ public class BusHuo extends Activity
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
-  	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
   	    this.ivbushuoquhuo =(ImageView) super.findViewById(R.id.ivbushuoquhuo);  	    
   	    Bitmap bitmap=ToolClass.ReadAdshuoFile();
 	    if(bitmap!=null)
@@ -118,7 +117,7 @@ public class BusHuo extends Activity
 		
 		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
  	    columnDAO = new vmc_columnDAO(this);
- 	    txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");
+ 	    //txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");
 		//1.计算出出货货道
 		//按商品id出货
 		if(proType.equals("1")==true)

@@ -11,6 +11,7 @@ import com.example.evconsole.R;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,9 +104,16 @@ public class BushuoFragment extends Fragment
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
-  	    txtbushuoname.setText(proID+"["+prosales+"]"+"->等待出货");
 		this.ivbushuoquhuo =(ImageView) view.findViewById(R.id.ivbushuoquhuo);
-		
+		Bitmap bitmap=ToolClass.ReadAdshuoFile();
+	    if(bitmap!=null)
+	    {
+	    	this.ivbushuoquhuo.setImageBitmap(bitmap);// 设置图像的二进制值
+	    }
+	    else
+	    {
+	    	ivbushuoquhuo.setImageResource(R.drawable.chuwaitland);
+	    }
 		
 		//****
 		//出货
@@ -125,7 +133,7 @@ public class BushuoFragment extends Fragment
   	{
   		// 创建InaccountDAO对象，用于从数据库中提取数据到Tb_vmc_column表中
    	    columnDAO = new vmc_columnDAO(context);
-   	    txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");
+   	    //txtbushuoname.setText(proID+"["+prosales+"]"+"->正在出货,请稍候...");
   		//1.计算出出货货道
   		//按商品id出货
   		if(proType.equals("1")==true)
