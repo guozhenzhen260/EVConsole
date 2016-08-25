@@ -194,7 +194,7 @@ public class EVServerService extends Service {
 						break;					
 					case EVServerhttp.SETMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
-						//初始化二:获取设备状态						
+						//初始化二:上报设备状态						
 		        		int bill_err=ToolClass.getBill_err();
 						int coin_err=ToolClass.getCoin_err();
 		    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备bill_err="+bill_err
@@ -226,7 +226,7 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备信息成功","server.txt");
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service LAST_EDIT_TIME="+LAST_EDIT_TIME,"server.txt");
 						//初始化二.1:获取商品分类信息
 						childhand=serverhttp.obtainHandler();
@@ -238,7 +238,7 @@ public class EVServerService extends Service {
 						break;	
 					//获取商品分类信息	
 					case EVServerhttp.SETERRFAILCLASSMAIN://子线程接收主线程消息获取商品分类信息失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
 						//返回给activity广播
 						intent=new Intent();
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);

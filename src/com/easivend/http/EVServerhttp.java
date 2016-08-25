@@ -141,7 +141,7 @@ public class EVServerhttp implements Runnable {
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
 	String Tok="";	
-	String httpStr="";
+	String httpStr="http://easivend.net.cn/shj";
 	private Handler mainhand=null,childhand=null;
 	
 	public EVServerhttp(Handler mainhand) {
@@ -193,25 +193,22 @@ public class EVServerhttp implements Runnable {
 						e1.printStackTrace();
 					}
 					//得到服务端地址信息
-					Map<String, String> list=ToolClass.ReadConfigFile();
-					if(list!=null)
-					{				       
-						httpStr= list.get("server");
-					}
+					//httpStr="http://easivend.net.cn/shj";
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 签到["+Thread.currentThread().getId()+"]="+httpStr,"server.txt");
 					//新建Volley 
 					mQueue = getRequestQueue();
 					//2.设置参数,设置服务器地址
 					String target = httpStr+"/api/vmcCheckin";	//要提交的目标地址
+					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread target="+target,"server.txt");
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap = new TreeMap<String,Object>() ;
 					parammap.put("vmc_no",vmc_no);
 					parammap.put("vmc_auth_code",vmc_auth_code);			
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap.toString(),"server.txt");
+					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap.toString(),"server.txt");
 					//将2.map类集转为json格式
 					Gson gson=new Gson();
 					final String param=gson.toJson(parammap);		
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param.toString(),"server.txt");
+					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param.toString(),"server.txt");
 					
 					//向主线程返回信息
 					final Message tomain1=mainhand.obtainMessage();
@@ -264,7 +261,7 @@ public class EVServerhttp implements Runnable {
 					    	Map<String, String> map = new HashMap<String, String>();  
 					        map.put("param", param);  
 					        //params.add(new BasicNameValuePair("param", param));
-							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+param.toString(),"server.txt");
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+param.toString(),"server.txt");
 					        return map;  
 					    }  
 					}; 	
@@ -406,6 +403,7 @@ public class EVServerhttp implements Runnable {
 					    	Map<String, String> map = new HashMap<String, String>();  
 					        map.put("Token", Tok);  
 					        map.put("LAST_EDIT_TIME", LAST_EDIT_TIME3);
+					        map.put("vmc_no", vmc_no); 
 					        ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 					        return map;  
 					   }  
@@ -943,6 +941,7 @@ public class EVServerhttp implements Runnable {
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
 							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
+							map.put("VMC_NO",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
 					   }  
@@ -1006,7 +1005,8 @@ public class EVServerhttp implements Runnable {
 						@Override  
 						protected Map<String, String> getParams() throws AuthFailureError {  
 							//3.添加params
-							Map<String, String> map = new HashMap<String, String>();  
+							Map<String, String> map = new HashMap<String, String>(); 
+							map.put("vmc_no",vmc_no);
 							map.put("Token", Tok);  
 							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME15);							
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
@@ -1074,7 +1074,8 @@ public class EVServerhttp implements Runnable {
 							//3.添加params
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
-							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME16);							
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME16);	
+							map.put("VMC_NO",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
 					   }  
@@ -1141,7 +1142,8 @@ public class EVServerhttp implements Runnable {
 							//3.添加params
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
-							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME18);							
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME18);	
+							map.put("vmc_no",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
 					   }  
@@ -1208,7 +1210,8 @@ public class EVServerhttp implements Runnable {
 							//3.添加params
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
-							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME19);							
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME19);
+							map.put("vmc_no",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
 					   }  
@@ -1278,6 +1281,7 @@ public class EVServerhttp implements Runnable {
 							map.put("Token", Tok);  
 							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME17);	
 							map.put("PICKUP_CODE", PICKUP_CODE);
+							map.put("vmc_no",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
 					   }  
@@ -1358,7 +1362,7 @@ public class EVServerhttp implements Runnable {
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片...","server.txt");
 					//第二步.准备下载	
-					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+					String serip=httpStr.substring(0,httpStr.lastIndexOf("shj"));
 					String url= serip+CLS_URL;	//要提交的目标地址
 					final String ATTIDS=ATT_ID;
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
@@ -1708,7 +1712,7 @@ public class EVServerhttp implements Runnable {
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片...","server.txt");
 						//第二步.准备下载	
-						String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+						String serip=httpStr.substring(0,httpStr.lastIndexOf("shj"));
 						String url= serip+CLS_URL;	//要提交的目标地址
 						final String ATTIDS=ATT_ID;
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
