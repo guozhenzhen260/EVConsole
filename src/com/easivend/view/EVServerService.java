@@ -71,6 +71,7 @@ public class EVServerService extends Service {
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
+    Map<String,String> classjoin = null;//商品类型对应的商品id的map 
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -253,14 +254,46 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}						
-						//初始化三:获取商品信息
+						}		
+						//初始化二.2:获取商品分类对应的商品信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg2=childhand.obtainMessage();
-		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
+		        		childmsg2.what=EVServerhttp.SETJOINCLASSCHILD;
 		        		childmsg2.obj=LAST_EDIT_TIME;
 		        		childhand.sendMessage(childmsg2);
 						break;
+					//获取商品分类对应的商品信息	
+					case EVServerhttp.SETERRFAILJOINCLASSMAIN://子线程接收主线程消息获取商品分类对应的商品信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报商品分类信息对应的商品失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETJOINCLASSMAIN://子线程接收主线程消息获取商品分类对应的商品信息
+						try 
+						{
+							JSONObject json=new JSONObject(msg.obj.toString());
+							JSONArray array=json.getJSONArray("List");
+							classjoin=new HashMap<String, String>();
+							for(int i=0;i<array.length();i++)
+							{
+								JSONObject obj=array.getJSONObject(i);
+								classjoin.put(obj.getString("PRODUCT_NO"), obj.getString("CLASS_CODE"));
+							}
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息对应的商品成功="+classjoin.toString(),"server.txt");
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+						//初始化三:获取商品信息
+						childhand=serverhttp.obtainHandler();
+		        		Message childmsg5=childhand.obtainMessage();
+		        		childmsg5.what=EVServerhttp.SETPRODUCTCHILD;
+		        		childmsg5.obj=LAST_EDIT_TIME;
+		        		childhand.sendMessage(childmsg5);
+						break;	
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息失败，原因="+msg.obj.toString(),"server.txt");
@@ -807,7 +840,16 @@ public class EVServerService extends Service {
 		{
 			JSONObject object2=arr1.getJSONObject(i);
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品="+i+"txt="+object2.toString(),"server.txt");
-			                         
+			//获取本商品是否有对应的分类信息
+			String prono=object2.getString("product_NO");
+			if(classjoin.containsKey(prono))
+			{
+				object2.put("product_Class_NO", classjoin.get(prono));
+			}
+			else
+			{
+				object2.put("product_Class_NO", "");
+			}	
 			String product_Class_NO=(ToolClass.isEmptynull(object2.getString("product_Class_NO")))?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			String product_TXT=object2.getString("product_TXT");

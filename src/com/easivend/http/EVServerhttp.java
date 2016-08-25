@@ -82,6 +82,10 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILCLASSMAIN=9;//what标记,发送给主线程获取商品分类故障
 	public final static int SETCLASSMAIN=10;//what标记,发送给主线程获取商品分类返回
 	
+	public final static int SETJOINCLASSCHILD=54;//what标记,发送给子线程获取商品分类对应的商品id
+	public final static int SETERRFAILJOINCLASSMAIN=55;//what标记,发送给主线程获取商品分类对应的商品id故障
+	public final static int SETJOINCLASSMAIN=56;//what标记,发送给主线程获取商品分类对应的商品id返回
+	
 	public final static int SETPRODUCTCHILD=11;//what标记,发送给子线程获取商品信息
 	public final static int SETERRFAILRODUCTMAIN=12;//what标记,发送给主线程获取商品故障
 	public final static int SETRODUCTMAIN=13;//what标记,发送给主线程获取商品返回
@@ -410,6 +414,76 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest3);									
+					break;
+				case SETJOINCLASSCHILD://获取商品分类对应的商品信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类商品对应关系["+Thread.currentThread().getId()+"]","server.txt");
+					String target20 = httpStr+"/api/productJoinClass";	//要提交的目标地址
+					final String LAST_EDIT_TIME20=msg.obj.toString();
+					//新建Volley 
+					mQueue = getRequestQueue();
+					//向主线程返回信息
+					final Message tomain20=mainhand.obtainMessage();
+					tomain20.what=SETNONE;
+					//4.准备加载信息设置
+					StringRequest stringRequest20 = new StringRequest(Method.POST, target20,  new Response.Listener<String>() {  
+                        @Override  
+                        public void onResponse(String response) {  
+                           
+                          //如果请求成功
+                        	result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{
+									tomain20.what=SETERRFAILJOINCLASSMAIN;
+									tomain20.obj=object.getString("Message");
+									mainhand.sendMessage(tomain20); // 发送消息
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail20]SETERRFAILCLASSMAIN","server.txt");
+								}
+								else
+								{
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok20]","server.txt");
+									JSONObject jsonObject = new JSONObject(result); 
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok4]准备更新商品分类对应的商品信息...","server.txt");
+									classjoinArray(result);
+									if(classjoinarr.length()>0)
+									{
+										updateclassjoin(0);
+									}
+								}
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}									    	    
+				    	    
+                        }  
+                    }, new Response.ErrorListener() {  
+                        @Override  
+                        public void onErrorResponse(VolleyError error) {  
+                        	result = "请求失败！";
+							tomain20.what=SETFAILMAIN;
+				    	    mainhand.sendMessage(tomain20); // 发送消息
+				    	    ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail20]SETFAILMAIN"+result,"server.txt");
+                        }  
+                    }) 
+					{  
+					    @Override  
+					    protected Map<String, String> getParams() throws AuthFailureError {  
+					    	//3.添加params
+					    	Map<String, String> map = new HashMap<String, String>();  
+					        map.put("Token", Tok);  
+					        map.put("LastEditTime", LAST_EDIT_TIME20);
+					        map.put("CLIENT_NO", vmc_no); 
+					        ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
+					        return map;  
+					   }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest20);	
 					break;
 				case SETPRODUCTCHILD://获取商品信息
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品信息["+Thread.currentThread().getId()+"]","server.txt");
@@ -1432,6 +1506,78 @@ public class EVServerhttp implements Runnable {
 			Message tomain4=mainhand.obtainMessage();
 			tomain4.what=SETCLASSMAIN;
 			tomain4.obj=zhuheclassjson.toString();
+			mainhand.sendMessage(tomain4); // 发送消息
+		}		
+		return "";
+	}
+	
+	//=======================
+	//==商品分类对应的商品信息管理模块
+	//=======================
+	JSONArray classjoinarr=null;
+	JSONArray zhuheclassjoinArray=null;
+	JSONObject zhuheclassjoinjson = null; 
+	int classjoinint=0;
+	//分解分类信息
+	private void classjoinArray(String classjoinrst) throws JSONException
+	{
+		JSONObject jsonObject = new JSONObject(classjoinrst); 
+		classjoinarr=jsonObject.getJSONArray("List");
+		classjoinint=0;
+		zhuheclassjoinArray=new JSONArray();
+		zhuheclassjoinjson = new JSONObject(); 
+		if(classjoinarr.length()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETJOINCLASSMAIN;
+			tomain.obj=zhuheclassjoinjson.toString();
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
+	}
+	
+	//更新分类和图片信息
+	private String updateclassjoin(int i) throws JSONException
+	{
+		final JSONObject object2=classjoinarr.getJSONObject(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新分类对应的商品信息="+object2.toString(),"server.txt");										
+		final JSONObject zhuheobj=new JSONObject();
+		//第一步，获取图片有用的商品id
+		int IS_DELETE=object2.getInt("IS_DELETE");
+		if(IS_DELETE==0)
+		{
+			zhuheobj.put("PRODUCT_NO", object2.getString("PRODUCT_NO"));
+			zhuheobj.put("CLASS_CODE", object2.getString("CLASS_CODE"));
+			//第三步，把图片名字保存到json中		
+			zhuheclassjoinArray.put(zhuheobj);
+		}
+				
+		//第四步：进行下一个分类信息
+		classjoinint++;
+		if(classjoinint<classjoinarr.length())
+		{
+			try {
+				updateclassjoin(classjoinint);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				zhuheclassjoinjson.put("List", zhuheclassjoinArray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheclassjoinjson.toString(),"server.txt");
+
+			//上传给server
+			//向主线程返回信息
+			Message tomain4=mainhand.obtainMessage();
+			tomain4.what=SETJOINCLASSMAIN;
+			tomain4.obj=zhuheclassjoinjson.toString();
 			mainhand.sendMessage(tomain4); // 发送消息
 		}		
 		return "";
