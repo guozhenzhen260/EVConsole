@@ -1954,7 +1954,7 @@ public class HuodaoTest extends TabActivity
 		@Override
 		protected void onPostExecute(Vmc_HuoAdapter huoAdapter) {
 			// TODO Auto-generated method stub
-			adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+			adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuoname(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
 			gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
 			barhuomanager.setVisibility(View.GONE);
 		}

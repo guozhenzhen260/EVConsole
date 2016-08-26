@@ -388,8 +388,8 @@ public final class R {
         public static final int gvselectProduct=0x7f0900b9;
         public static final int huoID=0x7f090141;
         public static final int huoImage=0x7f090140;
-        public static final int huoRemain=0x7f090143;
-        public static final int huolasttime=0x7f090144;
+        public static final int huoRemain=0x7f090144;
+        public static final int huolasttime=0x7f090143;
         public static final int huoproID=0x7f090142;
         public static final int id_content=0x7f090064;
         public static final int id_fragment_movieland=0x7f090065;
