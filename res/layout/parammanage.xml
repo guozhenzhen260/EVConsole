@@ -73,6 +73,14 @@
 							        android:textSize="40sp"
 						            android:textStyle="bold"		        
 							        android:text="" />
+						         
+						         <Button   
+							        android:id="@+id/btnmachinecheck"  
+							        android:text="签到验证"
+							        android:layout_width="wrap_content"
+									android:layout_height="70dp" 
+									android:background="@drawable/button_selector"   
+							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
 					    <View                              

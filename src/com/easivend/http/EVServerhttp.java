@@ -141,7 +141,11 @@ public class EVServerhttp implements Runnable {
 	public final static int SETERRFAILPICKUPMAIN=52;//what标记,发送给主线程取货码无效
 	public final static int SETPICKUPMAIN=53;//what标记,发送给主线程取货码出货
 	
-	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码
+	public final static int SETCHECKCMDCHILD=57;//what标记,发送给子线程签到验证信息
+	public final static int SETERRFAILDCHECKCMDMAIN=58;//what标记,发送给主线程获取签到验证信息故障
+	public final static int SETCHECKCMDMAIN=59;//what标记,发送给主线程获取签到验证信息返回
+	
+	public final static int SETCHECKCHILD=26;//what标记,发送给子线程更改签到信息码	
 	public final static int SETFAILMAIN=3;//what标记,发送给主线程网络失败返回	
 	String result = "";
 	String Tok="";	
@@ -821,6 +825,88 @@ public class EVServerhttp implements Runnable {
 					}; 	
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest11);						
+					break;
+				case SETCHECKCMDCHILD://子线程接收主线程签到命令消息					
+					//1.得到本机编号信息
+					JSONObject ev21=null;
+					try {
+						ev21 = new JSONObject(msg.obj.toString());
+						vmc_no=ev21.getString("vmc_no");
+						vmc_auth_code=ev21.getString("vmc_auth_code");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code,"server.txt");
+					} catch (JSONException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}	
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备签到["+Thread.currentThread().getId()+"]","server.txt");
+					//设备签到
+					String target21 = httpStr+"/api/vmcCheckin";	//要提交的目标地址
+					//1.添加到类集中，其中key,value类型为String
+					Map<String,Object> parammap21 = new TreeMap<String,Object>() ;
+					parammap21.put("vmc_no",vmc_no);
+					parammap21.put("vmc_auth_code",vmc_auth_code);			
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap21.toString(),"server.txt");
+					//将2.map类集转为json格式
+					Gson gson21=new Gson();
+					final String param21=gson21.toJson(parammap21);		
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send2="+param21.toString(),"server.txt");
+					//新建Volley 
+					mQueue = getRequestQueue();
+					//向主线程返回信息
+					final Message tomain21=mainhand.obtainMessage();
+					tomain21.what=SETNONE;
+					//4.设备签到
+					StringRequest stringRequest21 = new StringRequest(Method.POST, target21,  new Response.Listener<String>() {  
+                        @Override  
+                        public void onResponse(String response) {  
+                           
+                            //如果请求成功
+							result = response;	//获取返回的字符串
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
+							JSONObject object;
+							try {
+								object = new JSONObject(result);
+								int errType =  object.getInt("Error");
+								//返回有故障
+								if(errType>0)
+								{	
+									tomain21.what=SETERRFAILDCHECKCMDMAIN;
+									tomain21.obj=object.getString("Message");
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail9]SETERRFAILMAIN","server.txt");	
+								}
+								else
+								{
+									tomain21.what=SETCHECKCMDMAIN;
+									Tok=object.getString("Token");	
+									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok9]","server.txt");
+								}	
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}										    	    
+				    	    mainhand.sendMessage(tomain21); // 发送消息
+                        }  
+                    }, new Response.ErrorListener() {  
+                        @Override  
+                        public void onErrorResponse(VolleyError error) {  
+                        	result = "请求失败！";
+                        	tomain21.what=SETFAILMAIN;
+    						mainhand.sendMessage(tomain21); // 发送消息	
+    						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail9]SETFAILMAIN","server.txt");
+                        }  
+                    }) 
+					{  
+					    @Override  
+					    protected Map<String, String> getParams() throws AuthFailureError {  
+					    	//3.添加params
+					    	Map<String, String> map = new HashMap<String, String>();  
+					        map.put("param", param21);  					        
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send3="+map.toString(),"server.txt");
+					        return map;  
+					    }  
+					}; 	
+					//5.加载信息并发送到网络上
+					mQueue.add(stringRequest21);						
 					break;	
 				case SETPVERSIONCHILD://获取版本信息
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]","server.txt");

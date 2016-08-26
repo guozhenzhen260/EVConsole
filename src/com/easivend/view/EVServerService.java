@@ -115,7 +115,26 @@ public class EVServerService extends Service {
 	    		childmsg.obj=ev;
 	    		childhand.sendMessage(childmsg);
 	    		ischeck=false;
-	    		break;    			
+	    		break;    	
+	    	//签到验证
+			case EVServerhttp.SETCHECKCMDCHILD:
+				//处理接收到的内容,发送签到命令到子线程中
+				childhand=serverhttp.obtainHandler();
+	    		Message childheartmsg6=childhand.obtainMessage();
+	    		childheartmsg6.what=EVServerhttp.SETCHECKCMDCHILD;
+	    		JSONObject ev6=null;
+	    		try {
+	    			ev6=new JSONObject();
+	    			ev6.put("vmc_no", bundle.getString("vmc_no"));
+	    			ev6.put("vmc_auth_code", bundle.getString("vmc_auth_code"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev6.toString(),"server.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		childheartmsg6.obj=ev6;
+	    		childhand.sendMessage(childheartmsg6);
+				break;
     		//发送交易记录命令到子线程中
 			case EVServerhttp.SETRECORDCHILD://子线程接收主线程消息获取心跳信息
 				childhand=serverhttp.obtainHandler();
@@ -660,6 +679,23 @@ public class EVServerService extends Service {
 						}
 							        		
 						break;
+						//签到验证
+					case EVServerhttp.SETERRFAILDCHECKCMDMAIN://子线程接收主线程消息签到失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETERRFAILDCHECKCMDMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);	
+						break;
+					case EVServerhttp.SETCHECKCMDMAIN://子线程接收主线程消息签到完成
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETCHECKCMDMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;	
 						
 						//取货码比较特殊，不能用作复制的例子
 						//获取取货码返回	
@@ -759,7 +795,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },20,20,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
