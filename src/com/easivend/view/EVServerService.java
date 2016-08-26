@@ -741,7 +741,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },20,20,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
@@ -1348,6 +1348,46 @@ public class EVServerService extends Service {
         boolean result = false;  
         
         ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
+        String attimg=ATTIDS.substring(ATTIDS.lastIndexOf(".") + 1).toUpperCase();
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg+"]","server.txt");
+        //是压缩包,解压缩
+        if(attimg.equals("RAR")||attimg.equals("ZIP"))
+        {
+        	//1.解压缩
+        	String zipFile = ToolClass.setAPKFile(ATTIDS).toString();
+        	String upzipFile=ToolClass.getEV_DIR()+File.separator+"APKFile"+File.separator;
+	  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<zipFile="+zipFile+" upzipFile="+upzipFile,"server.txt"); 
+	  		try {
+	  			XZip.UnZipFolder(zipFile, upzipFile);
+	  		} catch (Exception e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	  		//2.遍历这个目录
+	  		File dirName = new File(upzipFile);
+	  		//遍历这个文件夹里的所有文件
+	   		File[] files = dirName.listFiles();
+	   		if (files.length > 0) 
+	   		{  
+	   			for (int i = 0; i < files.length; i++) 
+	   			{
+	   			  if(!files[i].isDirectory())
+	   			  {	
+	   				String filename=files[i].toString();
+	   				ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断安装目录内文件="+filename,"server.txt"); 
+	   				String attimg2=filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+	   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
+	   		        if(attimg2.equals("APK"))
+	   		        {
+	   		        	ATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
+	   		        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
+	   		        	break;
+	   		        }
+	   			  }
+	   			}
+	   		}
+        }
+        
         //1.有提示的安装
         File fileName = ToolClass.setAPKFile(ATTIDS);
         Intent intent = new Intent();  
