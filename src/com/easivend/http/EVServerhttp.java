@@ -777,7 +777,7 @@ public class EVServerhttp implements Runnable {
                         @Override  
                         public void onResponse(String response) {  
                            
-                          //如果请求成功
+                            //如果请求成功
 							result = response;	//获取返回的字符串
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1="+result,"server.txt");
 							JSONObject object;

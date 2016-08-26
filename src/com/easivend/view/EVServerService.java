@@ -220,6 +220,24 @@ public class EVServerService extends Service {
 						//上传设备信息	
 					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						//重新签到
+						//处理接收到的内容,发送签到命令到子线程中
+						childhand=serverhttp.obtainHandler();
+			    		Message childheartmsg6=childhand.obtainMessage();
+			    		childheartmsg6.what=EVServerhttp.SETCHECKCHILD;
+			    		JSONObject ev6=null;
+			    		try {
+			    			ev6=new JSONObject();
+			    			ev6.put("vmc_no", vmc_no);
+			    			ev6.put("vmc_auth_code", vmc_auth_code);
+			    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev6.toString(),"server.txt");
+			    		} catch (JSONException e) {
+			    			// TODO Auto-generated catch block
+			    			e.printStackTrace();
+			    		}
+			    		childheartmsg6.obj=ev6;
+			    		childhand.sendMessage(childheartmsg6);
+			    		tokenno=0;
 						//返回给activity广播
 						intent=new Intent();
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
@@ -741,7 +759,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },20,20,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
