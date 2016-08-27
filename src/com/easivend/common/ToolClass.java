@@ -743,30 +743,35 @@ public class ToolClass
 	   			{
 	   			  if(!files[i].isDirectory())
 	   			  {		
-	   				  	ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断日志目录内文件="+files[i].toString(),"server.txt"); 
-	   				   
-	   		        	fileName=new File(files[i].toString()); 
-	   		        	if(fileName.exists())
-	   		        	{  
-	   		        		String logdatetime = getFileCreated(fileName);
-	   		        		ParsePosition poslog = new ParsePosition(0);  
-	   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
-	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
-	   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
-	   		            	{
-	   		            		//4.拷贝文件到压缩目录中
-	   		            		String a[] = files[i].toString().split("/");  
-	   		            		String ATT_ID=a[a.length-1];  
-	   		            		String ZIPFile=zipDir+ATT_ID;
-	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
-	   		            		copyFile(files[i].toString(),ZIPFile);
-	   		            		inter=true;
-	   		            	}
-	   		            	else
-	   		            	{
-	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
-	   		            	}	
-	   		    	    } 
+	   				    String filestr=files[i].toString();
+	   				  	ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断日志目录内文件="+filestr,"server.txt"); 
+	   				    //排除dog类文件
+	   				  	int attimg2=filestr.lastIndexOf("dog.txt");
+		   		        if(attimg2==-1)
+		   		        {
+		   		        	fileName=new File(files[i].toString()); 
+		   		        	if(fileName.exists())
+		   		        	{  
+		   		        		String logdatetime = getFileCreated(fileName);
+		   		        		ParsePosition poslog = new ParsePosition(0);  
+		   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
+		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
+		   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
+		   		            	{
+		   		            		//4.拷贝文件到压缩目录中
+		   		            		String a[] = files[i].toString().split("/");  
+		   		            		String ATT_ID=a[a.length-1];  
+		   		            		String ZIPFile=zipDir+ATT_ID;
+		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
+		   		            		copyFile(files[i].toString(),ZIPFile);
+		   		            		inter=true;
+		   		            	}
+		   		            	else
+		   		            	{
+		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
+		   		            	}	
+		   		    	    } 
+		   		        }
 	   			  }
 	   			}
 	   		}
