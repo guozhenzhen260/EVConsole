@@ -3358,7 +3358,7 @@ public class EVServerhttp implements Runnable {
     	{
     		devID=tb_inaccount.getDevID().toString();
     		mainPwd=tb_inaccount.getMainPwd();
-    		ToolClass.Log(ToolClass.INFO,"EV_SERVER","本地VMC_NO="+devID+",MANAGER_PASSWORD="+mainPwd,"server.txt");	
+    		ToolClass.Log(ToolClass.INFO,"EV_SERVER","本地VMC_NO="+devID+",MANAGER_PASSWORD="+mainPwd+",CLIENT_STATUS_SERVICE="+ToolClass.isCLIENT_STATUS_SERVICE(),"server.txt");	
     	}
   	}
   	
@@ -3373,7 +3373,8 @@ public class EVServerhttp implements Runnable {
   		//第一步，获取VMC_NO和密码
   		final String VMC_NO=object2.getString("VMC_NO");
   		final String MANAGER_PASSWORD=object2.getString("MANAGER_PASSWORD");
-  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","设备VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD,"server.txt");	
+  		int CLIENT_STATUS_SERVICE=object2.getInt("CLIENT_STATUS_SERVICE");
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","设备VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD+"CLIENT_STATUS_SERVICE="+CLIENT_STATUS_SERVICE,"server.txt");	
   		zhuheobj.put("AttImg", "");
   		  		
   		try
@@ -3387,6 +3388,11 @@ public class EVServerhttp implements Runnable {
     					0,0, 0,0,0,"","");
     			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置设备VMC_NO="+tb_vmc_system_parameter.getDevID()+",MANAGER_PASSWORD="+tb_vmc_system_parameter.getMainPwd(),"server.txt");	
     			parameterDAO.updatepwd(tb_vmc_system_parameter); 
+    			//设置本机是否可以使用
+    			if(CLIENT_STATUS_SERVICE==0)
+    				ToolClass.setCLIENT_STATUS_SERVICE(true);
+    			else
+    				ToolClass.setCLIENT_STATUS_SERVICE(false);	
   			}
   		}
   		catch (Exception e) {

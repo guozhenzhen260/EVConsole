@@ -119,8 +119,27 @@ public class ToolClass
 	public static Context context=null;//本应用context
 	private static int ServerVer=1;//0旧的后台，1一期的后台
 	public static String version="";//本机版本号
-	 
+	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
 	
+	public static boolean isCLIENT_STATUS_SERVICE() {
+		return CLIENT_STATUS_SERVICE;
+	}
+
+	public static void setCLIENT_STATUS_SERVICE(boolean cLIENT_STATUS_SERVICE) {
+		CLIENT_STATUS_SERVICE = cLIENT_STATUS_SERVICE;
+	}
+	
+	//判断如果本机暂停服务，不允许销售并提示
+	public static boolean checkCLIENT_STATUS_SERVICE()
+	{
+		boolean check=isCLIENT_STATUS_SERVICE();
+		if(check==false)
+		{
+			failToast("抱歉，本机暂停服务,请联系管理员！");
+		}
+		return check;
+	}
+
 	public static String getVersion() {
 		String curVersion=null;
 		int curVersionCode=0;

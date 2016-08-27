@@ -175,79 +175,85 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	public void gotoBusiness(int buslevel,Map<String, String>str) {
 		// TODO Auto-generated method stub
-		isbus=true;
-	    recLen=SPLASH_DISPLAY_LENGHT;
-	    //=============
-  		//COM服务相关
-  		//=============
-  		//5.解除注册接收器
-  		comBroadreceiver.unregisterReceiver(comreceiver);
-  		
-		switch(buslevel)
+		if(ToolClass.checkCLIENT_STATUS_SERVICE())
 		{
-			case 1:
-				intent = new Intent(BusLand.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
-		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-				break;
-			case 2:
-				intent = new Intent(BusLand.this, Busgoods.class);// 使用Accountflag窗口初始化Intent
-            	intent.putExtra("proclassID", "");
-            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-				break;
-			case 3:
-				//可以提货
-    			if(ToolClass.getzhitihuotype(BusLand.this, str.get("cabID"), str.get("huoID")))
-    			{
-    				intent = new Intent(BusLand.this, BusZhitihuo.class);// 使用Accountflag窗口初始化Intent
-    				OrderDetail.setProID(str.get("proID"));
-    		    	OrderDetail.setProductID(str.get("productID"));
-    		    	OrderDetail.setProType(str.get("proType"));
-    		    	OrderDetail.setShouldPay(Float.parseFloat(str.get("prosales")));
-    		    	OrderDetail.setShouldNo(1);
-    		    	OrderDetail.setCabID(str.get("cabID"));
-    		    	OrderDetail.setColumnID(str.get("huoID"));
-    		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-    			}
-    			else
-    			{
-					intent = new Intent(BusLand.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
-		        	intent.putExtra("proID", str.get("proID"));
-		        	intent.putExtra("productID", str.get("productID"));
-		        	intent.putExtra("proImage", str.get("proImage"));
-		        	intent.putExtra("prosales", str.get("prosales"));
-		        	intent.putExtra("procount", str.get("procount"));
-		        	intent.putExtra("proType", str.get("proType"));//1代表通过商品ID出货,2代表通过货道出货
-		        	intent.putExtra("cabID", str.get("cabID"));//出货柜号,proType=1时无效
-		        	intent.putExtra("huoID", str.get("huoID"));//出货货道号,proType=1时无效
-	
-	
-	//	        	OrderDetail.setProID(proID);
-	//            	OrderDetail.setProductID(productID);
-	//            	OrderDetail.setProType("2");
-	//            	OrderDetail.setCabID(cabID);
-	//            	OrderDetail.setColumnID(huoID);
-	//            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
-	//            	OrderDetail.setShouldNo(1);
-		        	
-		        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-    			}
-				break;
-			case 4:
-				intent = new Intent(BusLand.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
-            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-				break;	
+			isbus=true;
+		    recLen=SPLASH_DISPLAY_LENGHT;
+		    //=============
+	  		//COM服务相关
+	  		//=============
+	  		//5.解除注册接收器
+	  		comBroadreceiver.unregisterReceiver(comreceiver);
+	  		
+			switch(buslevel)
+			{
+				case 1:
+					intent = new Intent(BusLand.this, BusgoodsClass.class);// 使用Accountflag窗口初始化Intent
+			    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+					break;
+				case 2:
+					intent = new Intent(BusLand.this, Busgoods.class);// 使用Accountflag窗口初始化Intent
+	            	intent.putExtra("proclassID", "");
+	            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+					break;
+				case 3:
+					//可以提货
+	    			if(ToolClass.getzhitihuotype(BusLand.this, str.get("cabID"), str.get("huoID")))
+	    			{
+	    				intent = new Intent(BusLand.this, BusZhitihuo.class);// 使用Accountflag窗口初始化Intent
+	    				OrderDetail.setProID(str.get("proID"));
+	    		    	OrderDetail.setProductID(str.get("productID"));
+	    		    	OrderDetail.setProType(str.get("proType"));
+	    		    	OrderDetail.setShouldPay(Float.parseFloat(str.get("prosales")));
+	    		    	OrderDetail.setShouldNo(1);
+	    		    	OrderDetail.setCabID(str.get("cabID"));
+	    		    	OrderDetail.setColumnID(str.get("huoID"));
+	    		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+	    			}
+	    			else
+	    			{
+						intent = new Intent(BusLand.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
+			        	intent.putExtra("proID", str.get("proID"));
+			        	intent.putExtra("productID", str.get("productID"));
+			        	intent.putExtra("proImage", str.get("proImage"));
+			        	intent.putExtra("prosales", str.get("prosales"));
+			        	intent.putExtra("procount", str.get("procount"));
+			        	intent.putExtra("proType", str.get("proType"));//1代表通过商品ID出货,2代表通过货道出货
+			        	intent.putExtra("cabID", str.get("cabID"));//出货柜号,proType=1时无效
+			        	intent.putExtra("huoID", str.get("huoID"));//出货货道号,proType=1时无效
+		
+		
+		//	        	OrderDetail.setProID(proID);
+		//            	OrderDetail.setProductID(productID);
+		//            	OrderDetail.setProType("2");
+		//            	OrderDetail.setCabID(cabID);
+		//            	OrderDetail.setColumnID(huoID);
+		//            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
+		//            	OrderDetail.setShouldNo(1);
+			        	
+			        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+	    			}
+					break;
+				case 4:
+					intent = new Intent(BusLand.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+	            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+					break;	
+			}
 		}
 	}
 	//步骤三、实现Business接口,传递取货码
 	@Override
 	public void quhuoBusiness(String PICKUP_CODE)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<land取货码="+PICKUP_CODE,"log.txt");
-		Intent intent2=new Intent(); 
-		intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
-		intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
-		intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-		localBroadreceiver.sendBroadcast(intent2);
+		if(ToolClass.checkCLIENT_STATUS_SERVICE())
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<land取货码="+PICKUP_CODE,"log.txt");
+			Intent intent2=new Intent(); 
+			intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
+			intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
+			intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+			localBroadreceiver.sendBroadcast(intent2);
+		}
 	}
 	
 	//步骤三、实现Business接口,传递提示信息
@@ -333,52 +339,55 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 					//上报货道按键
 					if(EV_TYPE==COMThread.EV_BUTTONRPT_HUODAO)
 					{
-						//跳转商品
-						//发送出货指令
-				        String proID = null;
-				    	String productID = null;
-				    	String proImage = null;
-				    	String cabID = null;
-				    	String huoID = null;
-				        String prosales = null;
-				        
-						cabID="1";
-					    int huono=Set2.get("btnvalue");
-					    huoID=(huono<=9)?("0"+huono):String.valueOf(huono);
-					    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
-					    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
-					    if(tb_inaccount!=null)
-					    {	
-					    	switchBusiness();
-						    productID=tb_inaccount.getProductID().toString();
-						    prosales=String.valueOf(tb_inaccount.getSalesPrice());
-						    proImage=tb_inaccount.getAttBatch1();
-						    proID=productID+"-"+tb_inaccount.getProductName().toString();
-						    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
-									+productID+" proType="
-									+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-									+"1","log.txt");						    
-
-				        	Map<String, String>str=new HashMap<String, String>();
-				        	str.put("proID", proID);
-				        	str.put("productID", productID);
-				        	str.put("proImage", proImage);
-				        	str.put("prosales", prosales);
-				        	str.put("procount", "1");
-				        	str.put("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
-				        	str.put("cabID", cabID);//出货柜号,proType=1时无效
-				        	str.put("huoID", huoID);//出货货道号,proType=1时无效
-				        	gotoBusiness(3,str);
-					    }
-					    else
-					    {
-					    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
-									+productID+" proType="
-									+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-									+"1","log.txt");						    
-						    // 弹出信息提示
-						    ToolClass.failToast("抱歉，本商品已售完！");					
-					    }
+						if(ToolClass.checkCLIENT_STATUS_SERVICE())
+						{
+							//跳转商品
+							//发送出货指令
+					        String proID = null;
+					    	String productID = null;
+					    	String proImage = null;
+					    	String cabID = null;
+					    	String huoID = null;
+					        String prosales = null;
+					        
+							cabID="1";
+						    int huono=Set2.get("btnvalue");
+						    huoID=(huono<=9)?("0"+huono):String.valueOf(huono);
+						    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
+						    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
+						    if(tb_inaccount!=null)
+						    {	
+						    	switchBusiness();
+							    productID=tb_inaccount.getProductID().toString();
+							    prosales=String.valueOf(tb_inaccount.getSalesPrice());
+							    proImage=tb_inaccount.getAttBatch1();
+							    proID=productID+"-"+tb_inaccount.getProductName().toString();
+							    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+										+productID+" proType="
+										+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+										+"1","log.txt");						    
+	
+					        	Map<String, String>str=new HashMap<String, String>();
+					        	str.put("proID", proID);
+					        	str.put("productID", productID);
+					        	str.put("proImage", proImage);
+					        	str.put("prosales", prosales);
+					        	str.put("procount", "1");
+					        	str.put("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
+					        	str.put("cabID", cabID);//出货柜号,proType=1时无效
+					        	str.put("huoID", huoID);//出货货道号,proType=1时无效
+					        	gotoBusiness(3,str);
+						    }
+						    else
+						    {
+						    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+										+productID+" proType="
+										+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+										+"1","log.txt");						    
+							    // 弹出信息提示
+							    ToolClass.failToast("抱歉，本商品已售完！");					
+						    }
+						}
 					}				
 					//上报维护模式按键
 					else if(EV_TYPE==COMThread.EV_BUTTONRPT_MAINTAIN)

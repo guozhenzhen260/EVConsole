@@ -620,18 +620,24 @@ BushuoFragInteraction
 	@Override
 	public void gotoBusiness(int buslevel, Map<String, String> str)
 	{
-		viewSwitch(buslevel, str);
+		if(ToolClass.checkCLIENT_STATUS_SERVICE())
+		{
+			viewSwitch(buslevel, str);
+		}
 	}
 	//步骤三、实现Business接口,传递取货码
 	@Override
 	public void quhuoBusiness(String PICKUP_CODE)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port取货码="+PICKUP_CODE,"log.txt");
-		Intent intent2=new Intent(); 
-		intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
-		intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
-		intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-		localBroadreceiver.sendBroadcast(intent2);
+		if(ToolClass.checkCLIENT_STATUS_SERVICE())
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port取货码="+PICKUP_CODE,"log.txt");
+			Intent intent2=new Intent(); 
+			intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
+			intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
+			intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+			localBroadreceiver.sendBroadcast(intent2);
+		}
 	}
 	//步骤三、实现Business接口,传递提示信息
 	@Override
