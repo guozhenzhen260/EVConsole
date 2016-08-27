@@ -42,7 +42,7 @@ public class Login extends Activity
 {
 	private EditText txtlogin,txtbent,txtcolumn,txtserver,txtip,txtextracom;// 创建EditText对象
 	private TextView tvip=null,tvVersion=null,tvextracom=null;
-    private Button btnlogin, btnclose,btnGaoji,btnDel,btnDelImg;// 创建两个Button对象
+    private Button btnlogin,btnclose,btnGaoji,btnDel,btnDelImg,btnDelads;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
     String bentcom =null;
@@ -69,12 +69,14 @@ public class Login extends Activity
         tvVersion = (TextView) findViewById(R.id.tvVersion);//本机版本号
         btnDel = (Button) findViewById(R.id.btnDel);// 获取清除全部商品货道信息
         btnDelImg = (Button) findViewById(R.id.btnDelImg);// 获取清除商品图片缓存信息
+        btnDelads = (Button) findViewById(R.id.btnDelads);// 获取清除广告缓存信息
         tvip.setVisibility(View.GONE);        
         txtip.setVisibility(View.GONE);
         tvextracom.setVisibility(View.GONE); 
         txtextracom.setVisibility(View.GONE); 
         btnDel.setVisibility(View.GONE);
         btnDelImg.setVisibility(View.GONE);
+        btnDelads.setVisibility(View.GONE);
         tvVersion.setText("版本号："+ToolClass.getVersion());
         Map<String, String> list=ToolClass.ReadConfigFile();
         if(list!=null)
@@ -151,6 +153,7 @@ public class Login extends Activity
                     txtextracom.setVisibility(View.VISIBLE); 
                     btnDel.setVisibility(View.VISIBLE);
                     btnDelImg.setVisibility(View.VISIBLE);
+                    btnDelads.setVisibility(View.VISIBLE);
                 }
                 else
                 {
@@ -160,6 +163,7 @@ public class Login extends Activity
                     txtextracom.setVisibility(View.GONE); 
                     btnDel.setVisibility(View.GONE);
                     btnDelImg.setVisibility(View.GONE);
+                    btnDelads.setVisibility(View.GONE);
 				}
             }
         });
@@ -224,6 +228,42 @@ public class Login extends Activity
         				            ToolClass.addOptLog(Login.this,2,"清除全部商品图片缓存");
         	    					// 弹出信息提示
         				            Toast.makeText(Login.this, "清除成功！", Toast.LENGTH_SHORT).show();						            
+        				            finish();
+        	    				}
+            		      }
+            			)		    		        
+        		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+        		        	{			
+        						@Override
+        						public void onClick(DialogInterface dialog, int which) 
+        						{
+        							// TODO Auto-generated method stub				
+        						}
+        		        	}
+        		        )
+        		        .create();//创建一个对话框
+        		        alert.show();//显示对话框
+            }
+        });
+        btnDelads.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
+            @Override
+            public void onClick(View arg0) {
+            	//创建警告对话框
+            	Dialog alert=new AlertDialog.Builder(Login.this)
+            		.setTitle("对话框")//标题
+            		.setMessage("您确定要删除广告缓存吗？")//表示对话框中得内容
+            		.setIcon(R.drawable.ic_launcher)//设置logo
+            		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+            			{				
+        	    				@Override
+        	    				public void onClick(DialogInterface dialog, int which) 
+        	    				{
+        	    					// TODO Auto-generated method stub	        	    					
+        				            //删除所有商品图片
+        				            ToolClass.deleteadsImageFile();
+        				            ToolClass.addOptLog(Login.this,2,"删除广告缓存");
+        	    					// 弹出信息提示
+        				            Toast.makeText(Login.this, "删除成功！", Toast.LENGTH_SHORT).show();						            
         				            finish();
         	    				}
             		      }

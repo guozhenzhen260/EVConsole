@@ -234,12 +234,18 @@ public class EVServerhttp implements Runnable {
 							try {
 								object = new JSONObject(result);
 								int errType =  object.getInt("Error");
+								int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
 								//返回有故障
 								if(errType>0)
 								{
 									tomain1.what=SETERRFAILMAIN;
 									tomain1.obj=object.getString("Message");
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETERRFAILMAIN","server.txt");
+									//设置本机是否可以使用
+					    			if(CLIENT_STATUS_SERVICE==0)
+					    				ToolClass.setCLIENT_STATUS_SERVICE(true);
+					    			else
+					    				ToolClass.setCLIENT_STATUS_SERVICE(false);
 								}
 								else
 								{

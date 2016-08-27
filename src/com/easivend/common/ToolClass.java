@@ -631,6 +631,42 @@ public class ToolClass
         }
     }
     /**
+     * 递归删除ads,adshuo文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteadsImageFile()
+    {
+    	String  sDir =null;
+    	 try {
+    		 //删除广告目录
+    		  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllZIPFile(dirName);
+        	 
+        	//删除弹窗广告目录
+	   		sDir = ToolClass.getEV_DIR()+File.separator+"adshuo";
+	       	dirName = new File(sDir);
+	       	//如果目录不存在，则创建目录
+	       	if (!dirName.exists()) 
+	       	{  
+	            //按照指定的路径创建文件夹  
+	       		dirName.mkdirs(); 
+	        }
+	       	 
+	       	deleteAllZIPFile(dirName);
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * 递归删除ZIP文件和文件夹
      * @param file    要删除的根目录
      */
