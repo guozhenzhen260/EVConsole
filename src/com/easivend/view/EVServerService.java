@@ -65,7 +65,8 @@ public class EVServerService extends Service {
     LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
     Map<String,Integer> huoSet=null;
-    private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
+    private String LAST_CLASS_TIME="",LAST_CLASSJOIN_TIME="",LAST_PRODUCT_TIME="",
+    		LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
     		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="",
     		LAST_EVENT_TIME="",LAST_DEMO_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
@@ -270,7 +271,7 @@ public class EVServerService extends Service {
 						childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg5=childhand.obtainMessage();
 		        		childheartmsg5.what=EVServerhttp.SETCLASSCHILD;
-		        		childheartmsg5.obj=LAST_EDIT_TIME;
+		        		childheartmsg5.obj=LAST_CLASS_TIME;
 		        		childhand.sendMessage(childheartmsg5);	
 						
 						break;	
@@ -296,7 +297,7 @@ public class EVServerService extends Service {
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg2=childhand.obtainMessage();
 		        		childmsg2.what=EVServerhttp.SETJOINCLASSCHILD;
-		        		childmsg2.obj=LAST_EDIT_TIME;
+		        		childmsg2.obj=LAST_CLASSJOIN_TIME;
 		        		childhand.sendMessage(childmsg2);
 						break;
 					//获取商品分类对应的商品信息	
@@ -318,6 +319,11 @@ public class EVServerService extends Service {
 							{
 								JSONObject obj=array.getJSONObject(i);
 								classjoin.put(obj.getString("PRODUCT_NO"), obj.getString("CLASS_CODE"));
+								//用于签到完成后，更新时间段
+								if(ischeck==true) 
+								{
+									LAST_CLASSJOIN_TIME=ToolClass.getLasttime();
+								}
 							}
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息对应的商品成功="+classjoin.toString(),"server.txt");
 						} catch (JSONException e) {
@@ -328,7 +334,7 @@ public class EVServerService extends Service {
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg5=childhand.obtainMessage();
 		        		childmsg5.what=EVServerhttp.SETPRODUCTCHILD;
-		        		childmsg5.obj=LAST_EDIT_TIME;
+		        		childmsg5.obj=LAST_PRODUCT_TIME;
 		        		childhand.sendMessage(childmsg5);
 						break;	
 					//获取商品信息	
@@ -499,7 +505,7 @@ public class EVServerService extends Service {
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETACCOUNTCHILD;
-			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次账号
+			        		//1>>刚开机不重置时间：这样开机后就会马上设置一次账号
 			        		childheartmsg3.obj=LAST_ACCOUNT_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
@@ -675,6 +681,9 @@ public class EVServerService extends Service {
 							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
 							localBroadreceiver.sendBroadcast(intent);
 							ischeck=true;
+							LAST_CLASS_TIME=ToolClass.getLasttime();
+							LAST_CLASSJOIN_TIME=ToolClass.getLasttime();
+							LAST_PRODUCT_TIME=ToolClass.getLasttime();
 							LAST_EDIT_TIME=ToolClass.getLasttime();
 						}
 							        		
@@ -795,7 +804,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },20,20,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
@@ -878,6 +887,11 @@ public class EVServerService extends Service {
 	        	{
 	        		classDAO.addorupdate(tb_vmc_class);// 修改
 	        	}
+	        	//用于签到完成后，更新时间段
+				if(ischeck==true) 
+				{
+					LAST_CLASS_TIME=ToolClass.getLasttime();
+				}
 			}
 			
 		}
@@ -908,10 +922,10 @@ public class EVServerService extends Service {
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			String product_TXT=object2.getString("product_TXT");
 			//用于签到完成后，更新商品信息时间段
-//			if(ischeck==true) 
-//			{
-//				LAST_EDIT_TIME=ToolClass.getLasttime();
-//			}
+			if(ischeck==true) 
+			{
+				LAST_PRODUCT_TIME=ToolClass.getLasttime();
+			}
 			// 创建InaccountDAO对象
 			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
             //创建Tb_inaccount对象
