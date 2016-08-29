@@ -804,7 +804,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },2*60,2*60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
@@ -1425,11 +1425,23 @@ public class EVServerService extends Service {
         	String zipFile = ToolClass.setAPKFile(ATTIDS).toString();
         	String upzipFile=ToolClass.getEV_DIR()+File.separator+"APKFile"+File.separator;
 	  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<zipFile="+zipFile+" upzipFile="+upzipFile,"server.txt"); 
-	  		try {
-	  			XZip.UnZipFolder(zipFile, upzipFile);
-	  		} catch (Exception e) {
-	  			// TODO Auto-generated catch block
-	  			e.printStackTrace();
+	  		if(attimg.equals("RAR"))
+	  		{
+	  			try {
+		  			XZip.unRarFile(zipFile, upzipFile);
+		  		} catch (Exception e) {
+		  			// TODO Auto-generated catch block
+		  			e.printStackTrace();
+		  		}
+	  		}
+	  		else if(attimg.equals("ZIP"))
+	  		{
+		  		try {
+		  			XZip.UnZipFolder(zipFile, upzipFile);
+		  		} catch (Exception e) {
+		  			// TODO Auto-generated catch block
+		  			e.printStackTrace();
+		  		}
 	  		}
 	  		//2.遍历这个目录
 	  		File dirName = new File(upzipFile);

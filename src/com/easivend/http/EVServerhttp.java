@@ -202,12 +202,11 @@ public class EVServerhttp implements Runnable {
 					}
 					//得到服务端地址信息
 					//httpStr="http://easivend.net.cn/shj";
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 签到["+Thread.currentThread().getId()+"]="+httpStr,"server.txt");
 					//新建Volley 
 					mQueue = getRequestQueue();
 					//2.设置参数,设置服务器地址
 					String target = httpStr+"/api/vmcCheckin";	//要提交的目标地址
-					//ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread target="+target,"server.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 签到["+Thread.currentThread().getId()+"]="+target,"server.txt");
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap = new TreeMap<String,Object>() ;
 					parammap.put("vmc_no",vmc_no);
@@ -283,9 +282,9 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest);
 					break;
 				case SETHEARTCHILD://子线程接收主线程心跳消息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 心跳["+Thread.currentThread().getId()+"]","server.txt");
 					//心跳
 					String target2 = httpStr+"/api/vmcPoll";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 心跳["+Thread.currentThread().getId()+"]="+target2,"server.txt");
 					//新建Volley 
 					mQueue = getRequestQueue();
 					//向主线程返回信息
@@ -347,8 +346,8 @@ public class EVServerhttp implements Runnable {
 						
 					break;
 				case SETCLASSCHILD://获取商品分类
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类["+Thread.currentThread().getId()+"]","server.txt");
 					String target3 = httpStr+"/api/productClass";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类["+Thread.currentThread().getId()+"]="+target3,"server.txt");
 					final String LAST_EDIT_TIME3=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -426,8 +425,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest3);									
 					break;
 				case SETJOINCLASSCHILD://获取商品分类对应的商品信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类商品对应关系["+Thread.currentThread().getId()+"]","server.txt");
 					String target20 = httpStr+"/api/productJoinClass";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品分类商品对应关系["+Thread.currentThread().getId()+"]="+target20,"server.txt");
 					final String LAST_EDIT_TIME20=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -496,8 +495,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest20);	
 					break;
 				case SETPRODUCTCHILD://获取商品信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target4 = httpStr+"/api/productData";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品信息["+Thread.currentThread().getId()+"]="+target4,"server.txt");
 					final String LAST_EDIT_TIME4=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -566,8 +565,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest4);	
 					break;
 				case SETHUODAOCHILD://获取货道信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取货道信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target5 = httpStr+"/api/vmcPathConfigDownload";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取货道信息["+Thread.currentThread().getId()+"]="+target5,"server.txt");
 					final String LAST_EDIT_TIME5=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -644,9 +643,9 @@ public class EVServerhttp implements Runnable {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备状态上报["+Thread.currentThread().getId()+"]","server.txt");
 					//设备状态上报
 					String target7 = httpStr+"/api/vmcStatus";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备状态上报["+Thread.currentThread().getId()+"]="+target7,"server.txt");
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap7 = new TreeMap<String,Object>() ;
 					parammap7.put("VMC_NO",vmc_no);
@@ -765,9 +764,9 @@ public class EVServerhttp implements Runnable {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}	
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备签到["+Thread.currentThread().getId()+"]","server.txt");
 					//设备签到
 					String target11 = httpStr+"/api/vmcCheckin";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备签到["+Thread.currentThread().getId()+"]="+target11,"server.txt");
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap11 = new TreeMap<String,Object>() ;
 					parammap11.put("vmc_no",vmc_no);
@@ -844,9 +843,9 @@ public class EVServerhttp implements Runnable {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}	
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备签到["+Thread.currentThread().getId()+"]","server.txt");
 					//设备签到
 					String target21 = httpStr+"/api/vmcCheckin";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备签到["+Thread.currentThread().getId()+"]="+target21,"server.txt");
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap21 = new TreeMap<String,Object>() ;
 					parammap21.put("vmc_no",vmc_no);
@@ -915,8 +914,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest21);						
 					break;	
 				case SETPVERSIONCHILD://获取版本信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target12 = httpStr+"/api/clientVersion";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取版本信息["+Thread.currentThread().getId()+"]="+target12,"server.txt");
 					final String LAST_EDIT_TIME12=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -982,8 +981,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest12);					
 					break;
 				case SETLOGCHILD://获取日志信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取日志信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target13 = httpStr+"/api/clientLogInfo";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取日志信息["+Thread.currentThread().getId()+"]="+target13,"server.txt");
 					final String LAST_EDIT_TIME13=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -1048,9 +1047,9 @@ public class EVServerhttp implements Runnable {
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest13);					
 					break;
-				case SETACCOUNTCHILD://获取支付宝微信信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取支付宝微信信息["+Thread.currentThread().getId()+"]","server.txt");
+				case SETACCOUNTCHILD://获取支付宝微信信息					
 					String target14 = httpStr+"/api/selectAccount";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取支付宝微信信息["+target14+"]","server.txt");
 					final String LAST_EDIT_TIME14=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -1106,7 +1105,10 @@ public class EVServerhttp implements Runnable {
 							//3.添加params
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
-							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
+							//map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
+							//map.put("LAST_EDIT_TIME", ToolClass.getLasttime());
+							//map.put("LAST_EDIT_TIME", "2016-08-29T10:30:16");
+							map.put("LAST_EDIT_TIME", "");
 							map.put("VMC_NO",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
@@ -1116,8 +1118,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest14);					
 					break;
 				case SETADVCHILD://获取广告信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取广告信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target15 = httpStr+"/api/advInfo";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取广告信息["+Thread.currentThread().getId()+"]="+target15,"server.txt");
 					final String LAST_EDIT_TIME15=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -1183,8 +1185,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest15);					
 					break;
 				case SETCLIENTCHILD://获取设备信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取设备信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target16 = httpStr+"/api/selectClientSetting";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取设备信息["+Thread.currentThread().getId()+"]="+target16,"server.txt");
 					final String LAST_EDIT_TIME16=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -1250,9 +1252,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest16);					
 					break;
 				case SETEVENTINFOCHILD://获取活动信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取活动信息["+Thread.currentThread().getId()+"]","server.txt");
-					
 					String target18 = httpStr+"/api/eventInfo";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取活动信息["+Thread.currentThread().getId()+"]="+target18,"server.txt");
 					final String LAST_EDIT_TIME18=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -1318,9 +1319,8 @@ public class EVServerhttp implements Runnable {
 					mQueue.add(stringRequest18);					
 					break;	
 				case SETDEMOINFOCHILD://获取购买演示信息
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取购买演示信息["+Thread.currentThread().getId()+"]","server.txt");
-					
 					String target19 = httpStr+"/api/demoInfo";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取购买演示信息["+Thread.currentThread().getId()+"]="+target19,"server.txt");
 					final String LAST_EDIT_TIME19=msg.obj.toString();
 					//新建Volley 
 					mQueue = getRequestQueue();
@@ -1387,8 +1387,8 @@ public class EVServerhttp implements Runnable {
 					break;	
 				//取货码比较特殊，不能用作复制的例子
 				case SETPICKUPCHILD://获取取货码
-					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取取货码信息["+Thread.currentThread().getId()+"]","server.txt");
 					String target17 = httpStr+"/api/getPickupCodeStatus";	//要提交的目标地址
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取取货码信息["+Thread.currentThread().getId()+"]="+target17,"server.txt");
 					final String PICKUP_CODE=msg.obj.toString();
 					final String LAST_EDIT_TIME17=ToolClass.getLasttime();
 					//新建Volley 
