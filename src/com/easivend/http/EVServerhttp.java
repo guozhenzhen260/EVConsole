@@ -233,18 +233,21 @@ public class EVServerhttp implements Runnable {
 							try {
 								object = new JSONObject(result);
 								int errType =  object.getInt("Error");
-								int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
 								//返回有故障
 								if(errType>0)
 								{
 									tomain1.what=SETERRFAILMAIN;
 									tomain1.obj=object.getString("Message");
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail1]SETERRFAILMAIN","server.txt");
-									//设置本机是否可以使用
-					    			if(CLIENT_STATUS_SERVICE==0)
-					    				ToolClass.setCLIENT_STATUS_SERVICE(true);
-					    			else
-					    				ToolClass.setCLIENT_STATUS_SERVICE(false);
+									if(object.has("CLIENT_STATUS_SERVICE"))
+									{
+										int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
+										//设置本机是否可以使用
+						    			if(CLIENT_STATUS_SERVICE==0)
+						    				ToolClass.setCLIENT_STATUS_SERVICE(true);
+						    			else
+						    				ToolClass.setCLIENT_STATUS_SERVICE(false);
+									}									
 								}
 								else
 								{
@@ -1105,11 +1108,8 @@ public class EVServerhttp implements Runnable {
 							//3.添加params
 							Map<String, String> map = new HashMap<String, String>();  
 							map.put("Token", Tok);  
-							//map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
-							//map.put("LAST_EDIT_TIME", ToolClass.getLasttime());
-							//map.put("LAST_EDIT_TIME", "2016-08-29T10:30:16");
-							map.put("LAST_EDIT_TIME", "");
-							map.put("VMC_NO",vmc_no);
+							map.put("LAST_EDIT_TIME", LAST_EDIT_TIME14);
+							map.put("vmc_no",vmc_no);
 							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+map.toString(),"server.txt");
 							return map;  
 					   }  
@@ -1528,7 +1528,7 @@ public class EVServerhttp implements Runnable {
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","分类["+object2.getString("CLASS_NAME")+"]图片,下载图片...","server.txt");
 					//第二步.准备下载	
-					String serip=httpStr.substring(0,httpStr.lastIndexOf("shj"));
+					String serip=httpStr.substring(0,httpStr.lastIndexOf("/shj"));
 					String url= serip+CLS_URL;	//要提交的目标地址
 					final String ATTIDS=ATT_ID;
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
@@ -1950,7 +1950,7 @@ public class EVServerhttp implements Runnable {
 					{
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品["+object2.getString("product_Name")+"]图片,下载图片...","server.txt");
 						//第二步.准备下载	
-						String serip=httpStr.substring(0,httpStr.lastIndexOf("shj"));
+						String serip=httpStr.substring(0,httpStr.lastIndexOf("/shj"));
 						String url= serip+CLS_URL;	//要提交的目标地址
 						final String ATTIDS=ATT_ID;
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
@@ -3067,11 +3067,21 @@ public class EVServerhttp implements Runnable {
             @Override
             public void run() 
             { 
-			ToolClass.ResetConfigFileServer(object2);
-			Message tomain=mainhand.obtainMessage();
-	  		tomain.what=SETACCOUNTRESETMAIN;
-			tomain.obj="";							   	    
-			mainhand.sendMessage(tomain); // 发送消息
+            	String vmcno="";
+            	//本地VMC_NO
+          		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+        	    // 获取所有收入信息，并存储到List泛型集合中
+            	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+            	if(tb_inaccount!=null)
+            	{
+            		vmcno=tb_inaccount.getDevID().toString();            		
+            	}
+            	
+				ToolClass.ResetConfigFileServer(object2,vmcno);
+				Message tomain=mainhand.obtainMessage();
+		  		tomain.what=SETACCOUNTRESETMAIN;
+				tomain.obj="";							   	    
+				mainhand.sendMessage(tomain); // 发送消息
             }
 
 		}, 1000);
@@ -3169,7 +3179,7 @@ public class EVServerhttp implements Runnable {
   					{
 	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],下载...","server.txt");
 	  					//第二步.准备下载	
-	  					String serip=httpStr.substring(0,httpStr.lastIndexOf('/'));
+	  					String serip=httpStr.substring(0,httpStr.lastIndexOf("/shj"));
 	  					String url= serip+CLS_URL;	//要提交的目标地址
 	  					final String ATTIDS=ATT_ID;
 	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");

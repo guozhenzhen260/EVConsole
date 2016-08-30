@@ -1560,7 +1560,7 @@ public class ToolClass
     /**
      * 重新更新支付宝微信文件,后台服务器下发用
      */
-    public static void ResetConfigFileServer(JSONObject object2) 
+    public static void ResetConfigFileServer(JSONObject object2,String VMC_NO) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1609,6 +1609,7 @@ public class ToolClass
 		            	  &&(me.getKey().equals("alikey")!=true)
 		            	  &&(me.getKey().equals("alisubpartner")!=true)
 		            	  &&(me.getKey().equals("isalisub")!=true)
+		            	  &&(me.getKey().equals("aliprivateKey")!=true)
 		            	  //微信	
 		            	  &&(me.getKey().equals("weiappid")!=true)
 		            	  &&(me.getKey().equals("weimch_id")!=true)
@@ -1620,18 +1621,59 @@ public class ToolClass
 		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
 		        } 	
 		        //支付宝
-		        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
-  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
-  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
-  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
-  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
-  	        	{
-  	        		list2.put("isalisub", "0");
-  	        	}
-  	        	else
-  	        	{
-  	        		list2.put("isalisub", "0.995");
-  	        	}	
+		        int ALIPAYMODE=1;
+		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		        //2.0
+		        if(ALIPAYMODE==2)
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+		        	list2.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
+	  	        	list2.put("aliseller_email", "");
+	  	        	list2.put("alikey", "");
+	  	        	list2.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
+	  	        	list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
+	  	        	{
+	  	        		list2.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		list2.put("isalisub", "0.995");
+	  	        	}
+		        }
+		        //1.0
+		        else
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,1,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+			        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
+	  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+	  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+	  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+	  	        	list2.put("aliprivateKey", "");
+	  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
+	  	        	{
+	  	        		list2.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		list2.put("isalisub", "0.995");
+	  	        	}	
+		        }
   	        	
   	        	//微信
   	        	list2.put("weiappid", object2.get("WX_APP_ID").toString());
@@ -1659,18 +1701,59 @@ public class ToolClass
   	         {  	        	
   	        	JSONObject jsonObject = new JSONObject();
   	            //支付宝
-  	        	jsonObject.put("alipartner", object2.get("ALI_PARTNER"));
-  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL"));
-  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY"));
-  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER"));
-  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
-  	        	{
-  	        		jsonObject.put("isalisub", "0");
-  	        	}
-  	        	else
-  	        	{
-  	        		jsonObject.put("isalisub", "0.995");
-  	        	}	
+  	        	int ALIPAYMODE=1;
+		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		        //2.0
+		        if(ALIPAYMODE==2)
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+	    			jsonObject.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
+	    			jsonObject.put("aliseller_email", "");
+	  	        	jsonObject.put("alikey", "");
+	  	        	jsonObject.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
+	  	        	jsonObject.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0.995");
+	  	        	}
+		        }
+		        //1.0
+		        else
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,1,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+			        jsonObject.put("alipartner", object2.get("ALI_PARTNER").toString());
+	  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+	  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+	  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+	  	        	jsonObject.put("aliprivateKey", "");
+	  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0.995");
+	  	        	}	
+		        }	
   	        	
   	        	//微信
   	        	jsonObject.put("weiappid", object2.get("WX_APP_ID"));

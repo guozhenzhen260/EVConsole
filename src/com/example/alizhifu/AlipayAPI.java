@@ -70,7 +70,7 @@ public class AlipayAPI
 	        	royalty_detail.put("batch_no", 123);
 	        	royalty_detail.put("trans_out_type", "userId");
 	        	royalty_detail.put("trans_out", AlipayConfig.getPartner());//Ö÷ÕËºÅidºÅ
-	        	royalty_detail.put("trans_in", "2088101126708402");//×ÓÕËºÅidºÅ
+	        	royalty_detail.put("trans_in", AlipayConfig.getSubpartner());//×ÓÕËºÅidºÅ
 	        	royalty_detail.put("amount", totalAmount);
 	        	royalty_detail.put("desc", "·ÖÕË²âÊÔ1");
 	        	royalty_detail.put("amount_percentage", "100");
