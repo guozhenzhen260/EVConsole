@@ -1199,13 +1199,13 @@ public class ToolClass
     /**
      * 使用isAdsFile,判断这个广告是已经存在目录中,true存在,false不存在
      */
-    public static boolean isAdsFile(String filename,String TypeStr) 
+    public static boolean isAdsFile(String filename,String TypeStr,String ads) 
     {
     	String  sDir =null;
     	File fileName=null;
-    	boolean fileext=false;
+    	boolean fileext=false;    	
         try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1229,13 +1229,13 @@ public class ToolClass
     }
     
     //将Bitmap图片保存在本地
-    public static boolean  saveBitmaptoads(Bitmap bmp,String filename)
+    public static boolean  saveBitmaptoads(Bitmap bmp,String filename,String ads)
     {      	
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1265,13 +1265,13 @@ public class ToolClass
     /**
      * 使用saveAvitoads,保存这个视频广告到目录中
      */
-    public static File saveAvitoads(String filename,String TypeStr) 
+    public static File saveAvitoads(String filename,String TypeStr,String ads) 
     {
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1289,13 +1289,13 @@ public class ToolClass
     }
     
     //将广告文件删除
-    public static boolean  delAds(String filename,String TypeStr)
+    public static boolean  delAds(String filename,String TypeStr,String ads)
     {      	
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 

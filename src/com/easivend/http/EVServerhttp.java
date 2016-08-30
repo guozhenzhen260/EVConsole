@@ -3161,15 +3161,21 @@ public class EVServerhttp implements Runnable {
   			else
   			{
   				int IS_DELETE=object2.getInt("IS_DELETE");
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],IS_DELETE="+IS_DELETE,"server.txt");
-					
-  				if(ToolClass.isAdsFile(ATT_ID,TypeStr))
+  				int ALERT_TYPE=object2.getInt("ALERT_TYPE");//0广告，1弹窗
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"],ALERT_TYPE="+ALERT_TYPE+",IS_DELETE="+IS_DELETE,"server.txt");
+				final String ads;
+		    	if(ALERT_TYPE==1)
+		    		ads="adshuo";
+		    	else
+		    		ads="ads";
+		    	
+				if(ToolClass.isAdsFile(ATT_ID,TypeStr,ads))
   				{
   					ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]已存在","server.txt");
   					if(IS_DELETE==1)
   					{
   						ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告["+object2.getString("ADV_TITLE")+"]删除","server.txt");
-  						ToolClass.delAds(ATT_ID,TypeStr);
+  						ToolClass.delAds(ATT_ID,TypeStr,ads);
   					}
   				}
   				else 
@@ -3191,7 +3197,7 @@ public class EVServerhttp implements Runnable {
 		  					        new Response.Listener<Bitmap>() {  
 		  					            @Override  
 		  					            public void onResponse(Bitmap response) {  
-		  					            	ToolClass.saveBitmaptoads(response,ATTIDS);
+		  					            	ToolClass.saveBitmaptoads(response,ATTIDS,ads);
 		  					            	try {
 		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片["+object2.getString("ADV_TITLE")+"],下载完成","server.txt");
 		  									} catch (JSONException e) {
@@ -3216,7 +3222,7 @@ public class EVServerhttp implements Runnable {
 	  				    //下载视频
 	  					else if(FileType==2)
 	  					{
-	  						downloadAds(url,ATTIDS,TypeStr);//下载程序
+	  						downloadAds(url,ATTIDS,TypeStr,ads);//下载程序
 	  					}
   					}
   				}
@@ -3282,14 +3288,16 @@ public class EVServerhttp implements Runnable {
   	private String adsurl=null;
   	private String ATTADS=null;
   	private String TypeStr=null;
+  	private String adsstr=null;
 	/**
      * 下载apk广告视频文件
      */
-    private void downloadAds(String str,String ATT_ID,String Type)
+    private void downloadAds(String str,String ATT_ID,String Type,String ads)
     {    	
     	adsurl=str;
     	ATTADS=ATT_ID;
     	TypeStr=Type;
+    	adsstr=ads;
         // 启动新线程下载软件
         new downloadAdsThread().start();
     }
@@ -3318,7 +3326,7 @@ public class EVServerhttp implements Runnable {
                 FileOutputStream fileOutputStream = null;  
                 if (is != null)
                 {  
-                    File file = ToolClass.saveAvitoads(ATTADS,TypeStr);  
+                    File file = ToolClass.saveAvitoads(ATTADS,TypeStr,adsstr);  
                     fileOutputStream = new FileOutputStream(file);  
                     byte[] buf = new byte[1024];  
                     int ch = -1;  
