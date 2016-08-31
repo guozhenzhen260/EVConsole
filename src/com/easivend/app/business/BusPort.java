@@ -403,6 +403,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -455,6 +456,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -498,6 +500,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -550,6 +553,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
