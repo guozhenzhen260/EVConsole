@@ -254,7 +254,29 @@ public class vmc_columnDAO
 		        db.endTransaction();
 		        db.close(); 
 		    }
-  	}	
+  	}
+    //清空该柜全部货道存货数量
+  	public void clearhuoCab(String cabID) 
+  	{       
+            db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+            // 开启一个事务
+    	    db.beginTransaction();
+    	    try {
+	          // 执行布满该柜货道表
+	          db.execSQL("update vmc_column set pathRemain=0,columnStatus=3,isupload=0 where cabID=? and columnStatus<>2 ", 
+	          		new Object[] { cabID});    
+          
+	          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		      db.setTransactionSuccessful();
+		    } catch (Exception e) {
+		        // process it
+		        e.printStackTrace();
+		    } finally {
+		        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+		        db.endTransaction();
+		        db.close(); 
+		    }
+  	}
 	/**
      * 查找一条货道信息
      * 
