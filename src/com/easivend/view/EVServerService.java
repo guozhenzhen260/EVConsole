@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +44,9 @@ import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -73,6 +78,7 @@ public class EVServerService extends Service {
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
     Map<String,String> classjoin = null;//商品类型对应的商品id的map 
+    AlarmManager alarm=null;//闹钟服务
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -578,7 +584,24 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETCLIENTMAIN://子线程接收主线程消息获取设备信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");						
+						int RESTART_SKIP=0;
+				  		String RESTART_TIME="";
+						try 
+						{
+							JSONObject json=new JSONObject(msg.obj.toString());
+							JSONArray array=json.getJSONArray("List");
+							for(int i=0;i<array.length();i++)
+							{
+								JSONObject obj=array.getJSONObject(i);
+								//重启时间
+						  		RESTART_SKIP=obj.getInt("RESTART_SKIP");
+						  		RESTART_TIME=obj.getString("RESTART_TIME");
+							}
+							setshutdownalarm(RESTART_TIME,RESTART_SKIP);//设置闹钟
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						//2>>重置设备后，重置时间
 						LAST_CLIENT_TIME=ToolClass.getLasttime();
 						{
@@ -804,7 +827,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },2*60,2*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
@@ -1511,4 +1534,55 @@ public class EVServerService extends Service {
 //            e.printStackTrace();  
 //        }
     }
+    
+    //设置重启闹钟
+  	private void setshutdownalarm(String RESTART_TIME,int RESTART_SKIP)
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功,重启时间RESTART_SKIP="+RESTART_SKIP+"RESTART_TIME="+RESTART_TIME,"server.txt");						
+  		alarm=(AlarmManager)super.getSystemService(Context.ALARM_SERVICE);//取得闹钟服务
+		
+  		String a[] = RESTART_TIME.split(":"); 
+  		int hour=Integer.parseInt(a[0]);
+  		int minute=Integer.parseInt(a[1]);
+  		int second=Integer.parseInt(a[2]);
+  		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
+                + "HH:mm:ss"); //精确到毫秒 
+  		//整理文件时间当天1点
+    	Calendar todayStart = Calendar.getInstance();  
+    	todayStart.set(Calendar.HOUR_OF_DAY, hour);  
+        todayStart.set(Calendar.MINUTE, minute);  
+        todayStart.set(Calendar.SECOND, second);  
+        todayStart.set(Calendar.MILLISECOND, 0); 
+    	Date date = todayStart.getTime(); 
+        String starttime=tempDate.format(date);
+        ParsePosition posstart = new ParsePosition(0);  
+    	Date dstart = (Date) tempDate.parse(starttime, posstart);
+    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","整理时间="+starttime+",="+todayStart.getTimeInMillis(),"server.txt");
+    	//删除原闹钟
+    	delalarm();
+        //设置新闹钟
+    	Intent intent=new Intent(EVServerService.this,ShutdownAlarmReceiver.class);
+    	intent.setAction("shutdownalarm");
+    	//一旦到时间之后，就跳转到由PendingIntent包装的Intent中，而这个Intent作用是
+    	//跳转到一个广播之中
+    	PendingIntent sender=PendingIntent.getBroadcast(EVServerService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    	//设置闹钟服务
+    	this.alarm.setRepeating(AlarmManager.RTC_WAKEUP, todayStart.getTimeInMillis(),1000*60*60*24, sender);
+    	
+  	}
+  	
+    //删除原闹钟
+  	private void delalarm()
+      {
+      	if(this.alarm!=null)
+      	{
+      		Intent intent=new Intent(EVServerService.this,ShutdownAlarmReceiver.class);
+  	    	intent.setAction("shutdownalarm");
+  	    	//一旦到时间之后，就跳转到由PendingIntent包装的Intent中，而这个Intent作用是
+  	    	//跳转到一个广播之中
+  	    	PendingIntent sender=PendingIntent.getBroadcast(EVServerService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+  	    	//删除闹钟服务
+  	    	this.alarm.cancel(sender);	    	
+      	}
+      }
 }

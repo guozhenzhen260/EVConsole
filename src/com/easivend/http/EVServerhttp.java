@@ -3397,8 +3397,13 @@ public class EVServerhttp implements Runnable {
   		//第一步，获取VMC_NO和密码
   		final String VMC_NO=object2.getString("VMC_NO");
   		final String MANAGER_PASSWORD=object2.getString("MANAGER_PASSWORD");
-  		int CLIENT_STATUS_SERVICE=object2.getInt("CLIENT_STATUS_SERVICE");
-  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","设备VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD+"CLIENT_STATUS_SERVICE="+CLIENT_STATUS_SERVICE,"server.txt");	
+  		int CLIENT_STATUS_SERVICE=object2.getInt("CLIENT_STATUS_SERVICE");//本机状态
+  		//重启时间
+  		int RESTART_SKIP=object2.getInt("RESTART_SKIP");
+  		String RESTART_TIME=object2.getString("RESTART_TIME");
+  		
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","设备VMC_NO="+VMC_NO+",MANAGER_PASSWORD="+MANAGER_PASSWORD+"CLIENT_STATUS_SERVICE="+CLIENT_STATUS_SERVICE
+  				+"RESTART_SKIP="+RESTART_SKIP+"RESTART_TIME="+RESTART_TIME,"server.txt");	
   		zhuheobj.put("AttImg", "");
   		  		
   		try
@@ -3454,7 +3459,7 @@ public class EVServerhttp implements Runnable {
   			//向主线程返回信息
   			Message tomain4=mainhand.obtainMessage();
   			tomain4.what=SETCLIENTMAIN;
-  			tomain4.obj=zhuheclassjson.toString();
+  			tomain4.obj=zhuheclientjson.toString();
   			mainhand.sendMessage(tomain4); // 发送消息  			
   		}		
   		return "";
