@@ -48,7 +48,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         {        	
             ProPicture picture = new ProPicture(proID[i],promarket[i],prosales[i], proImage[i],procount[i]);// 使用标题和图像生成ProPicture对象
             pictures.add(picture);// 将Picture对象添加到泛型集合中
-            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+picture.getProID()+",promarket="+picture.getPromarket()+",prosales="+picture.getProsales()+",proImage="+picture.getProImage()+",procount="+picture.getProcount(),"log.txt");
+            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+picture.getProID()+",promarket="+picture.getPromarket()+",prosales="+picture.getProsales()+",proImage="+picture.getProImage()+",procount="+picture.getProcount(),"log.txt");
         }
     }
 
@@ -126,19 +126,19 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
     			String a[] = pictures.get(arg0).getProImage().split("/");  
     			ATT_ID=a[a.length-1];
     			ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
-    			ToolClass.Log(ToolClass.INFO,"EV_JNI","图片ATT_ID="+ATT_ID,"log.txt");
+    			//ToolClass.Log(ToolClass.INFO,"EV_JNI","图片ATT_ID="+ATT_ID,"log.txt");
     		}    		
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<图片pro="+pictures.get(arg0).getProID()+",addr="+pictures.get(arg0).getProImage()+",ATT_ID="+ATT_ID,"log.txt");
+        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<图片pro="+pictures.get(arg0).getProID()+",addr="+pictures.get(arg0).getProImage()+",ATT_ID="+ATT_ID,"log.txt");
         	//图片没有下载下来
         	if(ToolClass.isImgFile(ATT_ID)==false)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","商品["+pictures.get(arg0).getProID()+"]图片不存在","log.txt");
+				//ToolClass.Log(ToolClass.INFO,"EV_JNI","商品["+pictures.get(arg0).getProID()+"]图片不存在","log.txt");
 				viewHolder.image.setImageResource(R.drawable.wutupian);
 			}
         	//图片有下载下来
 			else 
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","商品["+pictures.get(arg0).getProID()+"]显示图片","log.txt");
+				//ToolClass.Log(ToolClass.INFO,"EV_JNI","商品["+pictures.get(arg0).getProID()+"]显示图片","log.txt");
 	        	if(Integer.parseInt(pictures.get(arg0).getProcount())>0)
 		        {
 		        	/*为什么图片一定要转化为 Bitmap格式的！！ */
@@ -152,21 +152,21 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
 		            Bitmap photo = ToolClass.getLoacalBitmap(pictures.get(arg0).getProImage()); //从本地取图片(在cdcard中获取)  //
 		            if(photo!=null)
 		            {		   
-		            	//1.加载水印
-			            Bitmap mark=ToolClass.getMark();
-			            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+pictures.get(arg0).getProID()+"overproImage="+pictures.get(arg0).getProImage(),"log.txt");
-			            Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
-			            Canvas canvas = new Canvas(photoMark);  
-			            canvas.drawBitmap(photo, 0, 0, null);  
-			            canvas.drawBitmap(mark, 61, 117, null);  
-			            canvas.save(Canvas.ALL_SAVE_FLAG);  
-			            canvas.restore();
+//		            	//1.加载水印
+//			            Bitmap mark=ToolClass.getMark();
+//			            //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<proID="+pictures.get(arg0).getProID()+"overproImage="+pictures.get(arg0).getProImage(),"log.txt");
+//			            Bitmap photoMark = Bitmap.createBitmap(photo.getWidth(), photo.getHeight(), Config.ARGB_8888);  
+//			            Canvas canvas = new Canvas(photoMark);  
+//			            canvas.drawBitmap(photo, 0, 0, null);  
+//			            canvas.drawBitmap(mark, 61, 117, null);  
+//			            canvas.save(Canvas.ALL_SAVE_FLAG);  
+//			            canvas.restore();
 		            	//2.设置滤镜，将商品图片变暗:这三个负数的值越大，图片就会越暗
 		            	final float[] BT_SELECTED = new float[]{ 1, 0, 0, 0, -170, 0, 1,
 		        				0, 0, -170, 0, 0, 1, 0, -170, 0, 0, 0, 1, 0 };
 		            	viewHolder.image.setDrawingCacheEnabled(true);
 		            	viewHolder.image.setColorFilter( new ColorMatrixColorFilter(BT_SELECTED) ) ; 
-		            	viewHolder.image.setImageBitmap(photoMark);// 设置图像的二进制值
+		            	viewHolder.image.setImageBitmap(photo);// 设置图像的二进制值
 		            	
 		            }
 		        }
@@ -174,7 +174,7 @@ public class ProPictureAdapter extends BaseAdapter {// 创建基于BaseAdapter的子类
         }
         else
         {
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无图片pro="+pictures.get(arg0).getProID()+","+pictures.get(arg0).getProImage(),"log.txt");
+        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无图片pro="+pictures.get(arg0).getProID()+","+pictures.get(arg0).getProImage(),"log.txt");
         	viewHolder.image.setImageResource(R.drawable.wutupian);
 		}
         
