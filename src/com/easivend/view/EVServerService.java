@@ -827,7 +827,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },2*60,2*60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
@@ -1547,17 +1547,34 @@ public class EVServerService extends Service {
   		int second=Integer.parseInt(a[2]);
   		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
                 + "HH:mm:ss"); //精确到毫秒 
-  		//整理文件时间当天1点
+  		//整理时间
     	Calendar todayStart = Calendar.getInstance();  
     	todayStart.set(Calendar.HOUR_OF_DAY, hour);  
         todayStart.set(Calendar.MINUTE, minute);  
         todayStart.set(Calendar.SECOND, second);  
         todayStart.set(Calendar.MILLISECOND, 0); 
+        
+        Calendar nowdate = Calendar.getInstance();//当前时间 
+        int i=todayStart.compareTo(nowdate);
+        if(i>0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间比当前时间晚","server.txt");
+        }
+        else if(i==0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间与当前时间相同","server.txt");
+        }
+        if(i<0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间比当前时间早，延后一天","server.txt");
+        	todayStart.add(todayStart.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动
+        }
+        
     	Date date = todayStart.getTime(); 
         String starttime=tempDate.format(date);
         ParsePosition posstart = new ParsePosition(0);  
     	Date dstart = (Date) tempDate.parse(starttime, posstart);
-    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","整理时间="+starttime+",="+todayStart.getTimeInMillis(),"server.txt");
+    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间="+starttime+",="+todayStart.getTimeInMillis(),"server.txt");
     	//删除原闹钟
     	delalarm();
         //设置新闹钟
@@ -1567,7 +1584,7 @@ public class EVServerService extends Service {
     	//跳转到一个广播之中
     	PendingIntent sender=PendingIntent.getBroadcast(EVServerService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     	//设置闹钟服务
-    	this.alarm.setRepeating(AlarmManager.RTC_WAKEUP, todayStart.getTimeInMillis(),1000*60*60*24, sender);
+    	this.alarm.setRepeating(AlarmManager.RTC_WAKEUP, todayStart.getTimeInMillis(),1000*60*60*24*RESTART_SKIP, sender);
     	
   	}
   	
