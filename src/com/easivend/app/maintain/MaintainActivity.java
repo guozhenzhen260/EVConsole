@@ -138,6 +138,19 @@ public class MaintainActivity extends Activity
         		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
         		//dogBroadreceiver.sendBroadcast(intent); 
         		sendBroadcast(intent); 
+        		//==========
+            	//EVDog服务相关
+            	//==========
+            	//发送指令广播给DogService
+	    		Intent intent2=new Intent();
+	    		intent2.putExtra("isallopen", isallopen);
+	    		if(isallopen==1)
+	    			intent2.putExtra("watchfeed", 1);
+	    		else
+	    			intent2.putExtra("watchfeed", 0);	
+	    		intent2.setAction("android.intent.action.watchdog");//action与接收器相同
+	    		//dogBroadreceiver.sendBroadcast(intent); 
+	    		sendBroadcast(intent2);
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
@@ -349,6 +362,19 @@ public class MaintainActivity extends Activity
 		        		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
 		        		//dogBroadreceiver.sendBroadcast(intent);
 		        		sendBroadcast(intent); 
+		        		//==========
+		            	//EVDog服务相关
+		            	//==========
+		            	//发送指令广播给DogService
+			    		Intent intent2=new Intent();
+			    		intent2.putExtra("isallopen", isallopen);
+			    		if(isallopen==1)
+			    			intent2.putExtra("watchfeed", 1);
+			    		else
+			    			intent2.putExtra("watchfeed", 0);	
+			    		intent2.setAction("android.intent.action.watchdog");//action与接收器相同
+			    		//dogBroadreceiver.sendBroadcast(intent); 
+			    		sendBroadcast(intent2);
 			        }
 				}
 			}
@@ -374,7 +400,7 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=签到成功","log.txt");			
 				if(dialog.isShowing())
 					dialog.dismiss();
-				timer.scheduleWithFixedDelay(task, 5*60,15*60, TimeUnit.SECONDS);       // timeTask 
+				timer.scheduleWithFixedDelay(task, 10,10, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
 					issale=true;
@@ -397,7 +423,7 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=失败，网络故障","log.txt");	
 				if(dialog.isShowing())
 					dialog.dismiss();
-				timer.scheduleWithFixedDelay(task, 10, 5*60, TimeUnit.SECONDS);       // timeTask 
+				timer.scheduleWithFixedDelay(task, 5*60,15*60, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
 					issale=true;
@@ -526,6 +552,19 @@ public class MaintainActivity extends Activity
 
                 		}, 1000);
                 	}
+                	//==========
+                	//EVDog服务相关
+                	//==========
+                	//发送指令广播给DogService
+		    		Intent intent=new Intent();
+		    		intent.putExtra("isallopen", isallopen);
+		    		if(isallopen==1)
+		    			intent.putExtra("watchfeed", 1);
+		    		else
+		    			intent.putExtra("watchfeed", 0);	
+		    		intent.setAction("android.intent.action.watchdog");//action与接收器相同
+		    		//dogBroadreceiver.sendBroadcast(intent); 
+		    		sendBroadcast(intent);
                 	//=============
                 	//COM服务相关
                 	//=============
