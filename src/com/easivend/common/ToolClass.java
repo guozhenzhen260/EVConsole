@@ -3199,7 +3199,7 @@ public class ToolClass
 
         for (RunningServiceInfo runningServiceInfo : services) 
         { 
-        	ToolClass.Log(ToolClass.INFO,"EV_DOG","service appName:"+runningServiceInfo.service.getClassName()+"-->pack:"+runningServiceInfo.service.getPackageName(),"dog.txt");
+        	//ToolClass.Log(ToolClass.INFO,"EV_DOG","service appName:"+runningServiceInfo.service.getClassName()+"-->pack:"+runningServiceInfo.service.getPackageName(),"dog.txt");
             if (runningServiceInfo.service.getClassName().equals(serviceClassName))
             { 
                 return true; 

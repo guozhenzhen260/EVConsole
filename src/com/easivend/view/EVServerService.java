@@ -827,7 +827,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },2*60,2*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },1*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
@@ -1482,15 +1482,34 @@ public class EVServerService extends Service {
 	   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
 	   		        if(attimg2.equals("APK"))
 	   		        {
-	   		        	ATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
-	   		        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
-	   		        	break;
+	   		        	String tempATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
+	   		        	//留最后安装
+	   		        	if(tempATTIDS.equals("EVConsole.apk"))
+	   		        	{
+	   		        		ATTIDS=tempATTIDS;
+	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]待会安装...","server.txt");
+		   		        	continue;
+	   		        	}
+	   		        	else
+	   		        	{
+	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+tempATTIDS+"]开始安装...","server.txt");
+		   		        	//1.有提示的安装
+		   		             File fileName = ToolClass.setAPKFile(tempATTIDS);
+		   		             Intent intent = new Intent();  
+		   		             //执行动作  
+		   		             intent.setAction(Intent.ACTION_VIEW); 
+		   		             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+		   		             //执行的数据类型  
+		   		             intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
+		   		             startActivity(intent);
+	   		        	}
 	   		        }
 	   			  }
 	   			}
 	   		}
         }
         
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
         //1.有提示的安装
         File fileName = ToolClass.setAPKFile(ATTIDS);
         Intent intent = new Intent();  
