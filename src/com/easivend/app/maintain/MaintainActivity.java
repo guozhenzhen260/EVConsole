@@ -423,7 +423,7 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=失败，网络故障","log.txt");	
 				if(dialog.isShowing())
 					dialog.dismiss();
-				timer.scheduleWithFixedDelay(task, 5*60,15*60, TimeUnit.SECONDS);       // timeTask 
+				timer.scheduleWithFixedDelay(task, 10,10, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
 					issale=true;
@@ -463,9 +463,7 @@ public class MaintainActivity extends Activity
 			switch(EVWhat)
 			{
 			case COMThread.EV_CHECKALLMAIN:
-				if(dialog.isShowing())
-					dialog.dismiss();
-				dialog= ProgressDialog.show(MaintainActivity.this,"正在同步服务器","请稍候片刻...");
+				dialog.setTitle("正在同步服务器");
 				//ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 货道查询全部","com.txt");
 				serializableMap = (SerializableMap) bundle.get("result");
 				Map<String, Integer> Set=serializableMap.getMap();
