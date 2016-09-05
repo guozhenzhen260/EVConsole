@@ -5,17 +5,21 @@
     android:orientation="vertical" >
     <TableRow>
         <TextView 
-            android:text = "输入数值:"
-            android:layout_marginLeft="20dip"
-            android:textSize="8pt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:minWidth="160px"  
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="#FF0000"  
+			android:text = "输入数值:"            
         />
         <EditText 
-            android:width="60pt"
-            android:numeric="integer"
             android:id="@+id/dialoginte"
-            android:layout_height="wrap_content"
+            android:minWidth="150px"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+            android:numeric="integer"            
+            android:textSize="40sp"
+			android:textStyle="bold"
+			android:text=""	
         />
     </TableRow>
 	<View                              

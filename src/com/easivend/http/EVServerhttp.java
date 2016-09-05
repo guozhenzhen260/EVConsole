@@ -3188,7 +3188,8 @@ public class EVServerhttp implements Runnable {
 	  					String serip=httpStr.substring(0,httpStr.lastIndexOf("/shj"));
 	  					String url= serip+CLS_URL;	//要提交的目标地址
 	  					final String ATTIDS=ATT_ID;
-	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+	  					final String TypeStrs=TypeStr;
+	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"."+TypeStrs+"]url["+url+"]","server.txt");
 	  					//下载图片
 	  					if(FileType==1)
 	  					{
@@ -3197,7 +3198,7 @@ public class EVServerhttp implements Runnable {
 		  					        new Response.Listener<Bitmap>() {  
 		  					            @Override  
 		  					            public void onResponse(Bitmap response) {  
-		  					            	ToolClass.saveBitmaptoads(response,ATTIDS,ads);
+		  					            	ToolClass.saveBitmaptoads(response,TypeStrs,ATTIDS,ads);
 		  					            	try {
 		  										ToolClass.Log(ToolClass.INFO,"EV_SERVER","广告图片["+object2.getString("ADV_TITLE")+"],下载完成","server.txt");
 		  									} catch (JSONException e) {

@@ -1229,7 +1229,7 @@ public class ToolClass
     }
     
     //将Bitmap图片保存在本地
-    public static boolean  saveBitmaptoads(Bitmap bmp,String filename,String ads)
+    public static boolean  saveBitmaptoads(Bitmap bmp,String TypeStr,String filename,String ads)
     {      	
     	String  sDir =null;
     	File fileName=null;
@@ -1244,7 +1244,7 @@ public class ToolClass
         		dirName.mkdirs(); 
              }
         	 
-        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);         	
         	//如果不存在，则开始保存图片
         	if(!fileName.exists())
         	{  
@@ -2407,8 +2407,12 @@ public class ToolClass
      */
 	public static Bitmap getLoacalBitmap(String url) {
         try {
+        	 BitmapFactory.Options opt = new BitmapFactory.Options();  
+        	 opt.inPreferredConfig = Bitmap.Config.RGB_565;   
+        	 opt.inPurgeable = true;  
+        	 opt.inInputShareable = true;  
              FileInputStream fis = new FileInputStream(url);
-             return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
+             return BitmapFactory.decodeStream(fis,null,opt);  ///把流转化为Bitmap图片        
 
           } catch (FileNotFoundException e) {
              e.printStackTrace();
