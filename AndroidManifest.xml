@@ -230,6 +230,14 @@
 				<action android:name="setalarm" />
 			</intent-filter>
 		</receiver>
+		<receiver
+			android:name="com.easivend.view.ShutdownAlarmReceiver"
+			android:enabled="true" 
+			android:process=":remote">
+			<intent-filter>
+				<action android:name="shutdownalarm" />
+			</intent-filter>
+		</receiver>
 	    <service
             android:name="com.easivend.view.DogService"/>
 	    <service

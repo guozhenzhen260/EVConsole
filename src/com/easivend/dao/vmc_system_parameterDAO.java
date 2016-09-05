@@ -233,6 +233,49 @@ public class vmc_system_parameterDAO
 	 		db.close(); 
 	    }
 	} 
+	//修改支付宝类型是1.0还是2.0
+	public void updatezhifubao(Tb_vmc_system_parameter tb_vmc_system_parameter)throws SQLException
+	{
+		int max=0;
+		//取得排序值
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select count(devID) from vmc_system_parameter", null);// 获取收入信息的记录数
+        if (cursor.moveToNext()) {// 判断Cursor中是否有数据
+
+            max=cursor.getInt(0);// 返回总记录数
+        }
+     
+        // 开启一个事务
+	    db.beginTransaction();
+	    try {
+	        if(max>0)	        
+	        {
+	            // 执行添加商品		
+	     		db.execSQL(
+	     				"update vmc_system_parameter " +
+	     				"set " +
+	     				"zhifubaoer=? " +
+	     				"where devID=?" 
+	     				,
+	     		        new Object[] { tb_vmc_system_parameter.getZhifubaoer(),tb_vmc_system_parameter.getDevID()});
+	     		
+	            }		           
+	        
+	        // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+		    db.setTransactionSuccessful();
+	    } catch (Exception e) {
+	        // process it
+	        e.printStackTrace();
+	    } finally {
+	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+	        db.endTransaction();
+	        if (!cursor.isClosed()) 
+	 		{  
+	 			cursor.close();  
+	 		}  
+	 		db.close(); 
+	    }
+	} 
 	/**
      * 查找一条商品信息
      * 

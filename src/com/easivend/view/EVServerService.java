@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +44,9 @@ import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -64,13 +69,18 @@ public class EVServerService extends Service {
     EVServerhttp serverhttp=null;
     LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
-    Map<String,Integer> huoSet=null;
-    private String LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+    ScheduledExecutorService terminal = Executors.newScheduledThreadPool(1);
+	Map<String,Integer> huoSet=null;
+    private String LAST_CLASS_TIME="",LAST_CLASSJOIN_TIME="",LAST_PRODUCT_TIME="",
+    		LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
     		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="",
     		LAST_EVENT_TIME="",LAST_DEMO_TIME="";
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
+    Map<String,String> classjoin = null;//商品类型对应的商品id的map 
+    AlarmManager alarm=null;//闹钟服务
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -94,7 +104,7 @@ public class EVServerService extends Service {
 				vmc_auth_code=bundle.getString("vmc_auth_code");
 				SerializableMap serializableMap = (SerializableMap) bundle.get("huoSet");
 				huoSet=serializableMap.getMap();
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","开机签到receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
 						+"huoSet="+huoSet.toString(),"server.txt");				
 				//处理接收到的内容,发送签到命令到子线程中
 				//初始化一:发送签到指令
@@ -114,7 +124,26 @@ public class EVServerService extends Service {
 	    		childmsg.obj=ev;
 	    		childhand.sendMessage(childmsg);
 	    		ischeck=false;
-	    		break;    			
+	    		break;    	
+	    	//签到验证
+			case EVServerhttp.SETCHECKCMDCHILD:
+				//处理接收到的内容,发送签到命令到子线程中
+				childhand=serverhttp.obtainHandler();
+	    		Message childheartmsg6=childhand.obtainMessage();
+	    		childheartmsg6.what=EVServerhttp.SETCHECKCMDCHILD;
+	    		JSONObject ev6=null;
+	    		try {
+	    			ev6=new JSONObject();
+	    			ev6.put("vmc_no", bundle.getString("vmc_no"));
+	    			ev6.put("vmc_auth_code", bundle.getString("vmc_auth_code"));
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev6.toString(),"server.txt");
+	    		} catch (JSONException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	    		childheartmsg6.obj=ev6;
+	    		childhand.sendMessage(childheartmsg6);
+				break;
     		//发送交易记录命令到子线程中
 			case EVServerhttp.SETRECORDCHILD://子线程接收主线程消息获取心跳信息
 				childhand=serverhttp.obtainHandler();
@@ -157,15 +186,7 @@ public class EVServerService extends Service {
 		localBroadreceiver.registerReceiver(receiver,filter);						
 	}
 
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub		
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service destroy","server.txt");
-		//解除注册接收器
-		localBroadreceiver.unregisterReceiver(receiver);
-		super.onDestroy();
-	}
-	
+		
 	@Override
 	@Deprecated
 	public void onStart(Intent intent, int startId) {
@@ -194,7 +215,7 @@ public class EVServerService extends Service {
 						break;					
 					case EVServerhttp.SETMAIN://子线程接收主线程消息签到完成
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
-						//初始化二:获取设备状态						
+						//初始化二:上报设备状态						
 		        		int bill_err=ToolClass.getBill_err();
 						int coin_err=ToolClass.getCoin_err();
 		    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备bill_err="+bill_err
@@ -219,6 +240,24 @@ public class EVServerService extends Service {
 						//上传设备信息	
 					case EVServerhttp.SETERRFAILDEVSTATUMAIN://子线程接收主线程消息上传设备信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息失败，原因="+msg.obj.toString(),"server.txt");
+						//重新签到
+						//处理接收到的内容,发送签到命令到子线程中
+						childhand=serverhttp.obtainHandler();
+			    		Message childheartmsg6=childhand.obtainMessage();
+			    		childheartmsg6.what=EVServerhttp.SETCHECKCHILD;
+			    		JSONObject ev6=null;
+			    		try {
+			    			ev6=new JSONObject();
+			    			ev6.put("vmc_no", vmc_no);
+			    			ev6.put("vmc_auth_code", vmc_auth_code);
+			    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.1="+ev6.toString(),"server.txt");
+			    		} catch (JSONException e) {
+			    			// TODO Auto-generated catch block
+			    			e.printStackTrace();
+			    		}
+			    		childheartmsg6.obj=ev6;
+			    		childhand.sendMessage(childheartmsg6);
+			    		tokenno=0;
 						//返回给activity广播
 						intent=new Intent();
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
@@ -226,19 +265,19 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETDEVSTATUMAIN://子线程接收主线程消息获取设备信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报设备信息成功","server.txt");
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service LAST_EDIT_TIME="+LAST_EDIT_TIME,"server.txt");
 						//初始化二.1:获取商品分类信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg5=childhand.obtainMessage();
 		        		childheartmsg5.what=EVServerhttp.SETCLASSCHILD;
-		        		childheartmsg5.obj=LAST_EDIT_TIME;
+		        		childheartmsg5.obj=LAST_CLASS_TIME;
 		        		childhand.sendMessage(childheartmsg5);	
 						
 						break;	
 					//获取商品分类信息	
 					case EVServerhttp.SETERRFAILCLASSMAIN://子线程接收主线程消息获取商品分类信息失败
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报商品分类信息失败，原因="+msg.obj.toString(),"server.txt");
 						//返回给activity广播
 						intent=new Intent();
 						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
@@ -253,14 +292,51 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}						
-						//初始化三:获取商品信息
+						}		
+						//初始化二.2:获取商品分类对应的商品信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg2=childhand.obtainMessage();
-		        		childmsg2.what=EVServerhttp.SETPRODUCTCHILD;
-		        		childmsg2.obj=LAST_EDIT_TIME;
+		        		childmsg2.what=EVServerhttp.SETJOINCLASSCHILD;
+		        		childmsg2.obj=LAST_CLASSJOIN_TIME;
 		        		childhand.sendMessage(childmsg2);
 						break;
+					//获取商品分类对应的商品信息	
+					case EVServerhttp.SETERRFAILJOINCLASSMAIN://子线程接收主线程消息获取商品分类对应的商品信息失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报商品分类信息对应的商品失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETJOINCLASSMAIN://子线程接收主线程消息获取商品分类对应的商品信息
+						try 
+						{
+							JSONObject json=new JSONObject(msg.obj.toString());
+							JSONArray array=json.getJSONArray("List");
+							classjoin=new HashMap<String, String>();
+							for(int i=0;i<array.length();i++)
+							{
+								JSONObject obj=array.getJSONObject(i);
+								classjoin.put(obj.getString("PRODUCT_NO"), obj.getString("CLASS_CODE"));
+								//用于签到完成后，更新时间段
+								if(ischeck==true) 
+								{
+									LAST_CLASSJOIN_TIME=ToolClass.getLasttime();
+								}
+							}
+							ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品分类信息对应的商品成功="+classjoin.toString(),"server.txt");
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+						//初始化三:获取商品信息
+						childhand=serverhttp.obtainHandler();
+		        		Message childmsg5=childhand.obtainMessage();
+		        		childmsg5.what=EVServerhttp.SETPRODUCTCHILD;
+		        		childmsg5.obj=LAST_PRODUCT_TIME;
+		        		childhand.sendMessage(childmsg5);
+						break;	
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
 						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品信息失败，原因="+msg.obj.toString(),"server.txt");
@@ -429,7 +505,7 @@ public class EVServerService extends Service {
 							childhand=serverhttp.obtainHandler();
 			        		Message childheartmsg3=childhand.obtainMessage();
 			        		childheartmsg3.what=EVServerhttp.SETACCOUNTCHILD;
-			        		//1>>刚开机不重置时间：这样开机后就好会马上设置一次账号
+			        		//1>>刚开机不重置时间：这样开机后就会马上设置一次账号
 			        		childheartmsg3.obj=LAST_ACCOUNT_TIME;
 			        		childhand.sendMessage(childheartmsg3);
 						}
@@ -502,7 +578,24 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETCLIENTMAIN://子线程接收主线程消息获取设备信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功","server.txt");						
+						int RESTART_SKIP=0;
+				  		String RESTART_TIME="";
+						try 
+						{
+							JSONObject json=new JSONObject(msg.obj.toString());
+							JSONArray array=json.getJSONArray("List");
+							for(int i=0;i<array.length();i++)
+							{
+								JSONObject obj=array.getJSONObject(i);
+								//重启时间
+						  		RESTART_SKIP=obj.getInt("RESTART_SKIP");
+						  		RESTART_TIME=obj.getString("RESTART_TIME");
+							}
+							setshutdownalarm(RESTART_TIME,RESTART_SKIP);//设置闹钟
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						//2>>重置设备后，重置时间
 						LAST_CLIENT_TIME=ToolClass.getLasttime();
 						{
@@ -605,10 +698,30 @@ public class EVServerService extends Service {
 							intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
 							localBroadreceiver.sendBroadcast(intent);
 							ischeck=true;
+							LAST_CLASS_TIME=ToolClass.getLasttime();
+							LAST_CLASSJOIN_TIME=ToolClass.getLasttime();
+							LAST_PRODUCT_TIME=ToolClass.getLasttime();
 							LAST_EDIT_TIME=ToolClass.getLasttime();
 						}
 							        		
 						break;
+						//签到验证
+					case EVServerhttp.SETERRFAILDCHECKCMDMAIN://子线程接收主线程消息签到失败
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到失败，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETERRFAILDCHECKCMDMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);	
+						break;
+					case EVServerhttp.SETCHECKCMDMAIN://子线程接收主线程消息签到完成
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 签到成功","server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETCHECKCMDMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;	
 						
 						//取货码比较特殊，不能用作复制的例子
 						//获取取货码返回	
@@ -655,8 +768,7 @@ public class EVServerService extends Service {
   		serverhttp=new EVServerhttp(mainhand);
   		thread=new Thread(serverhttp,"thread");
   		thread.start();
-  		//启动设备同步定时器
-  		ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+  		//启动设备同步定时器  		
   		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -713,7 +825,6 @@ public class EVServerService extends Service {
   		//*************
   		//启动线程监控定时器
   		//*************
-  		ScheduledExecutorService terminal = Executors.newScheduledThreadPool(1);
   		terminal.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -725,7 +836,7 @@ public class EVServerService extends Service {
 	        		thread=new Thread(serverhttp,"thread");
 	          		thread.start();
    
-    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","线程重启receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
     						+"huoSet="+huoSet.toString(),"server.txt");				
     				//处理接收到的内容,发送签到命令到子线程中
     				//初始化一:发送签到指令
@@ -791,6 +902,11 @@ public class EVServerService extends Service {
 	        	{
 	        		classDAO.addorupdate(tb_vmc_class);// 修改
 	        	}
+	        	//用于签到完成后，更新时间段
+				if(ischeck==true) 
+				{
+					LAST_CLASS_TIME=ToolClass.getLasttime();
+				}
 			}
 			
 		}
@@ -807,15 +923,24 @@ public class EVServerService extends Service {
 		{
 			JSONObject object2=arr1.getJSONObject(i);
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品="+i+"txt="+object2.toString(),"server.txt");
-			                         
+			//获取本商品是否有对应的分类信息
+			String prono=object2.getString("product_NO");
+			if(classjoin.containsKey(prono))
+			{
+				object2.put("product_Class_NO", classjoin.get(prono));
+			}
+			else
+			{
+				object2.put("product_Class_NO", "");
+			}	
 			String product_Class_NO=(ToolClass.isEmptynull(object2.getString("product_Class_NO")))?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			String product_TXT=object2.getString("product_TXT");
 			//用于签到完成后，更新商品信息时间段
-//			if(ischeck==true) 
-//			{
-//				LAST_EDIT_TIME=ToolClass.getLasttime();
-//			}
+			if(ischeck==true) 
+			{
+				LAST_PRODUCT_TIME=ToolClass.getLasttime();
+			}
 			// 创建InaccountDAO对象
 			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
             //创建Tb_inaccount对象
@@ -1306,6 +1431,77 @@ public class EVServerService extends Service {
         boolean result = false;  
         
         ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
+        String attimg=ATTIDS.substring(ATTIDS.lastIndexOf(".") + 1).toUpperCase();
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg+"]","server.txt");
+        //是压缩包,解压缩
+        if(attimg.equals("RAR")||attimg.equals("ZIP"))
+        {
+        	//1.解压缩
+        	String zipFile = ToolClass.setAPKFile(ATTIDS).toString();
+        	String upzipFile=ToolClass.getEV_DIR()+File.separator+"APKFile"+File.separator;
+	  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<zipFile="+zipFile+" upzipFile="+upzipFile,"server.txt"); 
+	  		if(attimg.equals("RAR"))
+	  		{
+	  			try {
+		  			XZip.unRarFile(zipFile, upzipFile);
+		  		} catch (Exception e) {
+		  			// TODO Auto-generated catch block
+		  			e.printStackTrace();
+		  		}
+	  		}
+	  		else if(attimg.equals("ZIP"))
+	  		{
+		  		try {
+		  			XZip.UnZipFolder(zipFile, upzipFile);
+		  		} catch (Exception e) {
+		  			// TODO Auto-generated catch block
+		  			e.printStackTrace();
+		  		}
+	  		}
+	  		//2.遍历这个目录
+	  		File dirName = new File(upzipFile);
+	  		//遍历这个文件夹里的所有文件
+	   		File[] files = dirName.listFiles();
+	   		if (files.length > 0) 
+	   		{  
+	   			for (int i = 0; i < files.length; i++) 
+	   			{
+	   			  if(!files[i].isDirectory())
+	   			  {	
+	   				String filename=files[i].toString();
+	   				ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断安装目录内文件="+filename,"server.txt"); 
+	   				String attimg2=filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+	   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
+	   		        if(attimg2.equals("APK"))
+	   		        {
+	   		        	String tempATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
+	   		        	//留最后安装
+	   		        	if(tempATTIDS.equals("EVConsole.apk"))
+	   		        	{
+	   		        		ATTIDS=tempATTIDS;
+	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]待会安装...","server.txt");
+		   		        	continue;
+	   		        	}
+	   		        	else
+	   		        	{
+	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+tempATTIDS+"]开始安装...","server.txt");
+		   		        	//1.有提示的安装
+		   		             File fileName = ToolClass.setAPKFile(tempATTIDS);
+		   		             Intent intent = new Intent();  
+		   		             //执行动作  
+		   		             intent.setAction(Intent.ACTION_VIEW); 
+		   		             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+		   		             //执行的数据类型  
+		   		             intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
+		   		             startActivity(intent);
+	   		        	}
+	   		        }
+	   			  }
+	   			}
+	   		}
+        }
+        
+        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
         //1.有提示的安装
         File fileName = ToolClass.setAPKFile(ATTIDS);
         Intent intent = new Intent();  
@@ -1349,4 +1545,84 @@ public class EVServerService extends Service {
 //            e.printStackTrace();  
 //        }
     }
+    
+    //设置重启闹钟
+  	private void setshutdownalarm(String RESTART_TIME,int RESTART_SKIP)
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取设备信息成功,重启时间RESTART_SKIP="+RESTART_SKIP+"RESTART_TIME="+RESTART_TIME,"server.txt");						
+  		alarm=(AlarmManager)super.getSystemService(Context.ALARM_SERVICE);//取得闹钟服务
+		
+  		String a[] = RESTART_TIME.split(":"); 
+  		int hour=Integer.parseInt(a[0]);
+  		int minute=Integer.parseInt(a[1]);
+  		int second=Integer.parseInt(a[2]);
+  		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd" + " "  
+                + "HH:mm:ss"); //精确到毫秒 
+  		//整理时间
+    	Calendar todayStart = Calendar.getInstance();  
+    	todayStart.set(Calendar.HOUR_OF_DAY, hour);  
+        todayStart.set(Calendar.MINUTE, minute);  
+        todayStart.set(Calendar.SECOND, second);  
+        todayStart.set(Calendar.MILLISECOND, 0); 
+        
+        Calendar nowdate = Calendar.getInstance();//当前时间 
+        int i=todayStart.compareTo(nowdate);
+        if(i>0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间比当前时间晚","server.txt");
+        }
+        else if(i==0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间与当前时间相同","server.txt");
+        }
+        if(i<0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间比当前时间早，延后一天","server.txt");
+        	todayStart.add(todayStart.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动
+        }
+        
+    	Date date = todayStart.getTime(); 
+        String starttime=tempDate.format(date);
+        ParsePosition posstart = new ParsePosition(0);  
+    	Date dstart = (Date) tempDate.parse(starttime, posstart);
+    	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间="+starttime+",="+todayStart.getTimeInMillis(),"server.txt");
+    	//删除原闹钟
+    	delalarm();
+        //设置新闹钟
+    	Intent intent=new Intent(EVServerService.this,ShutdownAlarmReceiver.class);
+    	intent.setAction("shutdownalarm");
+    	//一旦到时间之后，就跳转到由PendingIntent包装的Intent中，而这个Intent作用是
+    	//跳转到一个广播之中
+    	PendingIntent sender=PendingIntent.getBroadcast(EVServerService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    	//设置闹钟服务
+    	this.alarm.setRepeating(AlarmManager.RTC_WAKEUP, todayStart.getTimeInMillis(),1000*60*60*24*RESTART_SKIP, sender);
+    	
+  	}
+  	
+    //删除原闹钟
+  	private void delalarm()
+      {
+      	if(this.alarm!=null)
+      	{
+      		Intent intent=new Intent(EVServerService.this,ShutdownAlarmReceiver.class);
+  	    	intent.setAction("shutdownalarm");
+  	    	//一旦到时间之后，就跳转到由PendingIntent包装的Intent中，而这个Intent作用是
+  	    	//跳转到一个广播之中
+  	    	PendingIntent sender=PendingIntent.getBroadcast(EVServerService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+  	    	//删除闹钟服务
+  	    	this.alarm.cancel(sender);	    	
+      	}
+      }
+  	
+  	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub		
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service destroy","server.txt");
+		//解除注册接收器
+		localBroadreceiver.unregisterReceiver(receiver);
+		//关闭自检重启定时器
+		timer.shutdown();
+		terminal.shutdown();
+		super.onDestroy();
+	}
 }

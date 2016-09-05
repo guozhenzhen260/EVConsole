@@ -183,6 +183,20 @@
 			        android:layout_below="@id/txtextracom"
 			        android:background="@drawable/button_selector"
 			        android:text="清除商品信息" />   
+			  <Button
+			        android:id="@+id/btnDelImg"
+			        android:layout_width="150dp"
+					android:layout_height="100dp" 
+			        android:layout_below="@id/btnDel"
+			        android:background="@drawable/button_selector"
+			        android:text="清除商品图片缓存" />
+			  <Button
+			        android:id="@+id/btnDelads"
+			        android:layout_width="150dp"
+					android:layout_height="100dp" 
+			        android:layout_below="@id/btnDelImg"
+			        android:background="@drawable/button_selector"
+			        android:text="清除广告缓存" />         
         </RelativeLayout>
 	</ScrollView>
 </RelativeLayout>

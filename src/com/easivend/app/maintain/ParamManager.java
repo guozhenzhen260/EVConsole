@@ -1,7 +1,13 @@
 package com.easivend.app.maintain;
 
+import java.util.concurrent.TimeUnit;
+
 import com.easivend.dao.vmc_machinesetDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.http.EVServerhttp;
+import com.easivend.app.business.BusLand;
+import com.easivend.app.business.BusPort;
+import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
 import com.easivend.common.MachineExpanseListAdapter;
 import com.easivend.common.ShowSortAdapter;
 import com.easivend.common.ToolClass;
@@ -12,10 +18,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,7 +60,7 @@ public class ParamManager extends TabActivity
 	private RadioGroup zhifubaogrp=null;
 	private RadioButton rbtnclose=null,rbtnzhifubao1=null,rbtnzhifubao2=null;
 	private Spinner spinparamsort=null;
-	private Button btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnzhifubaofaca=null,
+	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnzhifubaofaca=null,
 			btnzhifubaoer=null,btnweixing=null,btnprinter=null;	
 	private int proSortType=6;
 	//排序有关的定义
@@ -65,6 +76,9 @@ public class ParamManager extends TabActivity
 	private Uri uri=null;
 	private String imgDir=null;
 	private Tb_vmc_machineset tb_vmc_machineset=null;
+	//Server服务相关
+	LocalBroadcastManager localBroadreceiver;
+	EVServerReceiver receiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -92,6 +106,15 @@ public class ParamManager extends TabActivity
     	myTabrun.setContent(this.layres[2]);
     	this.mytabhost.addTab(myTabrun); 
     	
+    	
+    	//4.注册接收器
+		localBroadreceiver = LocalBroadcastManager.getInstance(this);
+		receiver=new EVServerReceiver();
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("android.intent.action.vmserverrec");
+		localBroadreceiver.registerReceiver(receiver,filter);
+    			
+    			
     	//===========================
     	//机器参数配置
     	//===========================
@@ -136,7 +159,29 @@ public class ParamManager extends TabActivity
 		}); 
     	edtmarketAmount = (EditText) findViewById(R.id.edtmarketAmount);
     	edtbillAmount = (EditText) findViewById(R.id.edtbillAmount);
-    	loadmachineparam();
+    	loadmachineparam();    	
+    	btnmachinecheck = (Button) findViewById(R.id.btnmachinecheck);
+    	btnmachinecheck.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	String devID = edtdevID.getText().toString();
+		    	String devhCode = edtdevhCode.getText().toString();
+				if((ToolClass.isEmptynull(devID)!=true)&&(ToolClass.isEmptynull(devhCode)!=true)
+		    		)
+				{
+					Intent intent2=new Intent(); 
+					intent2.putExtra("EVWhat", EVServerhttp.SETCHECKCMDCHILD);
+					intent2.putExtra("vmc_no", devID);
+					intent2.putExtra("vmc_auth_code", devhCode);
+					intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+					localBroadreceiver.sendBroadcast(intent2);  
+				}
+				else
+				{
+					ToolClass.failToast("请完整输入签到设备号和签到码再校验!");	
+				}
+		    }
+		});
     	btnmachineSave = (Button) findViewById(R.id.btnmachineSave);
     	btnmachineSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -481,6 +526,33 @@ public class ParamManager extends TabActivity
     	}
 	}
     
+    //=============
+  	//Server服务相关
+  	//=============	
+  	//2.创建EVServerReceiver的接收器广播，用来接收服务器同步的内容
+  	public class EVServerReceiver extends BroadcastReceiver 
+  	{
+
+  		@Override
+  		public void onReceive(Context context, Intent intent) 
+  		{
+  			// TODO Auto-generated method stub
+  			Bundle bundle=intent.getExtras();
+  			int EVWhat=bundle.getInt("EVWhat");
+  			switch(EVWhat)
+  			{
+  			case EVServerhttp.SETCHECKCMDMAIN://子线程接收主线程消息签到完成
+  				btnmachinecheck.setText("恭喜您，验证通过!");
+  	    		break;
+  			case EVServerhttp.SETERRFAILDCHECKCMDMAIN://子线程接收主线程消息签到失败
+  				ToolClass.failToast("抱歉，验证未通过,请联系管理员!");
+  				btnmachinecheck.setText("抱歉，验证未通过!");
+  	    		break;	
+  			}			
+  		}
+
+  	}
+    
     
     //===========================
 	//设备参数配置页面
@@ -743,6 +815,11 @@ public class ParamManager extends TabActivity
 	}
     @Override
 	protected void onDestroy() {
+    	//=============
+		//Server服务相关
+		//=============
+		//5.解除注册接收器
+		localBroadreceiver.unregisterReceiver(receiver);
     	//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

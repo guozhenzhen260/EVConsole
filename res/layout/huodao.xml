@@ -50,8 +50,15 @@
 			             android:background="@drawable/button_selector"
 			             android:text="补满本柜" />
 		         <Button
-			             android:id="@+id/btnhuosetexit"
+			             android:id="@+id/btnhuosetclear"
 			             android:layout_toRightOf="@+id/btnhuosetbu"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"
+			             android:background="@drawable/button_selector"
+			             android:text="清空本柜" />
+		         <Button
+			             android:id="@+id/btnhuosetexit"
+			             android:layout_toRightOf="@+id/btnhuosetclear"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
 			             android:background="@drawable/button_selector"

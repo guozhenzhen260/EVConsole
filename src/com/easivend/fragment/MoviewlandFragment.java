@@ -336,7 +336,7 @@ public class MoviewlandFragment extends Fragment {
   			{
   				ToolClass.Log(ToolClass.INFO,"EV_JNI","广告["+ATT_ID+"]无","log.txt");
   			}
-		    else if(ToolClass.isAdsFile(ATT_ID,TypeStr))
+		    else if(ToolClass.isAdsFile(ATT_ID,TypeStr,"ads"))
 			{
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","广告["+ATT_ID+"]已存在","log.txt");
 				rst=true;

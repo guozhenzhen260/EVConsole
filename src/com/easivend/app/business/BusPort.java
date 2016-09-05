@@ -403,6 +403,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -455,6 +456,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -498,6 +500,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -550,6 +553,7 @@ BushuoFragInteraction
 							//记录日志退币完成
 							OrderDetail.setRealStatus(3);//记录退币失败
 							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
 							ispayoutopt=0;
 							//结束交易页面
@@ -620,18 +624,24 @@ BushuoFragInteraction
 	@Override
 	public void gotoBusiness(int buslevel, Map<String, String> str)
 	{
-		viewSwitch(buslevel, str);
+		if(ToolClass.checkCLIENT_STATUS_SERVICE())
+		{
+			viewSwitch(buslevel, str);
+		}
 	}
 	//步骤三、实现Business接口,传递取货码
 	@Override
 	public void quhuoBusiness(String PICKUP_CODE)
 	{
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port取货码="+PICKUP_CODE,"log.txt");
-		Intent intent2=new Intent(); 
-		intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
-		intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
-		intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
-		localBroadreceiver.sendBroadcast(intent2);
+		if(ToolClass.checkCLIENT_STATUS_SERVICE())
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<port取货码="+PICKUP_CODE,"log.txt");
+			Intent intent2=new Intent(); 
+			intent2.putExtra("EVWhat", EVServerhttp.SETPICKUPCHILD);
+			intent2.putExtra("PICKUP_CODE", PICKUP_CODE);
+			intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+			localBroadreceiver.sendBroadcast(intent2);
+		}
 	}
 	//步骤三、实现Business接口,传递提示信息
 	@Override

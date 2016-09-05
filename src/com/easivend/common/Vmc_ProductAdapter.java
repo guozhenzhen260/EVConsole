@@ -90,8 +90,7 @@ public class Vmc_ProductAdapter
 	    	}
 	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID[m]+" marketPrice="
  					+promarket[m]+" salesPrice="+prosales[m]+" attBatch1="
- 					+proImage[m]+" attBatch2="+tb_inaccount.getAttBatch2()+" attBatch3="+tb_inaccount.getAttBatch3()
- 					+" procount="+procount[m],"log.txt");
+ 					+proImage[m]+" procount="+procount[m],"log.txt");
  	    	
  	    	m++;// 标识加1
  	    }

@@ -119,8 +119,27 @@ public class ToolClass
 	public static Context context=null;//本应用context
 	private static int ServerVer=1;//0旧的后台，1一期的后台
 	public static String version="";//本机版本号
-	 
+	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
 	
+	public static boolean isCLIENT_STATUS_SERVICE() {
+		return CLIENT_STATUS_SERVICE;
+	}
+
+	public static void setCLIENT_STATUS_SERVICE(boolean cLIENT_STATUS_SERVICE) {
+		CLIENT_STATUS_SERVICE = cLIENT_STATUS_SERVICE;
+	}
+	
+	//判断如果本机暂停服务，不允许销售并提示
+	public static boolean checkCLIENT_STATUS_SERVICE()
+	{
+		boolean check=isCLIENT_STATUS_SERVICE();
+		if(check==false)
+		{
+			failToast("抱歉，本机暂停服务,请联系管理员！");
+		}
+		return check;
+	}
+
 	public static String getVersion() {
 		String curVersion=null;
 		int curVersionCode=0;
@@ -612,6 +631,42 @@ public class ToolClass
         }
     }
     /**
+     * 递归删除ads,adshuo文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteadsImageFile()
+    {
+    	String  sDir =null;
+    	 try {
+    		 //删除广告目录
+    		  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllZIPFile(dirName);
+        	 
+        	//删除弹窗广告目录
+	   		sDir = ToolClass.getEV_DIR()+File.separator+"adshuo";
+	       	dirName = new File(sDir);
+	       	//如果目录不存在，则创建目录
+	       	if (!dirName.exists()) 
+	       	{  
+	            //按照指定的路径创建文件夹  
+	       		dirName.mkdirs(); 
+	        }
+	       	 
+	       	deleteAllZIPFile(dirName);
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * 递归删除ZIP文件和文件夹
      * @param file    要删除的根目录
      */
@@ -743,30 +798,35 @@ public class ToolClass
 	   			{
 	   			  if(!files[i].isDirectory())
 	   			  {		
-	   				  	ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断日志目录内文件="+files[i].toString(),"server.txt"); 
-	   				   
-	   		        	fileName=new File(files[i].toString()); 
-	   		        	if(fileName.exists())
-	   		        	{  
-	   		        		String logdatetime = getFileCreated(fileName);
-	   		        		ParsePosition poslog = new ParsePosition(0);  
-	   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
-	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
-	   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
-	   		            	{
-	   		            		//4.拷贝文件到压缩目录中
-	   		            		String a[] = files[i].toString().split("/");  
-	   		            		String ATT_ID=a[a.length-1];  
-	   		            		String ZIPFile=zipDir+ATT_ID;
-	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
-	   		            		copyFile(files[i].toString(),ZIPFile);
-	   		            		inter=true;
-	   		            	}
-	   		            	else
-	   		            	{
-	   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
-	   		            	}	
-	   		    	    } 
+	   				    String filestr=files[i].toString();
+	   				  	ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断日志目录内文件="+filestr,"server.txt"); 
+	   				    //排除dog类文件
+	   				  	int attimg2=filestr.lastIndexOf("dog.txt");
+		   		        if(attimg2==-1)
+		   		        {
+		   		        	fileName=new File(files[i].toString()); 
+		   		        	if(fileName.exists())
+		   		        	{  
+		   		        		String logdatetime = getFileCreated(fileName);
+		   		        		ParsePosition poslog = new ParsePosition(0);  
+		   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
+		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
+		   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
+		   		            	{
+		   		            		//4.拷贝文件到压缩目录中
+		   		            		String a[] = files[i].toString().split("/");  
+		   		            		String ATT_ID=a[a.length-1];  
+		   		            		String ZIPFile=zipDir+ATT_ID;
+		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
+		   		            		copyFile(files[i].toString(),ZIPFile);
+		   		            		inter=true;
+		   		            	}
+		   		            	else
+		   		            	{
+		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
+		   		            	}	
+		   		    	    } 
+		   		        }
 	   			  }
 	   			}
 	   		}
@@ -1139,13 +1199,13 @@ public class ToolClass
     /**
      * 使用isAdsFile,判断这个广告是已经存在目录中,true存在,false不存在
      */
-    public static boolean isAdsFile(String filename,String TypeStr) 
+    public static boolean isAdsFile(String filename,String TypeStr,String ads) 
     {
     	String  sDir =null;
     	File fileName=null;
-    	boolean fileext=false;
+    	boolean fileext=false;    	
         try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1169,13 +1229,13 @@ public class ToolClass
     }
     
     //将Bitmap图片保存在本地
-    public static boolean  saveBitmaptoads(Bitmap bmp,String filename)
+    public static boolean  saveBitmaptoads(Bitmap bmp,String TypeStr,String filename,String ads)
     {      	
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1184,7 +1244,7 @@ public class ToolClass
         		dirName.mkdirs(); 
              }
         	 
-        	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	 fileName=new File(sDir+File.separator+filename+"."+TypeStr);         	
         	//如果不存在，则开始保存图片
         	if(!fileName.exists())
         	{  
@@ -1205,13 +1265,13 @@ public class ToolClass
     /**
      * 使用saveAvitoads,保存这个视频广告到目录中
      */
-    public static File saveAvitoads(String filename,String TypeStr) 
+    public static File saveAvitoads(String filename,String TypeStr,String ads) 
     {
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1229,13 +1289,13 @@ public class ToolClass
     }
     
     //将广告文件删除
-    public static boolean  delAds(String filename,String TypeStr)
+    public static boolean  delAds(String filename,String TypeStr,String ads)
     {      	
     	String  sDir =null;
     	File fileName=null;
     	boolean fileext=false;
         try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"ads";
+        	  sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
         	 if (!dirName.exists()) 
@@ -1500,7 +1560,7 @@ public class ToolClass
     /**
      * 重新更新支付宝微信文件,后台服务器下发用
      */
-    public static void ResetConfigFileServer(JSONObject object2) 
+    public static void ResetConfigFileServer(JSONObject object2,String VMC_NO) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1549,6 +1609,7 @@ public class ToolClass
 		            	  &&(me.getKey().equals("alikey")!=true)
 		            	  &&(me.getKey().equals("alisubpartner")!=true)
 		            	  &&(me.getKey().equals("isalisub")!=true)
+		            	  &&(me.getKey().equals("aliprivateKey")!=true)
 		            	  //微信	
 		            	  &&(me.getKey().equals("weiappid")!=true)
 		            	  &&(me.getKey().equals("weimch_id")!=true)
@@ -1560,18 +1621,59 @@ public class ToolClass
 		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
 		        } 	
 		        //支付宝
-		        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
-  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
-  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
-  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
-  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
-  	        	{
-  	        		list2.put("isalisub", "0");
-  	        	}
-  	        	else
-  	        	{
-  	        		list2.put("isalisub", "0.995");
-  	        	}	
+		        int ALIPAYMODE=1;
+		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		        //2.0
+		        if(ALIPAYMODE==2)
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+		        	list2.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
+	  	        	list2.put("aliseller_email", "");
+	  	        	list2.put("alikey", "");
+	  	        	list2.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
+	  	        	list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
+	  	        	{
+	  	        		list2.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		list2.put("isalisub", "0.995");
+	  	        	}
+		        }
+		        //1.0
+		        else
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,1,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+			        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
+	  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+	  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+	  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+	  	        	list2.put("aliprivateKey", "");
+	  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
+	  	        	{
+	  	        		list2.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		list2.put("isalisub", "0.995");
+	  	        	}	
+		        }
   	        	
   	        	//微信
   	        	list2.put("weiappid", object2.get("WX_APP_ID").toString());
@@ -1599,18 +1701,59 @@ public class ToolClass
   	         {  	        	
   	        	JSONObject jsonObject = new JSONObject();
   	            //支付宝
-  	        	jsonObject.put("alipartner", object2.get("ALI_PARTNER"));
-  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL"));
-  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY"));
-  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER"));
-  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
-  	        	{
-  	        		jsonObject.put("isalisub", "0");
-  	        	}
-  	        	else
-  	        	{
-  	        		jsonObject.put("isalisub", "0.995");
-  	        	}	
+  	        	int ALIPAYMODE=1;
+		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		        //2.0
+		        if(ALIPAYMODE==2)
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+	    			jsonObject.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
+	    			jsonObject.put("aliseller_email", "");
+	  	        	jsonObject.put("alikey", "");
+	  	        	jsonObject.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
+	  	        	jsonObject.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0.995");
+	  	        	}
+		        }
+		        //1.0
+		        else
+		        {
+		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+	  			    //创建Tb_inaccount对象 
+	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+	    					0,0,"",0,0,0,1,0,0,0,"",0,
+	    					0,0, 0,0,0,"","");
+	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
+	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
+			        
+			        jsonObject.put("alipartner", object2.get("ALI_PARTNER").toString());
+	  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+	  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+	  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+	  	        	jsonObject.put("aliprivateKey", "");
+	  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0");
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		jsonObject.put("isalisub", "0.995");
+	  	        	}	
+		        }	
   	        	
   	        	//微信
   	        	jsonObject.put("weiappid", object2.get("WX_APP_ID"));
@@ -2264,8 +2407,12 @@ public class ToolClass
      */
 	public static Bitmap getLoacalBitmap(String url) {
         try {
+        	 BitmapFactory.Options opt = new BitmapFactory.Options();  
+        	 opt.inPreferredConfig = Bitmap.Config.RGB_565;   
+        	 opt.inPurgeable = true;  
+        	 opt.inInputShareable = true;  
              FileInputStream fis = new FileInputStream(url);
-             return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片        
+             return BitmapFactory.decodeStream(fis,null,opt);  ///把流转化为Bitmap图片        
 
           } catch (FileNotFoundException e) {
              e.printStackTrace();
@@ -3056,7 +3203,7 @@ public class ToolClass
 
         for (RunningServiceInfo runningServiceInfo : services) 
         { 
-        	ToolClass.Log(ToolClass.INFO,"EV_DOG","service appName:"+runningServiceInfo.service.getClassName()+"-->pack:"+runningServiceInfo.service.getPackageName(),"dog.txt");
+        	//ToolClass.Log(ToolClass.INFO,"EV_DOG","service appName:"+runningServiceInfo.service.getClassName()+"-->pack:"+runningServiceInfo.service.getPackageName(),"dog.txt");
             if (runningServiceInfo.service.getClassName().equals(serviceClassName))
             { 
                 return true; 

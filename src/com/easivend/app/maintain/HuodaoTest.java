@@ -92,7 +92,7 @@ public class HuodaoTest extends TabActivity
 	private int con=1;//查询连接次数
 	private int ishuoquery=0;//是否正在查询1,正在查询,0查询完成
 	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
-	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetbu=null,btnhuosetexit=null;
+	private Button btnhuosetadd=null,btnhuosetdel=null,btnhuosetbu=null,btnhuosetclear=null,btnhuosetexit=null;
 	private Spinner spinhuosetCab=null,spinhuotestCab=null,spinhuopeiCab=null;
 	private String[] cabinetID=null;//用来分离出货柜编号
 	private int[] cabinetType = null;//用来分离出货柜类型
@@ -273,6 +273,14 @@ public class HuodaoTest extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	cabinetbuhuo();
+		    }
+		});
+    	//清空本柜存货
+    	btnhuosetclear = (Button) findViewById(R.id.btnhuosetclear);
+    	btnhuosetclear.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	cabinetclearhuo();
 		    }
 		});
     	btnhuosetexit = (Button) findViewById(R.id.btnhuosetexit);
@@ -1954,7 +1962,7 @@ public class HuodaoTest extends TabActivity
 		@Override
 		protected void onPostExecute(Vmc_HuoAdapter huoAdapter) {
 			// TODO Auto-generated method stub
-			adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuolasttime(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
+			adapter = new HuoPictureAdapter(String.valueOf(cabinetsetvar),huoAdapter.getHuoID(),huoAdapter.getHuoproID(),huoAdapter.getHuoRemain(),huoAdapter.getHuoname(), huoAdapter.getProImage(),HuodaoTest.this);// 创建pictureAdapter对象
 			gvhuodao.setAdapter(adapter);// 为GridView设置数据源		 
 			barhuomanager.setVisibility(View.GONE);
 		}
@@ -2043,6 +2051,64 @@ public class HuodaoTest extends TabActivity
     						comBroadreceiver.sendBroadcast(intent);
 		    				// 弹出信息提示
 				            Toast.makeText(HuodaoTest.this, "补货成功！", Toast.LENGTH_SHORT).show();	
+	    				}
+    		      }
+    			)		    		        
+		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+		        	{			
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
+						{
+							// TODO Auto-generated method stub				
+						}
+		        	}
+		        )
+		        .create();//创建一个对话框
+		        alert.show();//显示对话框
+	}
+	
+	//清空本柜存货
+	private void cabinetclearhuo()
+	{
+		//创建警告对话框
+    	Dialog alert=new AlertDialog.Builder(HuodaoTest.this)
+    		.setTitle("对话框")//标题
+    		.setMessage("您确定要清空本柜存货吗？")//表示对话框中得内容
+    		.setIcon(R.drawable.ic_launcher)//设置logo
+    		.setPositiveButton("清空", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+    			{				
+	    				@Override
+	    				public void onClick(DialogInterface dialog, int which) 
+	    				{
+	    					// TODO Auto-generated method stub	
+	    					barhuomanager.setVisibility(View.VISIBLE);
+	    					// 创建InaccountDAO对象
+	    					vmc_columnDAO columnDAO = new vmc_columnDAO(HuodaoTest.this);
+				            columnDAO.clearhuoCab(String.valueOf(cabinetsetvar));
+				            showhuodao();
+				            //=============
+			    			//Server服务相关
+			    			//=============
+			    			//7.发送指令广播给EVServerService
+			    			Intent intent2=new Intent();
+		    				intent2.putExtra("EVWhat", EVServerhttp.SETHUODAOSTATUCHILD);
+		    				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
+		    				LocalBroadcastManager localBroadreceiver = LocalBroadcastManager.getInstance(HuodaoTest.this);
+		    				localBroadreceiver.sendBroadcast(intent2);
+	    					//=========
+		    				//COM串口相关
+		    				//=========
+		    				ToolClass.Log(ToolClass.INFO,"EV_JNI",
+    				    	"[APPsend>>]全部补货cabinet="+String.valueOf(cabinetsetvar)
+    				    	,"log.txt");
+    						//4.发送指令广播给COMService
+    						Intent intent=new Intent();
+    						intent.putExtra("EVWhat", COMThread.VBOX_HUODAO_SET_INDALLCHILD);
+    						intent.putExtra("cabinet", cabinetsetvar);	
+    						intent.setAction("android.intent.action.comsend");//action与接收器相同
+    						comBroadreceiver.sendBroadcast(intent);
+		    				// 弹出信息提示
+				            Toast.makeText(HuodaoTest.this, "清空成功！", Toast.LENGTH_SHORT).show();	
 	    				}
     		      }
     			)		    		        
