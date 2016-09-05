@@ -551,17 +551,14 @@
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
 									android:text="第三方卡具"/>
-						        
-						         <Switch   
-							       android:layout_marginTop="20dip"  
-							       android:id="@+id/switchzhifubaofaca"  
-							       android:layout_width="wrap_content"  
-							       android:layout_height="wrap_content"  
-							       android:textOn="使用"  
-							       android:textOff="不使用"  							           
-							       android:layout_gravity="center_horizontal"/> 
+						        <Spinner
+						            android:id="@+id/spinCashless"
+						            android:layout_width="wrap_content" 
+							        android:layout_height="wrap_content"
+							        android:textSize="40sp"
+							        android:entries="@array/cashless_Type" />    
 							    <Button
-						             android:id="@+id/btnzhifubaofaca"
+						             android:id="@+id/btnCashless"
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
 						             android:enabled="false" 

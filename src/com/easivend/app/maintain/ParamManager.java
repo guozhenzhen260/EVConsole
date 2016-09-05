@@ -56,11 +56,11 @@ public class ParamManager extends TabActivity
 	private static final int TIME_DIALOG_ID = 0;// 创建时间对话框常量
 	private EditText edtdevID=null,edtdevhCode=null,edtmainPwd=null,edtrstTime=null,edtrstDay=null,edtmarketAmount=null,edtbillAmount=null;
 	private Switch switchisNet = null,switchisbuhuo=null,switchisbuyCar = null,switchisqiangbuy=null,switchlanguage = null,switchbaozhiProduct = null,switchemptyProduct = null,switchamount = null,switchcard = null,
-			switchzhifubaofaca = null,switchweixing = null,switchprinter = null;    
+			switchweixing = null,switchprinter = null;    
 	private RadioGroup zhifubaogrp=null;
 	private RadioButton rbtnclose=null,rbtnzhifubao1=null,rbtnzhifubao2=null;
-	private Spinner spinparamsort=null;
-	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnzhifubaofaca=null,
+	private Spinner spinparamsort=null,spinCashless=null;
+	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnCashless=null,
 			btnzhifubaoer=null,btnweixing=null,btnprinter=null;	
 	private int proSortType=6;
 	//排序有关的定义
@@ -228,18 +228,26 @@ public class ParamManager extends TabActivity
             
             
         });
-    	switchzhifubaofaca = (Switch)findViewById(R.id.switchzhifubaofaca);
-    	switchzhifubaofaca.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+    	this.spinCashless = (Spinner) super.findViewById(R.id.spinCashless);
+    	spinCashless.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			//当选项改变时触发
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				btnzhifubaofaca.setEnabled(isChecked);	
-			}  
-            
-            
-        });
+				if(arg2>0)	
+					btnCashless.setEnabled(true);
+				else
+					btnCashless.setEnabled(false);	
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		}); 
     	this.zhifubaogrp = (RadioGroup) super.findViewById(R.id.zhifubaogrp);
         this.rbtnclose = (RadioButton) super.findViewById(R.id.rbtnclose);
         this.rbtnzhifubao1 = (RadioButton) super.findViewById(R.id.rbtnzhifubao1);
@@ -316,12 +324,11 @@ public class ParamManager extends TabActivity
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
-    	btnzhifubaofaca = (Button) findViewById(R.id.btnzhifubaofaca);
-    	btnzhifubaofaca.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+    	btnCashless = (Button) findViewById(R.id.btnCashless);
+    	btnCashless.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		    	Intent intent = new Intent(ParamManager.this, ZhifubaoTest.class);// 使用AddInaccount窗口初始化Intent
-		    	intent.putExtra("id", edtdevhCode.getText().toString());
+		    	Intent intent = new Intent(ParamManager.this, CahslessTest.class);// 使用AddInaccount窗口初始化Intent
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
@@ -435,7 +442,7 @@ public class ParamManager extends TabActivity
     	float billAmount = Float.parseFloat(edtbillAmount.getText().toString()); 
     	int amount = (switchamount.isChecked()==true)?1:0;
     	int card = (switchcard.isChecked()==true)?1:0;
-    	int zhifubaofaca = (switchzhifubaofaca.isChecked()==true)?1:0;
+    	int zhifubaofaca = (int)spinCashless.getSelectedItemId();
     	int zhifubaoer=0;
     	if(rbtnclose.isChecked())
     	{
@@ -573,7 +580,7 @@ public class ParamManager extends TabActivity
 		    
 		    switchamount.setChecked((tb_inaccount.getAmount()==1)?true:false);
 		    switchcard.setChecked((tb_inaccount.getCard()==1)?true:false);
-		    switchzhifubaofaca.setChecked((tb_inaccount.getZhifubaofaca()==1)?true:false);
+		    spinCashless.setSelection(tb_inaccount.getZhifubaofaca());
 		    if(tb_inaccount.getZhifubaoer()==0)
 		    {
 		    	rbtnclose.setChecked(true);
