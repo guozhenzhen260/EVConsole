@@ -898,7 +898,8 @@ public class EVServerhttp implements Runnable {
                         @Override  
                         public void onErrorResponse(VolleyError error) {  
                         	result = "请求失败！";
-                        	tomain21.what=SETFAILMAIN;
+                        	tomain21.what=SETERRFAILDCHECKCMDMAIN;
+                        	tomain21.obj="Error net";
     						mainhand.sendMessage(tomain21); // 发送消息	
     						ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=Net[fail9]SETFAILMAIN","server.txt");
                         }  

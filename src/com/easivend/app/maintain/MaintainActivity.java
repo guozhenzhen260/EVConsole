@@ -484,6 +484,7 @@ public class MaintainActivity extends Activity
 		        intent2.putExtras(bundle2);
 				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
 				localBroadreceiver.sendBroadcast(intent2);  
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","开机启动后台服务...","server.txt");
 	    		break;	
 	    		//按钮返回
 			case COMThread.EV_BUTTONMAIN:
@@ -616,6 +617,7 @@ public class MaintainActivity extends Activity
                 		        intent2.putExtras(bundle2);
                 				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
                 				localBroadreceiver.sendBroadcast(intent2); 
+                				ToolClass.Log(ToolClass.INFO,"EV_SERVER","自检重启后台服务...","server.txt");
                 			}
 
                 		}, 1000);
@@ -642,6 +644,8 @@ public class MaintainActivity extends Activity
 		comBroadreceiver.unregisterReceiver(comreceiver);
 		//6.结束服务
 		stopService(new Intent(MaintainActivity.this, COMService.class));
+		//关闭自检重启定时器
+		timer.shutdown();
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}

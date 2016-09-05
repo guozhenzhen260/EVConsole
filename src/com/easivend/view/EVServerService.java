@@ -69,7 +69,9 @@ public class EVServerService extends Service {
     EVServerhttp serverhttp=null;
     LocalBroadcastManager localBroadreceiver;
     ActivityReceiver receiver;
-    Map<String,Integer> huoSet=null;
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+    ScheduledExecutorService terminal = Executors.newScheduledThreadPool(1);
+	Map<String,Integer> huoSet=null;
     private String LAST_CLASS_TIME="",LAST_CLASSJOIN_TIME="",LAST_PRODUCT_TIME="",
     		LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
     		,LAST_ACCOUNT_TIME="",LAST_ADV_TIME="",LAST_CLIENT_TIME="",
@@ -102,7 +104,7 @@ public class EVServerService extends Service {
 				vmc_auth_code=bundle.getString("vmc_auth_code");
 				SerializableMap serializableMap = (SerializableMap) bundle.get("huoSet");
 				huoSet=serializableMap.getMap();
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","开机签到receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
 						+"huoSet="+huoSet.toString(),"server.txt");				
 				//处理接收到的内容,发送签到命令到子线程中
 				//初始化一:发送签到指令
@@ -184,15 +186,7 @@ public class EVServerService extends Service {
 		localBroadreceiver.registerReceiver(receiver,filter);						
 	}
 
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub		
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service destroy","server.txt");
-		//解除注册接收器
-		localBroadreceiver.unregisterReceiver(receiver);
-		super.onDestroy();
-	}
-	
+		
 	@Override
 	@Deprecated
 	public void onStart(Intent intent, int startId) {
@@ -774,8 +768,7 @@ public class EVServerService extends Service {
   		serverhttp=new EVServerhttp(mainhand);
   		thread=new Thread(serverhttp,"thread");
   		thread.start();
-  		//启动设备同步定时器
-  		ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+  		//启动设备同步定时器  		
   		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -832,7 +825,6 @@ public class EVServerService extends Service {
   		//*************
   		//启动线程监控定时器
   		//*************
-  		ScheduledExecutorService terminal = Executors.newScheduledThreadPool(1);
   		terminal.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -844,7 +836,7 @@ public class EVServerService extends Service {
 	        		thread=new Thread(serverhttp,"thread");
 	          		thread.start();
    
-    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
+    				ToolClass.Log(ToolClass.INFO,"EV_SERVER","线程重启receiver:vmc_no="+vmc_no+"vmc_auth_code="+vmc_auth_code
     						+"huoSet="+huoSet.toString(),"server.txt");				
     				//处理接收到的内容,发送签到命令到子线程中
     				//初始化一:发送签到指令
@@ -1621,4 +1613,16 @@ public class EVServerService extends Service {
   	    	this.alarm.cancel(sender);	    	
       	}
       }
+  	
+  	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub		
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service destroy","server.txt");
+		//解除注册接收器
+		localBroadreceiver.unregisterReceiver(receiver);
+		//关闭自检重启定时器
+		timer.shutdown();
+		terminal.shutdown();
+		super.onDestroy();
+	}
 }

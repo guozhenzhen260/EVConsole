@@ -72,6 +72,7 @@ public class COMService extends Service {
     private Thread extrathread=null;
     private Handler mainextrahand=null,childextrahand=null; 
     ExtraCOMThread extracomserial=null;
+    ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);		
     Map<String,Integer> huoSet=new LinkedHashMap<String,Integer>();
     private String[] cabinetID = null;//用来分离出货柜编号    
     private int huom = 0;// 定义一个开始标识
@@ -1153,7 +1154,6 @@ public class COMService extends Service {
   		//*************
   		//启动线程监控定时器
   		//*************
-  		ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
   		timer.scheduleWithFixedDelay(new Runnable() { 
 	        @Override 
 	        public void run() { 
@@ -1200,6 +1200,8 @@ public class COMService extends Service {
 		}
 		//解除注册接收器
 		localBroadreceiver.unregisterReceiver(receiver);
+		//关闭自检重启定时器
+		timer.shutdown();
 		super.onDestroy();
 	}
 	
