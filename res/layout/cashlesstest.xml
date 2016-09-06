@@ -55,6 +55,18 @@
 			android:background="@drawable/button_selector"
 	        android:text="查询"/>
 	     <Button
+		    android:id="@+id/btncashlesstestdelete"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
+			android:background="@drawable/button_selector"
+	        android:text="撤销交易"/>	
+	     <Button
+		    android:id="@+id/btncashlesstestpayout"
+		    android:layout_width="100dp"
+			android:layout_height="70dp"
+			android:background="@drawable/button_selector"
+	        android:text="退款"/>
+	     <Button
 		    android:id="@+id/btncashlesstestclose"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
