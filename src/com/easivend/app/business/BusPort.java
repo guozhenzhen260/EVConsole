@@ -163,6 +163,7 @@ BushuoFragInteraction
   	//=================
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
+    private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
     //=================
 	//==出货页面相关
 	//=================
@@ -394,6 +395,21 @@ BushuoFragInteraction
 		                    }
 	                    }
 		        	}
+		        	
+		        	//=================
+	        		//==pos支付页面相关
+	        		//=================
+		        	else if(gotoswitch==BUSZHIPOS)
+		        	{
+			        	//发送查询交易指令
+	                    if(iszhipos==1)
+	                    {		                    
+	                    }
+	                    //发送订单交易指令
+	                    else if(iszhipos==0)
+	                    {		                    
+	                    }
+		        	}
 	        	  }
 	        } 
 	    }, 1, 1, TimeUnit.SECONDS);       // timeTask 
@@ -605,20 +621,20 @@ BushuoFragInteraction
 				switch (msg.what) 
 				{
 					case CahslessTest.OPENSUCCESS:
-						listterner.BusportTsxx("提示信息：请刷卡");
 						break;
 					case CahslessTest.OPENFAIL:	
-						listterner.BusportTsxx("提示信息：读卡器故障");
 						break;
 					case CahslessTest.CLOSESUCCESS:
 						break;
 					case CahslessTest.CLOSEFAIL:	
 						break;
 					case CahslessTest.COSTSUCCESS:
-						//txtcashlesstest.setText(msg.obj.toString());
+						listterner.BusportTsxx("提示信息：付款完成");
+						iszhipos=2;
 						break;
 					case CahslessTest.COSTFAIL:	
-						//txtcashlesstest.setText(msg.obj.toString());
+						listterner.BusportTsxx("提示信息：读卡器故障");
+						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
 						//txtcashlesstest.setText(msg.obj.toString());
@@ -627,11 +643,13 @@ BushuoFragInteraction
 						//txtcashlesstest.setText(msg.obj.toString());
 						break;
 					case CahslessTest.DELETESUCCESS:
-						//txtcashlesstest.setText(msg.obj.toString());
-						break;
 					case CahslessTest.DELETEFAIL:	
-						//txtcashlesstest.setText(msg.obj.toString());
-						break;	
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+				    	mMyApi.pos_release();
+						clearamount();
+				    	viewSwitch(BUSPORT, null);
+						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						//txtcashlesstest.setText(msg.obj.toString());
 						break;
@@ -1121,13 +1139,13 @@ BushuoFragInteraction
 	public void BuszhiposFinish() {
 		// TODO Auto-generated method stub
   		//如果本次扫码已经结束，可以购买，则不进行退款操作
-//    	if(iszhiwei==2)
-//    	{
-//    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
-//    	}
-//    	else if(iszhiwei==1)
-//			deletezhiwei();
-//		else 
+    	if(iszhipos==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhipos退币按钮无效","log.txt");
+    	}
+    	else if(iszhipos==1)
+			deletezhipos();
+		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
@@ -1140,6 +1158,14 @@ BushuoFragInteraction
   	private void timeoutBuszhiposFinish()
   	{
   		BuszhiposFinish();
+  	}
+  	
+    //撤销交易
+  	private void deletezhipos()
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 操作撤销（刷卡前）..","com.txt");
+    	mMyApi.pos_cancel();
   	}
   
   	//接口返回
@@ -1186,7 +1212,14 @@ BushuoFragInteraction
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款成功","com.txt");
   						childmsg.what=CahslessTest.COSTSUCCESS;
   						childmsg.obj="扣款成功";
-  					}else{
+  					}
+  					else if(rst.code.equals(ErrCode._XY.getCode())){
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销成功","com.txt");
+  						childmsg.what=CahslessTest.DELETESUCCESS;
+  						childmsg.obj="撤销成功";
+  					}
+  					else
+  					{
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
   						childmsg.what=CahslessTest.COSTFAIL;
   						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
@@ -1473,6 +1506,8 @@ BushuoFragInteraction
   		iszhier=0;//1成功生成了二维码,0没有成功生成二维码
   	    //微信页面
   		iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
+  		//pos页面
+  		iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
   		ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
   	}
   	
@@ -1660,20 +1695,23 @@ BushuoFragInteraction
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiposFragment);
 	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getExtracom(),"com.txt");
-	            
+	            //打开串口
+	            //ip、端口、串口、波特率必须准确
+				mMyApi.pos_init("121.40.30.62", 18080
+						,ToolClass.getExtracom(), "9600", mIUserCallback);
 				//延时
 			    new Handler().postDelayed(new Runnable() 
 				{
 		            @Override
 		            public void run() 
 		            {   
-		            	//ip、端口、串口、波特率必须准确
-						mMyApi.pos_init("121.40.30.62", 18080
-								,ToolClass.getExtracom(), "9600", mIUserCallback);
-
+		            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+		            	listterner.BusportTsxx("提示信息：请刷卡");
+						mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+				    	iszhipos=1;
 					}
 
-				}, 1500);	           
+				}, 500);	           
 				break;	
 			case BUSHUO://出货页面	
 				recLen=10*60;
