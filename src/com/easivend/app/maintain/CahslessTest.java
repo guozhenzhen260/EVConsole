@@ -22,18 +22,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class CahslessTest extends Activity {
-	private final static int OPENSUCCESS=1;//打开成功
-	private final static int OPENFAIL=2;//打开失败
-	private final static int CLOSESUCCESS=3;//关闭成功
-	private final static int CLOSEFAIL=4;//关闭失败
-	private final static int COSTSUCCESS=5;//扣款成功
-	private final static int COSTFAIL=6;//扣款失败
-	private final static int QUERYSUCCESS=7;//查询成功
-	private final static int QUERYFAIL=8;//查询失败
-	private final static int DELETESUCCESS=9;//撤销成功
-	private final static int DELETEFAIL=10;//撤销失败
-	private final static int PAYOUTSUCCESS=11;//退款成功
-	private final static int PAYOUTFAIL=12;//退款失败
+	public final static int OPENSUCCESS=1;//打开成功
+	public final static int OPENFAIL=2;//打开失败
+	public final static int CLOSESUCCESS=3;//关闭成功
+	public final static int CLOSEFAIL=4;//关闭失败
+	public final static int COSTSUCCESS=5;//扣款成功
+	public final static int COSTFAIL=6;//扣款失败
+	public final static int QUERYSUCCESS=7;//查询成功
+	public final static int QUERYFAIL=8;//查询失败
+	public final static int DELETESUCCESS=9;//撤销成功
+	public final static int DELETEFAIL=10;//撤销失败
+	public final static int PAYOUTSUCCESS=11;//退款成功
+	public final static int PAYOUTFAIL=12;//退款失败
 	private TextView txtcashlesstest=null;
 	private EditText edtcashlesstest=null;
 	private Button btncashlesstestopen=null,btncashlesstestok=null,btncashlesstestquery=null

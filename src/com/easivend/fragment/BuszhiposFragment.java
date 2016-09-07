@@ -1,5 +1,7 @@
 package com.easivend.fragment;
 
+import com.easivend.app.business.BusPort;
+import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
 import com.example.evconsole.R;
 
@@ -102,7 +104,46 @@ public class BuszhiposFragment extends Fragment
 		    	listterner.BuszhiposFinish();//步骤二、fragment向activity发送回调信息
 		    }
 		});
+		/**
+	     * 用来与其他fragment交互的,
+	     * 步骤五、当Fragment被加载到activity的时候，注册回调信息
+	     * @param activity
+	     */
+		BusPort.setCallBack(new buportInterfaceImp());
 		return view;
+	}
+	
+	private class buportInterfaceImp implements BusPortFragInteraction//加载接口
+	{
+		/**
+	     * 用来与其他fragment交互的,
+	     * 步骤三、实现BusPortFragInteraction接口
+	     * @param activity
+	     */
+		@Override
+		public void BusportTsxx(String str) {
+			// TODO Auto-generated method stub
+			txtbuszhipostsxx.setText(str);
+		}
+
+		@Override
+		public void BusportTbje(String str) {
+			// TODO Auto-generated method stub			
+		}
+
+		@Override
+		public void BusportChjg(int sta) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void BusportSend(String str) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		
 	}
 
 }
