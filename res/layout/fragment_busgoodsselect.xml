@@ -67,8 +67,7 @@
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"	
 		android:layout_below="@+id/txtbusgoodselAmounttxt"
-		android:layout_toRightOf="@+id/ivbuszhiselzhier"		
-		android:layout_marginLeft="47dp"
+		android:layout_toRightOf="@+id/ivbuszhiselzhier"
 		android:src="@drawable/weixing"			
    	/> 	
    	<ImageView 
@@ -77,9 +76,16 @@
 		android:layout_height="wrap_content"	
 		android:layout_below="@+id/txtbusgoodselAmounttxt"
 		android:layout_toRightOf="@+id/ivbuszhiselweixing"
-		android:layout_marginLeft="47dp"
 		android:src="@drawable/amount"			
    	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselpos"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselamount"
+		android:src="@drawable/zhipos"			
+   	/>
 	<TextView
             android:id="@+id/txtbusgoodselDes"
 	        android:layout_width="wrap_content" 
