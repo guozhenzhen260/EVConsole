@@ -32,6 +32,8 @@ import com.easivend.fragment.BuszhiamountFragment;
 import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
 import com.easivend.fragment.BuszhierFragment;
 import com.easivend.fragment.BuszhierFragment.BuszhierFragInteraction;
+import com.easivend.fragment.BuszhiposFragment;
+import com.easivend.fragment.BuszhiposFragment.BuszhiposFragInteraction;
 import com.easivend.fragment.BuszhiweiFragment;
 import com.easivend.fragment.BuszhiweiFragment.BuszhiweiFragInteraction;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
@@ -76,6 +78,8 @@ BusgoodsFragInteraction,
 BusgoodsselectFragInteraction,
 //Buszhiamount页面接口
 BuszhiamountFragInteraction,
+//Buszhipos页面接口
+BuszhiposFragInteraction,
 //Buszhier页面接口
 BuszhierFragInteraction,
 //Buszhiwei页面接口
@@ -90,6 +94,7 @@ BushuoFragInteraction
 	private BuszhiamountFragment buszhiamountFragment;
 	private BuszhierFragment buszhierFragment;
 	private BuszhiweiFragment buszhiweiFragment;
+	private BuszhiposFragment buszhiposFragment;
 	private BushuoFragment bushuoFragment;
 	//交易页面
     Intent intent=null;
@@ -102,12 +107,13 @@ BushuoFragInteraction
 	public static final int BUSZHIAMOUNT=5;//现金支付页面
 	public static final int BUSZHIER=6;//支付宝支付页面
 	public static final int BUSZHIWEI=7;//微信支付页面
+	public static final int BUSZHIPOS=9;//POS支付页面
 	public static final int BUSHUO=8;//出货页面
 	private int gotoswitch=0;//当前跳转到哪个页面
 	private int con=0;
 	//进度对话框
 	ProgressDialog dialog= null;
-	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,-1取货码
+	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,5pos，-1取货码
 	private String out_trade_no=null;
 	//Server服务相关
 	LocalBroadcastManager localBroadreceiver;
@@ -1043,6 +1049,33 @@ BushuoFragInteraction
   		clearamount();
     	viewSwitch(BUSPORT, null);
   	}
+  	
+    //=======================
+  	//实现Buszhipos页面相关接口
+  	//=======================
+    //步骤三、实现Buszhipos接口,转到首页面
+  	@Override
+	public void BuszhiposFinish() {
+		// TODO Auto-generated method stub
+  		//如果本次扫码已经结束，可以购买，则不进行退款操作
+//    	if(iszhiwei==2)
+//    	{
+//    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
+//    	}
+//    	else if(iszhiwei==1)
+//			deletezhiwei();
+//		else 
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
+	    	clearamount();
+	    	viewSwitch(BUSPORT, null);
+		}
+	}
+    //用于超时的结束界面
+  	private void timeoutBuszhiposFinish()
+  	{
+  		BuszhiposFinish();
+  	}
     
     //=======================
   	//实现Bushuo页面相关接口
@@ -1440,6 +1473,27 @@ BushuoFragInteraction
 		            }
 
 				}, 1500);	           
+				break;	
+			case BUSZHIPOS://pos支付
+				isbus=false;
+				zhifutype="5";
+				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
+				if (buszhiposFragment == null) {
+					buszhiposFragment = new BuszhiposFragment();
+	            }
+	            // 使用当前Fragment的布局替代id_content的控件
+	            transaction.replace(R.id.id_content, buszhiposFragment);
+//				//延时
+//			    new Handler().postDelayed(new Runnable() 
+//				{
+//		            @Override
+//		            public void run() 
+//		            {   
+//		            	//发送订单
+//		        		sendzhiwei();
+//		            }
+//
+//				}, 1500);	           
 				break;	
 			case BUSHUO://出货页面	
 				recLen=10*60;

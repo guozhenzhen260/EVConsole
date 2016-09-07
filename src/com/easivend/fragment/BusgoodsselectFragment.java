@@ -185,14 +185,14 @@ public class BusgoodsselectFragment extends Fragment
 		ivbuszhiselpos.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-//		    	if(Integer.parseInt(procount)>0)
-//		    	{
-//			    	sendzhifu();
-////			    	Intent intent = null;// 创建Intent对象                
-////	            	intent = new Intent(context, BusZhiwei.class);// 使用Accountflag窗口初始化Intent
-////	            	startActivity(intent);// 打开Accountflag
-//			    	listterner.BusgoodsselectSwitch(BusPort.BUSZHIWEI);
-//		    	}
+		    	if(Integer.parseInt(procount)>0)
+		    	{
+			    	sendzhifu();
+//			    	Intent intent = null;// 创建Intent对象                
+//	            	intent = new Intent(context, BusZhiwei.class);// 使用Accountflag窗口初始化Intent
+//	            	startActivity(intent);// 打开Accountflag
+			    	listterner.BusgoodsselectSwitch(BusPort.BUSZHIPOS);
+		    	}
 		    }
 		});
 		//*********************
