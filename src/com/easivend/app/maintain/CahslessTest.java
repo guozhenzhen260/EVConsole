@@ -105,8 +105,10 @@ public class CahslessTest extends Activity {
 		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getExtracom(),"com.txt");
 		    	txtcashlesstest.setText("打开读卡器.."+ToolClass.getExtracom());
 		    	//ip、端口、串口、波特率必须准确
-				mMyApi.pos_init("121.40.30.62", 18080
-						,ToolClass.getExtracom(), "9600", mIUserCallback);				
+//				mMyApi.pos_init("121.40.30.62", 18080
+//						,ToolClass.getExtracom(), "9600", mIUserCallback);	
+		    	mMyApi.pos_init("121.40.30.62", 18080
+						,"/dev/ttyUSB1", "9600", mIUserCallback);	
 		    }
 		});
 		//扣款
