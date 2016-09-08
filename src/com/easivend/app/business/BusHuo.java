@@ -91,7 +91,7 @@ public class BusHuo extends Activity
 		zhifutype=OrderDetail.getPayType();
 		txtbushuoname=(TextView)findViewById(R.id.txtbushuoname);
 				
-  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品orderID="+OrderDetail.getOrdereID()+"proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		

@@ -28,7 +28,8 @@ public class BusgoodsSelect extends Activity
 	private final int SPLASH_DISPLAY_LENGHT = 5*60*1000; // 延迟5分钟	
 	public static BusgoodsSelect BusgoodsSelectAct=null;
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodsback=null;
-	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiseltihuo=null;
+	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,
+			ivbuszhiselpos=null,ivbuszhiseltihuo=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	private String proID = null;
 	private String productID = null;
@@ -138,6 +139,19 @@ public class BusgoodsSelect extends Activity
 		    	}
 		    }
 		});
+		ivbuszhiselpos = (ImageView) findViewById(R.id.ivbuszhiselpos);	
+		ivbuszhiselpos.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(Integer.parseInt(procount)>0)
+		    	{
+			    	sendzhifu();
+			    	Intent intent = null;// 创建Intent对象                
+	            	intent = new Intent(BusgoodsSelect.this, BusZhipos.class);// 使用Accountflag窗口初始化Intent
+	            	startActivity(intent);// 打开Accountflag
+		    	}
+		    }
+		});
 		ivbuszhiseltihuo = (ImageView) findViewById(R.id.ivbuszhiseltihuo);	
 		ivbuszhiseltihuo.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -235,18 +249,30 @@ public class BusgoodsSelect extends Activity
         			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
         			zhifucount++;
         		}
+        		if(tb_inaccount.getZhifubaofaca()==0)
+        		{
+        			ivbuszhiselpos.setVisibility(View.GONE);//关闭
+        		}
+        		else
+        		{
+        			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
+        			zhifucount++;
+        		}
         		switch(zhifucount)
         		{
         			case 3:
+        			case 4:		
         				ivbuszhiselamount.setImageResource(R.drawable.amountnormalland);
         				ivbuszhiselzhier.setImageResource(R.drawable.zhiernormalland);
         				ivbuszhiselweixing.setImageResource(R.drawable.weixingnormalland);
+        				ivbuszhiselpos.setImageResource(R.drawable.zhiposnormal);
         				break;
         			case 2:
         			case 1:	
         				ivbuszhiselamount.setImageResource(R.drawable.amountlargeland);
         				ivbuszhiselzhier.setImageResource(R.drawable.zhierlargeland);
         				ivbuszhiselweixing.setImageResource(R.drawable.weixinglargeland);
+        				ivbuszhiselpos.setImageResource(R.drawable.zhiposlarge);
         				break;	
         		}
     		}    		    			
