@@ -212,7 +212,13 @@ public class CahslessTest extends Activity {
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款成功","com.txt");
 						childmsg.what=COSTSUCCESS;
 						childmsg.obj="扣款成功";
-					}else{
+					}
+					else if(rst.code.equals(ErrCode._XY.getCode())){
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销成功","com.txt");
+  						childmsg.what=CahslessTest.DELETESUCCESS;
+  						childmsg.obj="撤销成功";
+  					}
+					else{
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
 						childmsg.what=COSTFAIL;
 						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;

@@ -122,7 +122,7 @@ BushuoFragInteraction
 	private int con=0;
 	//进度对话框
 	ProgressDialog dialog= null;
-	private String zhifutype = "0";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,5pos，-1取货码
+	private String zhifutype = "0";//支付方式0=现金1=pos 3=二维码4=微支付 -1=取货码,5自提密码
 	private String out_trade_no=null;
 	//Server服务相关
 	LocalBroadcastManager localBroadreceiver;
@@ -631,6 +631,7 @@ BushuoFragInteraction
 					case CahslessTest.COSTSUCCESS:
 						listterner.BusportTsxx("提示信息：付款完成");
 						iszhipos=2;
+						tochuhuo();
 						break;
 					case CahslessTest.COSTFAIL:	
 						listterner.BusportTsxx("提示信息：读卡器故障");
@@ -651,10 +652,37 @@ BushuoFragInteraction
 				    	viewSwitch(BUSPORT, null);
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
-						//txtcashlesstest.setText(msg.obj.toString());
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款成功");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;
 					case CahslessTest.PAYOUTFAIL:	
-						//txtcashlesstest.setText(msg.obj.toString());
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
+							OrderDetail.addLog(BusPort.this);
+							ispayoutopt=0;
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							//清数据
+							clearamount();						
+							recLen=10;
+						}
 						break;		
 				}
 			}
@@ -1167,6 +1195,15 @@ BushuoFragInteraction
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 操作撤销（刷卡前）..","com.txt");
     	mMyApi.pos_cancel();
   	}
+  	
+    //退款交易
+  	private void payoutzhipos()
+  	{
+  		Message childmsg=posmainhand.obtainMessage();
+  		childmsg.what=CahslessTest.PAYOUTFAIL;
+		childmsg.obj="退款失败";
+		posmainhand.sendMessage(childmsg);
+  	}
   
   	//接口返回
   	private IUserCallback mIUserCallback = new IUserCallback(){
@@ -1343,6 +1380,25 @@ BushuoFragInteraction
 					payback();
 				}				
     			break;
+    		//pos页面	
+    		case 1:
+    			//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
+					OrderDetail.addLog(BusPort.this);					
+					clearamount();
+					recLen=10;
+				}
+				//出货失败,退钱
+				else
+				{	
+					ispayoutopt=1;
+					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<pos退款amount="+amount,"com.txt");
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhipos();//退款操作									
+				}
+    			break;	
     		//支付宝页面	
     		case 3:
     			//出货成功,结束交易
@@ -1380,7 +1436,7 @@ BushuoFragInteraction
 					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
 					payoutzhiwei();//退款操作									
 				}
-    			break;	
+    			break;    			
     		//取货码页面		
     		case -1:
     			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
@@ -1396,7 +1452,7 @@ BushuoFragInteraction
   	private void payback()
   	{
   		//2.更新投币金额
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<退款money="+money,"log.txt");
+		ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<退款money="+money,"com.txt");
 		
 	    //还有余额退币
 		if(money>0)
@@ -1687,8 +1743,9 @@ BushuoFragInteraction
 				break;	
 			case BUSZHIPOS://pos支付
 				isbus=false;
-				zhifutype="5";
 				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
+				zhifutype="1";				
+				out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
 				if (buszhiposFragment == null) {
 					buszhiposFragment = new BuszhiposFragment();
 	            }
