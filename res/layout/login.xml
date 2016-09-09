@@ -78,7 +78,7 @@
 			        android:layout_below="@id/tvcolumn"        
 			        />
 			    <TextView
-			        android:id="@+id/tvserver"
+			        android:id="@+id/tvcard"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:layout_below="@id/txtcolumn"   
@@ -94,7 +94,7 @@
 			        android:layout_height="wrap_content"   
 			        android:textSize="40sp"
 					android:textStyle="bold"     
-			        android:layout_below="@id/tvserver"        
+			        android:layout_below="@id/tvcard"        
 			        />
 			    <TextView
 			        android:id="@+id/tvallopen"

@@ -514,9 +514,9 @@ public final class R {
         public static final int tvVersion=0x7f090174;
         public static final int tvallopen=0x7f09017c;
         public static final int tvbent=0x7f090177;
+        public static final int tvcard=0x7f09017a;
         public static final int tvcolumn=0x7f090179;
         public static final int tvextracom=0x7f090181;
-        public static final int tvserver=0x7f09017a;
         public static final int txtLogin=0x7f090176;
         public static final int txtRealStatus=0x7f090198;
         public static final int txtRealStatusValue=0x7f090199;
