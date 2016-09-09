@@ -634,7 +634,7 @@ BushuoFragInteraction
 						tochuhuo();
 						break;
 					case CahslessTest.COSTFAIL:	
-						listterner.BusportTsxx("提示信息：读卡器故障");
+						listterner.BusportTsxx("提示信息：扣款失败");
 						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:

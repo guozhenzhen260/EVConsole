@@ -267,6 +267,10 @@ public class BusHuo extends Activity
 	                    		intentrec.putExtra("cabinetvar", cabinetvar);//出货柜号	                    		
 	            	            BusHuo.this.setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
 	                		}
+	                    	else if(zhifutype==1)//银联
+	                    	{
+	                    		BusHuo.this.setResult(BusZhipos.RESULT_CANCELED,intentrec);                    	            
+	                		}
 	                    	else if(zhifutype==3)//支付宝二维码
 	                    	{
 	                    		BusHuo.this.setResult(BusZhier.RESULT_CANCELED,intentrec);                    	            

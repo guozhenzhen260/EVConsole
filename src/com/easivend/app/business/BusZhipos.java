@@ -1,7 +1,9 @@
 package com.easivend.app.business;
 
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.easivend.app.maintain.CahslessTest;
 import com.easivend.common.OrderDetail;
@@ -17,6 +19,7 @@ import com.landfoneapi.protocol.pkg._04_GetRecordReply;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -42,6 +45,7 @@ public class BusZhipos extends Activity
 	private final int SPLASH_TIMEOUT_LENGHT = 5*60; //  5*60延迟5分钟
 	private int recLen = SPLASH_TIMEOUT_LENGHT; 
 	private int queryLen = 0; 
+	private int ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
     ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 //	private String proID = null;
 //	private String productID = null;
@@ -56,7 +60,8 @@ public class BusZhipos extends Activity
 	private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
-	@Override
+    private String out_trade_no=null;
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -67,6 +72,7 @@ public class BusZhipos extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhipos);
 		BusZhiposAct = this;
+		timer.scheduleWithFixedDelay(task, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
 		txtbuszhiposcount= (TextView) findViewById(R.id.txtbuszhiposcount);
 		txtbuszhiposcount.setText(String.valueOf(OrderDetail.getShouldNo()));
@@ -74,6 +80,7 @@ public class BusZhipos extends Activity
 		txtbuszhiposAmount.setText(String.valueOf(amount));
 		txtbuszhipostime = (TextView) findViewById(R.id.txtbuszhipostime);
 		txtbuszhipostsxx = (TextView) findViewById(R.id.txtbuszhipostsxx);
+		out_trade_no=ToolClass.out_trade_no(BusZhipos.this);// 创建InaccountDAO对象;
 		imgbtnbuszhiposqxzf = (ImageButton) findViewById(R.id.imgbtnbuszhiposqxzf);
 		imgbtnbuszhiposqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -118,10 +125,10 @@ public class BusZhipos extends Activity
 					case CahslessTest.COSTSUCCESS:
 						txtbuszhipostsxx.setText("提示信息：付款完成");
 						iszhipos=2;
-//						tochuhuo();
+						tochuhuo();
 						break;
 					case CahslessTest.COSTFAIL:	
-						txtbuszhipostsxx.setText("提示信息：读卡器故障");
+						txtbuszhipostsxx.setText("提示信息：扣款失败");
 						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
@@ -138,37 +145,37 @@ public class BusZhipos extends Activity
 						finish();
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
-//						if(ispayoutopt==1)
-//						{
-//							//记录日志退币完成
-//							OrderDetail.setRealStatus(1);//记录退币成功
-//							OrderDetail.setRealCard(amount);//记录退币金额
-//							OrderDetail.addLog(BusPort.this);
-//							ispayoutopt=0;
-//							//结束交易页面
-//							listterner.BusportTsxx("交易结果:退款成功");
-//							dialog.dismiss();
-//							//清数据
-//							clearamount();						
-//							recLen=10;
-//						}
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusZhipos.this);
+							ispayoutopt=0;
+							//结束交易页面
+							txtbuszhipostsxx.setText("提示信息：退款成功");
+							dialog.dismiss();
+							timer.shutdown(); 
+							mMyApi.pos_release();
+							finish();
+						}
 						break;
 					case CahslessTest.PAYOUTFAIL:	
-//						if(ispayoutopt==1)
-//						{
-//							//记录日志退币完成
-//							OrderDetail.setRealStatus(3);//记录退币失败
-//							OrderDetail.setRealCard(0);//记录退币金额
-//							OrderDetail.setDebtAmount(amount);//欠款金额
-//							OrderDetail.addLog(BusPort.this);
-//							ispayoutopt=0;
-//							//结束交易页面
-//							listterner.BusportTsxx("交易结果:退款失败");
-//							dialog.dismiss();
-//							//清数据
-//							clearamount();						
-//							recLen=10;
-//						}
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
+							OrderDetail.addLog(BusZhipos.this);
+							ispayoutopt=0;
+							//结束交易页面
+							txtbuszhipostsxx.setText("提示信息：退款成功");
+							dialog.dismiss();
+							timer.shutdown(); 
+							mMyApi.pos_release();
+							finish();
+						}
 						break;		
 				}
 			}
@@ -195,6 +202,37 @@ public class BusZhipos extends Activity
 		}, SPLASH_DISPLAY_LENGHT);
 	}
 	
+    //调用倒计时定时器
+	TimerTask task = new TimerTask() { 
+	      @Override 
+	      public void run() { 
+	
+	          runOnUiThread(new Runnable() {      // UI thread 
+		         @Override 
+		        public void run()
+		        { 
+		            recLen--; 
+		            txtbuszhipostime.setText("倒计时:"+recLen); 
+		            //退出页面
+		            if(recLen <= 0)
+		            { 
+		            	timer.shutdown(); 
+		            	timeoutfinishActivity();
+		            } 
+		            
+		            
+		            //发送查询交易指令
+		            if(iszhipos==1)
+		            {		                
+		            }
+		            //发送订单交易指令
+		            else if(iszhipos==0)
+		            {		              
+		            }
+		        } 
+	          });
+	      }      
+	  };
 	//结束界面
 	private void finishActivity()
 	{
@@ -224,6 +262,15 @@ public class BusZhipos extends Activity
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 操作撤销（刷卡前）..","com.txt");
     	mMyApi.pos_cancel();
+  	}
+  	
+    //退款交易
+  	private void payoutzhipos()
+  	{
+  		Message childmsg=posmainhand.obtainMessage();
+  		childmsg.what=CahslessTest.PAYOUTFAIL;
+		childmsg.obj="退款失败";
+		posmainhand.sendMessage(childmsg);
   	}
 	
 	//接口返回
@@ -344,5 +391,56 @@ public class BusZhipos extends Activity
   			}
   		}
   	};
+  	
+    //跳到出货页面
+  	private void tochuhuo()
+  	{
+  		Intent intent = null;// 创建Intent对象                
+      	intent = new Intent(BusZhipos.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+//      	intent.putExtra("out_trade_no", out_trade_no);
+//      	intent.putExtra("proID", proID);
+//      	intent.putExtra("productID", productID);
+//      	intent.putExtra("proType", proType);
+//      	intent.putExtra("cabID", cabID);
+//      	intent.putExtra("huoID", huoID);
+//      	intent.putExtra("prosales", prosales);
+//      	intent.putExtra("count", count);
+//      	intent.putExtra("reamin_amount", reamin_amount);
+//      	intent.putExtra("zhifutype", zhifutype);
+      	OrderDetail.setOrdereID(out_trade_no);
+      	OrderDetail.setPayType(Integer.parseInt(zhifutype));
+      	OrderDetail.setSmallCard(amount);
+      	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
+  	}
+  	
+    //接收BusHuo返回信息
+  	@Override
+  	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  		// TODO Auto-generated method stub
+  		if(requestCode==REQUEST_CODE)
+  		{
+  			if(resultCode==BusZhier.RESULT_CANCELED)
+  			{
+  				Bundle bundle=data.getExtras();
+    				int status=bundle.getInt("status");//出货结果1成功,0失败
+    			    //1.
+    				//出货成功,结束交易
+  				if(status==1)
+  				{
+  					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<无退款","com.txt");
+  					OrderDetail.addLog(BusZhipos.this);					
+  					finish();
+  				}
+  				//出货失败,退钱
+  				else
+  				{	
+  					ispayoutopt=1;
+  					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<退款amount="+amount,"com.txt");
+  					dialog= ProgressDialog.show(BusZhipos.this,"正在退款中","请稍候...");
+  					payoutzhipos();//退款操作									
+  				}				
+  			}			
+  		}
+  	}
 
 }
