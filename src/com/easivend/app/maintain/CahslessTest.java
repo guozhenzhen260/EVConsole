@@ -102,13 +102,11 @@ public class CahslessTest extends Activity {
 		btncashlesstestopen.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {		    	
-		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getExtracom(),"com.txt");
-		    	txtcashlesstest.setText("打开读卡器.."+ToolClass.getExtracom());
+		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
+		    	txtcashlesstest.setText("打开读卡器.."+ToolClass.getCardcom());
 		    	//ip、端口、串口、波特率必须准确
-//				mMyApi.pos_init("121.40.30.62", 18080
-//						,ToolClass.getExtracom(), "9600", mIUserCallback);	
-		    	mMyApi.pos_init("121.40.30.62", 18080
-						,"/dev/ttyUSB1", "9600", mIUserCallback);	
+				mMyApi.pos_init("121.40.30.62", 18080
+						,ToolClass.getCardcom(), "9600", mIUserCallback);
 		    }
 		});
 		//扣款
@@ -185,13 +183,13 @@ public class CahslessTest extends Activity {
 				{
 					//【返回码和信息】code和code_info的返回/说明，见com.landfoneapi.mispos.ErrCode
 					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getExtracom(),"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getCardcom(),"com.txt");
 						childmsg.what=OPENSUCCESS;
-						childmsg.obj="打开成功"+ToolClass.getExtracom();
+						childmsg.obj="打开成功"+ToolClass.getCardcom();
 					}else{
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getExtracom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
 						childmsg.what=OPENFAIL;
-						childmsg.obj="打开失败"+ToolClass.getExtracom()+",code:"+rst.code+",info:"+rst.code_info;
+						childmsg.obj="打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info;
 					}
 				}
 				//关闭串口

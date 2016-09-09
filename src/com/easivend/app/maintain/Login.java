@@ -40,15 +40,15 @@ import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin,txtbent,txtcolumn,txtserver,txtip,txtextracom;// 创建EditText对象
-	private TextView tvip=null,tvVersion=null,tvextracom=null;
+	private EditText txtlogin,txtbent,txtcolumn,txtcardcom,txtextracom;// 创建EditText对象
+	private TextView tvVersion=null,tvextracom=null;
     private Button btnlogin,btnclose,btnGaoji,btnDel,btnDelImg,btnDelads;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
     String bentcom =null;
     String columncom =null;
     String extracom =null;
-    String server =null,sercom=null,serip=null;
+    String cardcom =null;
     int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +61,13 @@ public class Login extends Activity
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取现金设备串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取格子柜串口号文本框
         txtcolumn = (EditText) findViewById(R.id.txtcolumn);// 获取主柜串口号文本框
-        txtserver = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
-        txtip = (EditText) findViewById(R.id.txtip);// 获取服务端ip地址文本框
-        tvip = (TextView) findViewById(R.id.tvip);
+        txtcardcom = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
         tvextracom = (TextView) findViewById(R.id.tvextracom);
         txtextracom = (EditText) findViewById(R.id.txtextracom);//获取外协设备串口号文本框
         tvVersion = (TextView) findViewById(R.id.tvVersion);//本机版本号
         btnDel = (Button) findViewById(R.id.btnDel);// 获取清除全部商品货道信息
         btnDelImg = (Button) findViewById(R.id.btnDelImg);// 获取清除商品图片缓存信息
         btnDelads = (Button) findViewById(R.id.btnDelads);// 获取清除广告缓存信息
-        tvip.setVisibility(View.GONE);        
-        txtip.setVisibility(View.GONE);
         tvextracom.setVisibility(View.GONE); 
         txtextracom.setVisibility(View.GONE); 
         btnDel.setVisibility(View.GONE);
@@ -97,18 +93,15 @@ public class Login extends Activity
 	        {
 	        	extracom = list.get("extracom");	
 	        }
-	        if(list.containsKey("server"))
+			if(list.containsKey("cardcom"))//设置读卡器串口号
 	        {
-	        	server = list.get("server");
-	        	sercom=server.substring(server.lastIndexOf('/')+1,server.length());
-	        	serip=server.substring(0,server.lastIndexOf('/')+1);
-	        }
+	        	cardcom = list.get("cardcom");
+	        }	
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
         txtcolumn.setText(columncom);
-        txtserver.setText(sercom);
-        txtip.setText(serip);
+        txtcardcom.setText(cardcom);
         txtextracom.setText(extracom);
         switchallopen.setChecked((isallopen==1)?true:false);
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
@@ -129,10 +122,8 @@ public class Login extends Activity
     	        columncom = txtcolumn.getText().toString(); 
     	        extracom = txtextracom.getText().toString(); 
     	        isallopen= (switchallopen.isChecked()==true)?1:0;
-    	        serip = txtip.getText().toString();
-    	        sercom = txtserver.getText().toString(); 
-    	        server=serip+sercom;
-            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,server,String.valueOf(isallopen));            	
+    	        cardcom = txtcardcom.getText().toString(); 
+            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,String.valueOf(isallopen));            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
@@ -145,11 +136,9 @@ public class Login extends Activity
         btnGaoji.setOnClickListener(new OnClickListener() {// 为取消按钮设置监听事件
             @Override
             public void onClick(View arg0) {
-                if(txtip.getVisibility()==View.GONE)
+                if(tvextracom.getVisibility()==View.GONE)
                 {
-                	tvip.setVisibility(View.VISIBLE);
-                    txtip.setVisibility(View.VISIBLE);
-                    tvextracom.setVisibility(View.VISIBLE); 
+                	tvextracom.setVisibility(View.VISIBLE); 
                     txtextracom.setVisibility(View.VISIBLE); 
                     btnDel.setVisibility(View.VISIBLE);
                     btnDelImg.setVisibility(View.VISIBLE);
@@ -157,9 +146,7 @@ public class Login extends Activity
                 }
                 else
                 {
-                	tvip.setVisibility(View.GONE);
-                    txtip.setVisibility(View.GONE);
-                    tvextracom.setVisibility(View.GONE);
+                	tvextracom.setVisibility(View.GONE);
                     txtextracom.setVisibility(View.GONE); 
                     btnDel.setVisibility(View.GONE);
                     btnDelImg.setVisibility(View.GONE);

@@ -105,7 +105,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev包的地址
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//串口id号
-	private static String bentcom="",com="",columncom="",extracom="";//串口描述符
+	private static String bentcom="",com="",columncom="",extracom="",cardcom="";//串口描述符
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
@@ -195,6 +195,14 @@ public class ToolClass
 
 	public static void setExtracom(String extracom) {
 		ToolClass.extracom = extracom;
+	}
+		
+	public static String getCardcom() {
+		return cardcom;
+	}
+
+	public static void setCardcom(String cardcom) {
+		ToolClass.cardcom = cardcom;
 	}
 
 	public static Context getContext() {
@@ -1412,7 +1420,7 @@ public class ToolClass
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String server,String isallopen) 
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String isallopen) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1458,6 +1466,7 @@ public class ToolClass
 		            	  &&(me.getKey().equals("bentcom")!=true)
 		            	  &&(me.getKey().equals("columncom")!=true)
 		            	  &&(me.getKey().equals("extracom")!=true)
+		            	  &&(me.getKey().equals("cardcom")!=true)
 		            	  &&(me.getKey().equals("isallopen")!=true)
 		            	  &&(me.getKey().equals("server")!=true)
 		              )
@@ -1468,8 +1477,8 @@ public class ToolClass
 		        list2.put("bentcom", bentcom);
 		        list2.put("columncom", columncom);
 		        list2.put("extracom", extracom);
-		        list2.put("isallopen", isallopen);
-		        list2.put("server", server);
+		        list2.put("cardcom", cardcom);
+		        list2.put("isallopen", isallopen);		        
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
 		        JSONObject jsonObject = new JSONObject(list2);
 		        String mapstrString=jsonObject.toString();
@@ -1487,8 +1496,8 @@ public class ToolClass
   	        	jsonObject.put("bentcom", bentcom);
   	        	jsonObject.put("columncom", columncom);
   	        	jsonObject.put("extracom", extracom);
+  	        	jsonObject.put("cardcom", cardcom);
   	        	jsonObject.put("isallopen", isallopen);
-  	        	jsonObject.put("server", server);
   	        	String mapstrString=jsonObject.toString();
   	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
   	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
