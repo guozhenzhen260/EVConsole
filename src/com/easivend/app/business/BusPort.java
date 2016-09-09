@@ -164,6 +164,7 @@ BushuoFragInteraction
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
+    String SpecInfoField=null;
     //=================
 	//==出货页面相关
 	//=================
@@ -631,25 +632,44 @@ BushuoFragInteraction
 					case CahslessTest.COSTSUCCESS:
 						listterner.BusportTsxx("提示信息：付款完成");
 						iszhipos=2;
-						tochuhuo();
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {         
+				            	//读卡器获取交易信息
+								mMyApi.pos_getrecord("000000000000000", "00000000","000000", mIUserCallback);
+							}
+
+						}, 300);
 						break;
 					case CahslessTest.COSTFAIL:	
 						listterner.BusportTsxx("提示信息：扣款失败");
 						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
-						//txtcashlesstest.setText(msg.obj.toString());
-						break;
 					case CahslessTest.QUERYFAIL:	
-						//txtcashlesstest.setText(msg.obj.toString());
+						SpecInfoField=msg.obj.toString();
+						listterner.BusportTsxx("单据信息："+SpecInfoField);
+						tochuhuo();	
 						break;
 					case CahslessTest.DELETESUCCESS:
 					case CahslessTest.DELETEFAIL:	
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-				    	mMyApi.pos_release();
-						clearamount();
-				    	viewSwitch(BUSPORT, null);
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {         
+				            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
+								ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+						    	mMyApi.pos_release();
+								clearamount();
+						    	viewSwitch(BUSPORT, null);
+							}
+
+						}, 300);						
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						if(ispayoutopt==1)
@@ -661,10 +681,20 @@ BushuoFragInteraction
 							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
-							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							//延时
+						    new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {         
+					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+					            	dialog.dismiss();
+									//清数据
+									clearamount();						
+									recLen=10;
+								}
+
+							}, 300);							
 						}
 						break;
 					case CahslessTest.PAYOUTFAIL:	
@@ -678,10 +708,20 @@ BushuoFragInteraction
 							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
-							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							//延时
+						    new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {         
+					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+					            	dialog.dismiss();
+									//清数据
+									clearamount();						
+									recLen=10;
+								}
+
+							}, 300);							
 						}
 						break;		
 				}
@@ -1297,13 +1337,13 @@ BushuoFragInteraction
   						tmp +="]";
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
   						childmsg.what=CahslessTest.QUERYSUCCESS;
-  						childmsg.obj="查询成功="+tmp;
+  						childmsg.obj=((_04_GetRecordReply) (rst)).getSpecInfoField();
   					}
   					else
   					{
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
   						childmsg.what=CahslessTest.QUERYFAIL;
-  						childmsg.obj="查询失败";
+  						childmsg.obj="";
   					}
   				}
   				posmainhand.sendMessage(childmsg);

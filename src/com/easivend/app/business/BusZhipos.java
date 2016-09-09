@@ -47,6 +47,7 @@ public class BusZhipos extends Activity
 	private int queryLen = 0; 
 	private int ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
     ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+    String SpecInfoField=null;
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -125,24 +126,43 @@ public class BusZhipos extends Activity
 					case CahslessTest.COSTSUCCESS:
 						txtbuszhipostsxx.setText("提示信息：付款完成");
 						iszhipos=2;
-						tochuhuo();
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {         
+				            	//读卡器获取交易信息
+								mMyApi.pos_getrecord("000000000000000", "00000000","000000", mIUserCallback);
+							}
+
+						}, 300);
 						break;
 					case CahslessTest.COSTFAIL:	
 						txtbuszhipostsxx.setText("提示信息：扣款失败");
 						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
-						//txtcashlesstest.setText(msg.obj.toString());
-						break;
 					case CahslessTest.QUERYFAIL:	
-						//txtcashlesstest.setText(msg.obj.toString());
+						SpecInfoField=msg.obj.toString();
+						txtbuszhipostsxx.setText("单据信息："+SpecInfoField);
+						tochuhuo();						
 						break;
 					case CahslessTest.DELETESUCCESS:
 					case CahslessTest.DELETEFAIL:	
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-						timer.shutdown(); 
-						mMyApi.pos_release();
-						finish();
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {         
+				            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+								timer.shutdown(); 
+								mMyApi.pos_release();
+								finish();
+							}
+
+						}, 300);						
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						if(ispayoutopt==1)
@@ -154,10 +174,20 @@ public class BusZhipos extends Activity
 							ispayoutopt=0;
 							//结束交易页面
 							txtbuszhipostsxx.setText("提示信息：退款成功");
-							dialog.dismiss();
-							timer.shutdown(); 
-							mMyApi.pos_release();
-							finish();
+							//延时
+						    new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {         
+					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+					            	dialog.dismiss();
+									timer.shutdown(); 
+									mMyApi.pos_release();
+									finish();
+								}
+
+							}, 300);							
 						}
 						break;
 					case CahslessTest.PAYOUTFAIL:	
@@ -171,10 +201,20 @@ public class BusZhipos extends Activity
 							ispayoutopt=0;
 							//结束交易页面
 							txtbuszhipostsxx.setText("提示信息：退款成功");
-							dialog.dismiss();
-							timer.shutdown(); 
-							mMyApi.pos_release();
-							finish();
+							//延时
+						    new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {         
+					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+					            	dialog.dismiss();
+									timer.shutdown(); 
+									mMyApi.pos_release();
+									finish();
+								}
+
+							}, 300);
 						}
 						break;		
 				}
@@ -333,7 +373,7 @@ public class BusZhipos extends Activity
   				{
   					//返回00，代表成功
   					if(rst.code.equals(ErrCode._00.getCode()))
-  					{
+  					{  						
   						String tmp = "单据:特定信息=";
   						tmp += "[" + ((_04_GetRecordReply) (rst)).getSpecInfoField();//特定信息【会员卡需要！！】
   						/*特定信息说明
@@ -363,13 +403,14 @@ public class BusZhipos extends Activity
   						tmp +="]";
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
   						childmsg.what=CahslessTest.QUERYSUCCESS;
-  						childmsg.obj="查询成功="+tmp;
+  						childmsg.obj=((_04_GetRecordReply) (rst)).getSpecInfoField();
   					}
   					else
   					{
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+  						SpecInfoField="";
   						childmsg.what=CahslessTest.QUERYFAIL;
-  						childmsg.obj="查询失败";
+  						childmsg.obj="";
   					}
   				}
   				posmainhand.sendMessage(childmsg);
