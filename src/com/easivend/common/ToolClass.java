@@ -81,6 +81,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
@@ -121,12 +122,36 @@ public class ToolClass
 	public static String version="";//本机版本号
 	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
 	
+	//读取文件信息
+	public static boolean  ReadSharedPreferencesAccess()
+	{
+		boolean isaccess=true;
+		//文件是私有的
+		SharedPreferences  user = context.getSharedPreferences("access_info",0);
+		//读取
+		isaccess=user.getBoolean("access",true);
+		return isaccess;
+	}
+	//写入文件信息
+	public static void  WriteSharedPreferences(boolean value)
+	{
+		//文件是私有的
+		SharedPreferences  user = context.getSharedPreferences("access_info",0);
+		//需要接口进行编辑
+		SharedPreferences.Editor edit=user.edit();
+		//设置
+		edit.putBoolean("access", value);
+		//提交更新
+		edit.commit();
+	}
+		
 	public static boolean isCLIENT_STATUS_SERVICE() {
 		return CLIENT_STATUS_SERVICE;
 	}
 
 	public static void setCLIENT_STATUS_SERVICE(boolean cLIENT_STATUS_SERVICE) {
 		CLIENT_STATUS_SERVICE = cLIENT_STATUS_SERVICE;
+		WriteSharedPreferences(CLIENT_STATUS_SERVICE);
 	}
 	
 	//判断如果本机暂停服务，不允许销售并提示

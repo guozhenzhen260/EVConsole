@@ -254,6 +254,19 @@ public class EVServerhttp implements Runnable {
 									tomain1.what=SETMAIN;
 									Tok=object.getString("Token");
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok1]","server.txt");
+									if(object.has("CLIENT_STATUS_SERVICE"))
+									{
+										int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
+										//设置本机是否可以使用
+						    			if(CLIENT_STATUS_SERVICE==0)
+						    				ToolClass.setCLIENT_STATUS_SERVICE(true);
+						    			else
+						    				ToolClass.setCLIENT_STATUS_SERVICE(false);
+									}
+									else
+									{
+										ToolClass.setCLIENT_STATUS_SERVICE(true);
+									}
 								}	
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -800,11 +813,33 @@ public class EVServerhttp implements Runnable {
 								if(errType>0)
 								{	
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail9]SETERRFAILMAIN","server.txt");	
+									if(object.has("CLIENT_STATUS_SERVICE"))
+									{
+										int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
+										//设置本机是否可以使用
+										if(CLIENT_STATUS_SERVICE==0)
+											ToolClass.setCLIENT_STATUS_SERVICE(true);
+										else
+											ToolClass.setCLIENT_STATUS_SERVICE(false);
+									}
 								}
 								else
 								{
 									Tok=object.getString("Token");	
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok9]","server.txt");
+									if(object.has("CLIENT_STATUS_SERVICE"))
+									{
+										int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
+										//设置本机是否可以使用
+										if(CLIENT_STATUS_SERVICE==0)
+											ToolClass.setCLIENT_STATUS_SERVICE(true);
+										else
+											ToolClass.setCLIENT_STATUS_SERVICE(false);
+									}
+									else
+									{
+										ToolClass.setCLIENT_STATUS_SERVICE(true);
+									}
 								}	
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -881,12 +916,34 @@ public class EVServerhttp implements Runnable {
 									tomain21.what=SETERRFAILDCHECKCMDMAIN;
 									tomain21.obj=object.getString("Message");
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[fail9]SETERRFAILMAIN","server.txt");	
+									if(object.has("CLIENT_STATUS_SERVICE"))
+									{
+										int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
+										//设置本机是否可以使用
+										if(CLIENT_STATUS_SERVICE==0)
+											ToolClass.setCLIENT_STATUS_SERVICE(true);
+										else
+											ToolClass.setCLIENT_STATUS_SERVICE(false);
+									}
 								}
 								else
 								{
 									tomain21.what=SETCHECKCMDMAIN;
 									Tok=object.getString("Token");	
 									ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec1=[ok9]","server.txt");
+									if(object.has("CLIENT_STATUS_SERVICE"))
+									{
+										int CLIENT_STATUS_SERVICE=object.getInt("CLIENT_STATUS_SERVICE");
+										//设置本机是否可以使用
+										if(CLIENT_STATUS_SERVICE==0)
+											ToolClass.setCLIENT_STATUS_SERVICE(true);
+										else
+											ToolClass.setCLIENT_STATUS_SERVICE(false);
+									}
+									else
+									{
+										ToolClass.setCLIENT_STATUS_SERVICE(true);
+									}
 								}	
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -3762,5 +3819,7 @@ public class EVServerhttp implements Runnable {
   		}	
   		return "";
   	}
+  	
+  	
 	
 }

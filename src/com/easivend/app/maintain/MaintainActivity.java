@@ -54,6 +54,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -205,7 +206,9 @@ public class MaintainActivity extends Activity
 		//串口配置和注册相关
 		//================
 		ToolClass.SetDir();	//设置根目录
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序启动...]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
+		//读取本机是否授权交易
+		ToolClass.setCLIENT_STATUS_SERVICE(ToolClass.ReadSharedPreferencesAccess());
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序启动,授权"+ToolClass.isCLIENT_STATUS_SERVICE()+"...]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
@@ -447,6 +450,7 @@ public class MaintainActivity extends Activity
 		}
 
 	}
+		
 	
 	//=============
 	//COM服务相关
