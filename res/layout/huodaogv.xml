@@ -5,8 +5,8 @@
     android:orientation="vertical" >
     <ImageView
         android:id="@+id/huoImage"
-        android:layout_width="205dp"
-        android:layout_height="205dp"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:layout_gravity="center"
         android:padding="4dp"
         android:src="@drawable/wufenleiimg"
