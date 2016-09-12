@@ -219,6 +219,7 @@ public class vmc_productDAO
 	 		db.close(); 
 	    }
     }
+	
 	/**
      * 通过ID刪除多条信息
      * 
@@ -240,6 +241,29 @@ public class vmc_productDAO
 //            // 执行删除收入信息操作
 //            db.execSQL("delete from vmc_class where classID in (" + sb + ")", (Object[]) ids);
 //        }
+    }
+    
+    //删除product表,但是不变动classproduct
+    public void deleteall()
+    {
+    	  db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+          
+          // 开启一个事务
+  	    db.beginTransaction();
+  	    try {
+  	          // 执行删除表
+  	          db.execSQL("delete from vmc_product"); 
+  	          
+  	       // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+  		      db.setTransactionSuccessful();
+  	    } catch (Exception e) {
+  	        // process it
+  	        e.printStackTrace();
+  	    } finally {
+  	        // 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+  	        db.endTransaction();
+  	        db.close(); 
+  	    }
     }
     
     /**

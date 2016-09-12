@@ -331,11 +331,17 @@ public class EVServerService extends Service {
 							e.printStackTrace();
 						}	
 						//初始化三:获取商品信息
+						if(ToolClass.isEmptynull(LAST_PRODUCT_TIME))
+		        		{		
+		        			// 创建InaccountDAO对象
+		        			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
+		        			productDAO.deleteall();
+		        		}
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg5=childhand.obtainMessage();
 		        		childmsg5.what=EVServerhttp.SETPRODUCTCHILD;
 		        		childmsg5.obj=LAST_PRODUCT_TIME;
-		        		childhand.sendMessage(childmsg5);
+		        		childhand.sendMessage(childmsg5);		        		
 						break;	
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
@@ -820,7 +826,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },60,60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
