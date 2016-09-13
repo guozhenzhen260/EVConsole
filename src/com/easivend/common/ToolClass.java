@@ -1656,7 +1656,9 @@ public class ToolClass
 		        } 	
 		        //Ö§¸¶±¦
 		        int ALIPAYMODE=1;
-		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        if((ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        	&&(object2.get("ALIPAYMODE").toString().equals("null")==false)
+		        )
 		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
 		        //2.0
 		        if(ALIPAYMODE==2)

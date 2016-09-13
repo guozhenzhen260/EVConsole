@@ -1357,7 +1357,7 @@ BushuoFragInteraction
 
   				//【提示信息类型】type的说明，见com.landfoneapi.mispos.DisplayType
   				if(dpl.getType().equals(DisplayType._4.getType())){
-  					ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 通讯提示<<"+dpl.getMsg(),"com.txt");
+  					ToolClass.Log(ToolClass.INFO,"EV_COM","COMAPI 通讯提示<<"+dpl.getMsg(),"com.txt");
   				}
 
   			}
