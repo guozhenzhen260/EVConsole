@@ -41,6 +41,10 @@ public class CahslessTest extends Activity {
 			btncashlesstestcancel=null;
 	private Handler mainhand=null;
 	private LfMISPOSApi mMyApi = new LfMISPOSApi();
+	//退款参数
+	private String rfd_card_no = "";
+	private String rfd_spec_tmp_serial = "";
+	float amount=0;//商品需要支付金额
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -114,10 +118,10 @@ public class CahslessTest extends Activity {
 		btncashlesstestok.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {	
-		    	int money=ToolClass.MoneySend(Float.parseFloat(edtcashlesstest.getText().toString()));
-		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+money,"com.txt");
-		    	txtcashlesstest.setText("读卡器扣款="+money);
-				mMyApi.pos_purchase(money, mIUserCallback);				
+		    	amount=Float.parseFloat(edtcashlesstest.getText().toString());
+		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+		    	txtcashlesstest.setText("读卡器扣款="+amount);
+				mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);				
 		    }
 		});
 		//查询
@@ -144,7 +148,10 @@ public class CahslessTest extends Activity {
 		btncashlesstestpayout = (Button)findViewById(R.id.btncashlesstestpayout);
 		btncashlesstestpayout.setOnClickListener(new OnClickListener() {
 		    @Override
-		    public void onClick(View arg0) {	
+		    public void onClick(View arg0) {
+		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
+		    	txtcashlesstest.setText("读卡器退款="+amount);
+		    	mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
 		    }
 		});
 		//关闭
@@ -224,6 +231,22 @@ public class CahslessTest extends Activity {
 						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
 					}
 				}
+				//退款
+  				else if(rst.op.equals(LfMISPOSApi.OP_REFUND))
+  				{
+  					//返回00，代表成功
+					if(rst.code.equals(ErrCode._00.getCode()))
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款成功","com.txt");
+						childmsg.what=CahslessTest.PAYOUTSUCCESS;
+  						childmsg.obj="退款成功";
+					}else
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						childmsg.what=CahslessTest.PAYOUTFAIL;
+						childmsg.obj="退款失败,code:"+rst.code+",info:"+rst.code_info;
+					}
+				}
 				//返回结果
 				else if(rst.op.equals(LfMISPOSApi.OP_GETRECORD))
 				{
@@ -258,6 +281,23 @@ public class CahslessTest extends Activity {
 						tmp += "],交易金额=[" + ((_04_GetRecordReply) (rst)).getTransacionAmount();//交易金额
 						tmp +="]";
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
+
+  						//退款参数获取
+						String tmp_spec = ((_04_GetRecordReply) (rst)).getSpecInfoField();
+						int tmp_spec_len = tmp_spec!=null?tmp_spec.length():0;
+						//【金额】
+						//rfd_amt_fen = amount;//使用上次全额，测试金额都是1分
+						//【退款卡号】
+						if(tmp_spec!=null && tmp_spec_len>(2+19)){
+							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19);
+						}
+						//【临时交易流水号】
+						if(tmp_spec!=null && tmp_spec_len>26){
+							rfd_spec_tmp_serial = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26),tmp_spec_len);
+						}else{//使用空格时，表示上一次的【临时交易流水号】
+							rfd_spec_tmp_serial = String.format("%1$-26s","");
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial,"com.txt");
 						childmsg.what=QUERYSUCCESS;
 						childmsg.obj="查询成功="+tmp;
 					}

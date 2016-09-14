@@ -930,7 +930,7 @@ public class EVServerService extends Service {
 			JSONObject object2=arr1.getJSONObject(i);
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新第["+i+"]号商品="+object2.toString(),"server.txt");
 			//获取本商品是否有对应的分类信息
-			String prono=object2.getString("product_NO");
+			String prono=object2.getString("product_NO");			
 			if(classjoin.containsKey(prono))
 			{
 				object2.put("product_Class_NO", classjoin.get(prono));
@@ -942,6 +942,7 @@ public class EVServerService extends Service {
 			String product_Class_NO=(ToolClass.isEmptynull(object2.getString("product_Class_NO")))?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			String product_TXT=object2.getString("product_TXT");
+			//成本价market_Price，销售价sales_Price，促销价promotion_Price一切以sales_Price为准
 			//用于签到完成后，更新商品信息时间段
 			if(ischeck==true) 
 			{
