@@ -1475,34 +1475,41 @@ public class EVServerService extends Service {
 	   			{
 	   			  if(!files[i].isDirectory())
 	   			  {	
-	   				String filename=files[i].toString();
-	   				ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断安装目录内文件="+filename,"server.txt"); 
-	   				String attimg2=filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
-	   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
-	   		        if(attimg2.equals("APK"))
-	   		        {
-	   		        	String tempATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
-	   		        	//留最后安装
-	   		        	if(tempATTIDS.equals("EVConsole.apk"))
-	   		        	{
-	   		        		ATTIDS=tempATTIDS;
-	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]待会安装...","server.txt");
-		   		        	continue;
-	   		        	}
-	   		        	else
-	   		        	{
-	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+tempATTIDS+"]开始安装...","server.txt");
-		   		        	//1.有提示的安装
-		   		             File fileName = ToolClass.setAPKFile(tempATTIDS);
-		   		             Intent intent = new Intent();  
-		   		             //执行动作  
-		   		             intent.setAction(Intent.ACTION_VIEW); 
-		   		             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-		   		             //执行的数据类型  
-		   		             intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
-		   		             startActivity(intent);
-	   		        	}
-	   		        }
+	   				try
+	        		{
+		   				String filename=files[i].toString();
+		   				ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断安装目录内文件="+filename,"server.txt"); 
+		   				String attimg2=filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+		   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
+		   		        if(attimg2.equals("APK"))
+		   		        {
+		   		        	String tempATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
+		   		        	//留最后安装
+		   		        	if(tempATTIDS.equals("EVConsole.apk"))
+		   		        	{
+		   		        		ATTIDS=tempATTIDS;
+		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]待会安装...","server.txt");
+			   		        	continue;
+		   		        	}
+		   		        	else
+		   		        	{
+		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+tempATTIDS+"]开始安装...","server.txt");
+			   		        	//1.有提示的安装
+			   		             File fileName = ToolClass.setAPKFile(tempATTIDS);
+			   		             Intent intent = new Intent();  
+			   		             //执行动作  
+			   		             intent.setAction(Intent.ACTION_VIEW); 
+			   		             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+			   		             //执行的数据类型  
+			   		             intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
+			   		             startActivity(intent);
+		   		        	}
+		   		        }
+	        		}
+	        		catch(Exception e)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件="+files[i].toString()+"异常，无法判断","server.txt");
+	        		}
 	   			  }
 	   			}
 	   		}

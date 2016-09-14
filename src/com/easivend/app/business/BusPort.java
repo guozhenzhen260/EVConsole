@@ -164,7 +164,9 @@ BushuoFragInteraction
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
-    String SpecInfoField=null;
+    //退款参数
+   	private String rfd_card_no = "";
+   	private String rfd_spec_tmp_serial = "";
     //=================
 	//==出货页面相关
 	//=================
@@ -650,8 +652,7 @@ BushuoFragInteraction
 						break;
 					case CahslessTest.QUERYSUCCESS:
 					case CahslessTest.QUERYFAIL:	
-						SpecInfoField=msg.obj.toString();
-						listterner.BusportTsxx("单据信息："+SpecInfoField);
+						//listterner.BusportTsxx("单据信息："+SpecInfoField);
 						tochuhuo();	
 						break;
 					case CahslessTest.DELETESUCCESS:
@@ -1239,10 +1240,8 @@ BushuoFragInteraction
     //退款交易
   	private void payoutzhipos()
   	{
-  		Message childmsg=posmainhand.obtainMessage();
-  		childmsg.what=CahslessTest.PAYOUTFAIL;
-		childmsg.obj="退款失败";
-		posmainhand.sendMessage(childmsg);
+  		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
+    	mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
   	}
   
   	//接口返回
@@ -1302,6 +1301,22 @@ BushuoFragInteraction
   						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
   					}
   				}
+  				//退款
+  				else if(rst.op.equals(LfMISPOSApi.OP_REFUND))
+  				{
+  					//返回00，代表成功
+					if(rst.code.equals(ErrCode._00.getCode()))
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款成功","com.txt");
+						childmsg.what=CahslessTest.PAYOUTSUCCESS;
+  						childmsg.obj="退款成功";
+					}else
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						childmsg.what=CahslessTest.PAYOUTFAIL;
+						childmsg.obj="退款失败,code:"+rst.code+",info:"+rst.code_info;
+					}
+				}
   				//返回结果
   				else if(rst.op.equals(LfMISPOSApi.OP_GETRECORD))
   				{
@@ -1336,6 +1351,23 @@ BushuoFragInteraction
   						tmp += "],交易金额=[" + ((_04_GetRecordReply) (rst)).getTransacionAmount();//交易金额
   						tmp +="]";
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
+
+  						//退款参数获取
+						String tmp_spec = ((_04_GetRecordReply) (rst)).getSpecInfoField();
+						int tmp_spec_len = tmp_spec!=null?tmp_spec.length():0;
+						//【金额】
+						//rfd_amt_fen = amount;//使用上次全额，测试金额都是1分
+						//【退款卡号】
+						if(tmp_spec!=null && tmp_spec_len>(2+19)){
+							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19);
+						}
+						//【临时交易流水号】
+						if(tmp_spec!=null && tmp_spec_len>26){
+							rfd_spec_tmp_serial = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26),tmp_spec_len);
+						}else{//使用空格时，表示上一次的【临时交易流水号】
+							rfd_spec_tmp_serial = String.format("%1$-26s","");
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial,"com.txt");
   						childmsg.what=CahslessTest.QUERYSUCCESS;
   						childmsg.obj=((_04_GetRecordReply) (rst)).getSpecInfoField();
   					}

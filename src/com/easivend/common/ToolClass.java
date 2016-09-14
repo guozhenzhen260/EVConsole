@@ -593,7 +593,10 @@ public class ToolClass
 		 		res=scan.next()+" "+scan.next();	//	取数据		 		
 		 	}
 		 	
-		 }catch(Exception e){}
+		 }catch(Exception e)
+		 {
+			
+		 }
 		 res=res.substring(0, res.indexOf("(INFO)"));// 从收入信息中截取收入编号
 		 System.out.println(" 文件创建时间1="+res);
          return res;
@@ -839,25 +842,32 @@ public class ToolClass
 		   		        {
 		   		        	fileName=new File(files[i].toString()); 
 		   		        	if(fileName.exists())
-		   		        	{  
-		   		        		String logdatetime = getFileCreated(fileName);
-		   		        		ParsePosition poslog = new ParsePosition(0);  
-		   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
-		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
-		   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
-		   		            	{
-		   		            		//4.拷贝文件到压缩目录中
-		   		            		String a[] = files[i].toString().split("/");  
-		   		            		String ATT_ID=a[a.length-1];  
-		   		            		String ZIPFile=zipDir+ATT_ID;
-		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
-		   		            		copyFile(files[i].toString(),ZIPFile);
-		   		            		inter=true;
-		   		            	}
-		   		            	else
-		   		            	{
-		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
-		   		            	}	
+		   		        	{ 
+		   		        		try
+				        		{
+			   		        		String logdatetime = getFileCreated(fileName);
+			   		        		ParsePosition poslog = new ParsePosition(0);  
+			   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
+			   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
+			   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
+			   		            	{
+			   		            		//4.拷贝文件到压缩目录中
+			   		            		String a[] = files[i].toString().split("/");  
+			   		            		String ATT_ID=a[a.length-1];  
+			   		            		String ZIPFile=zipDir+ATT_ID;
+			   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
+			   		            		copyFile(files[i].toString(),ZIPFile);
+			   		            		inter=true;
+			   		            	}
+			   		            	else
+			   		            	{
+			   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
+			   		            	}
+				        		}
+				        		catch(Exception e)
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件="+files[i].toString()+"异常，无法判断","server.txt");
+				        		}	
 		   		    	    } 
 		   		        }
 	   			  }
@@ -896,7 +906,7 @@ public class ToolClass
         ParsePosition posstart = new ParsePosition(0);  
     	Date dstart = (Date) tempDate.parse(starttime, posstart);
     	ToolClass.Log(ToolClass.INFO,"EV_DOG","保存日志的起始时间="+starttime+",="+dstart.getTime(),"dog.txt");
-    	
+    	ToolClass.Log(ToolClass.INFO,"EV_DOG","目录="+file.toString(),"dog.txt");
     	//遍历这个文件夹里的所有文件
 		File[] files = file.listFiles();
 		if (files.length > 0) 
@@ -909,19 +919,26 @@ public class ToolClass
 		        	File fileName=new File(files[i].toString()); 
 		        	if(fileName.exists())
 		        	{  
-		        		String logdatetime = getFileCreated(fileName);
-		        		ParsePosition poslog = new ParsePosition(0);  
-		        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-		        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
-		        		//判断是否文件早于本周
-		        		if(dlog.getTime()<=dstart.getTime())
-		            	{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dog.txt");
-		            		fileName.delete();		            		
-		            	}
-		        		else
+		        		try
 		        		{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dog.txt");
+			        		String logdatetime = getFileCreated(fileName);
+			        		ParsePosition poslog = new ParsePosition(0);  
+			        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+			        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+			        		//判断是否文件早于本周
+			        		if(dlog.getTime()<=dstart.getTime())
+			            	{
+			        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dog.txt");
+			            		fileName.delete();		            		
+			            	}
+			        		else
+			        		{
+			        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dog.txt");
+			        		}
+		        		}
+		        		catch(Exception e)
+		        		{
+		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"异常，无法判断","dog.txt");
 		        		}
 		    	    } 
 			  }
@@ -1190,13 +1207,20 @@ public class ToolClass
   			for (int i = 0; i < files.length; i++) 
 			{
 			  if(!files[i].isDirectory())
-			  {		
-				  //是否图片文件
-				  if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
-				  {
-					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
-					  mHuoList.add(files[i].toString());
-				  }
+			  {	
+				    try
+	        		{
+					  //是否图片文件
+					  if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
+					  {
+						  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
+						  mHuoList.add(files[i].toString());
+					  }
+	        		}
+				    catch(Exception e)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_JNI","文件="+files[i].toString()+"异常，无法判断","log.txt");
+	        		}
 			  }
 			}  
   			//选择需要显示的广告
