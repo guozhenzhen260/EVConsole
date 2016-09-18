@@ -79,7 +79,7 @@ public class EVServerService extends Service {
     private boolean ischeck=false;//true签到成功,false开始签到流程
     private boolean isspempty=false;//true有不存在的商品,false没有不存在的商品
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
-    Map<String,String> classjoin = null;//商品类型对应的商品id的map 
+    Map<String,String> classjoin=new HashMap<String, String>();//商品类型对应的商品id的map 
     AlarmManager alarm=null;//闹钟服务
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -310,11 +310,11 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETJOINCLASSMAIN://子线程接收主线程消息获取商品分类对应的商品信息
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 上报商品分类信息对应的商品成功，更新","server.txt");
 						try 
 						{
 							JSONObject json=new JSONObject(msg.obj.toString());
 							JSONArray array=json.getJSONArray("List");
-							classjoin=new HashMap<String, String>();
 							for(int i=0;i<array.length();i++)
 							{
 								JSONObject obj=array.getJSONObject(i);
@@ -331,11 +331,17 @@ public class EVServerService extends Service {
 							e.printStackTrace();
 						}	
 						//初始化三:获取商品信息
+						if(ToolClass.isEmptynull(LAST_PRODUCT_TIME))
+		        		{		
+		        			// 创建InaccountDAO对象
+		        			vmc_productDAO productDAO = new vmc_productDAO(EVServerService.this);
+		        			productDAO.deleteall();
+		        		}
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg5=childhand.obtainMessage();
 		        		childmsg5.what=EVServerhttp.SETPRODUCTCHILD;
 		        		childmsg5.obj=LAST_PRODUCT_TIME;
-		        		childhand.sendMessage(childmsg5);
+		        		childhand.sendMessage(childmsg5);		        		
 						break;	
 					//获取商品信息	
 					case EVServerhttp.SETERRFAILRODUCTMAIN://子线程接收主线程消息获取商品信息失败
@@ -922,9 +928,9 @@ public class EVServerService extends Service {
 		for(int i=0;i<arr1.length();i++)
 		{
 			JSONObject object2=arr1.getJSONObject(i);
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品="+i+"txt="+object2.toString(),"server.txt");
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新第["+i+"]号商品="+object2.toString(),"server.txt");
 			//获取本商品是否有对应的分类信息
-			String prono=object2.getString("product_NO");
+			String prono=object2.getString("product_NO");			
 			if(classjoin.containsKey(prono))
 			{
 				object2.put("product_Class_NO", classjoin.get(prono));
@@ -936,6 +942,7 @@ public class EVServerService extends Service {
 			String product_Class_NO=(ToolClass.isEmptynull(object2.getString("product_Class_NO")))?"0":object2.getString("product_Class_NO");
 			product_Class_NO=product_Class_NO.substring(product_Class_NO.lastIndexOf(',')+1,product_Class_NO.length());
 			String product_TXT=object2.getString("product_TXT");
+			//成本价market_Price，销售价sales_Price，促销价promotion_Price一切以sales_Price为准
 			//用于签到完成后，更新商品信息时间段
 			if(ischeck==true) 
 			{
@@ -946,7 +953,7 @@ public class EVServerService extends Service {
             //创建Tb_inaccount对象
 			Tb_vmc_product tb_vmc_product = new Tb_vmc_product(object2.getString("product_NO"), object2.getString("product_Name"),product_TXT,Float.parseFloat(object2.getString("market_Price")),
 					Float.parseFloat(object2.getString("sales_Price")),0,object2.getString("create_Time"),object2.getString("last_Edit_Time"),object2.getString("AttImg"),"","",0,0);
-			ToolClass.Log(ToolClass.INFO,"EV_SERVER","2更新商品"+i+"txt=product_NO="+tb_vmc_product.getProductID()
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER",">>开始更新"+i+"txt=product_NO="+tb_vmc_product.getProductID()
 					+"product_Name="+tb_vmc_product.getProductName()+"product_Class_NO="+product_Class_NO
 					+"AttImg="+tb_vmc_product.getAttBatch1()+"product_TXT="+tb_vmc_product.getProductDesc(),"server.txt");	
 			productDAO.addorupdate(tb_vmc_product,product_Class_NO);// 修改
@@ -1468,34 +1475,41 @@ public class EVServerService extends Service {
 	   			{
 	   			  if(!files[i].isDirectory())
 	   			  {	
-	   				String filename=files[i].toString();
-	   				ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断安装目录内文件="+filename,"server.txt"); 
-	   				String attimg2=filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
-	   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
-	   		        if(attimg2.equals("APK"))
-	   		        {
-	   		        	String tempATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
-	   		        	//留最后安装
-	   		        	if(tempATTIDS.equals("EVConsole.apk"))
-	   		        	{
-	   		        		ATTIDS=tempATTIDS;
-	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]待会安装...","server.txt");
-		   		        	continue;
-	   		        	}
-	   		        	else
-	   		        	{
-	   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+tempATTIDS+"]开始安装...","server.txt");
-		   		        	//1.有提示的安装
-		   		             File fileName = ToolClass.setAPKFile(tempATTIDS);
-		   		             Intent intent = new Intent();  
-		   		             //执行动作  
-		   		             intent.setAction(Intent.ACTION_VIEW); 
-		   		             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-		   		             //执行的数据类型  
-		   		             intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
-		   		             startActivity(intent);
-	   		        	}
-	   		        }
+	   				try
+	        		{
+		   				String filename=files[i].toString();
+		   				ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 判断安装目录内文件="+filename,"server.txt"); 
+		   				String attimg2=filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+		   		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg2+"]","server.txt");
+		   		        if(attimg2.equals("APK"))
+		   		        {
+		   		        	String tempATTIDS=filename.substring(filename.lastIndexOf("/") + 1);
+		   		        	//留最后安装
+		   		        	if(tempATTIDS.equals("EVConsole.apk"))
+		   		        	{
+		   		        		ATTIDS=tempATTIDS;
+		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]待会安装...","server.txt");
+			   		        	continue;
+		   		        	}
+		   		        	else
+		   		        	{
+		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+tempATTIDS+"]开始安装...","server.txt");
+			   		        	//1.有提示的安装
+			   		             File fileName = ToolClass.setAPKFile(tempATTIDS);
+			   		             Intent intent = new Intent();  
+			   		             //执行动作  
+			   		             intent.setAction(Intent.ACTION_VIEW); 
+			   		             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+			   		             //执行的数据类型  
+			   		             intent.setDataAndType(Uri.fromFile(fileName), "application/vnd.android.package-archive");  
+			   		             startActivity(intent);
+		   		        	}
+		   		        }
+	        		}
+	        		catch(Exception e)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件="+files[i].toString()+"异常，无法判断","server.txt");
+	        		}
 	   			  }
 	   			}
 	   		}

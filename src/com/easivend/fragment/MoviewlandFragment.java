@@ -155,18 +155,25 @@ public class MoviewlandFragment extends Fragment {
 			  if(!files[i].isDirectory())
 			  {		
 				  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品1ID="+files[i].toString(),"log.txt");
-				  //是否视频文件
-				  if(MediaFileAdapter.isVideoFileType(files[i].toString())==true)
-				  {
-					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品videoID="+files[i].toString(),"log.txt");
-					  mMusicList.add(files[i].toString());
-				  }
-				  //是否图片文件
-				  else if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
-				  {
-					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品imageID="+files[i].toString(),"log.txt");
-					  imgMusicList.add(files[i].toString());
-				  }
+				  try
+	        	  {
+					  //是否视频文件
+					  if(MediaFileAdapter.isVideoFileType(files[i].toString())==true)
+					  {
+						  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品videoID="+files[i].toString(),"log.txt");
+						  mMusicList.add(files[i].toString());
+					  }
+					  //是否图片文件
+					  else if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
+					  {
+						  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品imageID="+files[i].toString(),"log.txt");
+						  imgMusicList.add(files[i].toString());
+					  }
+	        	  }
+				  catch(Exception e)
+	        	  {
+	        			ToolClass.Log(ToolClass.INFO,"EV_JNI","文件="+files[i].toString()+"异常，无法判断","log.txt");
+	        	  }
 			  }
 			}
 		}    

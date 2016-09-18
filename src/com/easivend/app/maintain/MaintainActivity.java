@@ -54,6 +54,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -77,7 +78,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    String com=null,bentcom=null,columncom=null,extracom=null,server="";
+    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null;
     final static int REQUEST_CODE=1;   
     //获取货柜信息
    //Map<String,Integer> huoSet=new HashMap<String,Integer>();
@@ -205,7 +206,9 @@ public class MaintainActivity extends Activity
 		//串口配置和注册相关
 		//================
 		ToolClass.SetDir();	//设置根目录
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序启动...]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
+		//读取本机是否授权交易
+		ToolClass.setCLIENT_STATUS_SERVICE(ToolClass.ReadSharedPreferencesAccess());
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序启动,授权"+ToolClass.isCLIENT_STATUS_SERVICE()+"...]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)
@@ -230,9 +233,10 @@ public class MaintainActivity extends Activity
 	        	extracom = list.get("extracom");
 	        	ToolClass.setExtracom(extracom);	
 	        }
-	        if(list.containsKey("server"))//设置服务器路径
+	        if(list.containsKey("cardcom"))//设置读卡器串口号
 	        {
-	        	server = list.get("server");
+	        	cardcom = list.get("cardcom");
+	        	ToolClass.setCardcom(cardcom);
 	        }	        	        
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
@@ -446,6 +450,7 @@ public class MaintainActivity extends Activity
 		}
 
 	}
+		
 	
 	//=============
 	//COM服务相关
@@ -484,7 +489,7 @@ public class MaintainActivity extends Activity
 		        intent2.putExtras(bundle2);
 				intent2.setAction("android.intent.action.vmserversend");//action与接收器相同
 				localBroadreceiver.sendBroadcast(intent2);  
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","开机启动后台服务...","server.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","货道初始化完毕，开机启动后台服务...","server.txt");
 	    		break;	
 	    		//按钮返回
 			case COMThread.EV_BUTTONMAIN:

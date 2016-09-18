@@ -91,7 +91,7 @@ public class BusHuo extends Activity
 		zhifutype=OrderDetail.getPayType();
 		txtbushuoname=(TextView)findViewById(R.id.txtbushuoname);
 				
-  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品orderID="+OrderDetail.getOrdereID()+"proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
@@ -266,6 +266,10 @@ public class BusHuo extends Activity
 	                    	{           
 	                    		intentrec.putExtra("cabinetvar", cabinetvar);//出货柜号	                    		
 	            	            BusHuo.this.setResult(BusZhiAmount.RESULT_CANCELED,intentrec);                    	            
+	                		}
+	                    	else if(zhifutype==1)//银联
+	                    	{
+	                    		BusHuo.this.setResult(BusZhipos.RESULT_CANCELED,intentrec);                    	            
 	                		}
 	                    	else if(zhifutype==3)//支付宝二维码
 	                    	{

@@ -81,6 +81,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
@@ -105,7 +106,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev包的地址
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//串口id号
-	private static String bentcom="",com="",columncom="",extracom="";//串口描述符
+	private static String bentcom="",com="",columncom="",extracom="",cardcom="";//串口描述符
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
@@ -121,12 +122,36 @@ public class ToolClass
 	public static String version="";//本机版本号
 	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
 	
+	//读取文件信息
+	public static boolean  ReadSharedPreferencesAccess()
+	{
+		boolean isaccess=true;
+		//文件是私有的
+		SharedPreferences  user = context.getSharedPreferences("access_info",0);
+		//读取
+		isaccess=user.getBoolean("access",true);
+		return isaccess;
+	}
+	//写入文件信息
+	public static void  WriteSharedPreferences(boolean value)
+	{
+		//文件是私有的
+		SharedPreferences  user = context.getSharedPreferences("access_info",0);
+		//需要接口进行编辑
+		SharedPreferences.Editor edit=user.edit();
+		//设置
+		edit.putBoolean("access", value);
+		//提交更新
+		edit.commit();
+	}
+		
 	public static boolean isCLIENT_STATUS_SERVICE() {
 		return CLIENT_STATUS_SERVICE;
 	}
 
 	public static void setCLIENT_STATUS_SERVICE(boolean cLIENT_STATUS_SERVICE) {
 		CLIENT_STATUS_SERVICE = cLIENT_STATUS_SERVICE;
+		WriteSharedPreferences(CLIENT_STATUS_SERVICE);
 	}
 	
 	//判断如果本机暂停服务，不允许销售并提示
@@ -195,6 +220,14 @@ public class ToolClass
 
 	public static void setExtracom(String extracom) {
 		ToolClass.extracom = extracom;
+	}
+		
+	public static String getCardcom() {
+		return cardcom;
+	}
+
+	public static void setCardcom(String cardcom) {
+		ToolClass.cardcom = cardcom;
 	}
 
 	public static Context getContext() {
@@ -560,7 +593,10 @@ public class ToolClass
 		 		res=scan.next()+" "+scan.next();	//	取数据		 		
 		 	}
 		 	
-		 }catch(Exception e){}
+		 }catch(Exception e)
+		 {
+			
+		 }
 		 res=res.substring(0, res.indexOf("(INFO)"));// 从收入信息中截取收入编号
 		 System.out.println(" 文件创建时间1="+res);
          return res;
@@ -806,25 +842,32 @@ public class ToolClass
 		   		        {
 		   		        	fileName=new File(files[i].toString()); 
 		   		        	if(fileName.exists())
-		   		        	{  
-		   		        		String logdatetime = getFileCreated(fileName);
-		   		        		ParsePosition poslog = new ParsePosition(0);  
-		   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
-		   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
-		   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
-		   		            	{
-		   		            		//4.拷贝文件到压缩目录中
-		   		            		String a[] = files[i].toString().split("/");  
-		   		            		String ATT_ID=a[a.length-1];  
-		   		            		String ZIPFile=zipDir+ATT_ID;
-		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
-		   		            		copyFile(files[i].toString(),ZIPFile);
-		   		            		inter=true;
-		   		            	}
-		   		            	else
-		   		            	{
-		   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
-		   		            	}	
+		   		        	{ 
+		   		        		try
+				        		{
+			   		        		String logdatetime = getFileCreated(fileName);
+			   		        		ParsePosition poslog = new ParsePosition(0);  
+			   		        		Date dlog = (Date) sd.parse(logdatetime, poslog);
+			   		        		ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件时间="+logdatetime+",="+dlog.getTime(),"server.txt");
+			   		            	if((d1.getTime()<=dlog.getTime())&&(dlog.getTime()<=dnow.getTime()))
+			   		            	{
+			   		            		//4.拷贝文件到压缩目录中
+			   		            		String a[] = files[i].toString().split("/");  
+			   		            		String ATT_ID=a[a.length-1];  
+			   		            		String ZIPFile=zipDir+ATT_ID;
+			   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"选定,zip="+ZIPFile,"server.txt"); 
+			   		            		copyFile(files[i].toString(),ZIPFile);
+			   		            		inter=true;
+			   		            	}
+			   		            	else
+			   		            	{
+			   		            		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 文件"+files[i].toString()+"排除","server.txt"); 
+			   		            	}
+				        		}
+				        		catch(Exception e)
+				        		{
+				        			ToolClass.Log(ToolClass.INFO,"EV_SERVER","文件="+files[i].toString()+"异常，无法判断","server.txt");
+				        		}	
 		   		    	    } 
 		   		        }
 	   			  }
@@ -863,7 +906,7 @@ public class ToolClass
         ParsePosition posstart = new ParsePosition(0);  
     	Date dstart = (Date) tempDate.parse(starttime, posstart);
     	ToolClass.Log(ToolClass.INFO,"EV_DOG","保存日志的起始时间="+starttime+",="+dstart.getTime(),"dog.txt");
-    	
+    	ToolClass.Log(ToolClass.INFO,"EV_DOG","目录="+file.toString(),"dog.txt");
     	//遍历这个文件夹里的所有文件
 		File[] files = file.listFiles();
 		if (files.length > 0) 
@@ -876,19 +919,26 @@ public class ToolClass
 		        	File fileName=new File(files[i].toString()); 
 		        	if(fileName.exists())
 		        	{  
-		        		String logdatetime = getFileCreated(fileName);
-		        		ParsePosition poslog = new ParsePosition(0);  
-		        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
-		        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
-		        		//判断是否文件早于本周
-		        		if(dlog.getTime()<=dstart.getTime())
-		            	{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dog.txt");
-		            		fileName.delete();		            		
-		            	}
-		        		else
+		        		try
 		        		{
-		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dog.txt");
+			        		String logdatetime = getFileCreated(fileName);
+			        		ParsePosition poslog = new ParsePosition(0);  
+			        		Date dlog = (Date) tempDate.parse(logdatetime, poslog);
+			        		ToolClass.Log(ToolClass.INFO,"EV_DOG","判断日志目录内文件="+files[i].toString()+"时间="+logdatetime+",="+dlog.getTime(),"dog.txt");
+			        		//判断是否文件早于本周
+			        		if(dlog.getTime()<=dstart.getTime())
+			            	{
+			        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"删除","dog.txt");
+			            		fileName.delete();		            		
+			            	}
+			        		else
+			        		{
+			        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"排除","dog.txt");
+			        		}
+		        		}
+		        		catch(Exception e)
+		        		{
+		        			ToolClass.Log(ToolClass.INFO,"EV_DOG","文件="+files[i].toString()+"异常，无法判断","dog.txt");
 		        		}
 		    	    } 
 			  }
@@ -1157,13 +1207,20 @@ public class ToolClass
   			for (int i = 0; i < files.length; i++) 
 			{
 			  if(!files[i].isDirectory())
-			  {		
-				  //是否图片文件
-				  if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
-				  {
-					  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
-					  mHuoList.add(files[i].toString());
-				  }
+			  {	
+				    try
+	        		{
+					  //是否图片文件
+					  if(MediaFileAdapter.isImgFileType(files[i].toString())==true)
+					  {
+						  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<货道广告ID="+files[i].toString(),"log.txt");
+						  mHuoList.add(files[i].toString());
+					  }
+	        		}
+				    catch(Exception e)
+	        		{
+	        			ToolClass.Log(ToolClass.INFO,"EV_JNI","文件="+files[i].toString()+"异常，无法判断","log.txt");
+	        		}
 			  }
 			}  
   			//选择需要显示的广告
@@ -1412,7 +1469,7 @@ public class ToolClass
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String server,String isallopen) 
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String isallopen) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1458,6 +1515,7 @@ public class ToolClass
 		            	  &&(me.getKey().equals("bentcom")!=true)
 		            	  &&(me.getKey().equals("columncom")!=true)
 		            	  &&(me.getKey().equals("extracom")!=true)
+		            	  &&(me.getKey().equals("cardcom")!=true)
 		            	  &&(me.getKey().equals("isallopen")!=true)
 		            	  &&(me.getKey().equals("server")!=true)
 		              )
@@ -1468,8 +1526,8 @@ public class ToolClass
 		        list2.put("bentcom", bentcom);
 		        list2.put("columncom", columncom);
 		        list2.put("extracom", extracom);
-		        list2.put("isallopen", isallopen);
-		        list2.put("server", server);
+		        list2.put("cardcom", cardcom);
+		        list2.put("isallopen", isallopen);		        
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
 		        JSONObject jsonObject = new JSONObject(list2);
 		        String mapstrString=jsonObject.toString();
@@ -1487,8 +1545,8 @@ public class ToolClass
   	        	jsonObject.put("bentcom", bentcom);
   	        	jsonObject.put("columncom", columncom);
   	        	jsonObject.put("extracom", extracom);
+  	        	jsonObject.put("cardcom", cardcom);
   	        	jsonObject.put("isallopen", isallopen);
-  	        	jsonObject.put("server", server);
   	        	String mapstrString=jsonObject.toString();
   	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
   	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
@@ -1622,7 +1680,9 @@ public class ToolClass
 		        } 	
 		        //支付宝
 		        int ALIPAYMODE=1;
-		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        if((ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+		        	&&(object2.get("ALIPAYMODE").toString().equals("null")==false)
+		        )
 		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
 		        //2.0
 		        if(ALIPAYMODE==2)

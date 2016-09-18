@@ -100,7 +100,7 @@ public class BushuoFragment extends Fragment
 		zhifutype=OrderDetail.getPayType();
 		txtbushuoname=(TextView)view.findViewById(R.id.txtbushuoname);
 		
-  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+  	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品orderID="+OrderDetail.getOrdereID()+"proID="+proID+" productID="
 				+productID+" proType="
 				+proType+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
 				+count+" zhifutype="+zhifutype,"log.txt");		
@@ -112,7 +112,7 @@ public class BushuoFragment extends Fragment
 	    }
 	    else
 	    {
-	    	ivbushuoquhuo.setImageResource(R.drawable.chuwaitland);
+	    	ivbushuoquhuo.setImageResource(R.drawable.chuwait);
 	    }
 		
 		//****

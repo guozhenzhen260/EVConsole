@@ -65,7 +65,7 @@
 			        android:layout_below="@id/txtbent"   
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
-			        android:text="请输入传统柜串口号："
+			        android:text="请输入弹簧/升降机柜串口号："
 			        android:textColor="#8C6931"
 			        android:textSize="25dp" />
 			
@@ -78,13 +78,13 @@
 			        android:layout_below="@id/tvcolumn"        
 			        />
 			    <TextView
-			        android:id="@+id/tvserver"
+			        android:id="@+id/tvcard"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:layout_below="@id/txtcolumn"   
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
-			        android:text="请输入服务端地址："
+			        android:text="请输入读卡器串口号："
 			        android:textColor="#8C6931"
 			        android:textSize="25dp" />
 			
@@ -94,7 +94,7 @@
 			        android:layout_height="wrap_content"   
 			        android:textSize="40sp"
 					android:textStyle="bold"     
-			        android:layout_below="@id/tvserver"        
+			        android:layout_below="@id/tvcard"        
 			        />
 			    <TextView
 			        android:id="@+id/tvallopen"
@@ -138,30 +138,12 @@
 			        android:layout_toLeftOf="@id/btnLogin"
 			        android:background="@drawable/button_selector"
 			        android:text="高级设置" /> 
-			     <TextView
-			        android:id="@+id/tvip"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_below="@id/btnGaoji"   
-			        android:layout_gravity="center"
-			        android:gravity="center_horizontal"
-			        android:text="请输入服务端绝对地址："
-			        android:textColor="#8C6931"
-			        android:textSize="25dp" />
-			
-			    <EditText
-			        android:id="@+id/txtip"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content" 
-			        android:textSize="40sp"
-					android:textStyle="bold"       
-			        android:layout_below="@id/tvip"        
-			        />
+			     
 			    <TextView
 			        android:id="@+id/tvextracom"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:layout_below="@id/txtip"   
+			        android:layout_below="@id/btnGaoji"   
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
 			        android:text="请输入外协设备串口号："

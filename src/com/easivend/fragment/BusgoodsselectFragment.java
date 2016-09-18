@@ -28,7 +28,7 @@ import android.widget.TextView;
 public class BusgoodsselectFragment extends Fragment 
 {
 	ImageView ivbusgoodselProduct=null,imgbtnbusgoodsback=null;
-	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null;
+	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiselpos=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	WebView webproductDesc;
 	private String proID = null;
@@ -181,6 +181,20 @@ public class BusgoodsselectFragment extends Fragment
 		    	}
 		    }
 		});
+		ivbuszhiselpos = (ImageView) view.findViewById(R.id.ivbuszhiselpos);	
+		ivbuszhiselpos.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(Integer.parseInt(procount)>0)
+		    	{
+			    	sendzhifu();
+//			    	Intent intent = null;// 创建Intent对象                
+//	            	intent = new Intent(context, BusZhiwei.class);// 使用Accountflag窗口初始化Intent
+//	            	startActivity(intent);// 打开Accountflag
+			    	listterner.BusgoodsselectSwitch(BusPort.BUSZHIPOS);
+		    	}
+		    }
+		});
 		//*********************
 		//搜索可以得到的支付方式
 		//*********************
@@ -217,18 +231,30 @@ public class BusgoodsselectFragment extends Fragment
     			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
     			zhifucount++;
     		}
+    		if(tb_inaccount.getZhifubaofaca()==0)
+    		{
+    			ivbuszhiselpos.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
+    		}
     		switch(zhifucount)
     		{
     			case 3:
+    			case 4:	
     				ivbuszhiselamount.setImageResource(R.drawable.amountnormal);
     				ivbuszhiselzhier.setImageResource(R.drawable.zhiernormal);
     				ivbuszhiselweixing.setImageResource(R.drawable.weixingnormal);
+    				ivbuszhiselpos.setImageResource(R.drawable.zhiposnormal);
     				break;
     			case 2:
     			case 1:	
     				ivbuszhiselamount.setImageResource(R.drawable.amountlarge);
     				ivbuszhiselzhier.setImageResource(R.drawable.zhierlarge);
     				ivbuszhiselweixing.setImageResource(R.drawable.weixinglarge);
+    				ivbuszhiselpos.setImageResource(R.drawable.zhiposlarge);
     				break;	
     		}
     	}		
