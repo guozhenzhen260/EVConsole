@@ -112,7 +112,7 @@ public class BushuoFragment extends Fragment
 	    }
 	    else
 	    {
-	    	ivbushuoquhuo.setImageResource(R.drawable.chuwaitland);
+	    	ivbushuoquhuo.setImageResource(R.drawable.chuwait);
 	    }
 		
 		//****
