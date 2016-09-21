@@ -60,8 +60,8 @@ public class ParamManager extends TabActivity
 	private RadioGroup zhifubaogrp=null;
 	private RadioButton rbtnclose=null,rbtnzhifubao1=null,rbtnzhifubao2=null;
 	private Spinner spinparamsort=null,spinCashless=null;
-	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnCashless=null,
-			btnzhifubaoer=null,btnweixing=null,btnprinter=null;	
+	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnCashless=null,btnprinttest=null,
+			btnzhifubaoer=null,btnweixing=null;	
 	private int proSortType=6;
 	//排序有关的定义
 	private ShowSortAdapter showSortAdapter=null;
@@ -121,6 +121,25 @@ public class ParamManager extends TabActivity
     	edtdevID = (EditText) findViewById(R.id.edtdevID);
     	edtdevhCode = (EditText) findViewById(R.id.edtdevhCode);
     	switchisNet = (Switch)findViewById(R.id.switchisNet); //获取到控件  
+    	switchisNet.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub	
+				btnprinttest.setEnabled(isChecked);	
+			}  
+            
+            
+        });
+    	btnprinttest = (Button) findViewById(R.id.btnprinttest);
+    	btnprinttest.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, PrintTest.class);// 使用AddInaccount窗口初始化Intent
+		        startActivity(intent);// 打开AddInaccount
+		    }
+		});    	
     	switchisbuhuo = (Switch)findViewById(R.id.switchisbuhuo);     	
 	    switchisbuyCar = (Switch)findViewById(R.id.switchisbuyCar);    	
 	    switchisqiangbuy = (Switch)findViewById(R.id.switchisqiangbuy);    	
@@ -280,17 +299,7 @@ public class ParamManager extends TabActivity
             
         });
     	switchprinter = (Switch)findViewById(R.id.switchprinter);
-    	switchprinter.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				// TODO Auto-generated method stub
-				//btnprinter.setEnabled(isChecked);	
-			}  
-            
-            
-        });
+    	
     	    	    	
     	btndeviceSave = (Button) findViewById(R.id.btndeviceSave);
     	btndeviceSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -350,7 +359,6 @@ public class ParamManager extends TabActivity
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
-    	btnprinter = (Button) findViewById(R.id.btnprinter);
     	loaddeviceparam();
     	
     	
