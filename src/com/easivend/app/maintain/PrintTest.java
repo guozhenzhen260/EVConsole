@@ -1,5 +1,6 @@
 package com.easivend.app.maintain;
 
+import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 import com.example.printdemo.MyFunc;
 import com.example.printdemo.SerialHelper;
@@ -220,7 +221,7 @@ public class PrintTest extends Activity {
         btnopen.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {		    	
-		    	ComA.setPort("/dev/ttyS2");            // 1.1 设定串口
+		    	ComA.setPort(ToolClass.getPrintcom());            // 1.1 设定串口
 				ComA.setBaudRate("9600");// 1.2 设定波特率
 				OpenComPort(ComA); // 1.3 打开串口
 		    }

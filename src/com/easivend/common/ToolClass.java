@@ -106,7 +106,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev°üµÄµØÖ·
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//´®¿ÚidºÅ
-	private static String bentcom="",com="",columncom="",extracom="",cardcom="";//´®¿ÚÃèÊö·û
+	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="";//´®¿ÚÃèÊö·û
 	private static int bill_err=0,coin_err=0;//Ö½±ÒÆ÷£¬Ó²±ÒÆ÷¹ÊÕÏ×´Ì¬
 	public static String vmc_no="";//±¾»ú±àºÅ
 	public static Bitmap mark=null;//ÊÛÍêÍ¼Æ¬
@@ -229,7 +229,13 @@ public class ToolClass
 	public static void setCardcom(String cardcom) {
 		ToolClass.cardcom = cardcom;
 	}
-
+	
+	public static String getPrintcom() {
+		return printcom;
+	}
+	public static void setPrintcom(String printcom) {
+		ToolClass.printcom = printcom;
+	}
 	public static Context getContext() {
 		return context;
 	}
@@ -1469,7 +1475,7 @@ public class ToolClass
     /**
      * Ð´ÈëÅäÖÃÎÄ¼þ
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String isallopen) 
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String isallopen) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1516,6 +1522,7 @@ public class ToolClass
 		            	  &&(me.getKey().equals("columncom")!=true)
 		            	  &&(me.getKey().equals("extracom")!=true)
 		            	  &&(me.getKey().equals("cardcom")!=true)
+		            	  &&(me.getKey().equals("printcom")!=true)
 		            	  &&(me.getKey().equals("isallopen")!=true)
 		            	  &&(me.getKey().equals("server")!=true)
 		              )
@@ -1527,6 +1534,7 @@ public class ToolClass
 		        list2.put("columncom", columncom);
 		        list2.put("extracom", extracom);
 		        list2.put("cardcom", cardcom);
+		        list2.put("printcom", printcom);
 		        list2.put("isallopen", isallopen);		        
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
 		        JSONObject jsonObject = new JSONObject(list2);
@@ -1546,6 +1554,7 @@ public class ToolClass
   	        	jsonObject.put("columncom", columncom);
   	        	jsonObject.put("extracom", extracom);
   	        	jsonObject.put("cardcom", cardcom);
+  	        	jsonObject.put("printcom", printcom);
   	        	jsonObject.put("isallopen", isallopen);
   	        	String mapstrString=jsonObject.toString();
   	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
