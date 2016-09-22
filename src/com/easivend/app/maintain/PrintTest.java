@@ -48,10 +48,10 @@ public class PrintTest extends Activity {
 	CheckBox chktitle1=null,chktitle2=null,chkno=null,chksum=null,
 			chkthank=null,chker=null,chkdate=null;
 	EditText edittitle1=null,edittitle2=null,editthank=null,editer=null;
+	Button btnopen=null,btnquery=null,btnprint=null,btnclose=null,btnsave=null,btnexit=null;
 	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate;
 	int serialno=0;
 	String title1str,title2str,thankstr,erstr;
-	Button btnopen=null,btnquery=null,btnprint=null,btnclose=null,btnsave=null,btnexit=null;
 	SerialControl ComA;                  // 串口控制
 	static DispQueueThread DispQueue;    // 刷新显示线程
 	private boolean ercheck=false;//true正在打印机的操作中，请稍后。false没有打印机的操作
@@ -399,11 +399,11 @@ public class PrintTest extends Activity {
 		try {
 			ComPort.open();
 		} catch (SecurityException e) {
-			Log.e("EV_COM","没有读/写权限");// 没有读/写权限
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","没有读/写权限","com.txt");
 		} catch (IOException e) {
-			Log.e("EV_COM","未知错误");  // 未知错误
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","未知错误","com.txt");
 		} catch (InvalidParameterException e) {
-			Log.e("EV_COM","参数错误");// 参数错误
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","参数错误","com.txt");
 		}
 	}
     
@@ -422,16 +422,16 @@ public class PrintTest extends Activity {
  			if (ComPort != null && ComPort.isOpen()) {
  				ComPort.send(sOut);
  				ercheck = true; 				
- 				Log.i("EV_COM","状态查询中");			
+ 				ToolClass.Log(ToolClass.INFO,"EV_COM","状态查询中","com.txt");
  			} else
  			{
- 				Log.e("EV_COM","串口未打开");
+ 				ToolClass.Log(ToolClass.ERROR,"EV_COM","串口未打开","com.txt");
  				childmsg.what=UNKNOWERR;
  				childmsg.obj="串口未打开";
  				mainhand.sendMessage(childmsg);
  			}
  		} catch (Exception ex) {
- 			Log.e("EV_COM",ex.getMessage());
+ 			ToolClass.Log(ToolClass.ERROR,"EV_COM",ex.getMessage(),"com.txt");
  			childmsg.what=UNKNOWERR;
 			childmsg.obj=ex.getMessage();
 			mainhand.sendMessage(childmsg);
@@ -554,8 +554,8 @@ public class PrintTest extends Activity {
 		try {
 			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
 			int iState = PrintCmd.CheckStatus(ComRecData.bRec); // 检查状态
-			Log.i("EV_COM", "返回状态：" + iState + "======="
-					+ ComRecData.bRec[0]);
+			ToolClass.Log(ToolClass.INFO,"EV_COM","返回状态：" + iState + "======="
+					+ ComRecData.bRec[0],"com.txt");
 			switch (iState) {
 			case 0:
 				sMsg.append("正常");                 // 正常

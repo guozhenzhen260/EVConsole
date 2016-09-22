@@ -690,6 +690,7 @@ BushuoFragInteraction
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
+					            	mMyApi.pos_release();
 									//清数据
 									clearamount();						
 									recLen=10;
@@ -717,6 +718,7 @@ BushuoFragInteraction
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
+					            	mMyApi.pos_release();
 									//清数据
 									clearamount();						
 									recLen=10;
@@ -1458,7 +1460,8 @@ BushuoFragInteraction
 				if(status==1)
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
-					OrderDetail.addLog(BusPort.this);					
+					OrderDetail.addLog(BusPort.this);	
+					mMyApi.pos_release();
 					clearamount();
 					recLen=10;
 				}
