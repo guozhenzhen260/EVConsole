@@ -57,13 +57,13 @@ public class PrintTest extends Activity {
 	private boolean ercheck=false;//true正在打印机的操作中，请稍后。false没有打印机的操作
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
 	float amount=0;
-	private Handler mainhand=null;
+	private Handler printmainhand=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.printtest);
-		mainhand=new Handler()
+		printmainhand=new Handler()
 		{
 
 			@Override
@@ -417,7 +417,7 @@ public class PrintTest extends Activity {
  	
     // -------------------------查询状态---------------------------
   	private void GetPrinterStates(SerialHelper ComPort, byte[] sOut) {
-  		Message childmsg=mainhand.obtainMessage();
+  		Message childmsg=printmainhand.obtainMessage();
   		try { 			
  			if (ComPort != null && ComPort.isOpen()) {
  				ComPort.send(sOut);
@@ -428,13 +428,13 @@ public class PrintTest extends Activity {
  				ToolClass.Log(ToolClass.ERROR,"EV_COM","串口未打开","com.txt");
  				childmsg.what=UNKNOWERR;
  				childmsg.obj="串口未打开";
- 				mainhand.sendMessage(childmsg);
+ 				printmainhand.sendMessage(childmsg);
  			}
  		} catch (Exception ex) {
  			ToolClass.Log(ToolClass.ERROR,"EV_COM",ex.getMessage(),"com.txt");
  			childmsg.what=UNKNOWERR;
 			childmsg.obj=ex.getMessage();
-			mainhand.sendMessage(childmsg);
+			printmainhand.sendMessage(childmsg);
  		}
   		
  	}
@@ -549,7 +549,7 @@ public class PrintTest extends Activity {
 	  * 3 打印头打开 、4 切刀未复位 、5 打印头过热 、6 黑标错误 、7 纸尽 、8 纸将尽
 	  */
 	private void DispRecData(ComBean ComRecData) {
-		Message childmsg=mainhand.obtainMessage();
+		Message childmsg=printmainhand.obtainMessage();
 		StringBuilder sMsg = new StringBuilder();
 		try {
 			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
@@ -610,7 +610,7 @@ public class PrintTest extends Activity {
 			childmsg.what=UNKNOWERR;
 			childmsg.obj=ex.getMessage();
 		}
-		mainhand.sendMessage(childmsg);
+		printmainhand.sendMessage(childmsg);
 	}
     // -------------------------底层串口控制类---------------------------
     private static class SerialControl extends SerialHelper {

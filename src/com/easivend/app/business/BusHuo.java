@@ -77,7 +77,7 @@ public class BusHuo extends Activity
 	static DispQueueThread DispQueue;    // 刷新显示线程
 	private boolean ercheck=false;//true正在打印机的操作中，请稍后。false没有打印机的操作
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
-	private Handler mainhand=null;
+	private Handler printmainhand=null;
 	private int isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
     
 	@Override
@@ -142,7 +142,7 @@ public class BusHuo extends Activity
 		//=================
 	    //打印机相关
 	    //=================
-		mainhand=new Handler()
+		printmainhand=new Handler()
 		{
 
 			@Override
@@ -652,7 +652,7 @@ public class BusHuo extends Activity
 	  * 3 打印头打开 、4 切刀未复位 、5 打印头过热 、6 黑标错误 、7 纸尽 、8 纸将尽
 	  */
 	private void DispRecData(ComBean ComRecData) {
-		Message childmsg=mainhand.obtainMessage();
+		Message childmsg=printmainhand.obtainMessage();
 		StringBuilder sMsg = new StringBuilder();
 		try {
 			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
@@ -713,7 +713,7 @@ public class BusHuo extends Activity
 			childmsg.what=PrintTest.UNKNOWERR;
 			childmsg.obj=ex.getMessage();
 		}
-		mainhand.sendMessage(childmsg);
+		printmainhand.sendMessage(childmsg);
 	}
     // -------------------------底层串口控制类---------------------------
     private static class SerialControl extends SerialHelper {
