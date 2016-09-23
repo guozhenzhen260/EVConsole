@@ -190,6 +190,7 @@ public class BusHuo extends Activity
 				if(isPrinter==2)
 				{
 					isPrinter=3;
+					ToolClass.Log(ToolClass.INFO,"EV_COM","打印凭证...","com.txt");
 					PrintBankQueue();
 				}
 			}
@@ -204,6 +205,7 @@ public class BusHuo extends Activity
     	ToolClass.Log(ToolClass.INFO,"EV_COM","isPrinter=" + isPrinter,"com.txt");
         if(isPrinter>0)
         {
+        	ToolClass.Log(ToolClass.INFO,"EV_COM","打开打印机","com.txt");
         	ReadSharedPreferencesPrinter();
 	    	ComA = SerialControl.getInstance();
 	        ComA.setbLoopData(PrintCmd.GetStatus());
@@ -349,6 +351,23 @@ public class BusHuo extends Activity
 						txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 						chuhuoLog(1);//记录日志
 						ivbushuoquhuo.setImageResource(R.drawable.chusuccessland);
+						//=======
+						//打印机相关
+						//=======
+						// 查询状态
+						if(isPrinter>0)
+				        {
+							new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {	  
+					            	GetPrinterStates(ComA, PrintCmd.GetStatus()); 
+					            }
+
+							}, 600);
+							
+				        }
 					}
 					else
 					{
@@ -357,24 +376,7 @@ public class BusHuo extends Activity
 						chuhuoLog(0);//记录日志
 						ivbushuoquhuo.setImageResource(R.drawable.chufailland);
 					}
-					
-					//=======
-					//打印机相关
-					//=======
-					// 查询状态
-					if(isPrinter>0)
-			        {
-						new Handler().postDelayed(new Runnable() 
-						{
-				            @Override
-				            public void run() 
-				            {	  
-				            	GetPrinterStates(ComA, PrintCmd.GetStatus()); 
-				            }
-
-						}, 600);
-						
-			        }
+										
 											
 					//3.退回找零页面
 		 	    	new Handler().postDelayed(new Runnable() 
@@ -530,10 +532,10 @@ public class BusHuo extends Activity
  				ToolClass.Log(ToolClass.INFO,"EV_COM","打印机状态查询...","com.txt");
  			} else
  			{
- 				ToolClass.Log(ToolClass.ERROR,"EV_COM","串口未打开","com.txt"); 				
+ 				ToolClass.Log(ToolClass.ERROR,"EV_COM","打印机串口未打开","com.txt"); 				
  			}
  		} catch (Exception ex) {
- 			ToolClass.Log(ToolClass.ERROR,"EV_COM",ex.getMessage(),"com.txt"); 			
+ 			ToolClass.Log(ToolClass.ERROR,"EV_COM","打印机串口打开异常="+ex.getMessage(),"com.txt"); 			
  		}
   		
  	}
