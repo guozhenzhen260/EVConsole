@@ -1,31 +1,26 @@
 diff a/src/com/easivend/app/maintain/MaintainActivity.java b/src/com/easivend/app/maintain/MaintainActivity.java	(rejected hunks)
-@@ -449,6 +449,29 @@
+@@ -156,6 +156,24 @@
+             }
  
- 	}
- 	
-+	//读取文件信息
-+	boolean  ReadSharedPreferencesAccess()
-+	{
-+		boolean isaccess=true;
-+		//文件是私有的
-+		SharedPreferences  user = getSharedPreferences("access_info",0);
-+		//读取
-+		isaccess=user.getBoolean("access",true);
-+		return isaccess;
-+	}
-+	//写入文件信息
-+	private void  WriteSharedPreferences(boolean value)
-+	{
-+		//文件是私有的
-+		SharedPreferences  user = getSharedPreferences("access_info",0);
-+		//需要接口进行编辑
-+		SharedPreferences.Editor edit=user.edit();
-+		//设置
-+		edit.putBoolean("access", value);
-+		//提交更新
-+		edit.commit();
-+	}
-+	
- 	//=============
- 	//COM服务相关
- 	//=============	
+ 		}, SPLASH_DISPLAY_LENGHT);
++	    //==========
++  		//EVDog服务相关
++  		//==========
++  		//延时7s
++  	    new Handler().postDelayed(new Runnable() 
++  		{
++              @Override
++              public void run() 
++              {      
++            	 String MY_PKG_NAME = "com.example.evdog";
++				 Intent intent = new Intent();		        			 
++      			 PackageManager packageManager = getPackageManager();
++      			 intent = packageManager.getLaunchIntentForPackage(MY_PKG_NAME);
++      			 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_TOP) ;
++      			 startActivity(intent);
++              }
++
++  		}, 3000);
+ 		
+ 		
+ 		//=============
