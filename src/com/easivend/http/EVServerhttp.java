@@ -44,6 +44,9 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.easivend.app.business.BusLand;
+import com.easivend.app.business.BusPort;
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
@@ -55,6 +58,7 @@ import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.net.Uri;
@@ -672,7 +676,18 @@ public class EVServerhttp implements Runnable {
 					parammap7.put("WAREHOUSE_TEMPERATURE","0");		
 					if(ToolClass.getServerVer()==1)//一期后台
 					{
-						parammap7.put("CLIENT_VERSION",ToolClass.getVersion());	
+						String temp="";
+						//横屏
+						if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+						{
+							temp="横屏";
+						}
+						//竖屏
+						else
+						{
+							temp="竖屏";
+						}
+						parammap7.put("CLIENT_VERSION",temp+ToolClass.getVersion());	
 						parammap7.put("CLIENT_DESC","本机版本号");	
 					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap7.toString(),"server.txt");

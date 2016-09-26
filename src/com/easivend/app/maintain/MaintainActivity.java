@@ -56,6 +56,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.LocalBroadcastManager;
@@ -155,6 +156,24 @@ public class MaintainActivity extends Activity
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
+	    //==========
+  		//EVDog服务相关
+  		//==========
+  		//延时7s
+  	    new Handler().postDelayed(new Runnable() 
+  		{
+              @Override
+              public void run() 
+              {      
+            	 String MY_PKG_NAME = "com.example.evdog";
+				 Intent intent = new Intent();		        			 
+      			 PackageManager packageManager = getPackageManager();
+      			 intent = packageManager.getLaunchIntentForPackage(MY_PKG_NAME);
+      			 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_TOP) ;
+      			 startActivity(intent);
+              }
+
+  		}, 3000);
 		
 		
 		//=============
