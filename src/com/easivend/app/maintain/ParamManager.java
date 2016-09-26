@@ -351,6 +351,14 @@ public class ParamManager extends TabActivity
 		    }
 		});
     	btnweixing = (Button) findViewById(R.id.btnweixing);
+    	if(ToolClass.getSsl()==null)
+    	{
+    		btnweixing.setText("测试(不支持退款)");
+    	}
+    	else
+    	{
+    		btnweixing.setText("测试(支持退款)");
+    	}	
     	btnweixing.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {

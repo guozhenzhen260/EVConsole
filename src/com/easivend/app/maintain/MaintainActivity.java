@@ -159,7 +159,7 @@ public class MaintainActivity extends Activity
 	    //==========
   		//EVDog服务相关
   		//==========
-  		//延时7s
+  		//延时3s
   	    new Handler().postDelayed(new Runnable() 
   		{
               @Override
