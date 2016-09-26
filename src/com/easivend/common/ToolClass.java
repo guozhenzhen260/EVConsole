@@ -1693,9 +1693,21 @@ public class ToolClass
 		        	&&(object2.get("ALIPAYMODE").toString().equals("null")==false)
 		        )
 		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		       
+		        //搜索支付宝是否已经打开
+		        int getZhifubaoer=0;
+		        vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+			    // 获取所有收入信息，并存储到List泛型集合中
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
+		    	if(tb_inaccount!=null)
+		    	{
+		    		getZhifubaoer=tb_inaccount.getZhifubaoer();
+		    	}
+		    	
 		        //2.0
 		        if(ALIPAYMODE==2)
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
@@ -1721,6 +1733,7 @@ public class ToolClass
 		        //1.0
 		        else
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
@@ -1773,9 +1786,20 @@ public class ToolClass
   	        	int ALIPAYMODE=1;
 		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
 		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		        //搜索支付宝是否已经打开
+		        int getZhifubaoer=0;
+		        vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+			    // 获取所有收入信息，并存储到List泛型集合中
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
+		    	if(tb_inaccount!=null)
+		    	{
+		    		getZhifubaoer=tb_inaccount.getZhifubaoer();
+		    	}
+		    	
 		        //2.0
 		        if(ALIPAYMODE==2)
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
@@ -1801,6 +1825,7 @@ public class ToolClass
 		        //1.0
 		        else
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
