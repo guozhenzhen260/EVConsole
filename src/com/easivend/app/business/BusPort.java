@@ -473,9 +473,7 @@ BushuoFragInteraction
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhierDestroy(1);
 						}
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
@@ -489,9 +487,7 @@ BushuoFragInteraction
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhierDestroy(1);
 						}
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
@@ -526,9 +522,7 @@ BushuoFragInteraction
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhierDestroy(1);
 						}
 						break;	
 				}				
@@ -1064,8 +1058,7 @@ BushuoFragInteraction
 		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
+			zhierDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1145,8 +1138,7 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
-  		clearamount();
-    	viewSwitch(BUSPORT, null);
+  		zhierDestroy(0);
   	}
     //退款
   	private void payoutzhier()
@@ -1172,6 +1164,23 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}  		
+  	}
+  	
+    //关闭页面:type=1延时10s关闭,0立即关闭
+  	private void zhierDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			clearamount();
+			recLen=10;			
+  		}
+  		//立即关闭
+  		else
+  		{
+  			clearamount();
+	    	viewSwitch(BUSPORT, null);
+  		}
   	}
     
     //=======================
@@ -1614,8 +1623,7 @@ BushuoFragInteraction
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
         					OrderDetail.addLog(BusPort.this);					
-        					clearamount();
-        					recLen=10;
+        					zhierDestroy(1);
         				}
         				//出货失败,退钱
         				else
@@ -1690,18 +1698,7 @@ BushuoFragInteraction
 		else
 		{  					
 	    	OrderDetail.addLog(BusPort.this);
-	    	clearamount();
-  			new Handler().postDelayed(new Runnable() 
-			{
-	            @Override
-	            public void run() 
-	            {            	
-	            	//关闭纸币硬币器
-		  	    	BillEnable(0);					    	
-	            }
-
-			}, 500); 
-  	    	recLen=10;
+	    	amountDestroy(1);
 		}
   	}
   	
@@ -2538,11 +2535,7 @@ BushuoFragInteraction
 			  	    	}
 			  	    	else
 			  	    	{
-			  	    		//清数据
-					    	clearamount();
-				  			//关闭纸币硬币器
-				  	    	BillEnable(0);
-				  	    	recLen=10;
+			  	    		amountDestroy(1);
 			  	    	}
 						break; 
 					//是出货操作	
