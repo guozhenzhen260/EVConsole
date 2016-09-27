@@ -564,9 +564,7 @@ BushuoFragInteraction
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhiweiDestroy(1);
 						}
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
@@ -580,9 +578,7 @@ BushuoFragInteraction
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhiweiDestroy(1);
 						}
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
@@ -617,9 +613,7 @@ BushuoFragInteraction
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhiweiDestroy(1);
 						}
 						break;		
 				}				
@@ -1200,8 +1194,7 @@ BushuoFragInteraction
 		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
+			zhiweiDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1307,8 +1300,24 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
-  		clearamount();
-    	viewSwitch(BUSPORT, null);
+  		zhiweiDestroy(0);
+  	}
+  	
+    //关闭页面:type=1延时10s关闭,0立即关闭
+  	private void zhiweiDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			clearamount();
+			recLen=10;			
+  		}
+  		//立即关闭
+  		else
+  		{
+  			clearamount();
+	    	viewSwitch(BUSPORT, null);
+  		}
   	}
   	
     //=======================
@@ -1641,8 +1650,7 @@ BushuoFragInteraction
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
         					OrderDetail.addLog(BusPort.this);					
-        					clearamount();
-        					recLen=10;
+        					zhiweiDestroy(1);
         				}
         				//出货失败,退钱
         				else
