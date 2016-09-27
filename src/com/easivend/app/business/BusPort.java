@@ -198,7 +198,7 @@ BushuoFragInteraction
     //打印机相关
     //=================
   	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate;
-	int serialno=0;
+	int serialno=0;//流水号
 	String title1str,title2str,thankstr,erstr;
 	SerialControl ComA;                  // 串口控制
 	static DispQueueThread DispQueue;    // 刷新显示线程
@@ -327,6 +327,13 @@ BushuoFragInteraction
 				          else if(gotoswitch==BUSZHIWEI)
 				          {
 				        	  timeoutBuszhiweiFinish();
+				          }
+				          //=================
+			        	  //==微信支付页面相关
+			        	  //=================
+				          else if(gotoswitch==BUSZHIPOS)
+				          {
+				        	  timeoutBuszhiposFinish();
 				          }
 				          else
 				          {
@@ -469,7 +476,6 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
@@ -483,7 +489,6 @@ BushuoFragInteraction
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							dialog.dismiss();
@@ -518,7 +523,6 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
@@ -560,7 +564,6 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
@@ -574,7 +577,6 @@ BushuoFragInteraction
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							dialog.dismiss();
@@ -609,7 +611,6 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
@@ -690,7 +691,6 @@ BushuoFragInteraction
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							//延时
@@ -715,7 +715,6 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							//延时
@@ -2114,6 +2113,7 @@ BushuoFragInteraction
   		ischuhuo=false;//true已经出货过了，可以上报日志
   		//支付宝页面
   		iszhier=0;//1成功生成了二维码,0没有成功生成二维码
+  		ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
   	    //微信页面
   		iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
   		//pos页面
@@ -2121,6 +2121,8 @@ BushuoFragInteraction
   		ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
   	    //打印机页面
   		isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
+  		//出货页面
+  		status=0;//出货结果	
   	}
   	
   	//判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作

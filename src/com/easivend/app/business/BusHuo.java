@@ -71,7 +71,7 @@ public class BusHuo extends Activity
     //打印机相关
     //=================
   	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate;
-	int serialno=0;
+	int serialno=0;//流水号
 	String title1str,title2str,thankstr,erstr;
 	SerialControl ComA;                  // 串口控制
 	static DispQueueThread DispQueue;    // 刷新显示线程
