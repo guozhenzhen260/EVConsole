@@ -678,9 +678,7 @@ BushuoFragInteraction
 				            {         
 				            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 								ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-						    	mMyApi.pos_release();
-								clearamount();
-						    	viewSwitch(BUSPORT, null);
+						    	zhiposDestroy(0);
 							}
 
 						}, 300);						
@@ -703,10 +701,7 @@ BushuoFragInteraction
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
-					            	mMyApi.pos_release();
-									//清数据
-									clearamount();						
-									recLen=10;
+					            	zhiposDestroy(1);
 								}
 
 							}, 300);							
@@ -731,10 +726,7 @@ BushuoFragInteraction
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
-					            	mMyApi.pos_release();
-									//清数据
-									clearamount();						
-									recLen=10;
+					            	zhiposDestroy(1);
 								}
 
 							}, 300);							
@@ -1338,9 +1330,7 @@ BushuoFragInteraction
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-	    	mMyApi.pos_release();
-			clearamount();
-	    	viewSwitch(BUSPORT, null);
+	    	zhiposDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1515,6 +1505,27 @@ BushuoFragInteraction
   			}
   		}
   	};
+  	
+  	
+  	private void zhiposDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			mMyApi.pos_release();
+			clearamount();
+			recLen=10;					
+  		}
+  		//立即关闭
+  		else
+  		{
+  			mMyApi.pos_release();
+			clearamount();
+	    	viewSwitch(BUSPORT, null);	    	
+  		}
+  	}
+  	
+  	
     //=======================
   	//实现Bushuo页面相关接口
   	//=======================
@@ -1612,9 +1623,7 @@ BushuoFragInteraction
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
         					OrderDetail.addLog(BusPort.this);	
-        					mMyApi.pos_release();
-        					clearamount();
-        					recLen=10;
+        					zhiposDestroy(1);
         				}
         				//出货失败,退钱
         				else
