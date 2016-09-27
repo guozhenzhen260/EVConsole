@@ -322,7 +322,6 @@ public class BusZhiwei extends Activity
 			childhand.sendMessage(childmsg);
   		}
   		txtbuszhiweirst.setText("交易结果:撤销成功");
-		timer.shutdown(); 
 		finish();
 	}
 	
@@ -341,7 +340,6 @@ public class BusZhiwei extends Activity
 		            //退出页面
 		            if(recLen <= 0)
 		            { 
-		                timer.shutdown(); 
 		                timeoutfinishActivity();
 		            } 
 		            //发送查询交易指令
@@ -381,7 +379,6 @@ public class BusZhiwei extends Activity
 			deletezhiwei();
 		else 
 		{
-			timer.shutdown(); 
 			finish();	
 		}
 	}
@@ -454,5 +451,11 @@ public class BusZhiwei extends Activity
 				}
 			}			
 		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+  		timer.shutdown(); 
+		super.onDestroy();		
 	}
 }

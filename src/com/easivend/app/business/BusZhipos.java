@@ -159,8 +159,6 @@ public class BusZhipos extends Activity
 				            public void run() 
 				            {         
 				            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity ¹Ø±Õ¶Á¿¨Æ÷","com.txt");
-								timer.shutdown(); 
-								mMyApi.pos_release();
 								finish();
 							}
 
@@ -184,8 +182,6 @@ public class BusZhipos extends Activity
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity ¹Ø±Õ¶Á¿¨Æ÷","com.txt");
 					            	dialog.dismiss();
-									timer.shutdown(); 
-									mMyApi.pos_release();
 									finish();
 								}
 
@@ -211,8 +207,6 @@ public class BusZhipos extends Activity
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity ¹Ø±Õ¶Á¿¨Æ÷","com.txt");
 					            	dialog.dismiss();
-									timer.shutdown(); 
-									mMyApi.pos_release();
 									finish();
 								}
 
@@ -256,7 +250,6 @@ public class BusZhipos extends Activity
 		            //ÍË³öÒ³Ãæ
 		            if(recLen <= 0)
 		            { 
-		            	timer.shutdown(); 
 		            	timeoutfinishActivity();
 		            } 
 		            
@@ -286,8 +279,6 @@ public class BusZhipos extends Activity
 		else 
 		{			
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity ¹Ø±Õ¶Á¿¨Æ÷","com.txt");
-			timer.shutdown(); 
-			mMyApi.pos_release();
 			finish();
 		}
 	}
@@ -500,8 +491,6 @@ public class BusZhipos extends Activity
   				{
   					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<ÎÞÍË¿î","com.txt");
   					OrderDetail.addLog(BusZhipos.this);
-  					timer.shutdown(); 
-					mMyApi.pos_release();
   					finish();
   				}
   				//³ö»õÊ§°Ü,ÍËÇ®
@@ -515,5 +504,12 @@ public class BusZhipos extends Activity
   			}			
   		}
   	}
+  	
+  	@Override
+	protected void onDestroy() {
+  		timer.shutdown(); 
+		mMyApi.pos_release();
+		super.onDestroy();		
+	}
 
 }

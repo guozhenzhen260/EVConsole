@@ -295,8 +295,7 @@ public class BusZhier extends Activity
 			childhand.sendMessage(childmsg);
   		}
   		txtbuszhierrst.setText("交易结果:撤销成功");
-  		timer.shutdown(); 
-		finish();
+  		finish();
 	}
 	//退款
 	private void payoutzhier()
@@ -337,7 +336,6 @@ public class BusZhier extends Activity
 		            //退出页面
 		            if(recLen <= 0)
 		            { 
-		                timer.shutdown(); 
 		                timeoutfinishActivity();
 		            } 
 		            
@@ -379,7 +377,6 @@ public class BusZhier extends Activity
 			deletezhier();
 		else 
 		{
-			timer.shutdown(); 
 			finish();
 		}
 	}
@@ -453,6 +450,10 @@ public class BusZhier extends Activity
 		}
 	}
 	
-	
+	@Override
+	protected void onDestroy() {
+  		timer.shutdown(); 
+		super.onDestroy();		
+	}
 	
 }
