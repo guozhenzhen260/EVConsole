@@ -1018,13 +1018,31 @@ BushuoFragInteraction
   		} 
   		else 
   		{  			
-  			//关闭纸币硬币器
-  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);   
-  			BillEnable(0);
-  			clearamount();
-  			viewSwitch(BUSPORT, null);
+  			amountDestroy(0);
 		} 	    
 	    
+	}
+	
+	//关闭页面:type=1延时10s关闭,0立即关闭
+	private void amountDestroy(int type)
+	{
+		//延时关闭
+		if(type==1)
+		{
+			//清数据
+	    	clearamount();
+  			//关闭纸币硬币器
+  	    	BillEnable(0);
+  	    	recLen=10;
+		}
+		//立即关闭
+		else
+		{
+			//关闭纸币硬币器
+	    	BillEnable(0);
+			clearamount();
+			viewSwitch(BUSPORT, null);
+		}
 	}
 	
 	
@@ -1679,8 +1697,7 @@ BushuoFragInteraction
 	            public void run() 
 	            {            	
 	            	//关闭纸币硬币器
-		  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
-			    	BillEnable(0);					    	
+		  	    	BillEnable(0);					    	
 	            }
 
 			}, 500); 
@@ -2088,6 +2105,8 @@ BushuoFragInteraction
   		//pos页面
   		iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
   		ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
+  	    //打印机页面
+  		isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
   	}
   	
   	//判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作
@@ -2444,8 +2463,7 @@ BushuoFragInteraction
 							  		if(isempcoin==false)//第一次关闭纸币硬币器
 							  		{
 							  			//关闭纸币硬币器
-							  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-							  			BillEnable(0);
+							  	    	BillEnable(0);
 							  			isempcoin=true;
 							  		}
 						  		}
@@ -2458,8 +2476,7 @@ BushuoFragInteraction
 						  			if(isempcoin==false)//第一次关闭纸币硬币器
 							  		{
 							  			//关闭纸币硬币器
-							  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-						  				BillEnable(0);
+							  	    	BillEnable(0);
 							  			isempcoin=true;
 							  		}
 						  		}
@@ -2515,18 +2532,17 @@ BushuoFragInteraction
 				    		OrderDetail.cleardata();
 						}
 				    	dialog.dismiss();
-						//清数据
-				    	clearamount();
-			  			//关闭纸币硬币器
-			  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
-				    	BillEnable(0);
-			  	    	if(gotoswitch==BUSZHIAMOUNT)
+						if(gotoswitch==BUSZHIAMOUNT)
 			  	    	{
-			  	    		viewSwitch(BUSPORT, null);	
+			  	    		amountDestroy(0);	
 			  	    	}
 			  	    	else
 			  	    	{
-			  	    		recLen=10;
+			  	    		//清数据
+					    	clearamount();
+				  			//关闭纸币硬币器
+				  	    	BillEnable(0);
+				  	    	recLen=10;
 			  	    	}
 						break; 
 					//是出货操作	
