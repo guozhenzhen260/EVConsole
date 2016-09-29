@@ -547,7 +547,7 @@ public class PrintTest extends Activity {
 			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
 			ComA.send(PrintCmd.PrintString("合计(人民币):                           228.00\n", 0));
 			ComA.send(PrintCmd.PrintString("应收款:                                 228.00\n", 0));
-			ComA.send(PrintCmd.PrintString("应收款:                                 228.00\n", 0));
+			ComA.send(PrintCmd.PrintString("实收款:                                 228.00\n", 0));
 			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
 			ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
 			ComA.send(PrintCmd.PrintString(" 银联卡:                                228.00\n", 0));
