@@ -1,5 +1,6 @@
 package com.easivend.app.maintain;
 
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 import com.example.printdemo.MyFunc;
@@ -46,16 +47,17 @@ public class PrintTest extends Activity {
 	public final static int UNKNOWERR=10;//其他异常
 	TextView txtMsg=null;
 	CheckBox chktitle1=null,chktitle2=null,chkno=null,chksum=null,
-			chkthank=null,chker=null,chkdate=null;
+			chkthank=null,chker=null,chkdate=null,chkdocter=null;
 	EditText edittitle1=null,edittitle2=null,editthank=null,editer=null;
 	Button btnopen=null,btnquery=null,btnprint=null,btnclose=null,btnsave=null,btnexit=null;
-	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate;
+	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate,isdocter;
 	int serialno=0;
 	String title1str,title2str,thankstr,erstr;
 	SerialControl ComA;                  // 串口控制
 	static DispQueueThread DispQueue;    // 刷新显示线程
 	private boolean ercheck=false;//true正在打印机的操作中，请稍后。false没有打印机的操作
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
+	SimpleDateFormat sdfdoc = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss"); // 药房小票用
 	float amount=0;
 	private Handler printmainhand=null;
 	@Override
@@ -213,6 +215,15 @@ public class PrintTest extends Activity {
 				isdate=isChecked;
 			}
 		});
+        chkdocter = (CheckBox) findViewById(R.id.chkdocter);
+        chkdocter.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        {			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO Auto-generated method stub
+				isdocter=isChecked;
+			}
+		});
         txtMsg = (TextView) findViewById(R.id.txtMsg);
         ReadSharedPreferencesPrinter();
         
@@ -246,8 +257,15 @@ public class PrintTest extends Activity {
         btnprint = (Button)findViewById(R.id.btnprint);		
         btnprint.setOnClickListener(new OnClickListener() {
 		    @Override
-		    public void onClick(View arg0) {		    	
-		    	PrintBankQueue();                             // 打印小票
+		    public void onClick(View arg0) {	
+		    	if(isdocter)
+		    	{
+		    		PrintDocter();                             // 打印小票
+		    	}
+		    	else
+		    	{
+		    		PrintBankQueue();                             // 打印小票
+		    	}
 		    }
 		});
         //关闭
@@ -337,6 +355,9 @@ public class PrintTest extends Activity {
 		//当前时间
 		isdate=user.getBoolean("isdate",true);
 		chkdate.setChecked(isdate);
+		//药房小票
+		isdocter=user.getBoolean("isdocter",true);
+		chkdocter.setChecked(isdocter);
     }
     //写入打印信息
     private void SaveSharedPreferencesPrinter()
@@ -376,6 +397,9 @@ public class PrintTest extends Activity {
 		//当前时间
 		isdate=chkdate.isChecked();
 		edit.putBoolean("isdate", isdate);
+		//药房小票
+		isdocter=chkdocter.isChecked();
+		edit.putBoolean("isdocter", isdocter);
 		//提交更新
 		edit.commit();
     }
@@ -441,7 +465,7 @@ public class PrintTest extends Activity {
  	/**
 	 * 打印销售单据
 	 */
-	private void PrintBankQueue() {
+  	private void PrintBankQueue() {
 		try {
 			// 小票标题
 			byte[] bValue = new byte[100];
@@ -466,10 +490,12 @@ public class PrintTest extends Activity {
 			}
 			// 小票主要内容
 			CleanPrinter(); // 清理缓存，缺省模式
+			ComA.send(PrintCmd.PrintString("测试商品  单价1.00元\n", 0));
+			ComA.send(PrintCmd.PrintString("_________________________________________\n\n", 0));
 			//金额统计
 			if(issum)
 			{
-				ComA.send(PrintCmd.PrintString("本次消费"+amount+"元\n\n", 0));
+				ComA.send(PrintCmd.PrintString("总计:1.00元\n", 0));
 			}
 			//感谢提示
 			if(isthank)
@@ -489,6 +515,45 @@ public class PrintTest extends Activity {
 				ComA.send(PrintCmd.SetAlignment(2));
 				ComA.send(PrintCmd.PrintString(sdf.format(new Date()).toString() + "\n\n", 1));
 			}
+			// 走纸4行,再切纸,清理缓存
+			PrintFeedCutpaper(4);  
+			SaveSharedPreferencesSerialno();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 打印药房小票
+	 */
+	private void PrintDocter() {
+		try {
+			// 小票标题
+			ComA.send(PrintCmd.SetAlignment(1));
+			ComA.send(PrintCmd.PrintString("药房小票\n", 0));
+			CleanPrinter(); // 清理缓存，缺省模式	
+			//交易序号
+			if(isno)
+			{
+				ComA.send(PrintCmd.PrintString("收据号:                                  "+String.format("%06d", 385017+(serialno++))+"\n", 0));
+			}					
+			//当前时间
+			if(isdate)
+			{
+				ComA.send(PrintCmd.PrintString(sdfdoc.format(new Date()).toString() + "\n\n", 1));
+			}
+			ComA.send(PrintCmd.PrintString("批号      品名规格     价格*数量     小计\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("160705  化痰祛斑胶囊0.32g*10粒*3板  57*4  228\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("合计(人民币):                           228.00\n", 0));
+			ComA.send(PrintCmd.PrintString("应收款:                                 228.00\n", 0));
+			ComA.send(PrintCmd.PrintString("应收款:                                 228.00\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+			ComA.send(PrintCmd.PrintString(" 银联卡:                                228.00\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("找回(人民币):                            0.00\n\n", 0));
+			ComA.send(PrintCmd.PrintString("请您保留小票以便售后服务谢谢合作药品是特殊商品，非质量问题恕不退换\n", 0));			
 			// 走纸4行,再切纸,清理缓存
 			PrintFeedCutpaper(4);  
 			SaveSharedPreferencesSerialno();

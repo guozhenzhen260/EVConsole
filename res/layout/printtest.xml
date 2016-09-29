@@ -95,11 +95,20 @@
         android:layout_below="@+id/chker"
         android:textSize="35dp"
      />
+    <CheckBox
+        android:id="@+id/chkdocter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="药房小票"
+        android:checked="false"
+        android:layout_below="@+id/chkdate"
+        android:textSize="35dp"
+     />
     <TextView
         android:id="@+id/txtztai"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/chkdate"
+        android:layout_below="@+id/chkdocter"
         android:text="打印机状态:" 
         android:textColor="#8C6931"
         android:textSize="35dp"/>
