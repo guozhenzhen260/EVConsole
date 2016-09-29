@@ -351,21 +351,7 @@ public class BusHuo extends Activity
 						//1.更新出货结果
 						//扣除存货余量
 						chuhuoupdate(cabinetvar,huodaoNo);
-					}
-					// 查询状态
-					if(isPrinter>0)
-			        {
-						new Handler().postDelayed(new Runnable() 
-						{
-				            @Override
-				            public void run() 
-				            {	  
-				            	GetPrinterStates(ComA, PrintCmd.GetStatus()); 
-				            }
-
-						}, 600);
-						
-			        }
+					}					
 					//出货成功
 					if(status==1)
 					{

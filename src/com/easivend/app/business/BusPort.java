@@ -197,12 +197,13 @@ BushuoFragInteraction
     //=================
     //打印机相关
     //=================
-  	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate;
+  	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate,isdocter;
 	int serialno=0;//流水号
 	String title1str,title2str,thankstr,erstr;
 	SerialControl ComA;                  // 串口控制
 	static DispQueueThread DispQueue;    // 刷新显示线程
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
+	SimpleDateFormat sdfdoc = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss"); // 药房小票用
 	private Handler printmainhand=null;
 	private int isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
     
@@ -786,7 +787,14 @@ BushuoFragInteraction
 				{
 					isPrinter=3;
 					ToolClass.Log(ToolClass.INFO,"EV_COM","打印凭证...","com.txt");
-					PrintBankQueue();
+					if(isdocter)
+			    	{
+			    		PrintDocter();                             // 打印小票
+			    	}
+			    	else
+			    	{
+			    		PrintBankQueue();                             // 打印小票
+			    	}
 				}
 			}
 		};
@@ -1566,7 +1574,7 @@ BushuoFragInteraction
 		if(isPrinter>0)
         {
 			//出货成功,打印凭证
-			if(status==1)
+//			if(status==1)
 			{
 				new Handler().postDelayed(new Runnable() 
 				{
@@ -1776,7 +1784,9 @@ BushuoFragInteraction
     		erstr=user.getString("erstr", "http://www.easivend.com.cn/");
     	}
 		//当前时间
-		isdate=user.getBoolean("isdate",true);		
+		isdate=user.getBoolean("isdate",true);
+		//药房小票
+		isdocter=user.getBoolean("isdocter",true);
     }
     
   
@@ -1891,7 +1901,77 @@ BushuoFragInteraction
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * 打印药房小票
+	 */
+	private void PrintDocter() {
+		try {
+			// 小票标题
+			ComA.send(PrintCmd.SetAlignment(1));
+			ComA.send(PrintCmd.PrintString("药房小票\n", 0));
+			CleanPrinter(); // 清理缓存，缺省模式	
+			//交易序号
+			if(isno)
+			{
+				ComA.send(PrintCmd.PrintString("收据号:                                  "+String.format("%06d", 385017+(serialno++))+"\n", 0));
+			}					
+			//当前时间
+			if(isdate)
+			{
+				ComA.send(PrintCmd.PrintString(sdfdoc.format(new Date()).toString() + "\n\n", 1));
+			}
+			ComA.send(PrintCmd.PrintString("批号      品名规格     价格*数量     小计\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			//ComA.send(PrintCmd.PrintString("160705  化痰祛斑胶囊0.32g*10粒*3板  57*4  228\n", 0));
+			ComA.send(PrintCmd.PrintString(OrderDetail.getProID()+"   "+OrderDetail.getShouldPay()+"*"+OrderDetail.getShouldNo()+"   "+OrderDetail.getShouldPay()+"\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("合计(人民币):                         "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+			ComA.send(PrintCmd.PrintString("应收款:                               "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+			//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+			if(OrderDetail.getPayType()==0)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getSmallAmount()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 银联卡支付:                      0.00\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      "+(OrderDetail.getSmallAmount()-OrderDetail.getShouldPay())+"\n\n", 0));
+			}
+			else if(OrderDetail.getPayType()==1)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 银联卡支付:                      "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			else if(OrderDetail.getPayType()==3)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 支付宝支付:                      "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			else if(OrderDetail.getPayType()==4)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString("  微信支付:                      "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			ComA.send(PrintCmd.PrintString("请您保留小票以便售后服务谢谢合作药品是特殊商品，非质量问题恕不退换\n", 0));			
+			// 走纸4行,再切纸,清理缓存
+			PrintFeedCutpaper(4);  
+			SaveSharedPreferencesSerialno();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	// 打印二维码
 	private void PrintQRCode() throws IOException {
 		byte[] bValue = new byte[50];
