@@ -1376,13 +1376,13 @@ BushuoFragInteraction
   				{
   					//【返回码和信息】code和code_info的返回/说明，见com.landfoneapi.mispos.ErrCode
   					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getExtracom(),"com.txt");
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getCardcom(),"com.txt");
   						childmsg.what=CahslessTest.OPENSUCCESS;
-  						childmsg.obj="打开成功"+ToolClass.getExtracom();
+  						childmsg.obj="打开成功"+ToolClass.getCardcom();
   					}else{
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getExtracom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
   						childmsg.what=CahslessTest.OPENFAIL;
-  						childmsg.obj="打开失败"+ToolClass.getExtracom()+",code:"+rst.code+",info:"+rst.code_info;
+  						childmsg.obj="打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info;
   					}
   				}
   				//关闭串口
@@ -2389,11 +2389,11 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiposFragment);
-	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getExtracom(),"com.txt");
+	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
 	            //打开串口
 	            //ip、端口、串口、波特率必须准确
-				mMyApi.pos_init("121.40.30.62", 18080
-						,ToolClass.getExtracom(), "9600", mIUserCallback);
+				mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
+						,ToolClass.getCardcom(), "9600", mIUserCallback);
 				//延时
 			    new Handler().postDelayed(new Runnable() 
 				{

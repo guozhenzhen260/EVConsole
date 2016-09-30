@@ -219,7 +219,7 @@ public class BusZhipos extends Activity
 		//打开串口
 		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
 		//ip、端口、串口、波特率必须准确
-		mMyApi.pos_init("121.40.30.62", 18080
+		mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
 				,ToolClass.getCardcom(), "9600", mIUserCallback);		
 		//延时
 	    new Handler().postDelayed(new Runnable() 
