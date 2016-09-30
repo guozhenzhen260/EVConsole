@@ -1574,7 +1574,7 @@ BushuoFragInteraction
 		if(isPrinter>0)
         {
 			//出货成功,打印凭证
-//			if(status==1)
+			if(status==1)
 			{
 				new Handler().postDelayed(new Runnable() 
 				{

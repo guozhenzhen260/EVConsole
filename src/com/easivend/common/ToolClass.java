@@ -1720,7 +1720,17 @@ public class ToolClass
 	  	        	list2.put("aliseller_email", "");
 	  	        	list2.put("alikey", "");
 	  	        	list2.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
-	  	        	list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	if((ToolClass.isEmptynull(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString())==false)
+	  			        	&&(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString().equals("null")==false)
+	  			        )
+	  	        	{
+	  	        		list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString());
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	}	
+	  	        	
 	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
 	  	        	{
 	  	        		list2.put("isalisub", "0");
