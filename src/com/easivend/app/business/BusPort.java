@@ -1476,7 +1476,7 @@ BushuoFragInteraction
 						//rfd_amt_fen = amount;//使用上次全额，测试金额都是1分
 						//【退款卡号】
 						if(tmp_spec!=null && tmp_spec_len>(2+19)){
-							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19);
+							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19).trim();
 						}
 						//【临时交易流水号】
 						if(tmp_spec!=null && tmp_spec_len>26){
