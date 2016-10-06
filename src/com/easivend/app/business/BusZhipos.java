@@ -159,8 +159,6 @@ public class BusZhipos extends Activity
 				            public void run() 
 				            {         
 				            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-								timer.shutdown(); 
-								mMyApi.pos_release();
 								finish();
 							}
 
@@ -184,8 +182,6 @@ public class BusZhipos extends Activity
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
-									timer.shutdown(); 
-									mMyApi.pos_release();
 									finish();
 								}
 
@@ -211,8 +207,6 @@ public class BusZhipos extends Activity
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
-									timer.shutdown(); 
-									mMyApi.pos_release();
 									finish();
 								}
 
@@ -225,7 +219,7 @@ public class BusZhipos extends Activity
 		//打开串口
 		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
 		//ip、端口、串口、波特率必须准确
-		mMyApi.pos_init("121.40.30.62", 18080
+		mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
 				,ToolClass.getCardcom(), "9600", mIUserCallback);		
 		//延时
 	    new Handler().postDelayed(new Runnable() 
@@ -256,7 +250,6 @@ public class BusZhipos extends Activity
 		            //退出页面
 		            if(recLen <= 0)
 		            { 
-		            	timer.shutdown(); 
 		            	timeoutfinishActivity();
 		            } 
 		            
@@ -286,8 +279,6 @@ public class BusZhipos extends Activity
 		else 
 		{			
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-			timer.shutdown(); 
-			mMyApi.pos_release();
 			finish();
 		}
 	}
@@ -426,7 +417,7 @@ public class BusZhipos extends Activity
 						//rfd_amt_fen = amount;//使用上次全额，测试金额都是1分
 						//【退款卡号】
 						if(tmp_spec!=null && tmp_spec_len>(2+19)){
-							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19);
+							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19).trim();
 						}
 						//【临时交易流水号】
 						if(tmp_spec!=null && tmp_spec_len>26){
@@ -499,7 +490,7 @@ public class BusZhipos extends Activity
   				if(status==1)
   				{
   					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<无退款","com.txt");
-  					OrderDetail.addLog(BusZhipos.this);					
+  					OrderDetail.addLog(BusZhipos.this);
   					finish();
   				}
   				//出货失败,退钱
@@ -513,5 +504,12 @@ public class BusZhipos extends Activity
   			}			
   		}
   	}
+  	
+  	@Override
+	protected void onDestroy() {
+  		timer.shutdown(); 
+		mMyApi.pos_release();
+		super.onDestroy();		
+	}
 
 }

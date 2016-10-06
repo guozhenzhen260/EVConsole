@@ -1,15 +1,29 @@
 package com.easivend.app.business;
 
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+
+import com.bean.ComBean;
+import com.easivend.app.maintain.PrintTest;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.example.evconsole.R;
+import com.example.printdemo.MyFunc;
+import com.example.printdemo.SerialHelper;
+import com.printsdk.cmd.PrintCmd;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -17,10 +31,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -50,6 +67,19 @@ public class BusHuo extends Activity
     //=================
   	LocalBroadcastManager comBroadreceiver;
   	COMReceiver comreceiver;
+    //=================
+    //打印机相关
+    //=================
+  	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate,isdocter;
+	int serialno=0;//流水号
+	String title1str,title2str,thankstr,erstr;
+	SerialControl ComA;                  // 串口控制
+	static DispQueueThread DispQueue;    // 刷新显示线程
+	private boolean ercheck=false;//true正在打印机的操作中，请稍后。false没有打印机的操作
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
+	SimpleDateFormat sdfdoc = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss"); // 药房小票用
+	private Handler printmainhand=null;
+	private int isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +139,91 @@ public class BusHuo extends Activity
 		//出货
 		//****
 		chuhuoopt(tempx);
+		
+		//=================
+	    //打印机相关
+	    //=================
+		printmainhand=new Handler()
+		{
+
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub				
+				switch (msg.what) 
+				{
+					case PrintTest.NORMAL:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机正常","com.txt");
+						if(isPrinter==1)
+							isPrinter=2;
+						break;
+					case PrintTest.NOPOWER:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机未连接或未上电","com.txt");
+						break;
+					case PrintTest.NOMATCH:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机异常[打印机和调用库不匹配]","com.txt");
+						if(isPrinter==1)
+							isPrinter=2;
+						break;
+					case PrintTest.HEADOPEN:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机打印机头打开","com.txt");
+						break;
+					case PrintTest.CUTTERERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机切刀未复位","com.txt");
+						break;
+					case PrintTest.HEADHEAT:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机头过热","com.txt");
+						break;
+					case PrintTest.BLACKMARKERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机黑标错误","com.txt");
+						break;
+					case PrintTest.PAPEREXH:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机纸尽","com.txt");
+						break;
+					case PrintTest.PAPERWILLEXH://这个也可以当正常状态使用	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机纸将尽","com.txt");
+						if(isPrinter==1)
+							isPrinter=2;
+						break;
+					case PrintTest.UNKNOWERR: 
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机其他异常="+msg.obj,"com.txt");
+						break;
+				}
+				if(isPrinter==2)
+				{
+					isPrinter=3;
+					ToolClass.Log(ToolClass.INFO,"EV_COM","打印凭证...","com.txt");
+					if(isdocter)
+			    	{
+			    		PrintDocter();                             // 打印小票
+			    	}
+			    	else
+			    	{
+			    		PrintBankQueue();                             // 打印小票
+			    	}
+				}
+			}
+		};
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusHuo.this);// 创建InaccountDAO对象
+	    // 得到设备ID号
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		isPrinter=tb_inaccount.getIsNet();
+    	}
+    	ToolClass.Log(ToolClass.INFO,"EV_COM","isPrinter=" + isPrinter,"com.txt");
+        if(isPrinter>0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_COM","打开打印机","com.txt");
+        	ReadSharedPreferencesPrinter();
+	    	ComA = SerialControl.getInstance();
+	        ComA.setbLoopData(PrintCmd.GetStatus());
+	        DispQueue = new DispQueueThread();
+			DispQueue.start();
+			//打开串口
+			ComA.setPort(ToolClass.getPrintcom());            // 1.1 设定串口
+			ComA.setBaudRate("9600");// 1.2 设定波特率
+			OpenComPort(ComA); // 1.3 打开串口			
+        }
 	}
 			
 	//出货,返回值0失败,1出货指令成功，等待返回结果,2出货完成
@@ -236,7 +351,7 @@ public class BusHuo extends Activity
 						//1.更新出货结果
 						//扣除存货余量
 						chuhuoupdate(cabinetvar,huodaoNo);
-					}
+					}					
 					//出货成功
 					if(status==1)
 					{
@@ -244,6 +359,23 @@ public class BusHuo extends Activity
 						txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 						chuhuoLog(1);//记录日志
 						ivbushuoquhuo.setImageResource(R.drawable.chusuccessland);
+						//=======
+						//打印机相关
+						//=======
+						// 查询状态
+						if(isPrinter>0)
+				        {
+							new Handler().postDelayed(new Runnable() 
+							{
+					            @Override
+					            public void run() 
+					            {	  
+					            	GetPrinterStates(ComA, PrintCmd.GetStatus()); 
+					            }
+
+							}, 600);
+							
+				        }
 					}
 					else
 					{
@@ -252,6 +384,7 @@ public class BusHuo extends Activity
 						chuhuoLog(0);//记录日志
 						ivbushuoquhuo.setImageResource(R.drawable.chufailland);
 					}
+										
 											
 					//3.退回找零页面
 		 	    	new Handler().postDelayed(new Runnable() 
@@ -304,8 +437,392 @@ public class BusHuo extends Activity
 
 	}
 	
+	//=================
+    //打印机相关
+    //=================
+	//读取打印信息
+    private void ReadSharedPreferencesPrinter()
+    {
+    	//文件是私有的
+    	SharedPreferences  user = getSharedPreferences("print_info",0);
+    	//读取
+    	//标题一
+    	istitle1=user.getBoolean("istitle1",true);
+    	if(istitle1==false)
+    	{
+    		title1str="";
+    	}
+    	else
+    	{
+    		title1str=user.getString("title1str", "自助售货机");
+    	}
+		//标题二
+    	istitle2=user.getBoolean("istitle2",true);
+    	if(istitle2==false)
+    	{
+    		title2str="";
+    	}
+    	else
+    	{
+    		title2str=user.getString("title2str", "交易凭证");
+    	}
+		//交易序号
+		isno=user.getBoolean("isno",true);
+		serialno=user.getInt("serialno", 1);
+		//金额统计
+		issum=user.getBoolean("issum",true);
+		//感谢提示
+    	isthank=user.getBoolean("isthank",true);
+    	if(isthank==false)
+    	{
+    		thankstr="";
+    	}
+    	else
+    	{
+    		thankstr=user.getString("thankstr", "谢谢使用自助售货机,我们将竭诚为您服务!");
+    	}
+		//二维码
+    	iser=user.getBoolean("iser",true);
+    	if(iser==false)
+    	{
+    		erstr="";
+    	}
+    	else
+    	{
+    		erstr=user.getString("erstr", "http://www.easivend.com.cn/");
+    	}
+		//当前时间
+		isdate=user.getBoolean("isdate",true);	
+		//药房小票
+		isdocter=user.getBoolean("isdocter",true);
+    }
+    
+  
+    //写入流水号信息
+    private void SaveSharedPreferencesSerialno()
+    {
+    	//文件是私有的
+		SharedPreferences  user = getSharedPreferences("print_info",0);
+		//需要接口进行编辑
+		SharedPreferences.Editor edit=user.edit();
+		//写入
+		//交易序号
+		edit.putInt("serialno", serialno);
+		//提交更新
+		edit.commit();
+    }
+    
+    // ------------------打开串口--------------------
+    private void OpenComPort(SerialHelper ComPort) {
+		try {
+			ComPort.open();
+		} catch (SecurityException e) {
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","没有读/写权限","com.txt");
+		} catch (IOException e) {
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","未知错误","com.txt");
+		} catch (InvalidParameterException e) {
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","参数错误","com.txt");
+		}
+	}
+    
+    // ------------------关闭串口--------------------
+ 	private void CloseComPort(SerialHelper ComPort) {
+ 		if (ComPort != null) {
+ 			ComPort.stopSend();
+ 			ComPort.close();
+ 		}
+ 	}
+ 	
+    // -------------------------查询状态---------------------------
+ 	private void GetPrinterStates(SerialHelper ComPort, byte[] sOut) {
+  		try { 			
+ 			if (ComPort != null && ComPort.isOpen()) {
+ 				ComPort.send(sOut);
+ 				ercheck = true; 				
+ 				ToolClass.Log(ToolClass.INFO,"EV_COM","打印机状态查询...","com.txt");
+ 			} else
+ 			{
+ 				ToolClass.Log(ToolClass.ERROR,"EV_COM","打印机串口未打开","com.txt"); 				
+ 			}
+ 		} catch (Exception ex) {
+ 			ToolClass.Log(ToolClass.ERROR,"EV_COM","打印机串口打开异常="+ex.getMessage(),"com.txt"); 			
+ 		}
+  		
+ 	}
+ 	/**
+	 * 打印销售单据
+	 */
+	private void PrintBankQueue() {
+		try {
+			// 小票标题
+			byte[] bValue = new byte[100];
+			ComA.send(PrintCmd.SetBold(0));
+			ComA.send(PrintCmd.SetAlignment(1));
+			ComA.send(PrintCmd.SetSizetext(1, 1));
+			//标题一
+			if(istitle1)
+			{
+				ComA.send(PrintCmd.PrintString(title1str+"\n\n", 0));
+			}
+			//标题二
+			if(istitle2)
+			{
+				ComA.send(PrintCmd.PrintString(title2str+"\n\n", 0));
+			}
+			//交易序号
+			if(isno)
+			{
+				ComA.send(PrintCmd.SetBold(1));
+				ComA.send(PrintCmd.PrintString(String.format("%04d", serialno++)+"\n\n", 0));
+			}
+			// 小票主要内容
+			CleanPrinter(); // 清理缓存，缺省模式
+			ComA.send(PrintCmd.PrintString(OrderDetail.getProID()+"  单价"+prosales+"元\n", 0));
+			ComA.send(PrintCmd.PrintString("_________________________________________\n\n", 0));
+			//金额统计
+			if(issum)
+			{
+				ComA.send(PrintCmd.PrintString("总计:"+prosales*count+"元\n", 0));
+			}
+			//感谢提示
+			if(isthank)
+			{
+				ComA.send(PrintCmd.PrintString(thankstr+"\n", 0));
+			}
+			// 二维码
+			if(iser)
+			{
+				ComA.send(PrintCmd.PrintFeedline(2));    
+				PrintQRCode();  // 二维码打印                          
+				ComA.send(PrintCmd.PrintFeedline(2));   
+			}
+			//当前时间
+			if(isdate)
+			{
+				ComA.send(PrintCmd.SetAlignment(2));
+				ComA.send(PrintCmd.PrintString(sdf.format(new Date()).toString() + "\n\n", 1));
+			}
+			// 走纸4行,再切纸,清理缓存
+			PrintFeedCutpaper(4);  
+			SaveSharedPreferencesSerialno();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 打印药房小票
+	 */
+	private void PrintDocter() {
+		try {
+			// 小票标题
+			ComA.send(PrintCmd.SetAlignment(1));
+			ComA.send(PrintCmd.PrintString("药房小票\n", 0));
+			CleanPrinter(); // 清理缓存，缺省模式	
+			//交易序号
+			if(isno)
+			{
+				ComA.send(PrintCmd.PrintString("收据号:                                  "+String.format("%06d", 385017+(serialno++))+"\n", 0));
+			}					
+			//当前时间
+			if(isdate)
+			{
+				ComA.send(PrintCmd.PrintString(sdfdoc.format(new Date()).toString() + "\n\n", 1));
+			}
+			ComA.send(PrintCmd.PrintString("批号      品名规格     价格*数量     小计\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			//ComA.send(PrintCmd.PrintString("160705  化痰祛斑胶囊0.32g*10粒*3板  57*4  228\n", 0));
+			ComA.send(PrintCmd.PrintString(OrderDetail.getProID()+"   "+prosales+"*"+count+"   "+prosales+"\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("合计(人民币):                         "+prosales*count+"\n", 0));
+			ComA.send(PrintCmd.PrintString("应收款:                               "+prosales*count+"\n", 0));
+			//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+			if(zhifutype==0)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getSmallAmount()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 银联卡支付:                      0.00\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      "+(OrderDetail.getSmallAmount()-prosales)+"\n\n", 0));
+			}
+			else if(zhifutype==1)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+prosales*count+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 银联卡支付:                      "+prosales*count+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			else if(zhifutype==3)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+prosales*count+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 支付宝支付:                      "+prosales*count+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			else if(zhifutype==4)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+prosales*count+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString("  微信支付:                      "+prosales*count+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			ComA.send(PrintCmd.PrintString("请您保留小票以便售后服务谢谢合作药品是特殊商品，非质量问题恕不退换\n", 0));			
+			// 走纸4行,再切纸,清理缓存
+			PrintFeedCutpaper(4);  
+			SaveSharedPreferencesSerialno();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// 打印二维码
+	private void PrintQRCode() throws IOException {
+		byte[] bValue = new byte[50];
+		bValue = PrintCmd.PrintQrcode(erstr, 25, 7, 1);
+		ComA.send(bValue);
+	}
+	
+	// 走纸换行，再切纸，清理缓存
+	private void PrintFeedCutpaper(int iLine) throws IOException{
+		ComA.send(PrintCmd.PrintFeedline(iLine));
+		ComA.send(PrintCmd.PrintCutpaper(0));
+		ComA.send(PrintCmd.SetClean());
+	}
+	// 清理缓存，缺省模式
+	private void CleanPrinter(){
+		ComA.send(PrintCmd.SetClean());
+	}
+    
+	// -------------------------刷新显示线程---------------------------
+	private class DispQueueThread extends Thread {
+		private Queue<ComBean> QueueList = new LinkedList<ComBean>();
+		@Override
+		public void run() {
+			super.run();
+			while (!isInterrupted()) {
+				final ComBean ComData;
+				while ((ComData = QueueList.poll()) != null) {
+					runOnUiThread(new Runnable() {
+						public void run() {
+							DispRecData(ComData);
+						}
+					});
+					try {
+						Thread.sleep(200);// 显示性能高的话，可以把此数值调小。
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
+			}
+		}
+		public synchronized void AddQueue(ComBean ComData) {
+			QueueList.add(ComData);
+		}
+	}
+	
+	// ------------------------显示接收数据----------------------------
+	 /*
+	  * 0 打印机正常 、1 打印机未连接或未上电、2 打印机和调用库不匹配 
+	  * 3 打印头打开 、4 切刀未复位 、5 打印头过热 、6 黑标错误 、7 纸尽 、8 纸将尽
+	  */
+	private void DispRecData(ComBean ComRecData) {
+		Message childmsg=printmainhand.obtainMessage();
+		StringBuilder sMsg = new StringBuilder();
+		try {
+			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
+			int iState = PrintCmd.CheckStatus(ComRecData.bRec); // 检查状态
+			ToolClass.Log(ToolClass.INFO,"EV_COM","返回状态：" + iState + "======="
+					+ ComRecData.bRec[0],"com.txt");
+			switch (iState) {
+			case 0:
+				sMsg.append("正常");                 // 正常
+				ercheck = true;
+				childmsg.what=PrintTest.NORMAL;
+				break;
+			case 1:
+				sMsg.append("未连接或未上电");//未连接或未上电
+				ercheck = true;
+				childmsg.what=PrintTest.NOPOWER;
+				break;
+			case 2:
+				sMsg.append("异常[打印机和调用库不匹配]");               //异常[打印机和调用库不匹配]
+				ercheck = false;
+				childmsg.what=PrintTest.NOMATCH;
+				break;
+			case 3:
+				sMsg.append("打印机头打开");        //打印机头打开
+				ercheck = true;
+				childmsg.what=PrintTest.HEADOPEN;
+				break;
+			case 4:
+				sMsg.append("切刀未复位");         //切刀未复位
+				ercheck = true;
+				childmsg.what=PrintTest.CUTTERERR;
+				break;
+			case 5:
+				sMsg.append("打印头过热");    // 打印头过热
+				ercheck = true;
+				childmsg.what=PrintTest.HEADHEAT;
+				break;
+			case 6:
+				sMsg.append("黑标错误");         // 黑标错误
+				ercheck = true;
+				childmsg.what=PrintTest.BLACKMARKERR;
+				break;
+			case 7:
+				sMsg.append("纸尽");               //纸尽
+				ercheck = true;
+				childmsg.what=PrintTest.PAPEREXH;
+				break;
+			case 8:
+				sMsg.append("纸将尽");           //纸将尽
+				ercheck = true;
+				childmsg.what=PrintTest.PAPERWILLEXH;
+				break;
+			default:
+				break;
+			}
+			childmsg.obj=sMsg.toString();
+		} catch (Exception ex) {
+			childmsg.what=PrintTest.UNKNOWERR;
+			childmsg.obj=ex.getMessage();
+		}
+		printmainhand.sendMessage(childmsg);
+	}
+    // -------------------------底层串口控制类---------------------------
+    private static class SerialControl extends SerialHelper {
+		public SerialControl() {
+		}
+		private static SerialControl single = null;
+		// 静态工厂方法
+		public static SerialControl getInstance() {
+			if (single == null) {
+				single = new SerialControl();
+			}
+			return single;
+		}
+		@Override
+		protected void onDataReceived(final ComBean ComRecData) {
+			DispQueue.AddQueue(ComRecData);// 线程定时刷新显示(推荐)
+		}
+	}
+	
 	@Override
 	protected void onDestroy() {
+		//=============
+		//打印机相关
+		//=============
+		if(isPrinter>0)
+		{
+			CloseComPort(ComA);// 2.1 关闭串口
+		}
 		//=============
 		//COM服务相关
 		//=============

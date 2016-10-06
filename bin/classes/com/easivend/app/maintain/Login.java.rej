@@ -1,0 +1,11 @@
+diff a/src/com/easivend/app/maintain/Login.java b/src/com/easivend/app/maintain/Login.java	(rejected hunks)
+@@ -106,7 +106,8 @@
+         txtlogin.setText(com);
+         txtbent.setText(bentcom);
+         txtcolumn.setText(columncom);
+-        txtcardcom.setText(cardcom);
++        txtprintcom.setText(printcom);
++        txtcardcom.setText(cardcom);        
+         txtextracom.setText(extracom);
+         switchallopen.setChecked((isallopen==1)?true:false);
+         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮

@@ -388,8 +388,7 @@ public class BusZhiAmount  extends Activity
                     ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
                     if(recLen <= 0)
                     { 
-                    	timer.shutdown(); 
-                        finishActivity();
+                    	finishActivity();
                     } 
                     //发送查询交易指令
                     if(iszhienable==1)
@@ -542,8 +541,7 @@ public class BusZhiAmount  extends Activity
   	}
     //结束界面
   	private void finishActivity()
-  	{
-  		timer.shutdown(); 
+  	{  		
   		//如果本次投币已经结束，可以购买，则不进行退币操作
   		if(iszhienable==2)
   		{
@@ -551,6 +549,7 @@ public class BusZhiAmount  extends Activity
   		}
   		else if((iszhiamount==1)&&(money>0))
   		{
+  			timer.shutdown(); 
   			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
   			OrderDetail.setPayStatus(2);//支付失败
   			//退币
@@ -582,11 +581,11 @@ public class BusZhiAmount  extends Activity
   	
   	@Override
 	protected void onDestroy() {
+  		timer.shutdown(); 
 		//=============
   		//COM服务相关
   		//=============
   		//关闭纸币硬币器
-    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);  
   		BillEnable(0);	
   		//5.解除注册接收器
   		comBroadreceiver.unregisterReceiver(comreceiver);

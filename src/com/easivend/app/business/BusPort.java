@@ -1,7 +1,13 @@
 package com.easivend.app.business;
 
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -10,13 +16,16 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bean.ComBean;
 import com.easivend.app.maintain.CahslessTest;
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.app.maintain.PrintTest;
 import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_productDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusgoodsFragment;
@@ -42,10 +51,13 @@ import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_product;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.easivend.view.EVServerService;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
+import com.example.printdemo.MyFunc;
+import com.example.printdemo.SerialHelper;
 import com.landfone.common.utils.IUserCallback;
 import com.landfoneapi.mispos.Display;
 import com.landfoneapi.mispos.DisplayType;
@@ -53,6 +65,7 @@ import com.landfoneapi.mispos.ErrCode;
 import com.landfoneapi.mispos.LfMISPOSApi;
 import com.landfoneapi.protocol.pkg.REPLY;
 import com.landfoneapi.protocol.pkg._04_GetRecordReply;
+import com.printsdk.cmd.PrintCmd;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -63,6 +76,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -180,6 +194,18 @@ BushuoFragInteraction
     //=================
   	LocalBroadcastManager comBroadreceiver;
   	COMReceiver comreceiver;
+    //=================
+    //打印机相关
+    //=================
+  	boolean istitle1,istitle2,isno,issum,isthank,iser,isdate,isdocter;
+	int serialno=0;//流水号
+	String title1str,title2str,thankstr,erstr;
+	SerialControl ComA;                  // 串口控制
+	static DispQueueThread DispQueue;    // 刷新显示线程
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
+	SimpleDateFormat sdfdoc = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss"); // 药房小票用
+	private Handler printmainhand=null;
+	private int isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
     
     //=========================
     //activity与fragment回调相关
@@ -302,6 +328,13 @@ BushuoFragInteraction
 				          else if(gotoswitch==BUSZHIWEI)
 				          {
 				        	  timeoutBuszhiweiFinish();
+				          }
+				          //=================
+			        	  //==微信支付页面相关
+			        	  //=================
+				          else if(gotoswitch==BUSZHIPOS)
+				          {
+				        	  timeoutBuszhiposFinish();
 				          }
 				          else
 				          {
@@ -444,13 +477,10 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhierDestroy(1);
 						}
 						break;		
 					case Zhifubaohttp.SETPAYOUTMAIN://子线程接收主线程消息
@@ -460,13 +490,10 @@ BushuoFragInteraction
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhierDestroy(1);
 						}
 						break;
 					case Zhifubaohttp.SETDELETEMAIN://子线程接收主线程消息
@@ -497,13 +524,10 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhierDestroy(1);
 						}
 						break;	
 				}				
@@ -541,13 +565,10 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhiweiDestroy(1);
 						}
 						break;	
 					case Weixinghttp.SETPAYOUTMAIN://子线程接收主线程消息
@@ -557,13 +578,10 @@ BushuoFragInteraction
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhiweiDestroy(1);
 						}
 						break;
 					case Weixinghttp.SETDELETEMAIN://子线程接收主线程消息
@@ -594,13 +612,10 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							dialog.dismiss();
-							//清数据
-							clearamount();						
-							recLen=10;
+							zhiweiDestroy(1);
 						}
 						break;		
 				}				
@@ -665,9 +680,7 @@ BushuoFragInteraction
 				            {         
 				            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 								ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-						    	mMyApi.pos_release();
-								clearamount();
-						    	viewSwitch(BUSPORT, null);
+						    	zhiposDestroy(0);
 							}
 
 						}, 300);						
@@ -679,7 +692,6 @@ BushuoFragInteraction
 							OrderDetail.setRealStatus(1);//记录退币成功
 							OrderDetail.setRealCard(amount);//记录退币金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款成功");
 							//延时
@@ -690,9 +702,7 @@ BushuoFragInteraction
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
-									//清数据
-									clearamount();						
-									recLen=10;
+					            	zhiposDestroy(1);
 								}
 
 							}, 300);							
@@ -706,7 +716,6 @@ BushuoFragInteraction
 							OrderDetail.setRealCard(0);//记录退币金额
 							OrderDetail.setDebtAmount(amount);//欠款金额
 							OrderDetail.addLog(BusPort.this);
-							ispayoutopt=0;
 							//结束交易页面
 							listterner.BusportTsxx("交易结果:退款失败");
 							//延时
@@ -717,9 +726,7 @@ BushuoFragInteraction
 					            {         
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
-									//清数据
-									clearamount();						
-									recLen=10;
+					            	zhiposDestroy(1);
 								}
 
 							}, 300);							
@@ -728,6 +735,70 @@ BushuoFragInteraction
 				}
 			}
 		};	
+		//=================
+	    //打印机相关
+	    //=================
+		printmainhand=new Handler()
+		{
+
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub				
+				switch (msg.what) 
+				{
+					case PrintTest.NORMAL:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机正常","com.txt");
+						if(isPrinter==1)
+							isPrinter=2;
+						break;
+					case PrintTest.NOPOWER:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机未连接或未上电","com.txt");
+						break;
+					case PrintTest.NOMATCH:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机异常[打印机和调用库不匹配]","com.txt");
+						if(isPrinter==1)
+							isPrinter=2;
+						break;
+					case PrintTest.HEADOPEN:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机打印机头打开","com.txt");
+						break;
+					case PrintTest.CUTTERERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机切刀未复位","com.txt");
+						break;
+					case PrintTest.HEADHEAT:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机头过热","com.txt");
+						break;
+					case PrintTest.BLACKMARKERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机黑标错误","com.txt");
+						break;
+					case PrintTest.PAPEREXH:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机纸尽","com.txt");
+						break;
+					case PrintTest.PAPERWILLEXH://这个也可以当正常状态使用	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机纸将尽","com.txt");
+						if(isPrinter==1)
+							isPrinter=2;
+						break;
+					case PrintTest.UNKNOWERR: 
+						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机其他异常="+msg.obj,"com.txt");
+						break;
+				}
+				if(isPrinter==2)
+				{
+					isPrinter=3;
+					ToolClass.Log(ToolClass.INFO,"EV_COM","打印凭证...","com.txt");
+					if(isdocter)
+			    	{
+			    		PrintDocter();                             // 打印小票
+			    	}
+			    	else
+			    	{
+			    		PrintBankQueue();                             // 打印小票
+			    	}
+				}
+			}
+		};
+		
 				
 	}
 	
@@ -934,13 +1005,31 @@ BushuoFragInteraction
   		} 
   		else 
   		{  			
-  			//关闭纸币硬币器
-  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);   
-  			BillEnable(0);
-  			clearamount();
-  			viewSwitch(BUSPORT, null);
+  			amountDestroy(0);
 		} 	    
 	    
+	}
+	
+	//关闭页面:type=1延时10s关闭,0立即关闭
+	private void amountDestroy(int type)
+	{
+		//延时关闭
+		if(type==1)
+		{
+			//清数据
+	    	clearamount();
+  			//关闭纸币硬币器
+  	    	BillEnable(0);
+  	    	recLen=10;
+		}
+		//立即关闭
+		else
+		{
+			//关闭纸币硬币器
+	    	BillEnable(0);
+			clearamount();
+			viewSwitch(BUSPORT, null);
+		}
 	}
 	
 	
@@ -962,8 +1051,7 @@ BushuoFragInteraction
 		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
+			zhierDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1043,8 +1131,7 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
-  		clearamount();
-    	viewSwitch(BUSPORT, null);
+  		zhierDestroy(0);
   	}
     //退款
   	private void payoutzhier()
@@ -1071,6 +1158,23 @@ BushuoFragInteraction
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}  		
   	}
+  	
+    //关闭页面:type=1延时10s关闭,0立即关闭
+  	private void zhierDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			clearamount();
+			recLen=10;			
+  		}
+  		//立即关闭
+  		else
+  		{
+  			clearamount();
+	    	viewSwitch(BUSPORT, null);
+  		}
+  	}
     
     //=======================
   	//实现Buszhiwei页面相关接口
@@ -1089,8 +1193,7 @@ BushuoFragInteraction
 		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-	    	clearamount();
-	    	viewSwitch(BUSPORT, null);
+			zhiweiDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1196,8 +1299,24 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
-  		clearamount();
-    	viewSwitch(BUSPORT, null);
+  		zhiweiDestroy(0);
+  	}
+  	
+    //关闭页面:type=1延时10s关闭,0立即关闭
+  	private void zhiweiDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			clearamount();
+			recLen=10;			
+  		}
+  		//立即关闭
+  		else
+  		{
+  			clearamount();
+	    	viewSwitch(BUSPORT, null);
+  		}
   	}
   	
     //=======================
@@ -1218,9 +1337,7 @@ BushuoFragInteraction
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-	    	mMyApi.pos_release();
-			clearamount();
-	    	viewSwitch(BUSPORT, null);
+	    	zhiposDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1259,13 +1376,13 @@ BushuoFragInteraction
   				{
   					//【返回码和信息】code和code_info的返回/说明，见com.landfoneapi.mispos.ErrCode
   					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getExtracom(),"com.txt");
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getCardcom(),"com.txt");
   						childmsg.what=CahslessTest.OPENSUCCESS;
-  						childmsg.obj="打开成功"+ToolClass.getExtracom();
+  						childmsg.obj="打开成功"+ToolClass.getCardcom();
   					}else{
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getExtracom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
   						childmsg.what=CahslessTest.OPENFAIL;
-  						childmsg.obj="打开失败"+ToolClass.getExtracom()+",code:"+rst.code+",info:"+rst.code_info;
+  						childmsg.obj="打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info;
   					}
   				}
   				//关闭串口
@@ -1359,7 +1476,7 @@ BushuoFragInteraction
 						//rfd_amt_fen = amount;//使用上次全额，测试金额都是1分
 						//【退款卡号】
 						if(tmp_spec!=null && tmp_spec_len>(2+19)){
-							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19);
+							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19).trim();
 						}
 						//【临时交易流水号】
 						if(tmp_spec!=null && tmp_spec_len>26){
@@ -1395,6 +1512,27 @@ BushuoFragInteraction
   			}
   		}
   	};
+  	
+  	
+  	private void zhiposDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			mMyApi.pos_release();
+			clearamount();
+			recLen=10;					
+  		}
+  		//立即关闭
+  		else
+  		{
+  			mMyApi.pos_release();
+			clearamount();
+	    	viewSwitch(BUSPORT, null);	    	
+  		}
+  	}
+  	
+  	
     //=======================
   	//实现Bushuo页面相关接口
   	//=======================
@@ -1426,97 +1564,131 @@ BushuoFragInteraction
     
     //步骤三、实现Bushuo接口,结束出货页面
     @Override
-	public void BushuoFinish(int status) {
+	public void BushuoFinish(final int status) {
     	// TODO Auto-generated method stub
     	recLen=SPLASH_DISPLAY_LENGHT;
-    	switch(OrderDetail.getPayType())
-    	{
-    		//现金页面
-    		case 0:
-    			//viewSwitch(BUSZHIAMOUNT, null);
-    			//1.
-  				//出货成功,扣钱
-				if(status==1)
+    	//=======
+		//打印机相关
+		//=======
+		// 查询状态
+		if(isPrinter>0)
+        {
+			//出货成功,打印凭证
+			if(status==1)
+			{
+				new Handler().postDelayed(new Runnable() 
 				{
-					//扣钱
-		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
-					Intent intent=new Intent();
-			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
-					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
-					intent.setAction("android.intent.action.comsend");//action与接收器相同
-					comBroadreceiver.sendBroadcast(intent);					
-				}
-				//出货失败,不扣钱
-				else
-				{	
-					payback();
-				}				
-    			break;
-    		//pos页面	
-    		case 1:
-    			//出货成功,结束交易
-				if(status==1)
-				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
-					OrderDetail.addLog(BusPort.this);					
-					clearamount();
-					recLen=10;
-				}
-				//出货失败,退钱
-				else
-				{	
-					ispayoutopt=1;
-					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<pos退款amount="+amount,"com.txt");
-					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-					payoutzhipos();//退款操作									
-				}
-    			break;	
-    		//支付宝页面	
-    		case 3:
-    			//出货成功,结束交易
-				if(status==1)
-				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
-					OrderDetail.addLog(BusPort.this);					
-					clearamount();
-					recLen=10;
-				}
-				//出货失败,退钱
-				else
-				{	
-					ispayoutopt=1;
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");					
-					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-					payoutzhier();//退款操作	
-				}
-    			break;
-    		//微信页面	
-    		case 4:
-    			//出货成功,结束交易
-				if(status==1)
-				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
-					OrderDetail.addLog(BusPort.this);					
-					clearamount();
-					recLen=10;
-				}
-				//出货失败,退钱
-				else
-				{	
-					ispayoutopt=1;
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
-					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-					payoutzhiwei();//退款操作									
-				}
-    			break;    			
-    		//取货码页面		
-    		case -1:
-    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
-				OrderDetail.addLog(BusPort.this);					
-				clearamount();
-				recLen=10;
-    			break;
-    	}
+		            @Override
+		            public void run() 
+		            {	  
+		            	GetPrinterStates(ComA, PrintCmd.GetStatus()); 
+		            }
+
+				}, 600);
+			}
+        }
+		
+		new Handler().postDelayed(new Runnable() 
+		{
+            @Override
+            public void run() 
+            {	  
+            	//=============
+        		//打印机相关
+        		//=============
+        		if(isPrinter>0)
+        		{        			
+        			CloseComPort(ComA);// 2.1 关闭串口
+        		}
+            	switch(OrderDetail.getPayType())
+            	{
+            		//现金页面
+            		case 0:
+            			//viewSwitch(BUSZHIAMOUNT, null);
+            			//1.
+          				//出货成功,扣钱
+        				if(status==1)
+        				{
+        					//扣钱
+        		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
+        					Intent intent=new Intent();
+        			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
+        					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
+        					intent.setAction("android.intent.action.comsend");//action与接收器相同
+        					comBroadreceiver.sendBroadcast(intent);					
+        				}
+        				//出货失败,不扣钱
+        				else
+        				{	
+        					payback();
+        				}				
+            			break;
+            		//pos页面	
+            		case 1:
+            			//出货成功,结束交易
+        				if(status==1)
+        				{
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
+        					OrderDetail.addLog(BusPort.this);	
+        					zhiposDestroy(1);
+        				}
+        				//出货失败,退钱
+        				else
+        				{	
+        					ispayoutopt=1;
+        					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<pos退款amount="+amount,"com.txt");
+        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+        					payoutzhipos();//退款操作									
+        				}
+            			break;	
+            		//支付宝页面	
+            		case 3:
+            			//出货成功,结束交易
+        				if(status==1)
+        				{
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
+        					OrderDetail.addLog(BusPort.this);					
+        					zhierDestroy(1);
+        				}
+        				//出货失败,退钱
+        				else
+        				{	
+        					ispayoutopt=1;
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");					
+        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+        					payoutzhier();//退款操作	
+        				}
+            			break;
+            		//微信页面	
+            		case 4:
+            			//出货成功,结束交易
+        				if(status==1)
+        				{
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
+        					OrderDetail.addLog(BusPort.this);					
+        					zhiweiDestroy(1);
+        				}
+        				//出货失败,退钱
+        				else
+        				{	
+        					ispayoutopt=1;
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
+        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+        					payoutzhiwei();//退款操作									
+        				}
+            			break;    			
+            		//取货码页面		
+            		case -1:
+            			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+        				OrderDetail.addLog(BusPort.this);					
+        				clearamount();
+        				recLen=10;
+            			break;
+            	}
+            }
+
+		}, 1600);
+    	
     	
 	}
     
@@ -1525,8 +1697,7 @@ BushuoFragInteraction
   	{
   		//2.更新投币金额
 		ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<退款money="+money,"com.txt");
-		
-	    //还有余额退币
+		//还有余额退币
 		if(money>0)
 		{
 			dialog= ProgressDialog.show(BusPort.this,"正在退币中,金额"+money,"请稍候...");
@@ -1551,22 +1722,388 @@ BushuoFragInteraction
 		else
 		{  					
 	    	OrderDetail.addLog(BusPort.this);
-	    	clearamount();
-  			new Handler().postDelayed(new Runnable() 
-			{
-	            @Override
-	            public void run() 
-	            {            	
-	            	//关闭纸币硬币器
-		  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
-			    	BillEnable(0);					    	
-	            }
-
-			}, 500); 
-  	    	recLen=10;
+	    	amountDestroy(1);
 		}
   	}
+  	
+    //=======================
+  	//实现打印机相关接口
+  	//=======================
+  //=================
+    //打印机相关
+    //=================
+	//读取打印信息
+    private void ReadSharedPreferencesPrinter()
+    {
+    	//文件是私有的
+    	SharedPreferences  user = getSharedPreferences("print_info",0);
+    	//读取
+    	//标题一
+    	istitle1=user.getBoolean("istitle1",true);
+    	if(istitle1==false)
+    	{
+    		title1str="";
+    	}
+    	else
+    	{
+    		title1str=user.getString("title1str", "自助售货机");
+    	}
+		//标题二
+    	istitle2=user.getBoolean("istitle2",true);
+    	if(istitle2==false)
+    	{
+    		title2str="";
+    	}
+    	else
+    	{
+    		title2str=user.getString("title2str", "交易凭证");
+    	}
+		//交易序号
+		isno=user.getBoolean("isno",true);
+		serialno=user.getInt("serialno", 1);
+		//金额统计
+		issum=user.getBoolean("issum",true);
+		//感谢提示
+    	isthank=user.getBoolean("isthank",true);
+    	if(isthank==false)
+    	{
+    		thankstr="";
+    	}
+    	else
+    	{
+    		thankstr=user.getString("thankstr", "谢谢使用自助售货机,我们将竭诚为您服务!");
+    	}
+		//二维码
+    	iser=user.getBoolean("iser",true);
+    	if(iser==false)
+    	{
+    		erstr="";
+    	}
+    	else
+    	{
+    		erstr=user.getString("erstr", "http://www.easivend.com.cn/");
+    	}
+		//当前时间
+		isdate=user.getBoolean("isdate",true);
+		//药房小票
+		isdocter=user.getBoolean("isdocter",true);
+    }
     
+  
+    //写入流水号信息
+    private void SaveSharedPreferencesSerialno()
+    {
+    	//文件是私有的
+		SharedPreferences  user = getSharedPreferences("print_info",0);
+		//需要接口进行编辑
+		SharedPreferences.Editor edit=user.edit();
+		//写入
+		//交易序号
+		edit.putInt("serialno", serialno);
+		//提交更新
+		edit.commit();
+    }
+    
+    // ------------------打开串口--------------------
+    private void OpenComPort(SerialHelper ComPort) {
+		try {
+			ComPort.open();
+		} catch (SecurityException e) {
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","没有读/写权限","com.txt");
+		} catch (IOException e) {
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","未知错误","com.txt");
+		} catch (InvalidParameterException e) {
+			ToolClass.Log(ToolClass.ERROR,"EV_COM","参数错误","com.txt");
+		}
+	}
+    
+    // ------------------关闭串口--------------------
+ 	private void CloseComPort(SerialHelper ComPort) {
+ 		if (ComPort != null) {
+ 			ComPort.stopSend();
+ 			ComPort.close();
+ 		}
+ 	}
+ 	
+    // -------------------------查询状态---------------------------
+ 	private void GetPrinterStates(SerialHelper ComPort, byte[] sOut) {
+  		try { 			
+ 			if (ComPort != null && ComPort.isOpen()) {
+ 				ComPort.send(sOut);
+ 				ercheck = true; 				
+ 				ToolClass.Log(ToolClass.INFO,"EV_COM","打印机状态查询...","com.txt");
+ 			} else
+ 			{
+ 				ToolClass.Log(ToolClass.ERROR,"EV_COM","打印机串口未打开","com.txt"); 				
+ 			}
+ 		} catch (Exception ex) {
+ 			ToolClass.Log(ToolClass.ERROR,"EV_COM","打印机串口打开异常="+ex.getMessage(),"com.txt"); 			
+ 		}
+  		
+ 	}
+ 	/**
+	 * 打印销售单据
+	 */
+	private void PrintBankQueue() {
+		try {
+			// 小票标题
+			byte[] bValue = new byte[100];
+			ComA.send(PrintCmd.SetBold(0));
+			ComA.send(PrintCmd.SetAlignment(1));
+			ComA.send(PrintCmd.SetSizetext(1, 1));
+			//标题一
+			if(istitle1)
+			{
+				ComA.send(PrintCmd.PrintString(title1str+"\n\n", 0));
+			}
+			//标题二
+			if(istitle2)
+			{
+				ComA.send(PrintCmd.PrintString(title2str+"\n\n", 0));
+			}
+			//交易序号
+			if(isno)
+			{
+				ComA.send(PrintCmd.SetBold(1));
+				ComA.send(PrintCmd.PrintString(String.format("%04d", serialno++)+"\n\n", 0));
+			}
+			// 小票主要内容
+			CleanPrinter(); // 清理缓存，缺省模式
+			ComA.send(PrintCmd.PrintString(OrderDetail.getProID()+"  单价"+OrderDetail.getShouldPay()+"元\n", 0));
+			ComA.send(PrintCmd.PrintString("_________________________________________\n\n", 0));
+			//金额统计
+			if(issum)
+			{
+				ComA.send(PrintCmd.PrintString("总计:"+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"元\n", 0));
+			}
+			//感谢提示
+			if(isthank)
+			{
+				ComA.send(PrintCmd.PrintString(thankstr+"\n", 0));
+			}
+			// 二维码
+			if(iser)
+			{
+				ComA.send(PrintCmd.PrintFeedline(2));    
+				PrintQRCode();  // 二维码打印                          
+				ComA.send(PrintCmd.PrintFeedline(2));   
+			}
+			//当前时间
+			if(isdate)
+			{
+				ComA.send(PrintCmd.SetAlignment(2));
+				ComA.send(PrintCmd.PrintString(sdf.format(new Date()).toString() + "\n\n", 1));
+			}
+			// 走纸4行,再切纸,清理缓存
+			PrintFeedCutpaper(4);  
+			SaveSharedPreferencesSerialno();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 打印药房小票
+	 */
+	private void PrintDocter() {
+		try {
+			// 小票标题
+			ComA.send(PrintCmd.SetAlignment(1));
+			ComA.send(PrintCmd.PrintString("药房小票\n", 0));
+			CleanPrinter(); // 清理缓存，缺省模式	
+			//交易序号
+			if(isno)
+			{
+				ComA.send(PrintCmd.PrintString("收据号:                                  "+String.format("%06d", 385017+(serialno++))+"\n", 0));
+			}					
+			//当前时间
+			if(isdate)
+			{
+				ComA.send(PrintCmd.PrintString(sdfdoc.format(new Date()).toString() + "\n\n", 1));
+			}
+			ComA.send(PrintCmd.PrintString("批号      品名规格     价格*数量     小计\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			//ComA.send(PrintCmd.PrintString("160705  化痰祛斑胶囊0.32g*10粒*3板  57*4  228\n", 0));
+			ComA.send(PrintCmd.PrintString(OrderDetail.getProID()+"   "+OrderDetail.getShouldPay()+"*"+OrderDetail.getShouldNo()+"   "+OrderDetail.getShouldPay()+"\n", 0));
+			ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+			ComA.send(PrintCmd.PrintString("合计(人民币):                         "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+			ComA.send(PrintCmd.PrintString("应收款:                               "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+			//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+			if(OrderDetail.getPayType()==0)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getSmallAmount()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 银联卡支付:                      0.00\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      "+(OrderDetail.getSmallAmount()-OrderDetail.getShouldPay())+"\n\n", 0));
+			}
+			else if(OrderDetail.getPayType()==1)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 银联卡支付:                      "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			else if(OrderDetail.getPayType()==3)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString(" 支付宝支付:                      "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			else if(OrderDetail.getPayType()==4)
+			{
+				ComA.send(PrintCmd.PrintString("实收款:                              "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("其中:                                        \n", 0));
+				ComA.send(PrintCmd.PrintString("  微信支付:                      "+OrderDetail.getShouldPay()*OrderDetail.getShouldNo()+"\n", 0));
+				ComA.send(PrintCmd.PrintString("____________________________________________\n", 0));
+				ComA.send(PrintCmd.PrintString("找回(人民币):                      0.00\n\n", 0));
+			}
+			ComA.send(PrintCmd.PrintString("请您保留小票以便售后服务谢谢合作药品是特殊商品，非质量问题恕不退换\n", 0));			
+			// 走纸4行,再切纸,清理缓存
+			PrintFeedCutpaper(4);  
+			SaveSharedPreferencesSerialno();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	// 打印二维码
+	private void PrintQRCode() throws IOException {
+		byte[] bValue = new byte[50];
+		bValue = PrintCmd.PrintQrcode(erstr, 25, 7, 1);
+		ComA.send(bValue);
+	}
+	
+	// 走纸换行，再切纸，清理缓存
+	private void PrintFeedCutpaper(int iLine) throws IOException{
+		ComA.send(PrintCmd.PrintFeedline(iLine));
+		ComA.send(PrintCmd.PrintCutpaper(0));
+		ComA.send(PrintCmd.SetClean());
+	}
+	// 清理缓存，缺省模式
+	private void CleanPrinter(){
+		ComA.send(PrintCmd.SetClean());
+	}
+    
+	// -------------------------刷新显示线程---------------------------
+	private class DispQueueThread extends Thread {
+		private Queue<ComBean> QueueList = new LinkedList<ComBean>();
+		@Override
+		public void run() {
+			super.run();
+			while (!isInterrupted()) {
+				final ComBean ComData;
+				while ((ComData = QueueList.poll()) != null) {
+					runOnUiThread(new Runnable() {
+						public void run() {
+							DispRecData(ComData);
+						}
+					});
+					try {
+						Thread.sleep(200);// 显示性能高的话，可以把此数值调小。
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
+			}
+		}
+		public synchronized void AddQueue(ComBean ComData) {
+			QueueList.add(ComData);
+		}
+	}
+	
+	// ------------------------显示接收数据----------------------------
+	 /*
+	  * 0 打印机正常 、1 打印机未连接或未上电、2 打印机和调用库不匹配 
+	  * 3 打印头打开 、4 切刀未复位 、5 打印头过热 、6 黑标错误 、7 纸尽 、8 纸将尽
+	  */
+	private void DispRecData(ComBean ComRecData) {
+		Message childmsg=printmainhand.obtainMessage();
+		StringBuilder sMsg = new StringBuilder();
+		try {
+			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
+			int iState = PrintCmd.CheckStatus(ComRecData.bRec); // 检查状态
+			ToolClass.Log(ToolClass.INFO,"EV_COM","返回状态：" + iState + "======="
+					+ ComRecData.bRec[0],"com.txt");
+			switch (iState) {
+			case 0:
+				sMsg.append("正常");                 // 正常
+				ercheck = true;
+				childmsg.what=PrintTest.NORMAL;
+				break;
+			case 1:
+				sMsg.append("未连接或未上电");//未连接或未上电
+				ercheck = true;
+				childmsg.what=PrintTest.NOPOWER;
+				break;
+			case 2:
+				sMsg.append("异常[打印机和调用库不匹配]");               //异常[打印机和调用库不匹配]
+				ercheck = false;
+				childmsg.what=PrintTest.NOMATCH;
+				break;
+			case 3:
+				sMsg.append("打印机头打开");        //打印机头打开
+				ercheck = true;
+				childmsg.what=PrintTest.HEADOPEN;
+				break;
+			case 4:
+				sMsg.append("切刀未复位");         //切刀未复位
+				ercheck = true;
+				childmsg.what=PrintTest.CUTTERERR;
+				break;
+			case 5:
+				sMsg.append("打印头过热");    // 打印头过热
+				ercheck = true;
+				childmsg.what=PrintTest.HEADHEAT;
+				break;
+			case 6:
+				sMsg.append("黑标错误");         // 黑标错误
+				ercheck = true;
+				childmsg.what=PrintTest.BLACKMARKERR;
+				break;
+			case 7:
+				sMsg.append("纸尽");               //纸尽
+				ercheck = true;
+				childmsg.what=PrintTest.PAPEREXH;
+				break;
+			case 8:
+				sMsg.append("纸将尽");           //纸将尽
+				ercheck = true;
+				childmsg.what=PrintTest.PAPERWILLEXH;
+				break;
+			default:
+				break;
+			}
+			childmsg.obj=sMsg.toString();
+		} catch (Exception ex) {
+			childmsg.what=PrintTest.UNKNOWERR;
+			childmsg.obj=ex.getMessage();
+		}
+		printmainhand.sendMessage(childmsg);
+	}
+    // -------------------------底层串口控制类---------------------------
+    private static class SerialControl extends SerialHelper {
+		public SerialControl() {
+		}
+		private static SerialControl single = null;
+		// 静态工厂方法
+		public static SerialControl getInstance() {
+			if (single == null) {
+				single = new SerialControl();
+			}
+			return single;
+		}
+		@Override
+		protected void onDataReceived(final ComBean ComRecData) {
+			DispQueue.AddQueue(ComRecData);// 线程定时刷新显示(推荐)
+		}
+	}
     
     //=======================
   	//实现相关基础函数接口
@@ -1602,6 +2139,30 @@ BushuoFragInteraction
     	{
     		OrderDetail.setSmallCard(amount);
     	}
+    	//=================
+	    //打印机相关
+	    //=================
+    	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusPort.this);// 创建InaccountDAO对象
+	    // 得到设备ID号
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		isPrinter=tb_inaccount.getIsNet();
+    	}
+    	ToolClass.Log(ToolClass.INFO,"EV_COM","isPrinter=" + isPrinter,"com.txt");
+        if(isPrinter>0)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_COM","打开打印机","com.txt");
+        	ReadSharedPreferencesPrinter();
+	    	ComA = SerialControl.getInstance();
+	        ComA.setbLoopData(PrintCmd.GetStatus());
+	        DispQueue = new DispQueueThread();
+			DispQueue.start();
+			//打开串口
+			ComA.setPort(ToolClass.getPrintcom());            // 1.1 设定串口
+			ComA.setBaudRate("9600");// 1.2 设定波特率
+			OpenComPort(ComA); // 1.3 打开串口			
+        }
     	//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
@@ -1632,11 +2193,16 @@ BushuoFragInteraction
   		ischuhuo=false;//true已经出货过了，可以上报日志
   		//支付宝页面
   		iszhier=0;//1成功生成了二维码,0没有成功生成二维码
+  		ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
   	    //微信页面
   		iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
   		//pos页面
   		iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
   		ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
+  	    //打印机页面
+  		isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
+  		//出货页面
+  		status=0;//出货结果	
   	}
   	
   	//判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作
@@ -1823,11 +2389,11 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiposFragment);
-	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getExtracom(),"com.txt");
+	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
 	            //打开串口
 	            //ip、端口、串口、波特率必须准确
-				mMyApi.pos_init("121.40.30.62", 18080
-						,ToolClass.getExtracom(), "9600", mIUserCallback);
+				mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
+						,ToolClass.getCardcom(), "9600", mIUserCallback);
 				//延时
 			    new Handler().postDelayed(new Runnable() 
 				{
@@ -1993,8 +2559,7 @@ BushuoFragInteraction
 							  		if(isempcoin==false)//第一次关闭纸币硬币器
 							  		{
 							  			//关闭纸币硬币器
-							  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-							  			BillEnable(0);
+							  	    	BillEnable(0);
 							  			isempcoin=true;
 							  		}
 						  		}
@@ -2007,8 +2572,7 @@ BushuoFragInteraction
 						  			if(isempcoin==false)//第一次关闭纸币硬币器
 							  		{
 							  			//关闭纸币硬币器
-							  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0);
-						  				BillEnable(0);
+							  	    	BillEnable(0);
 							  			isempcoin=true;
 							  		}
 						  		}
@@ -2064,18 +2628,13 @@ BushuoFragInteraction
 				    		OrderDetail.cleardata();
 						}
 				    	dialog.dismiss();
-						//清数据
-				    	clearamount();
-			  			//关闭纸币硬币器
-			  	    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,0); 
-				    	BillEnable(0);
-			  	    	if(gotoswitch==BUSZHIAMOUNT)
+						if(gotoswitch==BUSZHIAMOUNT)
 			  	    	{
-			  	    		viewSwitch(BUSPORT, null);	
+			  	    		amountDestroy(0);	
 			  	    	}
 			  	    	else
 			  	    	{
-			  	    		recLen=10;
+			  	    		amountDestroy(1);
 			  	    	}
 						break; 
 					//是出货操作	

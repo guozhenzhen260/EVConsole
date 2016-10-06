@@ -56,6 +56,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.LocalBroadcastManager;
@@ -78,7 +79,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null;
+    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null,printcom=null,posip=null,posipport=null;
     final static int REQUEST_CODE=1;   
     //获取货柜信息
    //Map<String,Integer> huoSet=new HashMap<String,Integer>();
@@ -155,6 +156,7 @@ public class MaintainActivity extends Activity
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
+	    
 		
 		
 		//=============
@@ -237,7 +239,22 @@ public class MaintainActivity extends Activity
 	        {
 	        	cardcom = list.get("cardcom");
 	        	ToolClass.setCardcom(cardcom);
-	        }	        	        
+	        }	
+	        if(list.containsKey("printcom"))//设置打印机串口号
+	        {
+	        	printcom = list.get("printcom");
+	        	ToolClass.setPrintcom(printcom);
+	        }
+	        if(list.containsKey("posip"))//设置外协串口号
+	        {
+	        	posip = list.get("posip");
+	        	ToolClass.setPosip(posip);	
+	        }
+	        if(list.containsKey("posipport"))//设置外协串口号
+	        {
+	        	posipport = list.get("posipport");
+	        	ToolClass.setPosipport(posipport);	
+	        }
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
 	        

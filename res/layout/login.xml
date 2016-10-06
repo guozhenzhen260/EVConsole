@@ -138,12 +138,30 @@
 			        android:layout_toLeftOf="@id/btnLogin"
 			        android:background="@drawable/button_selector"
 			        android:text="高级设置" /> 
-			     
+			    <TextView
+			        android:id="@+id/tvprintcom"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/btnGaoji"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入打印机串口号："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtprintcom"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"  
+			        android:textSize="40sp"
+					android:textStyle="bold"      
+			        android:layout_below="@id/tvprintcom"        
+			        /> 
 			    <TextView
 			        android:id="@+id/tvextracom"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:layout_below="@id/btnGaoji"   
+			        android:layout_below="@id/txtprintcom"   
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
 			        android:text="请输入外协设备串口号："
@@ -157,12 +175,51 @@
 			        android:textSize="40sp"
 					android:textStyle="bold"      
 			        android:layout_below="@id/tvextracom"        
-			        />    
-			    <Button
+			        /> 
+			    <TextView
+			        android:id="@+id/tvposip"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtextracom"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入读卡器ip地址："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtposip"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"  
+			        android:textSize="40sp"
+					android:textStyle="bold"      
+			        android:layout_below="@id/tvposip"        
+			        />
+			    <TextView
+			        android:id="@+id/tvposipport"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtposip"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入读卡器ip端口号："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtposipport"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"  
+			        android:textSize="40sp"
+					android:textStyle="bold"      
+			        android:layout_below="@id/tvposipport"   
+			        android:numeric="integer" 
+			        />			           
+			  <Button
 			        android:id="@+id/btnDel"
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
-			        android:layout_below="@id/txtextracom"
+			        android:layout_below="@id/txtposipport"
 			        android:background="@drawable/button_selector"
 			        android:text="清除商品信息" />   
 			  <Button

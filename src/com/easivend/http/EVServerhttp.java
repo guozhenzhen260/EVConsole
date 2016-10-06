@@ -44,6 +44,10 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.easivend.app.business.BusHuo;
+import com.easivend.app.business.BusLand;
+import com.easivend.app.business.BusPort;
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.app.maintain.ParamManager;
 import com.easivend.common.MediaFileAdapter;
 import com.easivend.common.ToolClass;
@@ -55,6 +59,7 @@ import com.google.gson.Gson;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.net.Uri;
@@ -662,6 +667,15 @@ public class EVServerhttp implements Runnable {
 					//设备状态上报
 					String target7 = httpStr+"/api/vmcStatus";	//要提交的目标地址
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 设备状态上报["+Thread.currentThread().getId()+"]="+target7,"server.txt");
+					int isPrinter=0,zhifubaofaca=0;
+					vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+				    // 得到设备ID号
+			    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+			    	if(tb_inaccount!=null)
+			    	{
+			    		isPrinter=tb_inaccount.getIsNet();
+			    		zhifubaofaca=tb_inaccount.getZhifubaofaca();
+			    	}
 					//1.添加到类集中，其中key,value类型为String
 					Map<String,Object> parammap7 = new TreeMap<String,Object>() ;
 					parammap7.put("VMC_NO",vmc_no);
@@ -670,9 +684,22 @@ public class EVServerhttp implements Runnable {
 					parammap7.put("NOTE_STATUS",bill_err);	
 					parammap7.put("DOOR_STATUS","0");	
 					parammap7.put("WAREHOUSE_TEMPERATURE","0");		
+					parammap7.put("POS_STATUS",zhifubaofaca);	
+					parammap7.put("PRINT_STATUS",isPrinter);
 					if(ToolClass.getServerVer()==1)//一期后台
 					{
-						parammap7.put("CLIENT_VERSION",ToolClass.getVersion());	
+						String temp="";
+						//横屏
+						if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+						{
+							temp="横屏";
+						}
+						//竖屏
+						else
+						{
+							temp="竖屏";
+						}
+						parammap7.put("CLIENT_VERSION",temp+ToolClass.getVersion());	
 						parammap7.put("CLIENT_DESC","本机版本号");	
 					}
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send1="+parammap7.toString(),"server.txt");

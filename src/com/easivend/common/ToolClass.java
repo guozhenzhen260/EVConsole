@@ -106,7 +106,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev包的地址
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//串口id号
-	private static String bentcom="",com="",columncom="",extracom="",cardcom="";//串口描述符
+	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="";//串口描述符
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
@@ -229,7 +229,26 @@ public class ToolClass
 	public static void setCardcom(String cardcom) {
 		ToolClass.cardcom = cardcom;
 	}
-
+	
+	public static String getPrintcom() {
+		return printcom;
+	}
+	public static void setPrintcom(String printcom) {
+		ToolClass.printcom = printcom;
+	}
+	
+	public static String getPosip() {
+		return posip;
+	}
+	public static void setPosip(String posip) {
+		ToolClass.posip = posip;
+	}
+	public static String getPosipport() {
+		return posipport;
+	}
+	public static void setPosipport(String posipport) {
+		ToolClass.posipport = posipport;
+	}
 	public static Context getContext() {
 		return context;
 	}
@@ -1469,7 +1488,8 @@ public class ToolClass
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String isallopen) 
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String isallopen,
+    		String posip,String posipport) 
     {
     	File fileName=null;
     	String  sDir =null,str=null;
@@ -1516,8 +1536,11 @@ public class ToolClass
 		            	  &&(me.getKey().equals("columncom")!=true)
 		            	  &&(me.getKey().equals("extracom")!=true)
 		            	  &&(me.getKey().equals("cardcom")!=true)
+		            	  &&(me.getKey().equals("printcom")!=true)
 		            	  &&(me.getKey().equals("isallopen")!=true)
 		            	  &&(me.getKey().equals("server")!=true)
+		            	  &&(me.getKey().equals("posip")!=true)
+		            	  &&(me.getKey().equals("posipport")!=true)
 		              )
 		            	list2.put(me.getKey(), me.getValue());
 		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
@@ -1527,7 +1550,10 @@ public class ToolClass
 		        list2.put("columncom", columncom);
 		        list2.put("extracom", extracom);
 		        list2.put("cardcom", cardcom);
-		        list2.put("isallopen", isallopen);		        
+		        list2.put("printcom", printcom);
+		        list2.put("isallopen", isallopen);	
+		        list2.put("posip", posip);
+		        list2.put("posipport", posipport);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
 		        JSONObject jsonObject = new JSONObject(list2);
 		        String mapstrString=jsonObject.toString();
@@ -1546,7 +1572,10 @@ public class ToolClass
   	        	jsonObject.put("columncom", columncom);
   	        	jsonObject.put("extracom", extracom);
   	        	jsonObject.put("cardcom", cardcom);
+  	        	jsonObject.put("printcom", printcom);
   	        	jsonObject.put("isallopen", isallopen);
+  	        	jsonObject.put("posip", posip);
+  	        	jsonObject.put("posipport", posipport);
   	        	String mapstrString=jsonObject.toString();
   	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
   	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
@@ -1684,9 +1713,21 @@ public class ToolClass
 		        	&&(object2.get("ALIPAYMODE").toString().equals("null")==false)
 		        )
 		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		       
+		        //搜索支付宝是否已经打开
+		        int getZhifubaoer=0;
+		        vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+			    // 获取所有收入信息，并存储到List泛型集合中
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
+		    	if(tb_inaccount!=null)
+		    	{
+		    		getZhifubaoer=tb_inaccount.getZhifubaoer();
+		    	}
+		    	
 		        //2.0
 		        if(ALIPAYMODE==2)
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
@@ -1699,7 +1740,17 @@ public class ToolClass
 	  	        	list2.put("aliseller_email", "");
 	  	        	list2.put("alikey", "");
 	  	        	list2.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
-	  	        	list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	if((ToolClass.isEmptynull(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString())==false)
+	  			        	&&(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString().equals("null")==false)
+	  			        )
+	  	        	{
+	  	        		list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString());
+	  	        	}
+	  	        	else
+	  	        	{
+	  	        		list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+	  	        	}	
+	  	        	
 	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
 	  	        	{
 	  	        		list2.put("isalisub", "0");
@@ -1712,6 +1763,7 @@ public class ToolClass
 		        //1.0
 		        else
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
@@ -1764,9 +1816,20 @@ public class ToolClass
   	        	int ALIPAYMODE=1;
 		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
 		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
+		        //搜索支付宝是否已经打开
+		        int getZhifubaoer=0;
+		        vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+			    // 获取所有收入信息，并存储到List泛型集合中
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
+		    	if(tb_inaccount!=null)
+		    	{
+		    		getZhifubaoer=tb_inaccount.getZhifubaoer();
+		    	}
+		    	
 		        //2.0
 		        if(ALIPAYMODE==2)
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
@@ -1792,6 +1855,7 @@ public class ToolClass
 		        //1.0
 		        else
 		        {
+		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 

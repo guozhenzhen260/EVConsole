@@ -40,8 +40,8 @@ import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin,txtbent,txtcolumn,txtcardcom,txtextracom;// 创建EditText对象
-	private TextView tvVersion=null,tvextracom=null;
+	private EditText txtlogin,txtbent,txtcolumn,txtcardcom,txtprintcom,txtextracom,txtposip,txtposipport;// 创建EditText对象
+	private TextView tvVersion=null,tvprintcom=null,tvextracom=null,tvposip=null,tvposipport=null;
     private Button btnlogin,btnclose,btnGaoji,btnDel,btnDelImg,btnDelads;// 创建两个Button对象
     private Switch switchallopen;
     String com =null;
@@ -49,6 +49,9 @@ public class Login extends Activity
     String columncom =null;
     String extracom =null;
     String cardcom =null;
+    String printcom =null;
+    String posip=null;
+    String posipport=null;
     int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +64,27 @@ public class Login extends Activity
         txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取现金设备串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取格子柜串口号文本框
         txtcolumn = (EditText) findViewById(R.id.txtcolumn);// 获取主柜串口号文本框
-        txtcardcom = (EditText) findViewById(R.id.txtserver);// 获取服务端公司地址文本框
-        tvextracom = (TextView) findViewById(R.id.tvextracom);
+        txtcardcom = (EditText) findViewById(R.id.txtserver);// 获取读卡器串口号文本框
+        tvprintcom = (TextView) findViewById(R.id.tvprintcom);
+        txtprintcom = (EditText) findViewById(R.id.txtprintcom);//获取打印机串口号文本框
+        tvextracom = (TextView) findViewById(R.id.tvextracom);        
         txtextracom = (EditText) findViewById(R.id.txtextracom);//获取外协设备串口号文本框
+        tvposip = (TextView) findViewById(R.id.tvposip);        
+        txtposip = (EditText) findViewById(R.id.txtposip);//获取外协设备串口号文本框
+        tvposipport = (TextView) findViewById(R.id.tvposipport);        
+        txtposipport = (EditText) findViewById(R.id.txtposipport);//获取外协设备串口号文本框
         tvVersion = (TextView) findViewById(R.id.tvVersion);//本机版本号
         btnDel = (Button) findViewById(R.id.btnDel);// 获取清除全部商品货道信息
         btnDelImg = (Button) findViewById(R.id.btnDelImg);// 获取清除商品图片缓存信息
         btnDelads = (Button) findViewById(R.id.btnDelads);// 获取清除广告缓存信息
+        tvprintcom.setVisibility(View.GONE); 
+        txtprintcom.setVisibility(View.GONE); 
         tvextracom.setVisibility(View.GONE); 
         txtextracom.setVisibility(View.GONE); 
+        tvposip.setVisibility(View.GONE); 
+        txtposip.setVisibility(View.GONE);
+        tvposipport.setVisibility(View.GONE); 
+        txtposipport.setVisibility(View.GONE);
         btnDel.setVisibility(View.GONE);
         btnDelImg.setVisibility(View.GONE);
         btnDelads.setVisibility(View.GONE);
@@ -97,12 +112,27 @@ public class Login extends Activity
 	        {
 	        	cardcom = list.get("cardcom");
 	        }	
+			if(list.containsKey("printcom"))//设置打印机串口号
+	        {
+	        	printcom = list.get("printcom");
+	        }
+			if(list.containsKey("posip"))//设置外协串口号
+	        {
+	        	posip = list.get("posip");
+	        }
+	        if(list.containsKey("posipport"))//设置外协串口号
+	        {
+	        	posipport = list.get("posipport");
+	        }
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
-        txtcolumn.setText(columncom);
-        txtcardcom.setText(cardcom);
+        txtcolumn.setText(columncom);        
+        txtcardcom.setText(cardcom); 
+        txtprintcom.setText(printcom);
         txtextracom.setText(extracom);
+        txtposip.setText(posip);
+        txtposipport.setText(posipport);
         switchallopen.setChecked((isallopen==1)?true:false);
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
@@ -120,10 +150,13 @@ public class Login extends Activity
             	com = txtlogin.getText().toString();
     	        bentcom = txtbent.getText().toString(); 
     	        columncom = txtcolumn.getText().toString(); 
+    	        printcom = txtprintcom.getText().toString();
     	        extracom = txtextracom.getText().toString(); 
+    	        posip = txtposip.getText().toString(); 
+    	        posipport = txtposipport.getText().toString(); 
     	        isallopen= (switchallopen.isChecked()==true)?1:0;
     	        cardcom = txtcardcom.getText().toString(); 
-            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,String.valueOf(isallopen));            	
+            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,printcom,String.valueOf(isallopen),posip,posipport);            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
@@ -138,16 +171,28 @@ public class Login extends Activity
             public void onClick(View arg0) {
                 if(tvextracom.getVisibility()==View.GONE)
                 {
+                	tvprintcom.setVisibility(View.VISIBLE); 
+                	txtprintcom.setVisibility(View.VISIBLE);
                 	tvextracom.setVisibility(View.VISIBLE); 
                     txtextracom.setVisibility(View.VISIBLE); 
+                    tvposip.setVisibility(View.VISIBLE); 
+                    txtposip.setVisibility(View.VISIBLE);
+                    tvposipport.setVisibility(View.VISIBLE); 
+                    txtposipport.setVisibility(View.VISIBLE);
                     btnDel.setVisibility(View.VISIBLE);
                     btnDelImg.setVisibility(View.VISIBLE);
                     btnDelads.setVisibility(View.VISIBLE);
                 }
                 else
                 {
+                	tvprintcom.setVisibility(View.GONE);
+                	txtprintcom.setVisibility(View.GONE); 
                 	tvextracom.setVisibility(View.GONE);
                     txtextracom.setVisibility(View.GONE); 
+                    tvposip.setVisibility(View.GONE); 
+                    txtposip.setVisibility(View.GONE);
+                    tvposipport.setVisibility(View.GONE); 
+                    txtposipport.setVisibility(View.GONE);
                     btnDel.setVisibility(View.GONE);
                     btnDelImg.setVisibility(View.GONE);
                     btnDelads.setVisibility(View.GONE);

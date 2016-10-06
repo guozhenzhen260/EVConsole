@@ -68,8 +68,7 @@
 						            android:id="@+id/edtdevhCode"
 							        android:minWidth="150px"
 							        android:layout_width="wrap_content" 
-							        android:layout_height="wrap_content"
-							        android:numeric="integer"
+							        android:layout_height="wrap_content"							        
 							        android:textSize="40sp"
 						            android:textStyle="bold"		        
 							        android:text="" />
@@ -97,16 +96,23 @@
 				            	    android:minWidth="160px"    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="冰山机型"/>
+									android:text="打印机"/>
 						        
 						         <Switch   
 							       android:layout_marginTop="20dip"  
 							       android:id="@+id/switchisNet"  
 							       android:layout_width="wrap_content"  
 							       android:layout_height="wrap_content"  
-							       android:textOn="冰山机"  
-							       android:textOff="普通机"  							           
+							       android:textOn="使用"  
+							       android:textOff="不使用"  							           
 							       android:layout_gravity="center_horizontal"/>    
+							   <Button
+						             android:id="@+id/btnprinttest"
+						             android:layout_width="100dp"
+									 android:layout_height="70dp"  
+						             android:enabled="false"  
+						             android:background="@drawable/button_selector"         
+						             android:text="测试" />     
 				            </LinearLayout>	        
 					    </TableRow>  
 					    <View                              
@@ -636,7 +642,7 @@
 							       android:layout_gravity="center_horizontal"/>   
 							    <Button
 						             android:id="@+id/btnweixing"
-						             android:layout_width="100dp"
+						             android:layout_width="wrap_content"
 									 android:layout_height="70dp"  
 						             android:enabled="false" 
 						             android:background="@drawable/button_selector"           
