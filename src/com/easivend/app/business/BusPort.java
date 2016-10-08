@@ -1687,7 +1687,7 @@ BushuoFragInteraction
             	}
             }
 
-		}, 1600);
+		}, 4500);
     	
     	
 	}
@@ -2033,46 +2033,55 @@ BushuoFragInteraction
 					+ ComRecData.bRec[0],"com.txt");
 			switch (iState) {
 			case 0:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>正常","com.txt");
 				sMsg.append("正常");                 // 正常
 				ercheck = true;
 				childmsg.what=PrintTest.NORMAL;
 				break;
 			case 1:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>未连接或未上电","com.txt");
 				sMsg.append("未连接或未上电");//未连接或未上电
 				ercheck = true;
 				childmsg.what=PrintTest.NOPOWER;
 				break;
 			case 2:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>异常[打印机和调用库不匹配]","com.txt");
 				sMsg.append("异常[打印机和调用库不匹配]");               //异常[打印机和调用库不匹配]
 				ercheck = false;
 				childmsg.what=PrintTest.NOMATCH;
 				break;
 			case 3:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>打印机头打开","com.txt");
 				sMsg.append("打印机头打开");        //打印机头打开
 				ercheck = true;
 				childmsg.what=PrintTest.HEADOPEN;
 				break;
 			case 4:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>切刀未复位","com.txt");
 				sMsg.append("切刀未复位");         //切刀未复位
 				ercheck = true;
 				childmsg.what=PrintTest.CUTTERERR;
 				break;
 			case 5:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>打印头过热","com.txt");
 				sMsg.append("打印头过热");    // 打印头过热
 				ercheck = true;
 				childmsg.what=PrintTest.HEADHEAT;
 				break;
 			case 6:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>黑标错误","com.txt");
 				sMsg.append("黑标错误");         // 黑标错误
 				ercheck = true;
 				childmsg.what=PrintTest.BLACKMARKERR;
 				break;
 			case 7:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>纸尽","com.txt");
 				sMsg.append("纸尽");               //纸尽
 				ercheck = true;
 				childmsg.what=PrintTest.PAPEREXH;
 				break;
 			case 8:
+				ToolClass.Log(ToolClass.INFO,"EV_COM",">>纸将尽","com.txt");
 				sMsg.append("纸将尽");           //纸将尽
 				ercheck = true;
 				childmsg.what=PrintTest.PAPERWILLEXH;
