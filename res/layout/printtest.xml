@@ -161,5 +161,12 @@
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnsave"
         android:text="退出"/>
-
+	<TextView
+        android:id="@+id/txttishi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注意:有在交易中打印过凭条后，需要退出程序再重新进入,或者等待3分钟后才能做测试" 
+        android:layout_below="@+id/btnexit"
+        android:textColor="#8C6931"
+        android:textSize="35dp"/>
 </RelativeLayout>

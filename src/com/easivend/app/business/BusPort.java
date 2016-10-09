@@ -747,46 +747,46 @@ BushuoFragInteraction
 				switch (msg.what) 
 				{
 					case PrintTest.NORMAL:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机正常","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机正常","com.txt");
 						if(isPrinter==1)
 							isPrinter=2;
 						break;
 					case PrintTest.NOPOWER:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机未连接或未上电","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机未连接或未上电","com.txt");
 						break;
 					case PrintTest.NOMATCH:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机异常[打印机和调用库不匹配]","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机异常[打印机和调用库不匹配]","com.txt");
 						if(isPrinter==1)
 							isPrinter=2;
 						break;
 					case PrintTest.HEADOPEN:	
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机打印机头打开","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机打印机头打开","com.txt");
 						break;
 					case PrintTest.CUTTERERR:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机切刀未复位","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机切刀未复位","com.txt");
 						break;
 					case PrintTest.HEADHEAT:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机头过热","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机头过热","com.txt");
 						break;
 					case PrintTest.BLACKMARKERR:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机黑标错误","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机黑标错误","com.txt");
 						break;
 					case PrintTest.PAPEREXH:	
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机纸尽","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机纸尽","com.txt");
 						break;
 					case PrintTest.PAPERWILLEXH://这个也可以当正常状态使用	
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机纸将尽","com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机纸将尽","com.txt");
 						if(isPrinter==1)
 							isPrinter=2;
 						break;
 					case PrintTest.UNKNOWERR: 
-						ToolClass.Log(ToolClass.INFO,"EV_COM","打印机其他异常="+msg.obj,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印机其他异常="+msg.obj,"com.txt");
 						break;
 				}
 				if(isPrinter==2)
 				{
 					isPrinter=3;
-					ToolClass.Log(ToolClass.INFO,"EV_COM","打印凭证...","com.txt");
+					ToolClass.Log(ToolClass.INFO,"EV_COM","busport打印凭证...","com.txt");
 					if(isdocter)
 			    	{
 			    		PrintDocter();                             // 打印小票
@@ -2029,59 +2029,60 @@ BushuoFragInteraction
 		try {
 			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
 			int iState = PrintCmd.CheckStatus(ComRecData.bRec); // 检查状态
-			ToolClass.Log(ToolClass.INFO,"EV_COM","返回状态：" + iState + "======="
+			ToolClass.Log(ToolClass.INFO,"EV_COM","busport返回状态：" + iState + "======="
 					+ ComRecData.bRec[0],"com.txt");
-			switch (iState) {
+			switch (iState) 
+			{
 			case 0:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>正常","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>正常","com.txt");
 				sMsg.append("正常");                 // 正常
 				ercheck = true;
 				childmsg.what=PrintTest.NORMAL;
 				break;
 			case 1:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>未连接或未上电","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>未连接或未上电","com.txt");
 				sMsg.append("未连接或未上电");//未连接或未上电
 				ercheck = true;
 				childmsg.what=PrintTest.NOPOWER;
 				break;
 			case 2:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>异常[打印机和调用库不匹配]","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>异常[打印机和调用库不匹配]","com.txt");
 				sMsg.append("异常[打印机和调用库不匹配]");               //异常[打印机和调用库不匹配]
 				ercheck = false;
 				childmsg.what=PrintTest.NOMATCH;
 				break;
 			case 3:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>打印机头打开","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>打印机头打开","com.txt");
 				sMsg.append("打印机头打开");        //打印机头打开
 				ercheck = true;
 				childmsg.what=PrintTest.HEADOPEN;
 				break;
 			case 4:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>切刀未复位","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>切刀未复位","com.txt");
 				sMsg.append("切刀未复位");         //切刀未复位
 				ercheck = true;
 				childmsg.what=PrintTest.CUTTERERR;
 				break;
 			case 5:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>打印头过热","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>打印头过热","com.txt");
 				sMsg.append("打印头过热");    // 打印头过热
 				ercheck = true;
 				childmsg.what=PrintTest.HEADHEAT;
 				break;
 			case 6:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>黑标错误","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>黑标错误","com.txt");
 				sMsg.append("黑标错误");         // 黑标错误
 				ercheck = true;
 				childmsg.what=PrintTest.BLACKMARKERR;
 				break;
 			case 7:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>纸尽","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>纸尽","com.txt");
 				sMsg.append("纸尽");               //纸尽
 				ercheck = true;
 				childmsg.what=PrintTest.PAPEREXH;
 				break;
 			case 8:
-				ToolClass.Log(ToolClass.INFO,"EV_COM",">>纸将尽","com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","busport>>纸将尽","com.txt");
 				sMsg.append("纸将尽");           //纸将尽
 				ercheck = true;
 				childmsg.what=PrintTest.PAPERWILLEXH;

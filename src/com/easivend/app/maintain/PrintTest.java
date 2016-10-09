@@ -74,33 +74,43 @@ public class PrintTest extends Activity {
 				switch (msg.what) 
 				{
 					case NORMAL:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机正常","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case NOPOWER:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机未连接或未上电","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case NOMATCH:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机异常[打印机和调用库不匹配]","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case HEADOPEN:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机打印机头打开","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case CUTTERERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机切刀未复位","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case HEADHEAT:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机头过热","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case BLACKMARKERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机黑标错误","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case PAPEREXH:	
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机纸尽","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 					case PAPERWILLEXH://这个也可以当正常状态使用
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机纸将尽","com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;	
 					case UNKNOWERR:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","print打印机其他异常="+msg.obj,"com.txt");
 						txtMsg.setText(msg.obj.toString());
 						break;
 				}
@@ -619,50 +629,59 @@ public class PrintTest extends Activity {
 		try {
 			sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
 			int iState = PrintCmd.CheckStatus(ComRecData.bRec); // 检查状态
-			ToolClass.Log(ToolClass.INFO,"EV_COM","返回状态：" + iState + "======="
+			ToolClass.Log(ToolClass.INFO,"EV_COM","print返回状态：" + iState + "======="
 					+ ComRecData.bRec[0],"com.txt");
 			switch (iState) {
 			case 0:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>正常","com.txt");
 				sMsg.append("正常");                 // 正常
 				ercheck = true;
 				childmsg.what=NORMAL;
 				break;
 			case 1:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>未连接或未上电","com.txt");
 				sMsg.append("未连接或未上电");//未连接或未上电
 				ercheck = true;
 				childmsg.what=NOPOWER;
 				break;
 			case 2:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>异常[打印机和调用库不匹配]","com.txt");
 				sMsg.append("异常[打印机和调用库不匹配]");               //异常[打印机和调用库不匹配]
 				ercheck = false;
 				childmsg.what=NOMATCH;
 				break;
 			case 3:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>打印机头打开","com.txt");
 				sMsg.append("打印机头打开");        //打印机头打开
 				ercheck = true;
 				childmsg.what=HEADOPEN;
 				break;
 			case 4:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>切刀未复位","com.txt");
 				sMsg.append("切刀未复位");         //切刀未复位
 				ercheck = true;
 				childmsg.what=CUTTERERR;
 				break;
 			case 5:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>打印头过热","com.txt");
 				sMsg.append("打印头过热");    // 打印头过热
 				ercheck = true;
 				childmsg.what=HEADHEAT;
 				break;
 			case 6:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>黑标错误","com.txt");
 				sMsg.append("黑标错误");         // 黑标错误
 				ercheck = true;
 				childmsg.what=BLACKMARKERR;
 				break;
 			case 7:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>纸尽","com.txt");
 				sMsg.append("纸尽");               //纸尽
 				ercheck = true;
 				childmsg.what=PAPEREXH;
 				break;
 			case 8:
+				ToolClass.Log(ToolClass.INFO,"EV_COM","print>>纸将尽","com.txt");
 				sMsg.append("纸将尽");           //纸将尽
 				ercheck = true;
 				childmsg.what=PAPERWILLEXH;

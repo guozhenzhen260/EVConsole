@@ -3247,10 +3247,17 @@ public class ToolClass
 			//打开现金设备串口
 			if(ToolClass.getCom().equals("")==false) 
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_COM","comSend="+ToolClass.getCom(),"com.txt");
-				EVprotocol.EVPortRelease(ToolClass.getCom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","comRelease=port="+ToolClass.getCom()+"    port_id="+ToolClass.getCom_id(),"com.txt");
+				String com2 = EVprotocol.EVPortRelease(ToolClass.getCom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","comRelease="+com2,"com.txt");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String com = EVprotocol.EVPortRegister(ToolClass.getCom());
-				ToolClass.Log(ToolClass.INFO,"EV_COM","com="+com,"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","comRegister="+com,"com.txt");
 				ToolClass.setCom_id(ToolClass.Resetportid(com));
 			}			
 		}
@@ -3259,10 +3266,17 @@ public class ToolClass
 			//打开格子柜串口
 			if(ToolClass.getBentcom().equals("")==false)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcomSend="+ToolClass.getBentcom(),"com.txt");
-				EVprotocol.EVPortRelease(ToolClass.getBentcom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcomRelease=port="+ToolClass.getBentcom()+"    port_id="+ToolClass.getBentcom_id(),"com.txt");
+				String com2 = EVprotocol.EVPortRelease(ToolClass.getBentcom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcomRelease="+com2,"com.txt");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String bentcom = EVprotocol.EVPortRegister(ToolClass.getBentcom());
-				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcom="+bentcom,"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","bentcomRegister="+bentcom,"com.txt");
 				ToolClass.setBentcom_id(ToolClass.Resetportid(bentcom));
 			}
 		}
@@ -3271,10 +3285,17 @@ public class ToolClass
 			//打开弹簧柜串口
 			if(ToolClass.getColumncom().equals("")==false)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_COM","columncomSend="+ToolClass.getColumncom(),"com.txt");
-				EVprotocol.EVPortRelease(ToolClass.getColumncom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncomRelease=port="+ToolClass.getColumncom()+"    port_id="+ToolClass.getColumncom_id(),"com.txt");
+				String com2 = EVprotocol.EVPortRelease(ToolClass.getColumncom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncomRelease="+com2,"com.txt");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom());
-				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom="+columncom,"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncomRegister="+columncom,"com.txt");
 				ToolClass.setColumncom_id(ToolClass.Resetportid(columncom));
 			}
 		}
@@ -3283,10 +3304,17 @@ public class ToolClass
 			//打开外协设备串口
 			if(ToolClass.getExtracom().equals("")==false)
 			{
-				ToolClass.Log(ToolClass.INFO,"EV_COM","extracomSend="+ToolClass.getExtracom(),"com.txt");
-				EVprotocol.EVPortRelease(ToolClass.getExtracom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","extracomcomRelease=port="+ToolClass.getExtracom()+"    port_id="+ToolClass.getExtracom_id(),"com.txt");
+				String com2 = EVprotocol.EVPortRelease(ToolClass.getExtracom());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","extracomRelease="+com2,"com.txt");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String extracom = EVprotocol.EVPortRegister(ToolClass.getExtracom());
-				ToolClass.Log(ToolClass.INFO,"EV_COM","extracom="+extracom,"com.txt");
+				ToolClass.Log(ToolClass.INFO,"EV_COM","extracomRegister="+extracom,"com.txt");
 				ToolClass.setExtracom_id(ToolClass.Resetportid(extracom));
 			}
 		}
