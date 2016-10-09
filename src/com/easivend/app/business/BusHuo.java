@@ -79,7 +79,7 @@ public class BusHuo extends Activity
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // 国际化标志时间格式类
 	SimpleDateFormat sdfdoc = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss"); // 药房小票用
 	private Handler printmainhand=null;
-	private int isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
+	private int isPrinter=0;//0没有设置打印机，1有设置打印机
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -187,20 +187,7 @@ public class BusHuo extends Activity
 					case PrintTest.UNKNOWERR: 
 						ToolClass.Log(ToolClass.INFO,"EV_COM","bushuo打印机其他异常="+msg.obj,"com.txt");
 						break;
-				}
-				if(isPrinter==2)
-				{
-					isPrinter=3;
-					ToolClass.Log(ToolClass.INFO,"EV_COM","bushuo打印凭证...","com.txt");
-					if(isdocter)
-			    	{
-			    		PrintDocter();                             // 打印小票
-			    	}
-			    	else
-			    	{
-			    		PrintBankQueue();                             // 打印小票
-			    	}
-				}
+				}				
 			}
 		};
 		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusHuo.this);// 创建InaccountDAO对象
@@ -362,15 +349,23 @@ public class BusHuo extends Activity
 						//=======
 						//打印机相关
 						//=======
-						// 查询状态
+						//打印
 						if(isPrinter>0)
 				        {
 							new Handler().postDelayed(new Runnable() 
 							{
 					            @Override
 					            public void run() 
-					            {	  
-					            	GetPrinterStates(ComA, PrintCmd.GetStatus()); 
+					            {	 					            	
+									ToolClass.Log(ToolClass.INFO,"EV_COM","bushuo打印凭证...","com.txt");
+									if(isdocter)
+							    	{
+							    		PrintDocter();                             // 打印小票
+							    	}
+							    	else
+							    	{
+							    		PrintBankQueue();                             // 打印小票
+							    	}									
 					            }
 
 							}, 600);
@@ -423,7 +418,7 @@ public class BusHuo extends Activity
 	                    	finish();	
 	                    }
 	
-					}, 4500);
+					}, 2000);
 					break;
 				}
 			//按钮返回

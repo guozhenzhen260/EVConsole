@@ -692,12 +692,12 @@ public class EVServerhttp implements Runnable {
 						//ºáÆÁ
 						if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 						{
-							temp="ºáÆÁ";
+							temp="°²×¿ºáÆÁ";
 						}
 						//ÊúÆÁ
 						else
 						{
-							temp="ÊúÆÁ";
+							temp="°²×¿ÊúÆÁ";
 						}
 						parammap7.put("CLIENT_VERSION",temp+ToolClass.getVersion());	
 						parammap7.put("CLIENT_DESC","±¾»ú°æ±¾ºÅ");	
