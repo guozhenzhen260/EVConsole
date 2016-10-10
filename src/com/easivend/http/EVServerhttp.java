@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -1809,6 +1810,7 @@ public class EVServerhttp implements Runnable {
 		final JSONObject object2=productarr.getJSONObject(i);
 		ToolClass.Log(ToolClass.INFO,"EV_SERVER","更新商品和图片="+object2.toString(),"server.txt");										
 		final JSONObject zhuheobj=object2;
+		String product_TXT="";
 		if(ToolClass.getServerVer()==0)//旧的后台
 		{
 			//第一步.获取商品图片名字
@@ -2019,6 +2021,24 @@ public class EVServerhttp implements Runnable {
 				zhuheobj.put("AttImg", "");
 			}
 			
+			//第1.1步，获取详细信息里面的图片
+			product_TXT=object2.getString("product_TXT");
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","oldproduct_TXT="+product_TXT,"server.txt");										
+			if(product_TXT.equals("")!=true)
+			{
+			    Vector<String> imageList = ToolClass.parseImageURL(product_TXT);
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","imageList="+imageList,"server.txt");										
+				if(imageList!=null)
+				{					 
+					 for(int v = 0;v < imageList.size();v++)
+					 {
+						 product_TXT=ToolClass.repImageURL(product_TXT,imageList.get(v));
+					 }	
+					 ToolClass.Log(ToolClass.INFO,"EV_SERVER","newproduct_TXT="+product_TXT,"server.txt");										
+				}				
+			}
+			zhuheobj.put("product_TXT", product_TXT);
+			
 			try
 			{	
 				if(ATT_ID.equals("")==true)
@@ -2110,7 +2130,7 @@ public class EVServerhttp implements Runnable {
 		}
 		return "";
 	}
-	
+		
 	
 	//==========
 	//==交易记录模块

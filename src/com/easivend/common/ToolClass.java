@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Vector;
 import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
@@ -1200,6 +1201,51 @@ public class ToolClass
         }
         return fileName; 
     }
+    
+  //获取一个字符串中图片链接地址列表传入一个字符串获取其中全部图片链接地址add到Vector<String>中返回
+    public static Vector<String> parseImageURL(String text)
+  	{
+  		  text = text.replaceAll("< *(?i)img ", "\n<img ");
+  		  String[] list = text.split("\n");
+  		  if (list == null || list.length == 0)
+  			  return null;
+  		  Vector<String> imageList = new java.util.Vector<String>();
+  		  String image;
+  		  for (String line : list) 
+  		  {
+  			   line = line.trim();
+  			   if (!line.startsWith("<img "))
+  				   continue;
+  			   image = line.replaceFirst("<img .*?(?i)src=\"(.*?)\".*", "$1");
+  			   if (image.equals(line))
+  				   continue;
+  			   imageList.add(image);
+  		  }
+  		  return imageList.size() == 0 ? null : imageList;
+  	 }
+  	
+  	//获取图片名称(如：传入http://xxx/xx/photo.jpg 则返回photo.jpg)
+    public static String getImageName(String text) 
+  	{
+  		String[] urlArray = text.split("/");
+  		String ATT_ID=urlArray[urlArray.length - 1];
+  		ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","图片ATT_ID="+ATT_ID,"server.txt");	
+  		return ATT_ID;
+  	}
+  	
+  	//通过前面的2个方法 可以把一个字符串中的所有图片名字获得到 之后调用下面的方法把希望从本地加载的图片地址修改成指定目录
+  	//附正则方法 传入一个字符串 传入图片名称（如photo.jpg) 此方法会把这段文字中名字为photo.jpg的图片加载地址，从网上地址替换成本地地址(SD卡根目录)，之后返回替换完的字符串
+  	//此格式为从网上加载图片的格式
+  	//把<img src = http://xxx/xxx/xxx/a.jpg/>格式
+  	//此格式为从本地加载图片的格式此目录为SD卡根目录(建议使用Environment.getExternalStorageDirectory()方法获取SD卡根目录)
+  	//改成<img src = file:///sdcard/a.jpg/>格式
+    public static String repImageURL(String text, String filename) {
+  		String pattern = "<img src=\"" + filename + "\"";
+  		String files=getImageName(filename);
+  		files=ToolClass.getImgFile(files);
+  	  return text.replaceAll(pattern, "<img src=\"file://"+files+"\"");
+  	 }
     
     /**
      * 读取出货时广告文件
