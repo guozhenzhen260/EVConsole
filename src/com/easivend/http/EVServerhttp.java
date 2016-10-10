@@ -74,6 +74,7 @@ public class EVServerhttp implements Runnable {
 	RequestQueue mQueue = null; 
 	String vmc_no="";
 	String vmc_auth_code="";
+	List<String> productimage=new ArrayList<String>();//保存商品详细信息的图片
 	public final static int SETNONE=0;//what标记,发送给主线程无效标识
 	
 	public final static int SETCHILD=2;//what标记,发送给子线程签到
@@ -95,6 +96,10 @@ public class EVServerhttp implements Runnable {
 	public final static int SETPRODUCTCHILD=11;//what标记,发送给子线程获取商品信息
 	public final static int SETERRFAILRODUCTMAIN=12;//what标记,发送给主线程获取商品故障
 	public final static int SETRODUCTMAIN=13;//what标记,发送给主线程获取商品返回
+	
+	public final static int SETPRODUCTIMAGECHILD=60;//what标记,发送给子线程获取商品详细列表中图片信息
+	public final static int SETERRFAILRODUCTIMAGEMAIN=61;//what标记,发送给主线程获取商品详细列表中图片故障
+	public final static int SETRODUCTIMAGEMAIN=62;//what标记,发送给主线程获取商品详细列表中图片返回
 	
 	public final static int SETHUODAOCHILD=14;//what标记,发送给子线程获取货道信息
 	public final static int SETERRFAILHUODAOMAIN=15;//what标记,发送给主线程获取货道故障
@@ -586,6 +591,19 @@ public class EVServerhttp implements Runnable {
 					//5.加载信息并发送到网络上
 					mQueue.add(stringRequest4);	
 					break;
+				case SETPRODUCTIMAGECHILD://获取商品详细列表中图片信息
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取商品详细列表中图片信息["+Thread.currentThread().getId()+"]","server.txt");
+					try {
+						productimageArray();
+						if(productimage.size()>0)
+						{
+							updateproductimage(0);
+						}
+					} catch (Exception e3) {
+						// TODO Auto-generated catch block
+						e3.printStackTrace();
+					}					
+					break;	
 				case SETHUODAOCHILD://获取货道信息
 					String target5 = httpStr+"/api/vmcPathConfigDownload";	//要提交的目标地址
 					ToolClass.Log(ToolClass.INFO,"EV_SERVER","Thread 获取货道信息["+Thread.currentThread().getId()+"]="+target5,"server.txt");
@@ -2032,7 +2050,13 @@ public class EVServerhttp implements Runnable {
 				{					 
 					 for(int v = 0;v < imageList.size();v++)
 					 {
-						 product_TXT=ToolClass.repImageURL(product_TXT,imageList.get(v));
+						 ToolClass.Log(ToolClass.INFO,"EV_SERVER","image图片链接="+imageList.get(v).indexOf("/shj"),"server.txt");										
+						 //只有图片链接才做准备下载的事情
+						 if(imageList.get(v).indexOf("/shj")>-1)
+						 {
+							 productimage.add(imageList.get(v));
+							 product_TXT=ToolClass.repImageURL(product_TXT,imageList.get(v));
+						 }
 					 }	
 					 ToolClass.Log(ToolClass.INFO,"EV_SERVER","newproduct_TXT="+product_TXT,"server.txt");										
 				}				
@@ -2118,6 +2142,7 @@ public class EVServerhttp implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","recproductimage="+productimage.toString(),"server.txt");
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","reczhuhe="+zhuheproductjson.toString(),"server.txt");
 
 				//上传给server
@@ -2131,7 +2156,119 @@ public class EVServerhttp implements Runnable {
 		return "";
 	}
 		
-	
+	//====================
+	//==商品详细列表中图片信息模块
+	//====================
+	JSONArray zhuheproductimageArray=null;
+	JSONObject zhuheproductimagejson = null; 
+	int productimageint=0;
+	//分解商品信息
+	private void productimageArray() throws Exception
+	{
+		productimageint=0;
+		zhuheproductimageArray=new JSONArray();
+		zhuheproductimagejson = new JSONObject(); 
+		if(productimage.size()==0)
+		{
+			//向主线程返回信息
+			Message tomain=mainhand.obtainMessage();
+			tomain.what=SETRODUCTIMAGEMAIN;
+			tomain.obj=zhuheproductimagejson.toString();
+			mainhand.sendMessage(tomain); // 发送消息	
+		}
+	}
+	//更新商品和图片信息
+	private String updateproductimage(int i) throws JSONException
+	{
+		final String object2=productimage.get(i);
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息商品和图片="+object2.toString(),"server.txt");										
+				
+		//第一步，获取图片名字ATTID
+		String ATT_ID="";
+		String a[] = object2.split("/");  
+		ATT_ID=a[a.length-1];
+		ATT_ID=ATT_ID.substring(0,ATT_ID.lastIndexOf("."));
+		ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息图片ATT_ID="+ATT_ID,"server.txt");	
+
+		try
+		{	
+			if(ATT_ID.equals("")==true)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息["+ATT_ID+"]无图片","server.txt");
+			}
+			else
+			{
+				if(ToolClass.isImgFile(ATT_ID))
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息["+ATT_ID+"]图片已存在","server.txt");
+				}
+				else 
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息["+ATT_ID+"]图片,下载图片...","server.txt");
+					//第二步.准备下载	
+					String serip=httpStr.substring(0,httpStr.lastIndexOf("/shj"));
+					String url= serip+object2;	//要提交的目标地址
+					final String ATTIDS=ATT_ID;
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+					ImageRequest imageRequest = new ImageRequest(  
+							url,  
+							new Response.Listener<Bitmap>() {  
+								@Override  
+								public void onResponse(Bitmap response) {  
+									ToolClass.saveBitmaptofile(response,ATTIDS);
+									try {
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息["+ATTIDS+"]图片,下载图片完成","server.txt");
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}  
+							}, 0, 0, Config.RGB_565, new Response.ErrorListener() {  
+								@Override  
+								public void onErrorResponse(VolleyError error) {  
+									result = "请求失败！";
+									try {
+										ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息["+ATTIDS+"]图片,下载图片失败","server.txt");
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}  
+							});
+					mQueue.add(imageRequest); 
+				}
+				
+			}
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","rec2=[fail10-1]","server.txt");
+		}
+
+		//第五步：进行下一个商品信息
+		productimageint++;
+		if(productimageint<productimage.size())
+		{
+			try {
+				updateproductimage(productimageint);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			productimage.clear();
+			//上传给server
+			//向主线程返回信息
+			Message tomain4=mainhand.obtainMessage();
+			tomain4.what=SETRODUCTIMAGEMAIN;
+			tomain4.obj=zhuheproductimagejson.toString();
+			mainhand.sendMessage(tomain4); // 发送消息
+		}		
+		return "";
+	}
 	//==========
 	//==交易记录模块
 	//==========

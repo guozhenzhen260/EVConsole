@@ -360,7 +360,32 @@ public class EVServerService extends Service {
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}						
+						}		
+						//初始化三.1:获取商品详细列表中图片信息
+						childhand=serverhttp.obtainHandler();
+		        		Message childmsg6=childhand.obtainMessage();
+		        		childmsg6.what=EVServerhttp.SETPRODUCTIMAGECHILD;
+		        		childmsg6.obj="";
+		        		childhand.sendMessage(childmsg6);
+						break;	
+						//获取商品详细列表中图片信息
+					case EVServerhttp.SETERRFAILRODUCTIMAGEMAIN://子线程接收主线程消息发送给主线程获取商品详细列表中图片故障
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品详细列表中图片故障，原因="+msg.obj.toString(),"server.txt");
+						//返回给activity广播
+						intent=new Intent();
+						intent.putExtra("EVWhat", EVServerhttp.SETFAILMAIN);
+						intent.setAction("android.intent.action.vmserverrec");//action与接收器相同
+						localBroadreceiver.sendBroadcast(intent);
+						break;
+					case EVServerhttp.SETRODUCTIMAGEMAIN://子线程接收主线程消息获取商品详细列表中图片返回
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取商品详细列表中图片返回成功","server.txt");
+						try 
+						{
+							boolean shprst=updatevmcProduct(msg.obj.toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
 						//初始化四:获取货道配置信息
 						childhand=serverhttp.obtainHandler();
 		        		Message childmsg3=childhand.obtainMessage();
@@ -826,7 +851,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },50,30,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
