@@ -851,7 +851,7 @@ public class EVServerService extends Service {
 		    		childhand.sendMessage(childmsg);
 	        	}
 	        } 
-	    },50,30,TimeUnit.SECONDS);       // 10*60timeTask   
+	    },10*60,10*60,TimeUnit.SECONDS);       // 10*60timeTask   
   		
   		//*************
   		//启动线程监控定时器
