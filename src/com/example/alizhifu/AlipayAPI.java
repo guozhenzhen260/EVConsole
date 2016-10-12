@@ -28,7 +28,7 @@ import com.easivend.common.ToolClass;
 
 public class AlipayAPI 
 {
-	static String appId ="2015072300183987";//开发者账号appid,唯一
+	//static String appId ="2016101102090307";//主账号客户申请的2.0的appid
 	//私钥，每个商户号都对应唯一的，在本程序里面用来作RSA签名参数
 	//static String privateKey ="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANHnYMLymQkH3wa2TgtMaDy9FwhqTEdfwsXWbv4MmoF0ag8X/ZffwaQFfcORWfzOXSMC9epJFvXFY4MPx4HaX1dU6nsM0WBYHmBFxCwSwOmrOVHAq9VdSNKdE3W4EoeCFWfD8vC4vjGTTUpowHeQWMx0NIEDBKHRPOQbsKIwAL7PAgMBAAECgYAazfJEUtiKF7A6WjNzK+mvv/HeCDz/bFIiE3UPCir81xHoJYcjytYejPj3bWtRZkTsgKdIqNa+wdsoVG6EvY8pC3CpMlliWfRuYBTOyMCS/RVGTkftM6vuS07bW4Je1qvoO26pCk4kgRl0Z3GoYw9AOi5cl1q0fZDvsncDG8Dh0QJBAPs2cqE3K/+UaDdxWd/di1xi0p4SZJ/4WbSUUCwe1L3o3/jwLKgvCASlPeIVcJamhyfdbmJ4E1QWsfeuPhOUinkCQQDV52cvWs1vDyTKxvjQzwEFkajHzctLpCpBoO1funxwVkmYU/cmRZn292mFGywHA4Gq9vgF+S7jwzOYvwQw20GHAkByVcGuZnH8DQux0EFbhnXbQo8hqrVpqZsKeUZUDmQ9WzQ1FPr+QQmhM6QKtj9cEccJ+do3rvb9Gqc9V2yhdMXhAkEAscu4PupQ28FQqaQdaSLHDKP4EKwEEQmRfh+PbwSJLq7qWU1hn1Q3F8qq0NK3E9VcUIkbu4tV6Ed2eb48c4ervQJAHWO0ocjLrtgIHW41b2u4mEcD3bjeeOvdfGCIDXHPkchHw5L+fbk2JkLv3DEY468eEUyH7xFHCXjFHYYWQICYWw==";
 	//公钥，每个商户号都对应唯一的，分别注册到支付宝开放平台那里，在本程序里面不使用
@@ -69,8 +69,8 @@ public class AlipayAPI
 	        	royalty_detail.put("trans_in_type", "userId");
 	        	royalty_detail.put("batch_no", 123);
 	        	royalty_detail.put("trans_out_type", "userId");
-	        	royalty_detail.put("trans_out", AlipayConfig.getPartner());//主账号id号
-	        	royalty_detail.put("trans_in", AlipayConfig.getSubpartner());//子账号id号
+	        	royalty_detail.put("trans_out", AlipayConfig.getPartner());//主账号1.0的pid号,其实不是AlipayConfig.getPartner()，先用着
+	        	royalty_detail.put("trans_in", AlipayConfig.getSubpartner());//子账号1.0的pid号
 	        	royalty_detail.put("amount", totalAmount);
 	        	royalty_detail.put("desc", "分账测试1");
 	        	royalty_detail.put("amount_percentage", "100");
@@ -208,7 +208,7 @@ public class AlipayAPI
 		Map<String,String> protocalMustParams = new HashMap<String,String>();
 		protocalMustParams.put("method", request.get("method"));//预下单
 		protocalMustParams.put("version", "1.0");
-		protocalMustParams.put("app_id", appId);
+		protocalMustParams.put("app_id", AlipayConfig.getPartner());//主账号客户申请的2.0的appid
 		protocalMustParams.put("sign_type", "RSA");
 		protocalMustParams.put("charset", "UTF-8");
 		
