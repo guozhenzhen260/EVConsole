@@ -441,7 +441,7 @@ public class vmc_columnDAO
     	List<String> alllist=new ArrayList<String>();
     	
     	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=?", 
+        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=? order by random()", 
         		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
         //遍历所有的收入信息
         if (cursor.moveToNext()) 
