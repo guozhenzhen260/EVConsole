@@ -3318,8 +3318,35 @@ public class EVServerhttp implements Runnable {
             	{
             		vmcno=tb_inaccount.getDevID().toString();            		
             	}
-            	
-				ToolClass.ResetConfigFileServer(object2,vmcno);
+            	try {
+					String WX_URL=object2.getString("WX_URL");
+					ToolClass.Log(ToolClass.INFO,"EV_SERVER","微信证书="+WX_URL,"server.txt");
+					//需要下载证书
+					if((ToolClass.isEmptynull(object2.get("WX_URL").toString())==false)
+				        	&&(object2.get("WX_URL").toString().equals("null")==false)
+				        )
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","下载微信证书...","server.txt");
+						//1.删除原来的压缩文件
+						ToolClass.deleteCertFile();							
+						//2.下载
+						String serip=httpStr.substring(0,httpStr.lastIndexOf("/shj"));
+	  					String url= serip+WX_URL;	//要提交的目标地址
+	  					String a[] = WX_URL.split("/");  
+	  		  			final String ATTIDS=a[a.length-1]; 
+	  					ToolClass.Log(ToolClass.INFO,"EV_SERVER","ATTID=["+ATTIDS+"]url["+url+"]","server.txt");
+	  					downloadCert(url,ATTIDS,object2,vmcno);//下载	  				
+					}
+					else
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","直接处理支付宝微信","server.txt");
+						ToolClass.ResetConfigFileServer(object2,vmcno);
+					}	
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            					
 				Message tomain=mainhand.obtainMessage();
 		  		tomain.what=SETACCOUNTRESETMAIN;
 				tomain.obj="";							   	    
@@ -3330,6 +3357,104 @@ public class EVServerhttp implements Runnable {
   		return "";
   		
   	}
+  	
+  	private String certurl=null;
+  	private String CERTATTAD=null;
+  	private JSONObject certobj=null;
+  	private String certvmcno=null;
+	/**
+     * 下载cert微信文件
+     */
+    private void downloadCert(String str,String ATT_ID,JSONObject object2,String VMC_NO)
+    {    	
+    	certurl=str;
+    	CERTATTAD=ATT_ID;
+    	certobj=object2;
+    	certvmcno=VMC_NO;
+        // 启动新线程下载软件
+        new downloadCertThread().start();
+    }
+  	
+    /**
+     * 下载文件线程
+     * 
+     * @author coolszy
+     *@date 2012-4-26
+     *@blog http://blog.92coding.com
+     */
+    private class downloadCertThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+            	//1.下载
+            	HttpClient client = new DefaultHttpClient();  
+                HttpGet get = new HttpGet(certurl);  
+                HttpResponse response = client.execute(get);  
+                HttpEntity entity = response.getEntity();  
+                long length = entity.getContentLength();  
+                InputStream is = entity.getContent();  
+                FileOutputStream fileOutputStream = null;  
+                if (is != null)
+                {  
+                    File file = ToolClass.savetoCert(CERTATTAD);  
+                    fileOutputStream = new FileOutputStream(file);  
+                    byte[] buf = new byte[1024];  
+                    int ch = -1;  
+                    int count = 0;  
+                    while ((ch = is.read(buf)) != -1) {  
+                        fileOutputStream.write(buf, 0, ch);  
+                        count += ch;  
+                        if (length > 0) {  
+                        }  
+                    }  
+                }  
+                fileOutputStream.flush();  
+                if (fileOutputStream != null) {  
+                    fileOutputStream.close();  
+                }   
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","微信证书["+CERTATTAD+"],下载完成","server.txt");
+                //2.解压
+                String attimg=CERTATTAD.substring(CERTATTAD.lastIndexOf(".") + 1).toUpperCase();
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","证书格式["+attimg+"]","server.txt");
+                //是压缩包,解压缩
+                if(attimg.equals("RAR")||attimg.equals("ZIP"))
+                {
+                	//解压缩
+                	String zipFile = ToolClass.setCertFile(CERTATTAD).toString();
+                	String upzipFile=ToolClass.getEV_DIR()+File.separator+"cert";
+                	ToolClass.deleteCertFolder();//删除cert目录
+        	  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<zipFile="+zipFile+" upzipFile="+upzipFile,"server.txt"); 
+        	  		if(attimg.equals("RAR"))
+        	  		{
+        	  			try {
+        		  			XZip.unRarFile(zipFile, upzipFile);
+        		  		} catch (Exception e) {
+        		  			// TODO Auto-generated catch block
+        		  			e.printStackTrace();
+        		  		}
+        	  		}
+        	  		else if(attimg.equals("ZIP"))
+        	  		{
+        		  		try {
+        		  			XZip.UnZipFolder(zipFile, upzipFile);
+        		  		} catch (Exception e) {
+        		  			// TODO Auto-generated catch block
+        		  			e.printStackTrace();
+        		  		}
+        	  		}        	  		
+                }
+                //3.重新配置
+                ToolClass.ResetConfigFileServer(certobj,certvmcno);
+            } catch (Exception e)
+            {
+            	ToolClass.Log(ToolClass.INFO,"EV_SERVER","微信证书["+CERTATTAD+"],下载失败","server.txt");
+                e.printStackTrace();                
+            }
+        }
+    };
   	
     //==============
   	//==广告模块

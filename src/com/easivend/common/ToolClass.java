@@ -967,6 +967,80 @@ public class ToolClass
     }
     
     /**
+     * 递归删除certzip文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteCertFile()
+    {
+    	String  sDir =null;
+    	 try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"CertFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 递归删除cert文件和文件夹
+     * @param file    要删除的根目录
+     */
+    public static void deleteCertFolder()
+    {
+    	String  sDir =null;
+    	 try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"cert";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 deleteAllFile(dirName);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 使用setCertFile,保存这个程序到目录中
+     */
+    public static File setCertFile(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"CertFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
+    }
+    
+    /**
      * 使用isAPKFile,判断这个程序是已经存在目录中,true存在,false不存在
      */
     public static boolean isAPKFile(String filename) 
@@ -1385,6 +1459,32 @@ public class ToolClass
      } 
     
     /**
+     * 使用savetoCert,保存这个cert到目录中
+     */
+    public static File savetoCert(String filename) 
+    {
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"CertFile";
+        	  File dirName = new File(sDir);
+        	 //如果目录不存在，则创建目录
+        	 if (!dirName.exists()) 
+        	 {  
+                //按照指定的路径创建文件夹  
+        		dirName.mkdirs(); 
+             }
+        	 
+        	 fileName=new File(sDir+File.separator+filename);         	
+        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName; 
+    }
+    
+    /**
      * 使用saveAvitoads,保存这个视频广告到目录中
      */
     public static File saveAvitoads(String filename,String TypeStr,String ads) 
@@ -1680,11 +1780,13 @@ public class ToolClass
         	  }
         	  else 
         	  {
+        		  ToolClass.ssl=null;
         		  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<nossl","log.txt");
 			  }
         	             
         } catch (Exception e) {
             e.printStackTrace();
+            ToolClass.ssl=null;
             ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<sslerror","log.txt");
         }
         
