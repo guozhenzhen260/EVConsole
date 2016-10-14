@@ -31,6 +31,7 @@ public class BusgoodsSelect extends Activity
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,
 			ivbuszhiselpos=null,ivbuszhiseltihuo=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
+	WebView webproductDesc;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -81,25 +82,28 @@ public class BusgoodsSelect extends Activity
 		{
 			txtbusgoodselAmount.setText("已售罄");
 		}
-//		//得到商品描述
-//		webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
-//		vmc_productDAO productDAO = new vmc_productDAO(BusgoodsSelect.this);// 创建InaccountDAO对象
-//	    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
-//	    if(tb_vmc_product.getProductDesc().isEmpty()!=true) 
-//	    {
-//	    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
-//		    WebSettings settings = webproductDesc.getSettings();
-//		    settings.setSupportZoom(true);
-//		    settings.setTextSize(WebSettings.TextSize.LARGEST);
-//		    webproductDesc.getSettings().setSupportMultipleWindows(true);
-//		    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
-//		    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
-//		    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
-//	    }
-//	    else
-//	    {
-//	    	webproductDesc.setVisibility(View.GONE);
-//	    }
+		//得到商品描述
+		if(ToolClass.getOrientation()==1)
+		{
+			webproductDesc = (WebView) findViewById(R.id.webproductDesc); 
+			vmc_productDAO productDAO = new vmc_productDAO(this);// 创建InaccountDAO对象
+		    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
+		    if(ToolClass.isEmptynull(tb_vmc_product.getProductDesc())!=true)
+		    {
+		    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
+			    WebSettings settings = webproductDesc.getSettings();
+			    settings.setSupportZoom(true);
+			    settings.setTextSize(WebSettings.TextSize.LARGEST);
+			    webproductDesc.getSettings().setSupportMultipleWindows(true);
+			    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+			    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+			    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+		    }
+		    else
+		    {
+		    	webproductDesc.setVisibility(View.GONE);
+		    }
+		}
 		ivbuszhiselamount = (ImageView) findViewById(R.id.ivbuszhiselamount);
 		ivbuszhiselamount.setOnClickListener(new OnClickListener() {
 		    @Override
