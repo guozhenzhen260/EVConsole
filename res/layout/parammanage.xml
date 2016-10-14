@@ -339,7 +339,7 @@
 				            	    android:minWidth="160px"		    
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="显示无货的商品"/>
+									android:text="大屏使用全屏广告"/>
 						        
 						         <Switch   
 							       android:layout_marginTop="20dip"  

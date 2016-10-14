@@ -25,9 +25,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.easivend.view.DogService;
 import com.easivend.view.EVServerService;
@@ -310,17 +312,7 @@ public class MaintainActivity extends Activity
                 	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 6:
-                	//横屏
-    				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-    				{
-    					intent = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-    				}
-    				//竖屏
-    				else
-    				{
-    					intent = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-    				}                	
-                    startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+                	IntentBus();
                     break;
                 case 7:
                 	//创建警告对话框
@@ -426,18 +418,7 @@ public class MaintainActivity extends Activity
 				{
 					issale=true;
 					//签到完成，自动开启售货程序
-					Intent intbus;
-					//横屏
-					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-					{
-						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-					}
-					//竖屏
-					else
-					{
-						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-					}
-					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+					IntentBus();
 				}
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
@@ -449,23 +430,44 @@ public class MaintainActivity extends Activity
 				{
 					issale=true;
 					//签到完成，自动开启售货程序
-					Intent intbus;
-					//横屏
-					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-					{
-						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-					}
-					//竖屏
-					else
-					{
-						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-					}
-					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+					IntentBus();
 				}
 	    		break;	
 			}			
 		}
 
+	}
+	
+	//签到完成，自动开启售货程序
+	private void IntentBus()
+	{
+		//签到完成，自动开启售货程序
+		Intent intbus = null;
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(MaintainActivity.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		//使用大屏广告页面
+    		if(tb_inaccount.getEmptyProduct()==1)
+    		{
+    			intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+    		}
+    		else
+    		{
+    			//横屏
+				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+				{
+					intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+				}
+				//竖屏
+				else
+				{
+					intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+				}				
+    		}
+    		startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+    	}
 	}
 		
 	

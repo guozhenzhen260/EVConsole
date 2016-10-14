@@ -116,7 +116,7 @@ public class ToolClass
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
 	public static Map<String, String> selectlist=null;//保存选货按键id与商品id的对应关系
-	public static int orientation=0;//使用横屏还是竖屏模式
+	public static int orientation=0;//使用横屏还是竖屏模式0横屏,1竖屏
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
 	private static int ServerVer=1;//0旧的后台，1一期的后台

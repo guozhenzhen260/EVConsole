@@ -42,8 +42,8 @@ public class BusinesslandFragment extends Fragment
 	final static int REQUEST_CODE=1; 	
 	EditText txtadsTip=null;
 	ImageButton btnads1=null, btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
-			btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadsclass=null,btnadscancel=null,btnadsenter=null;
-	ImageView ivquhuo=null,ivgmys=null,ivczjx=null;
+			btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadscancel=null,btnadsenter=null;
+	ImageView ivquhuo=null,ivgmys=null,ivczjx=null,btnadsclass=null;
 	Intent intent=null;
 	private boolean quhuo=false;//true使用取货码功能
 	private static int count=0;
@@ -110,7 +110,14 @@ public class BusinesslandFragment extends Fragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View view = inflater.inflate(R.layout.fragment_businessland, container, false);  
+		//设置横屏还是竖屏的布局策略
+		View view;
+		//竖屏
+		if(ToolClass.getOrientation()==1)
+			view = inflater.inflate(R.layout.fragment_businessport, container, false);  
+		//横屏
+		else
+			view = inflater.inflate(R.layout.fragment_businessland, container, false);  
 		context=this.getActivity();//获取activity的context	
 		//定时器返回广告页面
 //		timer.schedule(new TimerTask() { 
@@ -238,7 +245,7 @@ public class BusinesslandFragment extends Fragment
 		    	}
 		    }
 		});
-		btnadsclass = (ImageButton) view.findViewById(R.id.btnadsclass);
+		btnadsclass = (ImageView) view.findViewById(R.id.btnadsclass);
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
