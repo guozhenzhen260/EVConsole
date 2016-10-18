@@ -149,7 +149,7 @@ public class vmc_columnDAO
 		 		db.execSQL(
 					"update vmc_column set " +
 					"productID=?,pathCount=?,path_id=?," +
-					"lasttime=(datetime('now', 'localtime')),isupload=0 " +
+					"isupload=0 " +
 					"where cabID=? and columnID=?",
 			        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
 							tb_vmc_column.getPath_id(),
@@ -241,7 +241,7 @@ public class vmc_columnDAO
     	    db.beginTransaction();
     	    try {
 	          // 执行布满该柜货道表
-	          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1,isupload=0 where cabID=? and columnStatus<>2 ", 
+	          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1,isupload=0,lasttime=(datetime('now', 'localtime')) where cabID=? and columnStatus<>2 ", 
 	          		new Object[] { cabID});    
           
 	          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
@@ -441,7 +441,7 @@ public class vmc_columnDAO
     	List<String> alllist=new ArrayList<String>();
     	
     	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=? order by random()", 
+        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=? order by lasttime asc", 
         		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
         //遍历所有的收入信息
         if (cursor.moveToNext()) 
@@ -547,7 +547,7 @@ public class vmc_columnDAO
 	  	  db.beginTransaction();
 	  	  try {
 	          // 执行删除商品表
-	          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0 where cabID=? and columnID=?", 
+	          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0,lasttime=(datetime('now', 'localtime')) where cabID=? and columnID=?", 
 	          		new Object[] { cabID,columnID});    
 	          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
 	          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中
