@@ -402,7 +402,14 @@
 							 android:layout_height="70dp"  
 							 android:background="@drawable/button_selector"         
 				             android:text="删除记录" />	
-				           
+				     <Button
+				             android:id="@+id/btnordergridalldel"	
+				             android:layout_below="@+id/edtordergridend"	
+				             android:layout_toRightOf="@+id/btnordergriddel"		             
+				             android:layout_width="wrap_content"
+							 android:layout_height="70dp"  
+							 android:background="@drawable/button_selector"         
+				             android:text="删除所有记录" />      
 			         <TextView 		    
 			            	android:id="@+id/txtordergridtongji"
 			            	android:textSize="40sp"
