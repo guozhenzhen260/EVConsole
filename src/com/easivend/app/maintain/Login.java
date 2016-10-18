@@ -147,15 +147,15 @@ public class Login extends Activity
             @Override
             public void onClick(View arg0)
             {
-            	com = txtlogin.getText().toString();
-    	        bentcom = txtbent.getText().toString(); 
-    	        columncom = txtcolumn.getText().toString(); 
-    	        printcom = txtprintcom.getText().toString();
-    	        extracom = txtextracom.getText().toString(); 
-    	        posip = txtposip.getText().toString(); 
-    	        posipport = txtposipport.getText().toString(); 
+            	com = ToolClass.replaceBlank(txtlogin.getText().toString());
+    	        bentcom = ToolClass.replaceBlank(txtbent.getText().toString()); 
+    	        columncom = ToolClass.replaceBlank(txtcolumn.getText().toString()); 
+    	        printcom = ToolClass.replaceBlank(txtprintcom.getText().toString());
+    	        extracom = ToolClass.replaceBlank(txtextracom.getText().toString()); 
+    	        posip = ToolClass.replaceBlank(txtposip.getText().toString()); 
+    	        posipport = ToolClass.replaceBlank(txtposipport.getText().toString()); 
     	        isallopen= (switchallopen.isChecked()==true)?1:0;
-    	        cardcom = txtcardcom.getText().toString(); 
+    	        cardcom = ToolClass.replaceBlank(txtcardcom.getText().toString()); 
             	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,printcom,String.valueOf(isallopen),posip,posipport);            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示

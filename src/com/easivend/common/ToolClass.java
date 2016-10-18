@@ -44,6 +44,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -3511,5 +3513,16 @@ public class ToolClass
         } 
         return false; 
 	 }
+	 
+	 //去除字符串中的空格、回车、换行符、制表符
+	 public static String replaceBlank(String str) {
+	        String dest = "";
+	        if (str!=null) {
+	            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+	            Matcher m = p.matcher(str);
+	            dest = m.replaceAll("");
+	        }
+	        return dest;
+	    }
 	
 }
