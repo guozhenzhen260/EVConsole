@@ -2215,7 +2215,7 @@ public class EVServerhttp implements Runnable {
 							new Response.Listener<Bitmap>() {  
 								@Override  
 								public void onResponse(Bitmap response) {  
-									ToolClass.saveBitmaptofile(response,ATTIDS);
+									ToolClass.saveBitproductmaptofile(response,ATTIDS);
 									try {
 										ToolClass.Log(ToolClass.INFO,"EV_SERVER","商品详细信息["+ATTIDS+"]图片,下载图片完成","server.txt");
 									} catch (Exception e) {

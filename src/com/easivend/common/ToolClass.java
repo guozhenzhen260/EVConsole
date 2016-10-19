@@ -1261,6 +1261,40 @@ public class ToolClass
        return fileext; 
      } 
     
+    //将商品详细信息图片保存在本地
+    public static boolean  saveBitproductmaptofile(Bitmap bmp,String filename)
+    {      	
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"productImage";
+      	  File dirName = new File(sDir);
+      	 //如果目录不存在，则创建目录
+      	 if (!dirName.exists()) 
+      	 {  
+              //按照指定的路径创建文件夹  
+      		dirName.mkdirs(); 
+           }
+      	 
+      	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则开始保存图片
+        	if(!fileName.exists())
+        	{  
+        		CompressFormat format= Bitmap.CompressFormat.JPEG;  
+    	        int quality = 100;  
+    	        OutputStream stream = null;  
+    	        stream = new FileOutputStream(fileName);      	         
+    	        fileext=bmp.compress(format, quality, stream); 
+    	    }  
+        	else
+        		fileext=false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     } 
+    
     /**
      * 使用getImgFile,得到这个商品图片的完整目录
      */
