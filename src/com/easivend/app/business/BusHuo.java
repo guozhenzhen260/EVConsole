@@ -54,7 +54,7 @@ public class BusHuo extends Activity
 	private String huoID = null;
     private float prosales = 0;
     private int count = 0;
-    private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+    private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,5取货密码
     private TextView txtbushuoname = null;
     private ImageView ivbushuoquhuo=null;
     private int tempx=0;
@@ -350,7 +350,7 @@ public class BusHuo extends Activity
 						//打印机相关
 						//=======
 						//打印
-						if(isPrinter>0)
+						if((isPrinter>0)&&(zhifutype!=5))
 				        {
 							new Handler().postDelayed(new Runnable() 
 							{

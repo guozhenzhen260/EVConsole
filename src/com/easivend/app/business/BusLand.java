@@ -12,6 +12,7 @@ import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.COMThread;
@@ -21,6 +22,7 @@ import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
@@ -49,6 +51,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
+    private int chuhuoLen = 0;//免费出上一个格子柜 
     //交易页面
     Intent intent=null;
     final static int REQUEST_CODE=1; 
@@ -96,7 +99,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	        @Override 
 	        public void run() { 
 	        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt"); 
-	        	  if(isbus==false)
+	        	//屏幕与广告切换  
+	        	if(isbus==false)
 	        	  {
 		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 		    	      
@@ -106,6 +110,16 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 			    	      switchMovie();
 		              }	
 	        	  }
+	        	//判断3分钟内，如果按下空的货道号可以直接出货
+	        	if(ToolClass.isLAST_CHUHUO())
+	        	{
+	        		chuhuoLen++;
+	        		if(chuhuoLen>=3*60)
+	        		{
+	        			chuhuoLen=0;
+	        			ToolClass.setLAST_CHUHUO(false);
+	        		}
+	        	}
 	        } 
 	    }, 1, 1, TimeUnit.SECONDS);       // timeTask  
 	}
@@ -199,6 +213,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 				case 3:
 					vmc_columnDAO columnDAO = new vmc_columnDAO(BusLand.this);// 创建InaccountDAO对象		    
 				    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(str.get("cabID"),str.get("huoID"));
+				    //可以售卖
 				    if(tb_inaccount!=null)
 				    {
 				    	str.put("productID",tb_inaccount.getProductID().toString());
@@ -248,8 +263,59 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 				    }
 				    else
 				    {
-				    	// 弹出信息提示
-					    ToolClass.failToast("抱歉，本商品已售完！");					
+				    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+str.get("huoID")+"isLAST_CHUHUO="+ToolClass.isLAST_CHUHUO(),"log.txt");
+				    	//开格子柜门
+				    	if(ToolClass.isLAST_CHUHUO())
+				    	{
+				    		vmc_columnDAO columnDAO2 = new vmc_columnDAO(BusLand.this);// 创建InaccountDAO对象		    
+						    Tb_vmc_product tb_inaccount2 = columnDAO2.getColumnproductforzero(str.get("cabID"),str.get("huoID"));
+						    if(tb_inaccount2!=null)
+						    {
+						    	//查找货道类型
+				        		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(BusLand.this);// 创建InaccountDAO对象
+				        	    // 获取所有收入信息，并存储到List泛型集合中
+				        	    Tb_vmc_cabinet listinfos3 = cabinetDAO3.findScrollData(String.valueOf(Integer.parseInt(str.get("cabID"))));
+				        	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+tb_inaccount2.getProductID()+"柜类型="+listinfos3.getCabType(),"log.txt");
+				        	    if(listinfos3.getCabType()==5)
+				        	    {
+							    	str.put("productID",tb_inaccount2.getProductID().toString());
+							    	str.put("prosales",String.valueOf(tb_inaccount2.getSalesPrice()));
+							    	str.put("proImage",tb_inaccount2.getAttBatch1());
+							    	str.put("proID",tb_inaccount2.getProductID().toString()+"-"+tb_inaccount2.getProductName().toString());
+								    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+str.get("proID")+" productID="
+											+str.get("productID")+" proType="
+											+"2"+" cabID="+str.get("cabID")+" huoID="+str.get("huoID")+" prosales="+str.get("prosales")+" count="
+											+"1","log.txt");
+									//免费开门
+								    intent = new Intent(BusLand.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
+				    				OrderDetail.setProID(str.get("proID"));
+				    		    	OrderDetail.setProductID(str.get("productID"));
+				    		    	OrderDetail.setProType(str.get("proType"));
+				    		    	OrderDetail.setShouldPay(Float.parseFloat(str.get("prosales")));
+				    		    	OrderDetail.setShouldNo(1);
+				    		    	OrderDetail.setCabID(str.get("cabID"));
+				    		    	OrderDetail.setColumnID(str.get("huoID"));
+				    		    	OrderDetail.setPayType(Integer.parseInt("5"));
+				    		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+				        	    }
+				        	    else
+						    	{
+							    	// 弹出信息提示
+								    ToolClass.failToast("抱歉，本商品已售完！");	
+						    	}
+						    }
+						    else
+					    	{
+						    	// 弹出信息提示
+							    ToolClass.failToast("抱歉，本商品已售完！");	
+					    	}
+				    	}
+				    	//货道无法售卖
+				    	else
+				    	{
+					    	// 弹出信息提示
+						    ToolClass.failToast("抱歉，本商品已售完！");	
+				    	}
 				    }
 					break;
 				case 4:
