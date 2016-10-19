@@ -490,7 +490,8 @@ public class BusZhipos extends Activity
   				if(status==1)
   				{
   					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<无退款","com.txt");
-  					OrderDetail.addLog(BusZhipos.this);
+  					ToolClass.setLAST_CHUHUO(true);
+  					OrderDetail.addLog(BusZhipos.this);  					
   					finish();
   				}
   				//出货失败,退钱
@@ -508,7 +509,7 @@ public class BusZhipos extends Activity
   	@Override
 	protected void onDestroy() {
   		timer.shutdown(); 
-		mMyApi.pos_release();
+		mMyApi.pos_release();		
 		super.onDestroy();		
 	}
 

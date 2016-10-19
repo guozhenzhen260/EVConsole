@@ -464,6 +464,7 @@ public class BusZhiAmount  extends Activity
   				//出货成功,扣钱
 				if(status==1)
 				{
+					ToolClass.setLAST_CHUHUO(true);
 					//查找货道类型
 	        		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(BusZhiAmount.this);// 创建InaccountDAO对象
 	        	    // 获取所有收入信息，并存储到List泛型集合中

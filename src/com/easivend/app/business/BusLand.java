@@ -197,42 +197,60 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 					break;
 				case 3:
-					//可以提货
-	    			if(ToolClass.getzhitihuotype(BusLand.this, str.get("cabID"), str.get("huoID")))
-	    			{
-	    				intent = new Intent(BusLand.this, BusZhitihuo.class);// 使用Accountflag窗口初始化Intent
-	    				OrderDetail.setProID(str.get("proID"));
-	    		    	OrderDetail.setProductID(str.get("productID"));
-	    		    	OrderDetail.setProType(str.get("proType"));
-	    		    	OrderDetail.setShouldPay(Float.parseFloat(str.get("prosales")));
-	    		    	OrderDetail.setShouldNo(1);
-	    		    	OrderDetail.setCabID(str.get("cabID"));
-	    		    	OrderDetail.setColumnID(str.get("huoID"));
-	    		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-	    			}
-	    			else
-	    			{
-						intent = new Intent(BusLand.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
-			        	intent.putExtra("proID", str.get("proID"));
-			        	intent.putExtra("productID", str.get("productID"));
-			        	intent.putExtra("proImage", str.get("proImage"));
-			        	intent.putExtra("prosales", str.get("prosales"));
-			        	intent.putExtra("procount", str.get("procount"));
-			        	intent.putExtra("proType", str.get("proType"));//1代表通过商品ID出货,2代表通过货道出货
-			        	intent.putExtra("cabID", str.get("cabID"));//出货柜号,proType=1时无效
-			        	intent.putExtra("huoID", str.get("huoID"));//出货货道号,proType=1时无效
-		
-		
-		//	        	OrderDetail.setProID(proID);
-		//            	OrderDetail.setProductID(productID);
-		//            	OrderDetail.setProType("2");
-		//            	OrderDetail.setCabID(cabID);
-		//            	OrderDetail.setColumnID(huoID);
-		//            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
-		//            	OrderDetail.setShouldNo(1);
-			        	
-			        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-	    			}
+					vmc_columnDAO columnDAO = new vmc_columnDAO(BusLand.this);// 创建InaccountDAO对象		    
+				    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(str.get("cabID"),str.get("huoID"));
+				    if(tb_inaccount!=null)
+				    {
+				    	str.put("productID",tb_inaccount.getProductID().toString());
+				    	str.put("prosales",String.valueOf(tb_inaccount.getSalesPrice()));
+				    	str.put("proImage",tb_inaccount.getAttBatch1());
+				    	str.put("proID",tb_inaccount.getProductID().toString()+"-"+tb_inaccount.getProductName().toString());
+					    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+str.get("proID")+" productID="
+								+str.get("productID")+" proType="
+								+"2"+" cabID="+str.get("cabID")+" huoID="+str.get("huoID")+" prosales="+str.get("prosales")+" count="
+								+"1","log.txt");
+						//可以提货
+		    			if(ToolClass.getzhitihuotype(BusLand.this, str.get("cabID"), str.get("huoID")))
+		    			{
+		    				intent = new Intent(BusLand.this, BusZhitihuo.class);// 使用Accountflag窗口初始化Intent
+		    				OrderDetail.setProID(str.get("proID"));
+		    		    	OrderDetail.setProductID(str.get("productID"));
+		    		    	OrderDetail.setProType(str.get("proType"));
+		    		    	OrderDetail.setShouldPay(Float.parseFloat(str.get("prosales")));
+		    		    	OrderDetail.setShouldNo(1);
+		    		    	OrderDetail.setCabID(str.get("cabID"));
+		    		    	OrderDetail.setColumnID(str.get("huoID"));
+		    		    	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+		    			}
+		    			else
+		    			{
+							intent = new Intent(BusLand.this, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
+				        	intent.putExtra("proID", str.get("proID"));
+				        	intent.putExtra("productID", str.get("productID"));
+				        	intent.putExtra("proImage", str.get("proImage"));
+				        	intent.putExtra("prosales", str.get("prosales"));
+				        	intent.putExtra("procount", str.get("procount"));
+				        	intent.putExtra("proType", str.get("proType"));//1代表通过商品ID出货,2代表通过货道出货
+				        	intent.putExtra("cabID", str.get("cabID"));//出货柜号,proType=1时无效
+				        	intent.putExtra("huoID", str.get("huoID"));//出货货道号,proType=1时无效
+			
+			
+			//	        	OrderDetail.setProID(proID);
+			//            	OrderDetail.setProductID(productID);
+			//            	OrderDetail.setProType("2");
+			//            	OrderDetail.setCabID(cabID);
+			//            	OrderDetail.setColumnID(huoID);
+			//            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
+			//            	OrderDetail.setShouldNo(1);
+				        	
+				        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+		    			}
+				    }
+				    else
+				    {
+				    	// 弹出信息提示
+					    ToolClass.failToast("抱歉，本商品已售完！");					
+				    }
 					break;
 				case 4:
 					intent = new Intent(BusLand.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
@@ -469,7 +487,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode,"log.txt");		
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode+"LAST_CHUHUO="+ToolClass.isLAST_CHUHUO(),"log.txt");		
+    	
     	//4.注册接收器
 		//comBroadreceiver = LocalBroadcastManager.getInstance(this);
 		//comreceiver=new COMReceiver();

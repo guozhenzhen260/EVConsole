@@ -512,6 +512,50 @@ public class vmc_columnDAO
  		db.close();
  		return null;// 如果没有数据，则返回0
     }
+    /**
+     * 获取指定出货货道的商品信息,包括存货余量为0的
+     * 
+     * @return
+     */
+    public Tb_vmc_product getColumnproductforzero(String cabID,String columnID) {
+    	String productID=null;
+    	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        Cursor cursor = db.rawQuery("select productID,pathRemain from vmc_column where cabID=? and columnID=?", 
+        		new String[] { cabID,columnID});// 根据编号查找支出信息，并存储到Cursor类中    	
+		
+        //遍历所有的收入信息
+        if (cursor.moveToNext()) 
+        {	
+        	productID=cursor.getString(cursor.getColumnIndex("productID"));//商品ID
+        	Cursor cursor2 = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
+	        if (cursor2.moveToNext()) 
+	        {// 遍历查找到的支出信息
+	
+	            // 将遍历到的支出信息存储到Tb_outaccount类中
+	        	return new Tb_vmc_product(
+	    				cursor2.getString(cursor2.getColumnIndex("productID")), cursor2.getString(cursor2.getColumnIndex("productName")),
+	    				cursor2.getString(cursor2.getColumnIndex("productDesc")),cursor2.getFloat(cursor2.getColumnIndex("marketPrice")),
+	    				cursor2.getFloat(cursor2.getColumnIndex("salesPrice")),cursor2.getInt(cursor2.getColumnIndex("shelfLife")),
+	    				cursor2.getString(cursor2.getColumnIndex("downloadTime")),cursor2.getString(cursor2.getColumnIndex("onloadTime")),
+	    				cursor2.getString(cursor2.getColumnIndex("attBatch1")), cursor2.getString(cursor2.getColumnIndex("attBatch2")),
+	    				cursor2.getString(cursor2.getColumnIndex("attBatch3")),cursor2.getInt(cursor2.getColumnIndex("paixu")),
+	    				cursor2.getInt(cursor2.getColumnIndex("isdelete"))
+	    		);
+	        }
+	        if (!cursor2.isClosed()) 
+     		{  
+     			cursor2.close();  
+     		} 
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}         
+ 		db.close();
+ 		return null;// 如果没有数据，则返回0
+    }
     
     /**
      * 获取指定出货货道的货道类型

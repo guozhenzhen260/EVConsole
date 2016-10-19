@@ -435,6 +435,7 @@ public class BusZhier extends Activity
 				if(status==1)
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ÎÞÍË¿î","log.txt");
+					ToolClass.setLAST_CHUHUO(true);
 					OrderDetail.addLog(BusZhier.this);					
 					finish();
 				}

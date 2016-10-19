@@ -337,42 +337,21 @@ public class BusinesslandFragment extends Fragment
 		{
 			cabID=huo.substring(0,1);
 		    huoID=huo.substring(1,huo.length());
-		    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
-		    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
-		    if(tb_inaccount!=null)
+//		    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
+//		    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
+//		    if(tb_inaccount!=null)
 		    {
-			    productID=tb_inaccount.getProductID().toString();
-			    prosales=String.valueOf(tb_inaccount.getSalesPrice());
-			    proImage=tb_inaccount.getAttBatch1();
-			    proID=productID+"-"+tb_inaccount.getProductName().toString();
-			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
-						+productID+" proType="
-						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1","log.txt");
+			    productID="";
+			    prosales="";
+			    proImage="";
+			    proID="";
+//			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+//						+productID+" proType="
+//						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+//						+"1","log.txt");
 			    count=0;
 			    huo="";
 			    txtadsTip.setText("");
-//				Intent intent = null;// 创建Intent对象                
-//	        	intent = new Intent(context, BusgoodsSelect.class);// 使用Accountflag窗口初始化Intent
-//	        	intent.putExtra("proID", proID);
-//	        	intent.putExtra("productID", productID);
-//	        	intent.putExtra("proImage", proImage);
-//	        	intent.putExtra("prosales", prosales);
-//	        	intent.putExtra("procount", "1");
-//	        	intent.putExtra("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
-//	        	intent.putExtra("cabID", cabID);//出货柜号,proType=1时无效
-//	        	intent.putExtra("huoID", huoID);//出货货道号,proType=1时无效
-//
-//
-////	        	OrderDetail.setProID(proID);
-////            	OrderDetail.setProductID(productID);
-////            	OrderDetail.setProType("2");
-////            	OrderDetail.setCabID(cabID);
-////            	OrderDetail.setColumnID(huoID);
-////            	OrderDetail.setShouldPay(Float.parseFloat(prosales));
-////            	OrderDetail.setShouldNo(1);
-//	        	
-//	        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 	        	Map<String, String>str=new HashMap<String, String>();
 	        	str.put("proID", proID);
 	        	str.put("productID", productID);
@@ -384,18 +363,18 @@ public class BusinesslandFragment extends Fragment
 	        	str.put("huoID", huoID);//出货货道号,proType=1时无效
 	        	listterner.gotoBusiness(3,str);
 		    }
-		    else
-		    {
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
-						+productID+" proType="
-						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1","log.txt");
-			    count=0;
-			    huo="";
-			    txtadsTip.setText("");
-			    // 弹出信息提示
-			    ToolClass.failToast("抱歉，本商品已售完！");					
-		    }
+//		    else
+//		    {
+//		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+//						+productID+" proType="
+//						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+//						+"1","log.txt");
+//			    count=0;
+//			    huo="";
+//			    txtadsTip.setText("");
+//			    // 弹出信息提示
+//			    ToolClass.failToast("抱歉，本商品已售完！");					
+//		    }
 		    
 		}
     } 

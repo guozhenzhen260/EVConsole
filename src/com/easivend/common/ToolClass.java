@@ -124,7 +124,14 @@ public class ToolClass
 	private static int ServerVer=1;//0旧的后台，1一期的后台
 	public static String version="";//本机版本号
 	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
+	public static boolean LAST_CHUHUO=false;//true上一笔出货成功,false上一笔出货失败
 	
+	public static boolean isLAST_CHUHUO() {
+		return LAST_CHUHUO;
+	}
+	public static void setLAST_CHUHUO(boolean lAST_CHUHUO) {
+		LAST_CHUHUO = lAST_CHUHUO;
+	}
 	//读取文件信息
 	public static boolean  ReadSharedPreferencesAccess()
 	{
