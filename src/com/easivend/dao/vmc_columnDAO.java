@@ -526,7 +526,7 @@ public class vmc_columnDAO
         		new String[] { cabID,columnID});// 根据编号查找支出信息，并存储到Cursor类中    	
 		
         //遍历所有的收入信息
-        if (cursor.moveToNext()) 
+        if (cursor.moveToNext())  
         {	
         	productID=cursor.getString(cursor.getColumnIndex("productID"));//商品ID
         	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID+"余量=0","log.txt");
