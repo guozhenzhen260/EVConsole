@@ -14,6 +14,7 @@
 		android:layout_height="wrap_content"	
 		android:layout_below="@+id/btnadsclass"	 
 		android:layout_marginLeft="15dp" 
+		android:visibility="gone"
 		android:src="@drawable/gmys"			
    	/>
    	<ImageView 
@@ -23,6 +24,7 @@
 		android:layout_below="@+id/btnadsclass"	 
 		android:layout_toRightOf="@+id/ivgmys"	
 		android:layout_marginLeft="5dp" 
+		android:visibility="gone"
 		android:src="@drawable/czjx"			
    	/>	    
     <ImageView 

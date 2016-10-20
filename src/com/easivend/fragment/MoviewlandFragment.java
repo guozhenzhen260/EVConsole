@@ -189,6 +189,7 @@ public class MoviewlandFragment extends Fragment {
                     @Override  
                     public void onCompletion(MediaPlayer mp) {  
                         // TODO Auto-generated method stub  
+                    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<播放完成...","log.txt");
                     	show();//播放完毕再继续下一首  
                     }  
                 });  
@@ -197,7 +198,8 @@ public class MoviewlandFragment extends Fragment {
               
             @Override  
             public boolean onError(MediaPlayer mp, int what, int extra) {  
-                // TODO Auto-generated method stub  
+                // TODO Auto-generated method stub 
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<播放故障...","log.txt");
             	show();//播放出错再继续下一首  
                 return true;  
             }  
