@@ -5,8 +5,8 @@
     android:orientation="vertical" >
     <GridView 
 	    android:id="@+id/gvbusgoodsclass"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
 	    android:layout_alignParentTop="true"
 	    android:columnWidth="337dp"
 	    android:gravity="center"		    

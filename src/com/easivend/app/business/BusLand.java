@@ -566,6 +566,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     	if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<È¡»õÂëÒ³Ãæ","log.txt");
+			ToolClass.setLAST_CHUHUO(true);
 			OrderDetail.addLog(BusLand.this);	
 			switchMovie();
 		}		
