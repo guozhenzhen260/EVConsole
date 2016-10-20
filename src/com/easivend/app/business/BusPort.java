@@ -189,6 +189,7 @@ BushuoFragInteraction
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
+    private int chuhuoLen = 0;//免费出上一个格子柜 
     //=================
     //COM服务相关
     //=================
@@ -446,6 +447,16 @@ BushuoFragInteraction
 	                    {		                    
 	                    }
 		        	}
+	        	  }
+	        	  //判断3分钟内，如果按下空的货道号可以直接出货
+	        	  if(ToolClass.isLAST_CHUHUO())
+	        	  {
+		        		chuhuoLen++;
+		        		if(chuhuoLen>=3*60)
+		        		{
+		        			chuhuoLen=0;
+		        			ToolClass.setLAST_CHUHUO(false);
+		        		}
 	        	  }
 	        } 
 	    }, 1, 1, TimeUnit.SECONDS);       // timeTask 
@@ -1561,7 +1572,7 @@ BushuoFragInteraction
 		if(isPrinter>0)
         {
 			//出货成功,打印凭证
-			if(status==1)
+			if((status==1)&&(OrderDetail.getPayType()!=5))
 			{
 				new Handler().postDelayed(new Runnable() 
 				{
@@ -1606,6 +1617,7 @@ BushuoFragInteraction
         				{
         					//扣钱
         		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
+        					ToolClass.setLAST_CHUHUO(true);
         					Intent intent=new Intent();
         			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
         					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
@@ -1624,6 +1636,7 @@ BushuoFragInteraction
         				if(status==1)
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
+        					ToolClass.setLAST_CHUHUO(true);
         					OrderDetail.addLog(BusPort.this);	
         					zhiposDestroy(1);
         				}
@@ -1642,6 +1655,7 @@ BushuoFragInteraction
         				if(status==1)
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
+        					ToolClass.setLAST_CHUHUO(true);
         					OrderDetail.addLog(BusPort.this);					
         					zhierDestroy(1);
         				}
@@ -1660,6 +1674,7 @@ BushuoFragInteraction
         				if(status==1)
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
+        					ToolClass.setLAST_CHUHUO(true);
         					OrderDetail.addLog(BusPort.this);					
         					zhiweiDestroy(1);
         				}
@@ -1671,11 +1686,18 @@ BushuoFragInteraction
         					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
         					payoutzhiwei();//退款操作									
         				}
-            			break;    			
+            			break;  
+            		//自提密码页面		
+            		case 5:
+            			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自提密码页面","log.txt");
+            			clearamount();
+        				recLen=10;
+            			break;	
             		//取货码页面		
             		case -1:
             			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
-        				OrderDetail.addLog(BusPort.this);					
+            			ToolClass.setLAST_CHUHUO(true);
+            			OrderDetail.addLog(BusPort.this);					
         				clearamount();
         				recLen=10;
             			break;

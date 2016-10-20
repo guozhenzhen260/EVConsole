@@ -220,8 +220,12 @@ public class BushuoFragment extends Fragment
 			status=sta;//出货结果	
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Fragment出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
 			//1.更新出货结果
-			//扣除存货余量
-			chuhuoupdate(cabinetvar,huodaoNo);
+			//不是自提密码的，才扣除存货余量
+			if(OrderDetail.getPayType()!=5)
+			{
+				//扣除存货余量
+				chuhuoupdate(cabinetvar,huodaoNo);
+			}
 			//出货成功
 			if(status==1)
 			{
