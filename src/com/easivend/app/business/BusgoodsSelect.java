@@ -1,18 +1,30 @@
 package com.easivend.app.business;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.easivend.app.business.BusLand.COMReceiver;
+import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.evprotocol.COMThread;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,6 +52,11 @@ public class BusgoodsSelect extends Activity
     private String proType=null;
     private String cabID = null;
 	private String huoID = null;
+	//=================
+    //COM服务相关
+    //=================
+  	LocalBroadcastManager comBroadreceiver;
+  	COMReceiver comreceiver;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +69,16 @@ public class BusgoodsSelect extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busgoodsselect);
 		BusgoodsSelectAct = this;
+		//=============
+  		//COM服务相关
+  		//=============
+		//4.注册接收器
+		comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+		
 		//从商品页面中取得锁选中的商品
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
@@ -300,6 +327,102 @@ public class BusgoodsSelect extends Activity
 		}, SPLASH_DISPLAY_LENGHT);
 	}
 	
+	//2.创建COMReceiver的接收器广播，用来接收服务器同步的内容
+	public class COMReceiver extends BroadcastReceiver 
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent) 
+		{
+			// TODO Auto-generated method stub
+			Bundle bundle=intent.getExtras();
+			int EVWhat=bundle.getInt("EVWhat");
+			switch(EVWhat)
+			{
+			//操作返回	
+			case COMThread.EV_BUTTONMAIN: 
+					SerializableMap serializableMap2 = (SerializableMap) bundle.get("result");
+					Map<String, Integer> Set2=serializableMap2.getMap();
+					ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusSelect 按键操作="+Set2,"com.txt");
+					int EV_TYPE=Set2.get("EV_TYPE");
+					//上报货道按键
+					if(EV_TYPE==COMThread.EV_BUTTONRPT_HUODAO)
+					{
+						if(ToolClass.checkCLIENT_STATUS_SERVICE())
+						{
+							//跳转商品
+							
+							cabID="1";
+						    int huono=Set2.get("btnvalue");
+						    huoID=(huono<=9)?("0"+huono):String.valueOf(huono);
+						    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
+						    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
+						    if(tb_inaccount!=null)
+						    {	
+							    productID=tb_inaccount.getProductID().toString();
+							    prosales=String.valueOf(tb_inaccount.getSalesPrice());
+							    proImage=tb_inaccount.getAttBatch1();
+							    proID=productID+"-"+tb_inaccount.getProductName().toString();
+							    procount="1";
+							    proType="2";
+							    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="+productID+" proImage="
+										+proImage+" prosales="+prosales+" procount="
+										+procount+" proType="+proType+" cabID="+cabID+" huoID="+huoID,"log.txt");						    
+	
+							    /*为什么图片一定要转化为 Bitmap格式的！！ */
+						        Bitmap bitmap = ToolClass.getLoacalBitmap(proImage); //从本地取图片(在cdcard中获取)  //
+						        ivbusgoodselProduct.setImageBitmap(bitmap);// 设置图像的二进制值
+								txtbusgoodselName = (TextView) findViewById(R.id.txtbusgoodselName);
+								txtbusgoodselName.setText(proID);
+								txtbusgoodselAmount = (TextView) findViewById(R.id.txtbusgoodselAmount);
+								if(Integer.parseInt(procount)>0)
+								{
+									txtbusgoodselAmount.setText(prosales);
+								}
+								else
+								{
+									txtbusgoodselAmount.setText("已售罄");
+								}
+								//得到商品描述
+								if(ToolClass.getOrientation()==1)
+								{
+									vmc_productDAO productDAO = new vmc_productDAO(context);// 创建InaccountDAO对象
+								    Tb_vmc_product tb_vmc_product = productDAO.find(productID);
+								    if(ToolClass.isEmptynull(tb_vmc_product.getProductDesc())!=true)
+								    {
+								    	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品Desc="+tb_vmc_product.getProductDesc().toString(),"log.txt");
+									    WebSettings settings = webproductDesc.getSettings();
+									    settings.setSupportZoom(true);
+									    settings.setTextSize(WebSettings.TextSize.LARGEST);
+									    webproductDesc.getSettings().setSupportMultipleWindows(true);
+									    webproductDesc.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY); //设置滚动条样式
+									    webproductDesc.getSettings().setDefaultTextEncodingName("UTF -8");//设置默认为utf-8
+									    webproductDesc.loadDataWithBaseURL(null,tb_vmc_product.getProductDesc().toString(), "text/html; charset=UTF-8","utf-8", null);//这种写法可以正确中文解码
+								    }
+								    else
+								    {
+								    	webproductDesc.setVisibility(View.GONE);
+								    }
+								}
+						    }
+						    else
+						    {
+						    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+										+productID+" proType="
+										+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+										+"1","log.txt");						    
+							    // 弹出信息提示
+							    ToolClass.failToast("抱歉，本商品已售完！");					
+						    }
+						}
+					}	
+					break;
+				
+			}			
+		}
+
+	}
+	
 	private void sendzhifu()
 	{
 		OrderDetail.setProID(proID);
@@ -309,6 +432,21 @@ public class BusgoodsSelect extends Activity
     	OrderDetail.setShouldNo(1);
     	OrderDetail.setCabID(cabID);
     	OrderDetail.setColumnID(huoID);
+    	//=============
+  		//COM服务相关
+  		//=============
+  		//5.解除注册接收器
+  		comBroadreceiver.unregisterReceiver(comreceiver);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		//=============
+		//COM服务相关
+		//=============
+		//5.解除注册接收器
+		comBroadreceiver.unregisterReceiver(comreceiver);
+		super.onDestroy();	
 	}
 	
 }
