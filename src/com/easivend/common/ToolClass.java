@@ -109,7 +109,7 @@ public class ToolClass
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev°üµÄµØÖ·
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//´®¿ÚidºÅ
-	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="";//´®¿ÚÃèÊö·û
+	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="",columncom2="";//´®¿ÚÃèÊö·û
 	private static int bill_err=0,coin_err=0;//Ö½±ÒÆ÷£¬Ó²±ÒÆ÷¹ÊÕÏ×´Ì¬
 	public static String vmc_no="";//±¾»ú±àºÅ
 	public static Bitmap mark=null;//ÊÛÍêÍ¼Æ¬
@@ -224,6 +224,13 @@ public class ToolClass
 		ToolClass.columncom = columncom;
 	}
 	
+		
+	public static String getColumncom2() {
+		return columncom2;
+	}
+	public static void setColumncom2(String columncom2) {
+		ToolClass.columncom2 = columncom2;
+	}
 	public static String getExtracom() {
 		return extracom;
 	}
@@ -1677,7 +1684,7 @@ public class ToolClass
     /**
      * Ð´ÈëÅäÖÃÎÄ¼þ
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String isallopen,
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String columncom2,
     		String posip,String posipport) 
     {
     	File fileName=null;
@@ -1740,7 +1747,7 @@ public class ToolClass
 		        list2.put("extracom", extracom);
 		        list2.put("cardcom", cardcom);
 		        list2.put("printcom", printcom);
-		        list2.put("isallopen", isallopen);	
+		        list2.put("isallopen", columncom2);	
 		        list2.put("posip", posip);
 		        list2.put("posipport", posipport);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
@@ -1762,7 +1769,7 @@ public class ToolClass
   	        	jsonObject.put("extracom", extracom);
   	        	jsonObject.put("cardcom", cardcom);
   	        	jsonObject.put("printcom", printcom);
-  	        	jsonObject.put("isallopen", isallopen);
+  	        	jsonObject.put("isallopen", columncom2);
   	        	jsonObject.put("posip", posip);
   	        	jsonObject.put("posipport", posipport);
   	        	String mapstrString=jsonObject.toString();

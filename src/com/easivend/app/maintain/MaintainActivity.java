@@ -81,7 +81,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null,printcom=null,posip=null,posipport=null;
+    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null,printcom=null,posip=null,posipport=null,columncom2=null;
     final static int REQUEST_CODE=1;   
     //获取货柜信息
    //Map<String,Integer> huoSet=new HashMap<String,Integer>();
@@ -238,6 +238,11 @@ public class MaintainActivity extends Activity
 	        {
 	        	posipport = list.get("posipport");
 	        	ToolClass.setPosipport(posipport);	
+	        }
+	        if(list.containsKey("isallopen"))//设置副柜串口号
+	        {
+				columncom2 = list.get("isallopen");
+				ToolClass.setColumncom2(columncom2);	
 	        }
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        

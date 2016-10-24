@@ -439,6 +439,18 @@ public class BusgoodsSelect extends Activity
   		comBroadreceiver.unregisterReceiver(comreceiver);
 	}
 	
+	//接收BusHuo返回信息
+  	@Override
+  	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+  	{
+  		//4.注册接收器
+		//comBroadreceiver = LocalBroadcastManager.getInstance(this);
+		//comreceiver=new COMReceiver();
+		IntentFilter comfilter=new IntentFilter();
+		comfilter.addAction("android.intent.action.comrec");
+		comBroadreceiver.registerReceiver(comreceiver,comfilter);
+  	}
+	
 	@Override
 	protected void onDestroy() {
 		//=============

@@ -96,28 +96,12 @@
 					android:textStyle="bold"     
 			        android:layout_below="@id/tvcard"        
 			        />
-			    <TextView
-			        android:id="@+id/tvallopen"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_below="@id/txtserver" 
-			        android:text="一直保持应用开启"
-			        android:textColor="#8C6931"
-			        android:textSize="25dp" />
-			    <Switch   
-			       android:id="@+id/switchallopen"  
-			       android:layout_width="wrap_content"  
-			       android:layout_height="wrap_content"  
-			       android:textOn="打开"  
-			       android:textOff="关闭" 
-			       android:layout_below="@id/txtserver" 
-			       android:layout_toRightOf="@+id/tvallopen"/> 
 			    <Button
 			        android:id="@+id/btnClose"
 			        android:layout_width="100dp"
 					android:layout_height="70dp" 
 			        android:layout_alignParentRight="true"
-			        android:layout_below="@id/tvallopen"
+			        android:layout_below="@id/txtserver"
 			        android:layout_marginLeft="10dp"
 			        android:background="@drawable/button_selector"
 			        android:text="退出" />
@@ -126,7 +110,7 @@
 			        android:id="@+id/btnLogin"
 			        android:layout_width="100dp"
 					android:layout_height="70dp" 
-			        android:layout_below="@id/tvallopen"
+			        android:layout_below="@id/txtserver"
 			        android:layout_toLeftOf="@id/btnClose"
 			        android:background="@drawable/button_selector"
 			        android:text="修改" />
@@ -134,7 +118,7 @@
 			        android:id="@+id/btnGaoji"
 			        android:layout_width="100dp"
 					android:layout_height="70dp" 
-			        android:layout_below="@id/tvallopen"
+			        android:layout_below="@id/txtserver"
 			        android:layout_toLeftOf="@id/btnLogin"
 			        android:background="@drawable/button_selector"
 			        android:text="高级设置" /> 
@@ -214,12 +198,31 @@
 					android:textStyle="bold"      
 			        android:layout_below="@id/tvposipport"   
 			        android:numeric="integer" 
+			        />
+			    <TextView
+			        android:id="@+id/tvcolumn2"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/txtposipport"   
+			        android:layout_gravity="center"
+			        android:gravity="center_horizontal"
+			        android:text="请输入副弹簧/升降机柜串口号："
+			        android:textColor="#8C6931"
+			        android:textSize="25dp" />
+			
+			    <EditText
+			        android:id="@+id/txtcolumn2"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"  
+			        android:textSize="40sp"
+					android:textStyle="bold"      
+			        android:layout_below="@id/tvcolumn2"   
 			        />			           
 			  <Button
 			        android:id="@+id/btnDel"
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
-			        android:layout_below="@id/txtposipport"
+			        android:layout_below="@id/txtcolumn2"
 			        android:background="@drawable/button_selector"
 			        android:text="清除商品信息" />   
 			  <Button
