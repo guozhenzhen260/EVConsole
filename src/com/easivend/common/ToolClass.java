@@ -108,7 +108,7 @@ public class ToolClass
 	public final static int WARN=3;
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev包的地址
-	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//串口id号
+	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1,columncom2_id=-1;//串口id号
 	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="",columncom2="";//串口描述符
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
@@ -362,7 +362,14 @@ public class ToolClass
 	public static void setColumncom_id(int columncom_id) {
 		ToolClass.columncom_id = columncom_id;
 	}
-
+	
+	
+	public static int getColumncom2_id() {
+		return columncom2_id;
+	}
+	public static void setColumncom2_id(int columncom2_id) {
+		ToolClass.columncom2_id = columncom2_id;
+	}
 	public static int getCom_id() {
 		return com_id;
 	}
@@ -2538,6 +2545,12 @@ public class ToolClass
 				//Log.i("EV_JNI",perobj.toString());
 				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+elevatorlist.toString(),"com.txt");
         	  }
+              else
+              {
+            	  WriteElevatorFile("");
+                  list=new HashMap<String,Integer>();
+                  elevatorlist=new HashMap<Integer,Integer>();
+              }
         	             
         } catch (Exception e) {
             e.printStackTrace();
@@ -2574,6 +2587,107 @@ public class ToolClass
     	    	
         try {
         	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
+     * 读取升降机副柜配置文件
+     */
+    public static Map<String, Integer> ReadElevatorFile2() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig2.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         elevatorlist2=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+		            elevatorlist2.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+elevatorlist2.toString(),"com.txt");
+        	  }
+        	  else
+              {
+            	  WriteElevatorFile2("");
+                  list=new HashMap<String,Integer>();
+                  elevatorlist2=new HashMap<Integer,Integer>();
+              }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 升降机副柜出货
+     */
+    public static int elevatorChuhuo2(Integer logic)
+    {
+    	int val=0;
+    	if(elevatorlist2!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]elevatorlist2="+elevatorlist2,"com.txt");
+    		if(elevatorlist2.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    val=elevatorlist2.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
+    		}
+    	}
+    	return val;
+    }
+    /**
+     * 写入升降机副柜货道配置文件
+     */
+    public static void WriteElevatorFile2(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig2.txt";
         	 
         	  fileName=new File(sDir);
         	  //如果不存在，则创建文件
@@ -3557,7 +3671,7 @@ public class ToolClass
 		return bentcom_id;
 	}
 	
-	//type=1是现金,2是格子柜，3是弹簧柜,4外协设备串口
+	//type=1是现金,2是格子柜，3是弹簧/升降机柜,4外协设备串口,5是副柜弹簧/升降机柜
 	public static void ResstartPort(int type)
 	{
 		if(type==1)//现金
@@ -3634,6 +3748,25 @@ public class ToolClass
 				String extracom = EVprotocol.EVPortRegister(ToolClass.getExtracom());
 				ToolClass.Log(ToolClass.INFO,"EV_COM","extracomRegister="+extracom,"com.txt");
 				ToolClass.setExtracom_id(ToolClass.Resetportid(extracom));
+			}
+		}
+		else if(type==5)
+		{
+			//打开弹簧柜串口
+			if(ToolClass.getColumncom2().equals("")==false)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom2Release=port="+ToolClass.getColumncom2()+"    port_id="+ToolClass.getColumncom2_id(),"com.txt");
+				String com2 = EVprotocol.EVPortRelease(ToolClass.getColumncom2());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom2Release="+com2,"com.txt");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom2());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom2Register="+columncom,"com.txt");
+				ToolClass.setColumncom2_id(ToolClass.Resetportid(columncom));
 			}
 		}
 	}

@@ -178,6 +178,7 @@ public class MaintainActivity extends Activity
             	ToolClass.ResstartPort(2);
             	ToolClass.ResstartPort(3);
             	ToolClass.ResstartPort(4);
+            	ToolClass.ResstartPort(5);
             	
             	//7.发送指令广播给COMService
         		Intent intent=new Intent();

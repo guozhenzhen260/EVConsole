@@ -5753,18 +5753,33 @@ public class HuodaoTest extends TabActivity
 			// TODO: handle exception
 		}
 		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
-		ToolClass.WriteElevatorFile(allSet.toString());
-		ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
-        // 弹出信息提示
-        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
-	}
+        if(cabinetsetvar==2)
+        {
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
+			ToolClass.WriteElevatorFile2(allSet.toString());
+			ToolClass.addOptLog(HuodaoTest.this,1,"修改物理副柜货道对应表");
+	        // 弹出信息提示
+	        Toast.makeText(HuodaoTest.this, "〖修改物理副柜货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
+			ToolClass.WriteElevatorFile(allSet.toString());
+			ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
+	        // 弹出信息提示
+	        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+        }
+    }
 	
 	//读取逻辑货道实际对应物理货道的文件
 	private void getelevatorfile()
 	{
 		int logic=1,physic;
-		Map<String, Integer> allset=ToolClass.ReadElevatorFile();  
+		Map<String, Integer> allset=null; 
+		if(cabinetsetvar==2)
+			allset=ToolClass.ReadElevatorFile2(); 
+		else
+			allset=ToolClass.ReadElevatorFile(); 
 		if(allset!=null)
 		{
 			//第一层
