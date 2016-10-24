@@ -117,6 +117,8 @@ public class ToolClass
 	public static int extraComType=0;//1使用冰山机型，2使用展示位
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
+	public static Map<Integer, Integer> huodaolist2=null;//保存副柜逻辑货道与物理货道的对应关系
+	public static Map<Integer, Integer> elevatorlist2=null;//保存副柜升降机逻辑货道与物理货道的对应关系
 	public static Map<String, String> selectlist=null;//保存选货按键id与商品id的对应关系
 	public static int orientation=0;//使用横屏还是竖屏模式0横屏,1竖屏
 	public static SSLSocketFactory ssl=null;//ssl网络加密
@@ -2178,6 +2180,12 @@ public class ToolClass
 				//Log.i("EV_JNI",perobj.toString());
 				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
         	  }
+        	  else
+        	  {
+        		  WriteColumnFile("");
+        		  list=new HashMap<String,Integer>();
+        		  huodaolist=new HashMap<Integer,Integer>();
+        	  }
         	             
         } catch (Exception e) {
             e.printStackTrace();
@@ -2210,6 +2218,118 @@ public class ToolClass
     	}
     	return val;
     }
+    
+    
+    /**
+     * 读取副柜货道配置文件
+     */
+    public static Map<String, Integer> ReadColumnFile2() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig2.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         huodaolist2=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+	            	huodaolist2.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist2.toString(),"com.txt");
+        	  }
+        	  else
+        	  {
+        		  WriteColumnFile2("");
+        		  list=new HashMap<String,Integer>();
+        		  huodaolist2=new HashMap<Integer,Integer>();
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 读取副柜逻辑物理货道配置表
+     */
+    public static Map<Integer, Integer> getHuodaolist2() {
+		return huodaolist2;
+	}
+    
+    /**
+     * 副柜弹簧出货
+     */
+    public static int columnChuhuo2(Integer logic)
+    {
+    	int val=0;
+    	if(huodaolist2!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]huodaolist2="+huodaolist2,"com.txt");
+    		if(huodaolist2.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    val=huodaolist2.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
+    		}
+    	}
+    	return val;
+    }
+    
+    /**
+     * 副柜写入货道配置文件
+     */
+    public static void WriteColumnFile2(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig2.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    
     /**
      * 弹簧返回出货结果
      *   GOODS_SOLD_ERR          (1 << 0)   //bit0总故障位

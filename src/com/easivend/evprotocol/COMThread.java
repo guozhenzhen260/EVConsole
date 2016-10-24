@@ -475,7 +475,15 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					Map<String, Integer> list=ToolClass.ReadColumnFile();				
+					Map<String, Integer> list=null;
+					if(cabinet==2)
+					{
+						list=ToolClass.ReadColumnFile2();				
+					}
+					else
+					{
+						list=ToolClass.ReadColumnFile();				
+					}
 										
 					//2.重新组包
 					//往接口回调信息
@@ -503,8 +511,15 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					Map<String, Integer> list8=ToolClass.ReadColumnFile();				
-										
+					Map<String, Integer> list8=null;				
+					if(cabinet==2)
+					{
+						list8=ToolClass.ReadColumnFile2();				
+					}
+					else
+					{
+						list8=ToolClass.ReadColumnFile();				
+					}	
 					//2.重新组包
 					//往接口回调信息
 					allSet.clear();
