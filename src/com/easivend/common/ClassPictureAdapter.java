@@ -87,7 +87,7 @@ public class ClassPictureAdapter extends BaseAdapter
             viewHolder = (ClassViewHolder) arg1.getTag();// 设置提示
         }
         
-        viewHolder.busgoodsclassName.setText("类别:"+pictures.get(arg0).getProclassName());// 设置图像原价
+        viewHolder.busgoodsclassName.setText(pictures.get(arg0).getProclassName());// 设置图像原价
         ToolClass.Log(ToolClass.INFO,"EV_JNI","类别:"+pictures.get(arg0).getProclassName()+"Img2="+pictures.get(arg0).getProImage(),"log.txt");
         if((pictures.get(arg0).getProImage()!=null)&&(pictures.get(arg0).getProImage().equals("0")!=true)&&(pictures.get(arg0).getProImage().equals("")!=true))
         {        	
