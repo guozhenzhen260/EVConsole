@@ -19,6 +19,7 @@
             android:numeric="integer"            
             android:textSize="40sp"
 			android:textStyle="bold"
+			android:password="true"			
 			android:text=""	
         />
     </TableRow>
