@@ -85,6 +85,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -176,6 +177,7 @@ BushuoFragInteraction
     //=================
   	//==pos支付页面相关
   	//=================
+    private int isPos=0;//0没有设置Pos，1有设置Pos
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
@@ -644,6 +646,21 @@ BushuoFragInteraction
 		//***********************
 		//进行pos操作
 		//***********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusPort.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		if(tb_inaccount.getZhifubaofaca()>0)
+    		{
+    			isPos=1;
+    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
+    	        //打开串口
+    	        //ip、端口、串口、波特率必须准确
+    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
+    					,ToolClass.getCardcom(), "9600", mIUserCallback);
+    		}
+    	}				
 		posmainhand=new Handler()
 		{
 
@@ -702,8 +719,7 @@ BushuoFragInteraction
 				            public void run() 
 				            {         
 				            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-								ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-						    	zhiposDestroy(0);
+								zhiposDestroy(0);
 							}
 
 						}, 300);						
@@ -723,7 +739,6 @@ BushuoFragInteraction
 					            @Override
 					            public void run() 
 					            {         
-					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
 					            	zhiposDestroy(1);
 								}
@@ -747,7 +762,6 @@ BushuoFragInteraction
 					            @Override
 					            public void run() 
 					            {         
-					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
 					            	zhiposDestroy(1);
 								}
@@ -1346,8 +1360,7 @@ BushuoFragInteraction
 		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-	    	zhiposDestroy(0);
+			zhiposDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1580,15 +1593,13 @@ BushuoFragInteraction
   		//延时关闭
   		if(type==1)
   		{
-  			mMyApi.pos_release();
-			clearamount();
+  			clearamount();
 			recLen=10;					
   		}
   		//立即关闭
   		else
   		{
-  			mMyApi.pos_release();
-			clearamount();
+  			clearamount();
 	    	viewSwitch(BUSPORT, null);	    	
   		}
   	}
@@ -2479,12 +2490,7 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiposFragment);
-	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
-	            //打开串口
-	            //ip、端口、串口、波特率必须准确
-				mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-						,ToolClass.getCardcom(), "9600", mIUserCallback);
-				//延时
+	            //延时
 			    new Handler().postDelayed(new Runnable() 
 				{
 		            @Override
@@ -2762,7 +2768,15 @@ BushuoFragInteraction
 		//COM服务相关
 		//=============
 		//5.解除注册接收器
-		comBroadreceiver.unregisterReceiver(comreceiver);	
+		comBroadreceiver.unregisterReceiver(comreceiver);
+		//***********************
+		//进行pos操作
+		//***********************
+		if(isPos==1)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
+	    	mMyApi.pos_release();
+		}
 		//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);
