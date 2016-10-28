@@ -266,6 +266,10 @@ public class CahslessTest extends Activity {
   					}
 					else{
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						if(rst.code.equals("01"))
+						{
+							cashbalance=rst.code_info;
+						}
 						childmsg.what=COSTFAIL;
 						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
 					}
@@ -355,13 +359,17 @@ public class CahslessTest extends Activity {
 						if(tmp_spec!=null && tmp_spec_len>(2+19)){
 							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19).trim();
 						}
+						//【剩余金额】
+						if(tmp_spec!=null && tmp_spec_len>(2+19)){
+							cashbalance = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26-12),(tmp_spec_len-26)).trim();
+						}
 						//【临时交易流水号】
 						if(tmp_spec!=null && tmp_spec_len>26){
 							rfd_spec_tmp_serial = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26),tmp_spec_len);
 						}else{//使用空格时，表示上一次的【临时交易流水号】
 							rfd_spec_tmp_serial = String.format("%1$-26s","");
 						}
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial+"剩余金额="+cashbalance,"com.txt");
 						childmsg.what=QUERYSUCCESS;
 						childmsg.obj="返回成功="+tmp;
 					}
