@@ -4,6 +4,7 @@ import com.easivend.common.ToolClass;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
@@ -12,7 +13,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 
-public class MobileService extends Service 
+public class MobileService extends Service implements WifiChangeBroadcastReceiver.BRInteraction
 {
 	TelephonyManager        Tel;
     MyPhoneStateListener    MyListener;
@@ -65,9 +66,23 @@ public class MobileService extends Service
         MyListener   = new MyPhoneStateListener();        
         Tel       = ( TelephonyManager )getSystemService(Context.TELEPHONY_SERVICE); 
         Tel.listen(MyListener ,PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        //wifi相关
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.wifi.RSSI_CHANGED");
+        WifiChangeBroadcastReceiver dianLiangBR = new WifiChangeBroadcastReceiver();
+        registerReceiver(dianLiangBR, intentFilter);
+        dianLiangBR.setBRInteractionListener(this);
 	}
 	
-		
+	@Override
+    public void setText(String content) {
+        if (content != null) 
+        {
+//        	txt.setText("wifi信号:"+content);
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","wifi信号:"+content,"jni.txt");
+        }
+    }
+	
 	private class MyPhoneStateListener extends PhoneStateListener
 	{ 
       /* Get the Signal strength from the provider, each tiome there is an update  从得到的信号强度,每个tiome供应商有更新*/

@@ -259,6 +259,8 @@
 				<action android:name="shutdownalarm" />
 			</intent-filter>
 		</receiver>
+		<receiver android:name="com.easivend.view.WifiChangeBroadcastReceiver"/> 
+		
 	    <service
             android:name="com.easivend.view.DogService"/>
 	    <service
