@@ -29,6 +29,7 @@ import android.view.View.OnTouchListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MoviewlandFragment extends Fragment {
 	//VideoView
@@ -39,6 +40,7 @@ public class MoviewlandFragment extends Fragment {
     private List<String> mMusicList = new ArrayList<String>();  
     private WebView webtishiInfo;
     private ImageView ivads=null;
+    private TextView txtcashlessamount=null;
     private List<String> imgMusicList = new ArrayList<String>();  
     private boolean viewvideo=false;
     private final int SPLASH_DISPLAY_LENGHT = 30000; // —”≥Ÿ30√Î
@@ -92,6 +94,8 @@ public class MoviewlandFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_movieland, container, false);  
 		context=this.getActivity();//ªÒ»°activityµƒcontext
+		txtcashlessamount=(TextView)view.findViewById(R.id.txtcashlessamount);
+		txtcashlessamount.setVisibility(View.GONE);//ø®”‡∂Óπÿ±’
 		videoView=(MyVideoView)view.findViewById(R.id.video);
 		//µ√µΩÃ· æ√Ë ˆ
 		webtishiInfo = (WebView) view.findViewById(R.id.webtishiInfo); 
@@ -137,6 +141,25 @@ public class MoviewlandFragment extends Fragment {
 			imgMusicList.clear();
 			listFiles(); 
 			startVideo();
+		}
+		
+		@Override
+		public void BusportCashless(String cashbalance) {
+			// TODO Auto-generated method stub
+			ToolClass.Log(ToolClass.INFO,"EV_COM","APP<ø®”‡∂Ó="+cashbalance,"com.txt");			
+			txtcashlessamount.setVisibility(View.VISIBLE);
+			txtcashlessamount.setText("ø®”‡∂Ó:"+cashbalance);
+			//—” ±
+		    new Handler().postDelayed(new Runnable() 
+			{
+	            @Override
+	            public void run() 
+	            {   
+	            	txtcashlessamount.setText("");
+	            	txtcashlessamount.setVisibility(View.GONE);
+				}
+
+			}, 5000);
 		}
 
 	}
