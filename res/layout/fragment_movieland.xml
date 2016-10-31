@@ -27,6 +27,15 @@
 	       android:layout_height="wrap_content"
 	       android:src="@drawable/ditu" />
 	 <TextView 	
+        android:id="@+id/txtditu"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="点击屏幕购买"
+		android:textColor="@android:color/white"
+		android:layout_alignParentBottom="true"
+	    android:layout_centerHorizontal="true"
+        android:textSize="60dp"/>
+	 <TextView 	
         android:id="@+id/txtcashlessamount"
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"

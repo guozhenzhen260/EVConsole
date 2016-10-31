@@ -748,11 +748,7 @@ BushuoFragInteraction
 		
 								}, 300);
 							}
-						}
-						else if((gotoswitch==BUSPORT)||(gotoswitch==0))
-						{
-							finish();
-						}						
+						}					
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						if(ispayoutopt==1)
@@ -898,27 +894,16 @@ BushuoFragInteraction
 //    	Intent intent = new Intent();
 //    	intent.setClass(BusPort.this, PassWord.class);// 使用AddInaccount窗口初始化Intent
 //        startActivityForResult(intent, PWD_CODE);
-		//***********************
-		//进行pos操作
-		//***********************
-		if(isPos==1)
+		//延时0.5s
+	    new Handler().postDelayed(new Runnable() 
 		{
-			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
-	    	mMyApi.pos_cancel();
-		}
-		else
-		{
-			//延时0.5s
-		    new Handler().postDelayed(new Runnable() 
-			{
-	            @Override
-	            public void run() 
-	            {      
-	            	finish(); 
-	            }
-	
-			}, 500);
-		}
+            @Override
+            public void run() 
+            {      
+            	finish(); 
+            }
+
+		}, 500);
 	}
 	//步骤三、实现Business接口,转到商品购物页面
 	//buslevel跳转到的页面
@@ -2833,8 +2818,9 @@ BushuoFragInteraction
 		//***********************
 		if(isPos==1)
 		{
-			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-	    	mMyApi.pos_release();
+			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销读卡器","com.txt");
+//	    	mMyApi.pos_release();//串口不用关闭了
+            mMyApi.pos_cancel();  
 		}
 		//退出时，返回intent
         Intent intent=new Intent();
