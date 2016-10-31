@@ -78,8 +78,11 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
     public void setText(String content) {
         if (content != null) 
         {
-//        	txt.setText("wifi信号:"+content);
         	ToolClass.Log(ToolClass.INFO,"EV_JNI","wifi信号:"+content,"jni.txt");
+        	if(ToolClass.getNetType()==2)
+        	{
+        		ToolClass.setNetStr("wifi信号:"+content);
+        	}
         }
     }
 	
@@ -93,8 +96,11 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
           super.onSignalStrengthsChanged(signalStrength);
           ToolClass.Log(ToolClass.INFO,"EV_JNI","GSM 信号 = "
                   + String.valueOf(signalStrength.getGsmSignalStrength()),"jni.txt");
-          ToolClass.setNetStr("GSM 信号 = "
-             + String.valueOf(signalStrength.getGsmSignalStrength()));
+          if(ToolClass.getNetType()==3)
+      	  {
+	          ToolClass.setNetStr("GSM 信号 = "
+	             + String.valueOf(signalStrength.getGsmSignalStrength()));
+      	  }
       } 
     };/* End of private Class */
 
