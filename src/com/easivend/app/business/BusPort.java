@@ -177,7 +177,7 @@ BushuoFragInteraction
     //=================
   	//==pos支付页面相关
   	//=================
-    private int isPos=0;//0没有设置Pos，1有设置Pos
+    private int isPos=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
@@ -653,15 +653,20 @@ BushuoFragInteraction
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
+    		isPos=tb_inaccount.getZhifubaofaca();
     		if(tb_inaccount.getZhifubaofaca()>0)
     		{
-    			isPos=1;
     			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
     	        //打开串口
     	        //ip、端口、串口、波特率必须准确
     			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
     					,ToolClass.getCardcom(), "9600", mIUserCallback);
-    			mMyApi.pos_query(mIUserCallback);
+    			//有查询功能
+    			if(isPos==1)
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+    				mMyApi.pos_query(mIUserCallback);
+    			}
     		}
     	}				
 		posmainhand=new Handler()
@@ -796,13 +801,21 @@ BushuoFragInteraction
 						}
 						break;	
 					case CahslessTest.FINDSUCCESS:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
-						mMyApi.pos_query(mIUserCallback);
-						listternermovie.BusportCashless(cashbalance);
+						//有查询功能
+						if(isPos==1)
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+							mMyApi.pos_query(mIUserCallback);
+							listternermovie.BusportCashless(cashbalance);
+						}
 						break;
 					case CahslessTest.FINDFAIL:
-						ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
-						mMyApi.pos_query(mIUserCallback);
+						//有查询功能
+						if(isPos==1)
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+							mMyApi.pos_query(mIUserCallback);
+						}
 						break;
 				}
 			}
@@ -2541,12 +2554,31 @@ BushuoFragInteraction
 	            //***********************
 	    		//进行pos操作
 	    		//***********************
-	    		if(isPos==1)
-	    		{
-	    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
-	    			waitpos=1;
-	    			mMyApi.pos_cancel();	    	    	
-	    		}	            	           
+	            if(isPos>0)
+	            {
+		    		if(isPos==1)
+		    		{
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
+		    			waitpos=1;
+		    			mMyApi.pos_cancel();	    	    	
+		    		}	
+		    		else
+		    		{
+		    			//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+				            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+				            	listterner.BusportTsxx("提示信息：请刷卡");
+								mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+						    	iszhipos=1;
+							}
+	
+						}, 500);
+		    		}
+	            }
 				break;	
 			case BUSHUO://出货页面	
 				recLen=10*60;
