@@ -127,7 +127,15 @@ public class ToolClass
 	public static String version="";//本机版本号
 	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
 	public static boolean LAST_CHUHUO=false;//true上一笔出货成功,false上一笔出货失败
+	public static int netType=0;//网络类型1.有线,2.wifi,3.4gmobile,4无网络
 	
+	
+	public static int getNetType() {
+		return netType;
+	}
+	public static void setNetType(int netType) {
+		ToolClass.netType = netType;
+	}
 	public static boolean isLAST_CHUHUO() {
 		return LAST_CHUHUO;
 	}

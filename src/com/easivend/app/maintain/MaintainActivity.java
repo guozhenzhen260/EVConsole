@@ -33,6 +33,7 @@ import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.easivend.view.DogService;
 import com.easivend.view.EVServerService;
+import com.easivend.view.MobileService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusLand;
@@ -124,6 +125,8 @@ public class MaintainActivity extends Activity
 		//获取本应用context
 		ToolClass.setContext(getApplicationContext());
 		
+		//启动网络监测服务
+		startService(new Intent(this,MobileService.class));
 		//==========
 		//Dog服务相关
 		//==========

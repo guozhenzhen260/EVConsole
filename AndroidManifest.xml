@@ -267,6 +267,8 @@
             android:name="com.easivend.view.COMService"/>
 	    <service
             android:name="com.easivend.view.AlarmService"/>
+	    <service
+            android:name="com.easivend.view.MobileService"/>
     </application>
     <!--允许改变配置信息的权限 -->
     <uses-permission android:name = "android.permission.CHANGE_CONFIGURATION"></uses-permission>
@@ -293,4 +295,5 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.READ_LOGS" />
+	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/> 
 </manifest>

@@ -39,7 +39,7 @@ public class MoviewlandFragment extends Fragment {
     Random r=new Random(); 
     private List<String> mMusicList = new ArrayList<String>();  
     private WebView webtishiInfo;
-    private ImageView ivads=null;
+    private ImageView ivads=null,ivmobile=null;
     private TextView txtcashlessamount=null;
     private List<String> imgMusicList = new ArrayList<String>();  
     private boolean viewvideo=false;
@@ -95,7 +95,7 @@ public class MoviewlandFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_movieland, container, false);  
 		context=this.getActivity();//获取activity的context
 		txtcashlessamount=(TextView)view.findViewById(R.id.txtcashlessamount);
-		txtcashlessamount.setVisibility(View.GONE);//卡余额关闭
+		txtcashlessamount.setVisibility(View.GONE);//卡余额关闭		
 		videoView=(MyVideoView)view.findViewById(R.id.video);
 		//得到提示描述
 		webtishiInfo = (WebView) view.findViewById(R.id.webtishiInfo); 
@@ -108,6 +108,23 @@ public class MoviewlandFragment extends Fragment {
 				changefragment();
 			}
 		});
+		//得到网络状态
+		ivmobile=(ImageView)view.findViewById(R.id.ivmobile);
+		switch(ToolClass.getNetType())
+		{
+			case 1:
+				ivmobile.setImageResource(R.drawable.network);
+				break;
+			case 2:
+				ivmobile.setImageResource(R.drawable.wifi);
+				break;
+			case 3:
+				ivmobile.setImageResource(R.drawable.mobile);
+				break;	
+			case 4:
+				ivmobile.setImageResource(R.drawable.nosignal);
+				break;	
+		}
 		listFiles(); 
 		startVideo();
 		/**
