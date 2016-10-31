@@ -1,7 +1,6 @@
 package com.easivend.view;
 
 import com.easivend.common.ToolClass;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +8,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
+import android.telephony.TelephonyManager;
 
 public class MobileService extends Service 
 {
+	TelephonyManager        Tel;
+    MyPhoneStateListener    MyListener;
+    
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
@@ -55,8 +60,27 @@ public class MobileService extends Service
         }
         ToolClass.Log(ToolClass.INFO,"EV_JNI","启动网络监测服务="+ToolClass.getNetType(),"jni.txt");
 		
+        
+        //4g相关
+        MyListener   = new MyPhoneStateListener();        
+        Tel       = ( TelephonyManager )getSystemService(Context.TELEPHONY_SERVICE); 
+        Tel.listen(MyListener ,PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 	}
 	
-	
+		
+	private class MyPhoneStateListener extends PhoneStateListener
+	{ 
+      /* Get the Signal strength from the provider, each tiome there is an update  从得到的信号强度,每个tiome供应商有更新*/
+ 
+      @Override 
+      public void onSignalStrengthsChanged(SignalStrength signalStrength)
+      {
+          super.onSignalStrengthsChanged(signalStrength);
+          ToolClass.Log(ToolClass.INFO,"EV_JNI","GSM 信号 = "
+                  + String.valueOf(signalStrength.getGsmSignalStrength()),"jni.txt");
+          ToolClass.setNetStr("GSM 信号 = "
+             + String.valueOf(signalStrength.getGsmSignalStrength()));
+      } 
+    };/* End of private Class */
 
 }
