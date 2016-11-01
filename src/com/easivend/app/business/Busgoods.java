@@ -1,5 +1,6 @@
 package com.easivend.app.business;
 
+import com.easivend.common.AudioSound;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
@@ -50,6 +51,7 @@ public class Busgoods extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busgoods);
 		BusgoodsAct = this;
+		AudioSound.playbusiness();
 		this.gvbusgoodsProduct=(GridView) findViewById(R.id.gvbusgoodsProduct);
 		this.imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
 		this.imgback=(ImageView)findViewById(R.id.imgback);

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.easivend.app.business.BusLand.COMReceiver;
 import com.easivend.app.maintain.MaintainActivity;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -69,6 +70,7 @@ public class BusgoodsSelect extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busgoodsselect);
 		BusgoodsSelectAct = this;
+		AudioSound.playbusselect();
 		//=============
   		//COM服务相关
   		//=============

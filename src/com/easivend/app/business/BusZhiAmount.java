@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -82,6 +83,7 @@ public class BusZhiAmount  extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhiamount);
 		BusZhiAmountAct = this;
+		AudioSound.playbuszhiamount();
 		//从商品页面中取得锁选中的商品
 //		Intent intent=getIntent();
 //		Bundle bundle=intent.getExtras();
@@ -507,6 +509,7 @@ public class BusZhiAmount  extends Activity
 		if(money>0)
 		{
 			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
+			AudioSound.playbuspayout();
 			new Handler().postDelayed(new Runnable() 
 			{
 	            @Override
@@ -582,6 +585,7 @@ public class BusZhiAmount  extends Activity
   	
   	@Override
 	protected void onDestroy() {
+  		AudioSound.playbusfinish();
   		timer.shutdown(); 
 		//=============
   		//COM服务相关

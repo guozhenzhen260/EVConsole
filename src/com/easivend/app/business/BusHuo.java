@@ -11,6 +11,7 @@ import java.util.Queue;
 
 import com.bean.ComBean;
 import com.easivend.app.maintain.PrintTest;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -346,6 +347,16 @@ public class BusHuo extends Activity
 						txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 						chuhuoLog(1);//记录日志
 						ivbushuoquhuo.setImageResource(R.drawable.chusuccessland);
+						//格子柜
+						if(cabinetTypevar==5)
+						{
+							AudioSound.playbushuogezi();
+						}
+						//普通柜
+						else
+						{
+							AudioSound.playbushuotang();
+						}
 						//=======
 						//打印机相关
 						//=======
