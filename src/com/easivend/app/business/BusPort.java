@@ -21,6 +21,7 @@ import com.easivend.app.maintain.CahslessTest;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.app.maintain.PrintTest;
 import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -1102,6 +1103,7 @@ BushuoFragInteraction
 			clearamount();
 			viewSwitch(BUSPORT, null);
 		}
+    	AudioSound.playbusfinish();
 	}
 	
 	
@@ -1209,6 +1211,7 @@ BushuoFragInteraction
   	private void payoutzhier()
   	{
   		//if(ercheckopt())
+  		AudioSound.playbuspayout();
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
@@ -1246,6 +1249,7 @@ BushuoFragInteraction
   			clearamount();
 	    	viewSwitch(BUSPORT, null);
   		}
+  		AudioSound.playbusfinish();
   	}
     
     //=======================
@@ -1324,6 +1328,7 @@ BushuoFragInteraction
   	private void payoutzhiwei()
   	{
   		//if(ercheckopt())
+  		AudioSound.playbuspayout();
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
@@ -1389,6 +1394,7 @@ BushuoFragInteraction
   			clearamount();
 	    	viewSwitch(BUSPORT, null);
   		}
+  		AudioSound.playbusfinish();
   	}
   	
     //=======================
@@ -1429,7 +1435,8 @@ BushuoFragInteraction
   	private void payoutzhipos()
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
-    	mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+  		AudioSound.playbuspayout();
+  		mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
   	}
   
   	//接口返回
@@ -1663,6 +1670,7 @@ BushuoFragInteraction
         	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
         	mMyApi.pos_query(mIUserCallback);
         }
+        AudioSound.playbusfinish();
   	}
   	
   	
@@ -1853,6 +1861,7 @@ BushuoFragInteraction
 		if(money>0)
 		{
 			dialog= ProgressDialog.show(BusPort.this,"正在退币中,金额"+money,"请稍候...");
+			AudioSound.playbuspayout();
 			new Handler().postDelayed(new Runnable() 
 			{
 	            @Override
@@ -2409,6 +2418,7 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsclassFragment);
+	            AudioSound.playbusiness();
 				break;
 			case BUSGOODS:
 				isbus=false;
@@ -2425,6 +2435,7 @@ BushuoFragInteraction
 		        busgoodsFragment.setArguments(data);
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsFragment);
+	            AudioSound.playbusiness();
 				break;
 			case BUSGOODSSELECT:
 				isbus=false;
@@ -2465,6 +2476,7 @@ BushuoFragInteraction
 	        	busgoodsselectFragment.setArguments(data);
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsselectFragment);
+	            AudioSound.playbusselect();
 				break;
 			case BUSZHIAMOUNT://现金支付
 				isbus=false;
@@ -2494,6 +2506,7 @@ BushuoFragInteraction
 		            }
 
 				}, 1500);
+			    AudioSound.playbuszhiamount();
 				break;	
 			case BUSZHIER://支付宝支付
 				isbus=false;
@@ -2516,7 +2529,8 @@ BushuoFragInteraction
 		        		sendzhier();
 		            }
 
-				}, 1500);		            
+				}, 1500);	
+			    AudioSound.playbuszhier();
 				break;
 			case BUSZHIWEI://微信支付
 				isbus=false;
@@ -2539,7 +2553,8 @@ BushuoFragInteraction
 		        		sendzhiwei();
 		            }
 
-				}, 1500);	           
+				}, 1500);	
+			    AudioSound.playbuszhiwei();
 				break;	
 			case BUSZHIPOS://pos支付
 				isbus=false;
@@ -2579,6 +2594,7 @@ BushuoFragInteraction
 						}, 500);
 		    		}
 	            }
+	            AudioSound.playbuszhipos();
 				break;	
 			case BUSHUO://出货页面	
 				recLen=10*60;

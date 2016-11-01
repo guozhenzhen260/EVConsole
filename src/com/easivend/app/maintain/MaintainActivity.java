@@ -39,6 +39,7 @@ import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusLand;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusZhitihuo;
+import com.easivend.common.AudioSound;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -127,6 +128,8 @@ public class MaintainActivity extends Activity
 		
 		//启动网络监测服务
 		startService(new Intent(this,MobileService.class));
+		//加载声音文件
+		AudioSound.initsound();
 		//==========
 		//Dog服务相关
 		//==========

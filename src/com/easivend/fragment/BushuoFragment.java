@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_columnDAO;
@@ -233,6 +234,16 @@ public class BushuoFragment extends Fragment
 				txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 				chuhuoLog(1);//记录日志
 				ivbushuoquhuo.setImageResource(R.drawable.chusuccess);
+				//格子柜
+				if(cabinetTypevar==5)
+				{
+					AudioSound.playbushuogezi();
+				}
+				//普通柜
+				else
+				{
+					AudioSound.playbushuotang();
+				}
 			}
 			else
 			{
