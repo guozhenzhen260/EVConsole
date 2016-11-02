@@ -3,9 +3,11 @@ package com.easivend.fragment;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.easivend.app.business.BusPort;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
+import com.easivend.dao.vmc_classDAO;
 import com.example.evconsole.R;
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
@@ -29,6 +32,7 @@ public class BusgoodsFragment extends Fragment
 	GridView gvbusgoodsProduct=null;
 	String proclassID=null;
 	ImageView imgbtnbusgoodsback=null,imgback=null,imgnext=null;
+	Button btnreturn=null;
 	TextView txtpage=null;
 	private String[] proID = null,pageproID=null;
 	private String[] productID = null,pageproductID = null;
@@ -73,6 +77,7 @@ public class BusgoodsFragment extends Fragment
          * @param str
          */
         void BusgoodsSwitch(Map<String, String> str);//切换到BusgoodsSelect页面
+        void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面  
         void BusgoodsFinish();      //切换到business页面
     }
     @Override
@@ -152,6 +157,23 @@ public class BusgoodsFragment extends Fragment
 		    	listterner.BusgoodsFinish();//步骤二、fragment向activity发送回调信息
 		    }
 		});
+		btnreturn=(Button)view.findViewById(R.id.btnreturn);
+	    btnreturn.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	vmc_classDAO classdao = new vmc_classDAO(context);// 创建InaccountDAO对象
+		    	long count=classdao.getCount();
+		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count,"log.txt");
+		    	if(count>0)
+		    	{
+		    		listterner.gotoBusiness(BusPort.BUSGOODSCLASS,null);
+		    	}
+		    	else
+		    	{
+		    		listterner.BusgoodsFinish();//步骤二、fragment向activity发送回调信息
+		    	}
+		    }
+		});	
 		
 		gvbusgoodsProduct.setOnItemClickListener(new OnItemClickListener() {// 为GridView设置项单击事件
             @Override

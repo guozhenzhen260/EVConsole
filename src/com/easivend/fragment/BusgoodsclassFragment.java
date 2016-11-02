@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
@@ -25,6 +26,7 @@ public class BusgoodsclassFragment extends Fragment
 {
 	GridView gvbusgoodsclass=null;
 	ImageView imgbtnbusgoodsback=null;
+	Button btnreturn=null;
 	private Context context;
 	
 	//=========================
@@ -111,7 +113,14 @@ public class BusgoodsclassFragment extends Fragment
 		    public void onClick(View arg0) {
 		    	listterner.BusgoodsclassFinish();//步骤二、fragment向activity发送回调信息
 		    }
-		});	   
+		});	 
+	    btnreturn=(Button)view.findViewById(R.id.btnreturn);
+	    btnreturn.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	listterner.BusgoodsclassFinish();//步骤二、fragment向activity发送回调信息
+		    }
+		});	 
 		return view;
 	}
 }

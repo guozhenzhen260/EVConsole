@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -137,6 +138,7 @@ BushuoFragInteraction
 	public static final int BUSHUO=8;//出货页面
 	private int gotoswitch=0;//当前跳转到哪个页面
 	private int con=0;
+	private Map<String, String> proclassID=new HashMap<String, String>();//商品分类id，保存当前进入的是哪个商品分类
 	//进度对话框
 	ProgressDialog dialog= null;
 	private String zhifutype = "0";//支付方式0=现金1=pos 3=二维码4=微支付 -1=取货码,5自提密码
@@ -1050,6 +1052,12 @@ BushuoFragInteraction
 		// TODO Auto-generated method stub
 		viewSwitch(BUSPORT, null);
 	}
+	//步骤三、实现Busgoodsselect接口,转到首页面
+	@Override
+	public void BusgoodsSwitch() {
+		// TODO Auto-generated method stub
+		viewSwitch(BUSGOODS, proclassID);
+	}
 	
 	//=======================
 	//实现Buszhiamount页面相关接口
@@ -1093,7 +1101,7 @@ BushuoFragInteraction
 	    	clearamount();
   			//关闭纸币硬币器
   	    	BillEnable(0);
-  	    	recLen=10;
+  	    	recLen=3;
 		}
 		//立即关闭
 		else
@@ -1241,7 +1249,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;			
+			recLen=3;			
   		}
   		//立即关闭
   		else
@@ -1386,7 +1394,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;			
+			recLen=3;			
   		}
   		//立即关闭
   		else
@@ -1654,7 +1662,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;					
+			recLen=3;					
   		}
   		//立即关闭
   		else
@@ -1834,7 +1842,7 @@ BushuoFragInteraction
             		case 5:
             			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自提密码页面","log.txt");
             			clearamount();
-        				recLen=10;
+        				recLen=3;
             			break;	
             		//取货码页面		
             		case -1:
@@ -1842,7 +1850,7 @@ BushuoFragInteraction
             			ToolClass.setLAST_CHUHUO(true);
             			OrderDetail.addLog(BusPort.this);					
         				clearamount();
-        				recLen=10;
+        				recLen=3;
             			break;
             	}
             }
@@ -2428,6 +2436,7 @@ BushuoFragInteraction
 				if (busgoodsFragment == null) {
 					busgoodsFragment = new BusgoodsFragment();
 	            }
+				proclassID=str;
 				//步骤五、传递这个数据给friendfragment
 				//传递数据
 		        data.clear();
