@@ -1702,6 +1702,78 @@ public class ToolClass
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //对所有的串口配置进行检测，如果全部为空，则说明文件损坏，需要重新导入
+        finally
+        {
+        	boolean errfile=true;//true代表文件损坏
+        	if(list!=null)
+    		{
+//    			if(list.containsKey("com"))//设置现金串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("com"))==false)
+//    			        	&&(list.get("com").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    			if(list.containsKey("bentcom"))//设置格子柜串口号
+//    			{
+//    				if((ToolClass.isEmptynull(list.get("bentcom"))==false)
+//    			        	&&(list.get("bentcom").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    			if(list.containsKey("columncom"))//设置主柜串口号
+//    			{
+//    				if((ToolClass.isEmptynull(list.get("columncom"))==false)
+//    			        	&&(list.get("columncom").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    	        if(list.containsKey("extracom"))//设置外协串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("extracom"))==false)
+//    			        	&&(list.get("extracom").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    	        if(list.containsKey("cardcom"))//设置读卡器串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("cardcom"))==false)
+//    			        	&&(list.get("cardcom").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }	
+//    	        if(list.containsKey("printcom"))//设置打印机串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("printcom"))==false)
+//    			        	&&(list.get("printcom").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    	        if(list.containsKey("posip"))//设置外协串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("posip"))==false)
+//    			        	&&(list.get("posip").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    	        if(list.containsKey("posipport"))//设置外协串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("posipport"))==false)
+//    			        	&&(list.get("posipport").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }
+//    	        if(list.containsKey("isallopen"))//设置副柜串口号
+//    	        {
+//    				if((ToolClass.isEmptynull(list.get("isallopen"))==false)
+//    			        	&&(list.get("isallopen").equals("null")==false)
+//    			        )
+//    					errfile=false;
+//    	        }        
+//    	        ---- 
+    		}
+        }
         return list;
     }
     
@@ -1989,7 +2061,7 @@ public class ToolClass
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-	    					0,0,"",0,0,0,1,0,0,0,"",0,
+	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
 	    					0,0, 0,0,0,"","");
 	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
 	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
