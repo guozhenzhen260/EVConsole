@@ -435,6 +435,20 @@ public class MaintainActivity extends Activity
     		}
     		startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
     	}
+    	else
+		{
+			//横屏
+			if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+			{
+				intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+			}
+			//竖屏
+			else
+			{
+				intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+			}	
+			startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+		}	
 	}
 	
 	//Dog服务的配置:1.保持常打开,0不保持打开
