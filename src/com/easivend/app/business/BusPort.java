@@ -26,6 +26,7 @@ import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
@@ -263,6 +264,7 @@ BushuoFragInteraction
         //刷新广告页面
         void BusportAds();      //刷新广告列表
         void BusportCashless(String cashbalance);//卡余额
+        void BusportVideoStop(int type);//type=0暂停视频播放,1恢复视频播放
     }
         
     /**
@@ -928,6 +930,7 @@ BushuoFragInteraction
 	{
 		if(ToolClass.checkCLIENT_STATUS_SERVICE())
 		{
+			listternermovie.BusportVideoStop(0);
 			viewSwitch(buslevel, str);
 		}
 	}
@@ -1030,6 +1033,22 @@ BushuoFragInteraction
 		// TODO Auto-generated method stub
 		viewSwitch(BUSGOODSSELECT, str);
 	}
+	//步骤三、实现Busgoodsclass接口,转到分类或者首页面
+	@Override
+	public void gotoBusClass() {
+		// TODO Auto-generated method stub		
+		vmc_classDAO classdao = new vmc_classDAO(BusPort.this);// 创建InaccountDAO对象
+    	long count=classdao.getCount();
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count,"log.txt");
+    	if(count>0)
+    	{
+    		viewSwitch(BUSGOODSCLASS, null);
+    	}
+    	else
+    	{
+    		viewSwitch(BUSPORT, null);
+    	}
+	}
 	//步骤三、实现Busgoodsclass接口,转到首页面
 	@Override
 	public void BusgoodsFinish() {
@@ -1101,7 +1120,8 @@ BushuoFragInteraction
 	    	clearamount();
   			//关闭纸币硬币器
   	    	BillEnable(0);
-  	    	recLen=3;
+  	    	recLen=10;
+  	    	AudioSound.playbusfinish();
 		}
 		//立即关闭
 		else
@@ -1111,7 +1131,6 @@ BushuoFragInteraction
 			clearamount();
 			viewSwitch(BUSPORT, null);
 		}
-    	AudioSound.playbusfinish();
 	}
 	
 	
@@ -1249,15 +1268,15 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;			
+			recLen=10;			
   		}
   		//立即关闭
   		else
   		{
   			clearamount();
 	    	viewSwitch(BUSPORT, null);
+	  		AudioSound.playbusfinish();
   		}
-  		AudioSound.playbusfinish();
   	}
     
     //=======================
@@ -1394,7 +1413,8 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;			
+			recLen=10;	
+	  		AudioSound.playbusfinish();
   		}
   		//立即关闭
   		else
@@ -1402,7 +1422,6 @@ BushuoFragInteraction
   			clearamount();
 	    	viewSwitch(BUSPORT, null);
   		}
-  		AudioSound.playbusfinish();
   	}
   	
     //=======================
@@ -1662,13 +1681,14 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;					
+			recLen=10;	
+	        AudioSound.playbusfinish();
   		}
   		//立即关闭
   		else
   		{
   			clearamount();
-	    	viewSwitch(BUSPORT, null);	    	
+	    	viewSwitch(BUSPORT, null);		    	
   		}
   	    //***********************
 		//进行pos操作
@@ -1678,7 +1698,6 @@ BushuoFragInteraction
         	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
         	mMyApi.pos_query(mIUserCallback);
         }
-        AudioSound.playbusfinish();
   	}
   	
   	
@@ -1855,7 +1874,7 @@ BushuoFragInteraction
             	}
             }
 
-		}, 2000);
+		}, 6000);
     	
     	
 	}
@@ -2417,7 +2436,8 @@ BushuoFragInteraction
 					businessportFragment = new BusinessportFragment();
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
-	            transaction.replace(R.id.id_content, businessportFragment);	            
+	            transaction.replace(R.id.id_content, businessportFragment);	
+	            listternermovie.BusportVideoStop(1);
 				break;
 			case BUSGOODSCLASS://商品类别
 				isbus=false;
@@ -2444,7 +2464,6 @@ BushuoFragInteraction
 		        busgoodsFragment.setArguments(data);
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsFragment);
-	            AudioSound.playbusiness();
 				break;
 			case BUSGOODSSELECT:
 				isbus=false;

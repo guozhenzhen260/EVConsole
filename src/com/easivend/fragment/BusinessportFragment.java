@@ -5,6 +5,7 @@ import java.util.Map;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusZhitihuo;
 import com.easivend.app.business.BusgoodsSelect;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_cabinetDAO;
@@ -263,6 +264,7 @@ public class BusinessportFragment extends Fragment {
 		    		str.put("proclassID", "");
 		    		listterner.gotoBusiness(BusPort.BUSGOODS,str);
 		    	}
+	            AudioSound.playbusiness();
 		    	
 		    }
 		});

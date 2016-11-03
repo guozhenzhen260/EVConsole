@@ -42,8 +42,10 @@ public class MoviewlandFragment extends Fragment {
     private ImageView ivads=null,ivmobile=null;
     private TextView txtcashlessamount=null;
     private List<String> imgMusicList = new ArrayList<String>();  
-    private boolean viewvideo=false;
+    private boolean viewvideo=false;//true正在播放视频,false没有播放视频
+    private boolean videopause=false;//true正在交易，不播放视频,false空闲状态，可以播放视频
     private final int SPLASH_DISPLAY_LENGHT = 30000; // 延迟30秒
+    private int per=0;
     private Context context;
     
     //=========================
@@ -178,7 +180,46 @@ public class MoviewlandFragment extends Fragment {
 
 			}, 5000);
 		}
-
+				
+		@Override
+		//type=0暂停视频播放,1恢复视频播放
+		public void BusportVideoStop(int type) {
+			// TODO Auto-generated method stub
+			if(type==0)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<暂停视频文件","log.txt");
+				//视频和图片文件都要有才行
+		    	if((mMusicList.size()>0)||(imgMusicList.size()>0))
+		    	{
+		    		//播放视频
+			    	if((viewvideo==true)&&(mMusicList.size()>0))
+			    	{
+			    		videoView.pause(); 
+			    	}
+			    	else
+			    	{
+			    		videopause=true;
+			    	}
+		    	}				
+			}
+			else if(type==1)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<恢复视频文件","log.txt");
+				//视频和图片文件都要有才行
+		    	if((mMusicList.size()>0)||(imgMusicList.size()>0))
+		    	{
+		    		//播放视频
+			    	if((viewvideo==true)&&(mMusicList.size()>0))
+			    	{
+			    		videoView.start();
+			    	}
+			    	else
+			    	{
+			    		videopause=false;
+			    	}
+		    	}				
+			}
+		}		
 	}
 
 	
@@ -274,7 +315,7 @@ public class MoviewlandFragment extends Fragment {
     	if((mMusicList.size()>0)||(imgMusicList.size()>0))
     	{
 	    	//播放视频
-	    	if((viewvideo==false)&&(mMusicList.size()>0))
+	    	if((viewvideo==false)&&(mMusicList.size()>0)&&(videopause==false))
 	    	{
 	    		viewvideo=true;
 	    		ivads.setVisibility(View.GONE);//图片关闭

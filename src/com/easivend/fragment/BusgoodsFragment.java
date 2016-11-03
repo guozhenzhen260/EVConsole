@@ -77,7 +77,7 @@ public class BusgoodsFragment extends Fragment
          * @param str
          */
         void BusgoodsSwitch(Map<String, String> str);//切换到BusgoodsSelect页面
-        void gotoBusiness(int buslevel,Map<String, String>str);  //跳转到商品页面  
+        void gotoBusClass();  //跳转到商品分类页面或者首页面  
         void BusgoodsFinish();      //切换到business页面
     }
     @Override
@@ -161,17 +161,7 @@ public class BusgoodsFragment extends Fragment
 	    btnreturn.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
-		    	vmc_classDAO classdao = new vmc_classDAO(context);// 创建InaccountDAO对象
-		    	long count=classdao.getCount();
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count,"log.txt");
-		    	if(count>0)
-		    	{
-		    		listterner.gotoBusiness(BusPort.BUSGOODSCLASS,null);
-		    	}
-		    	else
-		    	{
-		    		listterner.BusgoodsFinish();//步骤二、fragment向activity发送回调信息
-		    	}
+		    	listterner.gotoBusClass();		    	
 		    }
 		});	
 		
