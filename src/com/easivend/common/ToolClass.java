@@ -1708,70 +1708,100 @@ public class ToolClass
         	boolean errfile=true;//true代表文件损坏
         	if(list!=null)
     		{
-//    			if(list.containsKey("com"))//设置现金串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("com"))==false)
-//    			        	&&(list.get("com").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    			if(list.containsKey("bentcom"))//设置格子柜串口号
-//    			{
-//    				if((ToolClass.isEmptynull(list.get("bentcom"))==false)
-//    			        	&&(list.get("bentcom").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    			if(list.containsKey("columncom"))//设置主柜串口号
-//    			{
-//    				if((ToolClass.isEmptynull(list.get("columncom"))==false)
-//    			        	&&(list.get("columncom").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    	        if(list.containsKey("extracom"))//设置外协串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("extracom"))==false)
-//    			        	&&(list.get("extracom").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    	        if(list.containsKey("cardcom"))//设置读卡器串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("cardcom"))==false)
-//    			        	&&(list.get("cardcom").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }	
-//    	        if(list.containsKey("printcom"))//设置打印机串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("printcom"))==false)
-//    			        	&&(list.get("printcom").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    	        if(list.containsKey("posip"))//设置外协串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("posip"))==false)
-//    			        	&&(list.get("posip").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    	        if(list.containsKey("posipport"))//设置外协串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("posipport"))==false)
-//    			        	&&(list.get("posipport").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }
-//    	        if(list.containsKey("isallopen"))//设置副柜串口号
-//    	        {
-//    				if((ToolClass.isEmptynull(list.get("isallopen"))==false)
-//    			        	&&(list.get("isallopen").equals("null")==false)
-//    			        )
-//    					errfile=false;
-//    	        }        
-//    	        ---- 
+    			if(list.containsKey("com"))//设置现金串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("com"))==false)
+    			        	&&(list.get("com").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    			if(list.containsKey("bentcom"))//设置格子柜串口号
+    			{
+    				if((ToolClass.isEmptynull(list.get("bentcom"))==false)
+    			        	&&(list.get("bentcom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    			if(list.containsKey("columncom"))//设置主柜串口号
+    			{
+    				if((ToolClass.isEmptynull(list.get("columncom"))==false)
+    			        	&&(list.get("columncom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("extracom"))//设置外协串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("extracom"))==false)
+    			        	&&(list.get("extracom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("cardcom"))//设置读卡器串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("cardcom"))==false)
+    			        	&&(list.get("cardcom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }	
+    	        if(list.containsKey("printcom"))//设置打印机串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("printcom"))==false)
+    			        	&&(list.get("printcom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("posip"))//设置外协串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("posip"))==false)
+    			        	&&(list.get("posip").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("posipport"))//设置外协串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("posipport"))==false)
+    			        	&&(list.get("posipport").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("isallopen"))//设置副柜串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("isallopen"))==false)
+    			        	&&(list.get("isallopen").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }        
+    	        if(errfile)
+    	        {
+    	        	try
+    	        	{
+	    	        	//恢复文件
+		  	        	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
+		  	        	String copyFile = copyDir+"easivendconfig.txt";
+		  	  		    ToolClass.Log(ToolClass.INFO,"EV_JNI"," 自检文件"+sDir+"损坏,恢复备份="+copyFile,"log.txt");
+		  	  		    copyFile(copyFile,sDir);
+		  	  		    
+		  	  		    //重新读入文件信息
+		  	  		    //打开文件
+			    		  FileInputStream input3 = new FileInputStream(sDir);
+			    		 //输出信息
+			  	          Scanner scan3=new Scanner(input3);
+			  	          while(scan3.hasNext())
+			  	          {
+			  	           	str=scan3.next()+"\n";
+			  	          }
+			  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config恢复备份="+str,"log.txt");
+			  	         //将json格式解包
+			  	         list=new HashMap<String,String>();      			
+						JSONObject object=new JSONObject(str);      				
+						Gson gson=new Gson();
+						list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+						//Log.i("EV_JNI",perobj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config2="+list.toString(),"log.txt");
+	    	        } catch (Exception e) {
+	    	            e.printStackTrace();
+	    	        }
+    	        }
     		}
         }
         return list;
