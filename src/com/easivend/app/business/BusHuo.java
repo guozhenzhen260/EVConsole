@@ -429,7 +429,7 @@ public class BusHuo extends Activity
 	                    	finish();	
 	                    }
 	
-					}, 2000);
+					}, 6000);
 					break;
 				}
 			//°´Å¥·µ»Ø

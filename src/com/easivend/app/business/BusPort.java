@@ -1275,7 +1275,6 @@ BushuoFragInteraction
   		{
   			clearamount();
 	    	viewSwitch(BUSPORT, null);
-	  		AudioSound.playbusfinish();
   		}
   	}
     
@@ -1414,7 +1413,6 @@ BushuoFragInteraction
   		{
   			clearamount();
 			recLen=10;	
-	  		AudioSound.playbusfinish();
   		}
   		//立即关闭
   		else
@@ -1682,7 +1680,6 @@ BushuoFragInteraction
   		{
   			clearamount();
 			recLen=10;	
-	        AudioSound.playbusfinish();
   		}
   		//立即关闭
   		else
@@ -1807,7 +1804,8 @@ BushuoFragInteraction
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
         					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);	
+        					OrderDetail.addLog(BusPort.this);
+        			        AudioSound.playbusfinish();
         					zhiposDestroy(1);
         				}
         				//出货失败,退钱
@@ -1826,7 +1824,8 @@ BushuoFragInteraction
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
         					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);					
+        					OrderDetail.addLog(BusPort.this);	
+        					AudioSound.playbusfinish();
         					zhierDestroy(1);
         				}
         				//出货失败,退钱
@@ -1845,7 +1844,8 @@ BushuoFragInteraction
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
         					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);					
+        					OrderDetail.addLog(BusPort.this);
+        					AudioSound.playbusfinish();
         					zhiweiDestroy(1);
         				}
         				//出货失败,退钱
@@ -2446,7 +2446,6 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsclassFragment);
-	            AudioSound.playbusiness();
 				break;
 			case BUSGOODS:
 				isbus=false;

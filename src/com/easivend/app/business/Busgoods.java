@@ -51,7 +51,6 @@ public class Busgoods extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busgoods);
 		BusgoodsAct = this;
-		AudioSound.playbusiness();
 		this.gvbusgoodsProduct=(GridView) findViewById(R.id.gvbusgoodsProduct);
 		this.imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
 		this.imgback=(ImageView)findViewById(R.id.imgback);

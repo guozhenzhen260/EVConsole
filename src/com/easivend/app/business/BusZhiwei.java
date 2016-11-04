@@ -441,7 +441,8 @@ public class BusZhiwei extends Activity
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款","log.txt");
 					ToolClass.setLAST_CHUHUO(true);
-					OrderDetail.addLog(BusZhiwei.this);					
+					OrderDetail.addLog(BusZhiwei.this);	
+					AudioSound.playbusfinish();
 					finish();
 				}
 				//出货失败,退钱
@@ -459,7 +460,6 @@ public class BusZhiwei extends Activity
 	
 	@Override
 	protected void onDestroy() {
-		AudioSound.playbusfinish();
   		timer.shutdown(); 
 		super.onDestroy();		
 	}

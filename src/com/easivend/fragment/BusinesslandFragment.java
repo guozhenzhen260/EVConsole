@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.easivend.app.maintain.HuodaoTest;
+import com.easivend.common.AudioSound;
 import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
@@ -268,6 +269,7 @@ public class BusinesslandFragment extends Fragment
 //                	startActivityForResult(intent,REQUEST_CODE);// ´ò¿ªAccountflag		    		
                 	listterner.gotoBusiness(2,null);
 		    	}
+		    	AudioSound.playbusiness();
 		    	
 		    }
 		});

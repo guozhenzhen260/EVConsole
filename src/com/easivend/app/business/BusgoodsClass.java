@@ -38,7 +38,6 @@ public class BusgoodsClass extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.busgoodsclass);
 		BusgoodsClassAct = this;
-		AudioSound.playbusiness();
 		gvbusgoodsclass=(GridView) findViewById(R.id.gvbusgoodsclass); 
 //		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
 //	    String[] strInfos = vmc_classAdapter.showSpinInfo(BusgoodsClass.this);

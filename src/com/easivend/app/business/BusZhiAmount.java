@@ -354,6 +354,7 @@ public class BusZhiAmount  extends Activity
 				    	}
 				    	if(ischuhuo==true)
 				    	{
+				      		AudioSound.playbusfinish();
 				    		OrderDetail.addLog(BusZhiAmount.this);
 				    	}
 				    	else
@@ -529,7 +530,8 @@ public class BusZhiAmount  extends Activity
 		}
 	    //没剩下余额了，不退币
 		else
-		{  					
+		{  	
+			AudioSound.playbusfinish();
 	    	OrderDetail.addLog(BusZhiAmount.this);			    	
 	    	//打开纸币硬币器					
 		    new Handler().postDelayed(new Runnable() 
@@ -585,7 +587,6 @@ public class BusZhiAmount  extends Activity
   	
   	@Override
 	protected void onDestroy() {
-  		AudioSound.playbusfinish();
   		timer.shutdown(); 
 		//=============
   		//COM服务相关
