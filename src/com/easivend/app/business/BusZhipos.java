@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.easivend.app.maintain.CahslessTest;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
@@ -76,6 +77,7 @@ public class BusZhipos extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhipos);
 		BusZhiposAct = this;
+		AudioSound.playbuszhipos();
 		timer.scheduleWithFixedDelay(task, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
 		txtbuszhiposcount= (TextView) findViewById(R.id.txtbuszhiposcount);
@@ -299,7 +301,8 @@ public class BusZhipos extends Activity
   	private void payoutzhipos()
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
-    	mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+  		AudioSound.playbuspayout();
+  		mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
   	}
 	
 	//接口返回
@@ -490,7 +493,9 @@ public class BusZhipos extends Activity
   				if(status==1)
   				{
   					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<无退款","com.txt");
-  					OrderDetail.addLog(BusZhipos.this);
+  					ToolClass.setLAST_CHUHUO(true);
+  					OrderDetail.addLog(BusZhipos.this); 
+  					AudioSound.playbusfinish();
   					finish();
   				}
   				//出货失败,退钱
@@ -508,7 +513,7 @@ public class BusZhipos extends Activity
   	@Override
 	protected void onDestroy() {
   		timer.shutdown(); 
-		mMyApi.pos_release();
+		mMyApi.pos_release();		
 		super.onDestroy();		
 	}
 

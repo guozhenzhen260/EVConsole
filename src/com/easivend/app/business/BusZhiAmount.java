@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -82,6 +83,7 @@ public class BusZhiAmount  extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhiamount);
 		BusZhiAmountAct = this;
+		AudioSound.playbuszhiamount();
 		//从商品页面中取得锁选中的商品
 //		Intent intent=getIntent();
 //		Bundle bundle=intent.getExtras();
@@ -352,6 +354,7 @@ public class BusZhiAmount  extends Activity
 				    	}
 				    	if(ischuhuo==true)
 				    	{
+				      		AudioSound.playbusfinish();
 				    		OrderDetail.addLog(BusZhiAmount.this);
 				    	}
 				    	else
@@ -464,6 +467,7 @@ public class BusZhiAmount  extends Activity
   				//出货成功,扣钱
 				if(status==1)
 				{
+					ToolClass.setLAST_CHUHUO(true);
 					//查找货道类型
 	        		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(BusZhiAmount.this);// 创建InaccountDAO对象
 	        	    // 获取所有收入信息，并存储到List泛型集合中
@@ -506,6 +510,7 @@ public class BusZhiAmount  extends Activity
 		if(money>0)
 		{
 			dialog= ProgressDialog.show(BusZhiAmount.this,"正在退币中","请稍候...");
+			AudioSound.playbuspayout();
 			new Handler().postDelayed(new Runnable() 
 			{
 	            @Override
@@ -525,7 +530,8 @@ public class BusZhiAmount  extends Activity
 		}
 	    //没剩下余额了，不退币
 		else
-		{  					
+		{  	
+			AudioSound.playbusfinish();
 	    	OrderDetail.addLog(BusZhiAmount.this);			    	
 	    	//打开纸币硬币器					
 		    new Handler().postDelayed(new Runnable() 

@@ -44,6 +44,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -106,8 +108,8 @@ public class ToolClass
 	public final static int WARN=3;
 	public final static int ERROR=4;
 	public static String EV_DIR=null;//ev包的地址
-	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1;//串口id号
-	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="";//串口描述符
+	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1,columncom2_id=-1;//串口id号
+	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="",columncom2="";//串口描述符
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
@@ -115,14 +117,38 @@ public class ToolClass
 	public static int extraComType=0;//1使用冰山机型，2使用展示位
 	public static Map<Integer, Integer> huodaolist=null;//保存逻辑货道与物理货道的对应关系
 	public static Map<Integer, Integer> elevatorlist=null;//保存升降机逻辑货道与物理货道的对应关系
+	public static Map<Integer, Integer> huodaolist2=null;//保存副柜逻辑货道与物理货道的对应关系
+	public static Map<Integer, Integer> elevatorlist2=null;//保存副柜升降机逻辑货道与物理货道的对应关系
 	public static Map<String, String> selectlist=null;//保存选货按键id与商品id的对应关系
-	public static int orientation=0;//使用横屏还是竖屏模式
+	public static int orientation=0;//使用横屏还是竖屏模式0横屏,1竖屏
 	public static SSLSocketFactory ssl=null;//ssl网络加密
 	public static Context context=null;//本应用context
 	private static int ServerVer=1;//0旧的后台，1一期的后台
 	public static String version="";//本机版本号
 	public static boolean CLIENT_STATUS_SERVICE=true;//true本机可以使用,false本机暂停销售 
+	public static boolean LAST_CHUHUO=false;//true上一笔出货成功,false上一笔出货失败
+	public static int netType=0;//网络类型1.有线,2.wifi,3.4gmobile,4无网络
+	public static String netStr="";//网络信号信息
 	
+	public static int getNetType() {
+		return netType;
+	}
+	public static void setNetType(int netType) {
+		ToolClass.netType = netType;
+	}
+	
+	public static String getNetStr() {
+		return netStr;
+	}
+	public static void setNetStr(String netStr) {
+		ToolClass.netStr = netStr;
+	}
+	public static boolean isLAST_CHUHUO() {
+		return LAST_CHUHUO;
+	}
+	public static void setLAST_CHUHUO(boolean lAST_CHUHUO) {
+		LAST_CHUHUO = lAST_CHUHUO;
+	}
 	//读取文件信息
 	public static boolean  ReadSharedPreferencesAccess()
 	{
@@ -215,6 +241,13 @@ public class ToolClass
 		ToolClass.columncom = columncom;
 	}
 	
+		
+	public static String getColumncom2() {
+		return columncom2;
+	}
+	public static void setColumncom2(String columncom2) {
+		ToolClass.columncom2 = columncom2;
+	}
 	public static String getExtracom() {
 		return extracom;
 	}
@@ -344,7 +377,14 @@ public class ToolClass
 	public static void setColumncom_id(int columncom_id) {
 		ToolClass.columncom_id = columncom_id;
 	}
-
+	
+	
+	public static int getColumncom2_id() {
+		return columncom2_id;
+	}
+	public static void setColumncom2_id(int columncom2_id) {
+		ToolClass.columncom2_id = columncom2_id;
+	}
 	public static int getCom_id() {
 		return com_id;
 	}
@@ -1252,6 +1292,40 @@ public class ToolClass
        return fileext; 
      } 
     
+    //将商品详细信息图片保存在本地
+    public static boolean  saveBitproductmaptofile(Bitmap bmp,String filename)
+    {      	
+    	String  sDir =null;
+    	File fileName=null;
+    	boolean fileext=false;
+        try {
+        	sDir = ToolClass.getEV_DIR()+File.separator+"productImage";
+      	  File dirName = new File(sDir);
+      	 //如果目录不存在，则创建目录
+      	 if (!dirName.exists()) 
+      	 {  
+              //按照指定的路径创建文件夹  
+      		dirName.mkdirs(); 
+           }
+      	 
+      	 fileName=new File(sDir+File.separator+filename+".jpg");         	
+        	//如果不存在，则开始保存图片
+        	if(!fileName.exists())
+        	{  
+        		CompressFormat format= Bitmap.CompressFormat.JPEG;  
+    	        int quality = 100;  
+    	        OutputStream stream = null;  
+    	        stream = new FileOutputStream(fileName);      	         
+    	        fileext=bmp.compress(format, quality, stream); 
+    	    }  
+        	else
+        		fileext=false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+       return fileext; 
+     } 
+    
     /**
      * 使用getImgFile,得到这个商品图片的完整目录
      */
@@ -1628,13 +1702,115 @@ public class ToolClass
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //对所有的串口配置进行检测，如果全部为空，则说明文件损坏，需要重新导入
+        finally
+        {
+        	boolean errfile=true;//true代表文件损坏
+        	if(list!=null)
+    		{
+    			if(list.containsKey("com"))//设置现金串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("com"))==false)
+    			        	&&(list.get("com").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    			if(list.containsKey("bentcom"))//设置格子柜串口号
+    			{
+    				if((ToolClass.isEmptynull(list.get("bentcom"))==false)
+    			        	&&(list.get("bentcom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    			if(list.containsKey("columncom"))//设置主柜串口号
+    			{
+    				if((ToolClass.isEmptynull(list.get("columncom"))==false)
+    			        	&&(list.get("columncom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("extracom"))//设置外协串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("extracom"))==false)
+    			        	&&(list.get("extracom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("cardcom"))//设置读卡器串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("cardcom"))==false)
+    			        	&&(list.get("cardcom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }	
+    	        if(list.containsKey("printcom"))//设置打印机串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("printcom"))==false)
+    			        	&&(list.get("printcom").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("posip"))//设置外协串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("posip"))==false)
+    			        	&&(list.get("posip").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("posipport"))//设置外协串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("posipport"))==false)
+    			        	&&(list.get("posipport").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }
+    	        if(list.containsKey("isallopen"))//设置副柜串口号
+    	        {
+    				if((ToolClass.isEmptynull(list.get("isallopen"))==false)
+    			        	&&(list.get("isallopen").equals("null")==false)
+    			        )
+    					errfile=false;
+    	        }        
+    	        if(errfile)
+    	        {
+    	        	try
+    	        	{
+	    	        	//恢复文件
+		  	        	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
+		  	        	String copyFile = copyDir+"easivendconfig.txt";
+		  	  		    ToolClass.Log(ToolClass.INFO,"EV_JNI"," 自检文件"+sDir+"损坏,恢复备份="+copyFile,"log.txt");
+		  	  		    copyFile(copyFile,sDir);
+		  	  		    
+		  	  		    //重新读入文件信息
+		  	  		    //打开文件
+			    		  FileInputStream input3 = new FileInputStream(sDir);
+			    		 //输出信息
+			  	          Scanner scan3=new Scanner(input3);
+			  	          while(scan3.hasNext())
+			  	          {
+			  	           	str=scan3.next()+"\n";
+			  	          }
+			  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config恢复备份="+str,"log.txt");
+			  	         //将json格式解包
+			  	         list=new HashMap<String,String>();      			
+						JSONObject object=new JSONObject(str);      				
+						Gson gson=new Gson();
+						list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+						//Log.i("EV_JNI",perobj.toString());
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config2="+list.toString(),"log.txt");
+	    	        } catch (Exception e) {
+	    	            e.printStackTrace();
+	    	        }
+    	        }
+    		}
+        }
         return list;
     }
     
     /**
      * 写入配置文件
      */
-    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String isallopen,
+    public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String columncom2,
     		String posip,String posipport) 
     {
     	File fileName=null;
@@ -1697,7 +1873,7 @@ public class ToolClass
 		        list2.put("extracom", extracom);
 		        list2.put("cardcom", cardcom);
 		        list2.put("printcom", printcom);
-		        list2.put("isallopen", isallopen);	
+		        list2.put("isallopen", columncom2);	
 		        list2.put("posip", posip);
 		        list2.put("posipport", posipport);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
@@ -1719,7 +1895,7 @@ public class ToolClass
   	        	jsonObject.put("extracom", extracom);
   	        	jsonObject.put("cardcom", cardcom);
   	        	jsonObject.put("printcom", printcom);
-  	        	jsonObject.put("isallopen", isallopen);
+  	        	jsonObject.put("isallopen", columncom2);
   	        	jsonObject.put("posip", posip);
   	        	jsonObject.put("posipport", posipport);
   	        	String mapstrString=jsonObject.toString();
@@ -1915,7 +2091,7 @@ public class ToolClass
 		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
 	  			    //创建Tb_inaccount对象 
 	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-	    					0,0,"",0,0,0,1,0,0,0,"",0,
+	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
 	    					0,0, 0,0,0,"","");
 	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
 	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
@@ -2128,6 +2304,12 @@ public class ToolClass
 				//Log.i("EV_JNI",perobj.toString());
 				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
         	  }
+        	  else
+        	  {
+        		  WriteColumnFile("");
+        		  list=new HashMap<String,Integer>();
+        		  huodaolist=new HashMap<Integer,Integer>();
+        	  }
         	             
         } catch (Exception e) {
             e.printStackTrace();
@@ -2160,6 +2342,118 @@ public class ToolClass
     	}
     	return val;
     }
+    
+    
+    /**
+     * 读取副柜货道配置文件
+     */
+    public static Map<String, Integer> ReadColumnFile2() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig2.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         huodaolist2=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+	            	huodaolist2.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist2.toString(),"com.txt");
+        	  }
+        	  else
+        	  {
+        		  WriteColumnFile2("");
+        		  list=new HashMap<String,Integer>();
+        		  huodaolist2=new HashMap<Integer,Integer>();
+        	  }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 读取副柜逻辑物理货道配置表
+     */
+    public static Map<Integer, Integer> getHuodaolist2() {
+		return huodaolist2;
+	}
+    
+    /**
+     * 副柜弹簧出货
+     */
+    public static int columnChuhuo2(Integer logic)
+    {
+    	int val=0;
+    	if(huodaolist2!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]huodaolist2="+huodaolist2,"com.txt");
+    		if(huodaolist2.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    val=huodaolist2.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
+    		}
+    	}
+    	return val;
+    }
+    
+    /**
+     * 副柜写入货道配置文件
+     */
+    public static void WriteColumnFile2(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig2.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    
     /**
      * 弹簧返回出货结果
      *   GOODS_SOLD_ERR          (1 << 0)   //bit0总故障位
@@ -2368,6 +2662,12 @@ public class ToolClass
 				//Log.i("EV_JNI",perobj.toString());
 				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+elevatorlist.toString(),"com.txt");
         	  }
+              else
+              {
+            	  WriteElevatorFile("");
+                  list=new HashMap<String,Integer>();
+                  elevatorlist=new HashMap<Integer,Integer>();
+              }
         	             
         } catch (Exception e) {
             e.printStackTrace();
@@ -2404,6 +2704,107 @@ public class ToolClass
     	    	
         try {
         	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig.txt";
+        	 
+        	  fileName=new File(sDir);
+        	  //如果不存在，则创建文件
+          	  if(!fileName.exists())
+          	  {  
+      	        fileName.createNewFile(); 
+      	      }  
+  	         
+  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+  	          FileWriter writer = new FileWriter(fileName, false);
+  	          writer.write(str);
+  	          writer.close();	
+  	          
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    /**
+     * 读取升降机副柜配置文件
+     */
+    public static Map<String, Integer> ReadElevatorFile2() 
+    {
+    	File fileName=null;
+    	String  sDir =null,str=null;
+    	Map<String, Integer> list=null;
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig2.txt";
+        	  fileName=new File(sDir);
+        	  //如果存在，才读文件
+        	  if(fileName.exists())
+        	  {
+	    	  	 //打开文件
+	    		  FileInputStream input = new FileInputStream(sDir);
+	    		 //输出信息
+	  	          Scanner scan=new Scanner(input);
+	  	          while(scan.hasNext())
+	  	          {
+	  	           	str=scan.next()+"\n";
+	  	          }
+	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         //将json格式解包
+	  	         list=new HashMap<String,Integer>();   
+	  	         elevatorlist2=new HashMap<Integer,Integer>(); 
+				JSONObject object=new JSONObject(str);      				
+				Gson gson=new Gson();
+				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+				//输出内容
+		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+		        while(iter.hasNext())
+		        {
+		            Entry<String, Integer> me=iter.next();	
+		            elevatorlist2.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+		        } 			
+				//Log.i("EV_JNI",perobj.toString());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+elevatorlist2.toString(),"com.txt");
+        	  }
+        	  else
+              {
+            	  WriteElevatorFile2("");
+                  list=new HashMap<String,Integer>();
+                  elevatorlist2=new HashMap<Integer,Integer>();
+              }
+        	             
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 升降机副柜出货
+     */
+    public static int elevatorChuhuo2(Integer logic)
+    {
+    	int val=0;
+    	if(elevatorlist2!=null)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]elevatorlist2="+elevatorlist2,"com.txt");
+    		if(elevatorlist2.containsKey(logic))
+    		{
+    			//根据key取出内容
+    		    val=elevatorlist2.get(logic); 
+    		    ToolClass.Log(ToolClass.INFO,"EV_COM","[APPcolumn>>]logic="+logic+"physic="+val,"com.txt");
+    		}
+    	}
+    	return val;
+    }
+    /**
+     * 写入升降机副柜货道配置文件
+     */
+    public static void WriteElevatorFile2(String str) 
+    {
+    	File fileName=null;
+    	String  sDir =null;
+    	
+    	    	
+        try {
+        	  sDir = ToolClass.getEV_DIR()+File.separator+"evElevatorconfig2.txt";
         	 
         	  fileName=new File(sDir);
         	  //如果不存在，则创建文件
@@ -3387,7 +3788,7 @@ public class ToolClass
 		return bentcom_id;
 	}
 	
-	//type=1是现金,2是格子柜，3是弹簧柜,4外协设备串口
+	//type=1是现金,2是格子柜，3是弹簧/升降机柜,4外协设备串口,5是副柜弹簧/升降机柜
 	public static void ResstartPort(int type)
 	{
 		if(type==1)//现金
@@ -3466,6 +3867,25 @@ public class ToolClass
 				ToolClass.setExtracom_id(ToolClass.Resetportid(extracom));
 			}
 		}
+		else if(type==5)
+		{
+			//打开弹簧柜串口
+			if(ToolClass.getColumncom2().equals("")==false)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom2Release=port="+ToolClass.getColumncom2()+"    port_id="+ToolClass.getColumncom2_id(),"com.txt");
+				String com2 = EVprotocol.EVPortRelease(ToolClass.getColumncom2());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom2Release="+com2,"com.txt");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				String columncom = EVprotocol.EVPortRegister(ToolClass.getColumncom2());
+				ToolClass.Log(ToolClass.INFO,"EV_COM","columncom2Register="+columncom,"com.txt");
+				ToolClass.setColumncom2_id(ToolClass.Resetportid(columncom));
+			}
+		}
 	}
 	
 	//弹出图形界面失败提示
@@ -3511,5 +3931,16 @@ public class ToolClass
         } 
         return false; 
 	 }
+	 
+	 //去除字符串中的空格、回车、换行符、制表符
+	 public static String replaceBlank(String str) {
+	        String dest = "";
+	        if (str!=null) {
+	            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+	            Matcher m = p.matcher(str);
+	            dest = m.replaceAll("");
+	        }
+	        return dest;
+	    }
 	
 }

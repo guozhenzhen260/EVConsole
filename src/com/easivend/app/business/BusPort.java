@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -21,9 +22,11 @@ import com.easivend.app.maintain.CahslessTest;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.app.maintain.PrintTest;
 import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
@@ -65,6 +68,7 @@ import com.landfoneapi.mispos.ErrCode;
 import com.landfoneapi.mispos.LfMISPOSApi;
 import com.landfoneapi.protocol.pkg.REPLY;
 import com.landfoneapi.protocol.pkg._04_GetRecordReply;
+import com.landfoneapi.protocol.pkg._04_QueryReply;
 import com.printsdk.cmd.PrintCmd;
 
 import android.annotation.SuppressLint;
@@ -84,6 +88,7 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -134,6 +139,7 @@ BushuoFragInteraction
 	public static final int BUSHUO=8;//出货页面
 	private int gotoswitch=0;//当前跳转到哪个页面
 	private int con=0;
+	private Map<String, String> proclassID=new HashMap<String, String>();//商品分类id，保存当前进入的是哪个商品分类
 	//进度对话框
 	ProgressDialog dialog= null;
 	private String zhifutype = "0";//支付方式0=现金1=pos 3=二维码4=微支付 -1=取货码,5自提密码
@@ -175,9 +181,13 @@ BushuoFragInteraction
     //=================
   	//==pos支付页面相关
   	//=================
+    private int isPos=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
+    private int waitpos=0;//1刚进入pos页面,0没有进入pos页面
+    //查询参数
+  	private String cashbalance = "";
     //退款参数
    	private String rfd_card_no = "";
    	private String rfd_spec_tmp_serial = "";
@@ -189,6 +199,7 @@ BushuoFragInteraction
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
+    private int chuhuoLen = 0;//免费出上一个格子柜 
     //=================
     //COM服务相关
     //=================
@@ -252,6 +263,8 @@ BushuoFragInteraction
         void BusportMovie(int infotype);      //显示交易提示信息
         //刷新广告页面
         void BusportAds();      //刷新广告列表
+        void BusportCashless(String cashbalance);//卡余额
+        void BusportVideoStop(int type);//type=0暂停视频播放,1恢复视频播放
     }
         
     /**
@@ -447,6 +460,16 @@ BushuoFragInteraction
 	                    }
 		        	}
 	        	  }
+	        	  //判断3分钟内，如果按下空的货道号可以直接出货
+	        	  if(ToolClass.isLAST_CHUHUO())
+	        	  {
+		        		chuhuoLen++;
+		        		if(chuhuoLen>=3*60)
+		        		{
+		        			chuhuoLen=0;
+		        			ToolClass.setLAST_CHUHUO(false);
+		        		}
+	        	  }
 	        } 
 	    }, 1, 1, TimeUnit.SECONDS);       // timeTask 
 		//初始化默认fragment
@@ -630,6 +653,27 @@ BushuoFragInteraction
 		//***********************
 		//进行pos操作
 		//***********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusPort.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		isPos=tb_inaccount.getZhifubaofaca();
+    		if(tb_inaccount.getZhifubaofaca()>0)
+    		{
+    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
+    	        //打开串口
+    	        //ip、端口、串口、波特率必须准确
+    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
+    					,ToolClass.getCardcom(), "9600", mIUserCallback);
+    			//有查询功能
+    			if(isPos==1)
+    			{
+    				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+    				mMyApi.pos_query(mIUserCallback);
+    			}
+    		}
+    	}				
 		posmainhand=new Handler()
 		{
 
@@ -662,28 +706,59 @@ BushuoFragInteraction
 						}, 300);
 						break;
 					case CahslessTest.COSTFAIL:	
-						listterner.BusportTsxx("提示信息：扣款失败");
+						listterner.BusportTsxx("提示信息：扣款失败"+cashbalance);
 						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
 					case CahslessTest.QUERYFAIL:	
-						//listterner.BusportTsxx("单据信息："+SpecInfoField);
-						tochuhuo();	
-						break;
-					case CahslessTest.DELETESUCCESS:
-					case CahslessTest.DELETEFAIL:	
+						listterner.BusportTsxx("提示信息：卡余额"+cashbalance);
 						//延时
 					    new Handler().postDelayed(new Runnable() 
 						{
 				            @Override
 				            public void run() 
-				            {         
-				            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-								ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-						    	zhiposDestroy(0);
+				            {   
+								tochuhuo();	
 							}
 
-						}, 300);						
+						}, 3000);
+						break;
+					case CahslessTest.DELETESUCCESS:
+					case CahslessTest.DELETEFAIL:	
+						if(gotoswitch==BUSZHIPOS)
+						{
+							if(waitpos==1)
+							{
+								waitpos=0;
+								//延时
+							    new Handler().postDelayed(new Runnable() 
+								{
+						            @Override
+						            public void run() 
+						            {   
+						            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+						            	listterner.BusportTsxx("提示信息：请刷卡");
+										mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+								    	iszhipos=1;
+									}
+
+								}, 500);
+							}
+							else
+							{
+								//延时
+							    new Handler().postDelayed(new Runnable() 
+								{
+						            @Override
+						            public void run() 
+						            {         
+						            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
+										zhiposDestroy(0);
+									}
+		
+								}, 300);
+							}
+						}					
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						if(ispayoutopt==1)
@@ -700,7 +775,6 @@ BushuoFragInteraction
 					            @Override
 					            public void run() 
 					            {         
-					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
 					            	zhiposDestroy(1);
 								}
@@ -724,14 +798,30 @@ BushuoFragInteraction
 					            @Override
 					            public void run() 
 					            {         
-					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
 					            	dialog.dismiss();
 					            	zhiposDestroy(1);
 								}
 
 							}, 300);							
 						}
-						break;		
+						break;	
+					case CahslessTest.FINDSUCCESS:
+						//有查询功能
+						if(isPos==1)
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+							mMyApi.pos_query(mIUserCallback);
+							listternermovie.BusportCashless(cashbalance);
+						}
+						break;
+					case CahslessTest.FINDFAIL:
+						//有查询功能
+						if(isPos==1)
+						{
+							ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+							mMyApi.pos_query(mIUserCallback);
+						}
+						break;
 				}
 			}
 		};	
@@ -831,7 +921,7 @@ BushuoFragInteraction
             	finish(); 
             }
 
-		}, 500);	
+		}, 500);
 	}
 	//步骤三、实现Business接口,转到商品购物页面
 	//buslevel跳转到的页面
@@ -840,6 +930,7 @@ BushuoFragInteraction
 	{
 		if(ToolClass.checkCLIENT_STATUS_SERVICE())
 		{
+			listternermovie.BusportVideoStop(0);
 			viewSwitch(buslevel, str);
 		}
 	}
@@ -942,6 +1033,22 @@ BushuoFragInteraction
 		// TODO Auto-generated method stub
 		viewSwitch(BUSGOODSSELECT, str);
 	}
+	//步骤三、实现Busgoodsclass接口,转到分类或者首页面
+	@Override
+	public void gotoBusClass() {
+		// TODO Auto-generated method stub		
+		vmc_classDAO classdao = new vmc_classDAO(BusPort.this);// 创建InaccountDAO对象
+    	long count=classdao.getCount();
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品类型数量="+count,"log.txt");
+    	if(count>0)
+    	{
+    		viewSwitch(BUSGOODSCLASS, null);
+    	}
+    	else
+    	{
+    		viewSwitch(BUSPORT, null);
+    	}
+	}
 	//步骤三、实现Busgoodsclass接口,转到首页面
 	@Override
 	public void BusgoodsFinish() {
@@ -963,6 +1070,12 @@ BushuoFragInteraction
 	public void BusgoodsselectFinish() {
 		// TODO Auto-generated method stub
 		viewSwitch(BUSPORT, null);
+	}
+	//步骤三、实现Busgoodsselect接口,转到首页面
+	@Override
+	public void BusgoodsSwitch() {
+		// TODO Auto-generated method stub
+		viewSwitch(BUSGOODS, proclassID);
 	}
 	
 	//=======================
@@ -1008,6 +1121,7 @@ BushuoFragInteraction
   			//关闭纸币硬币器
   	    	BillEnable(0);
   	    	recLen=10;
+  	    	AudioSound.playbusfinish();
 		}
 		//立即关闭
 		else
@@ -1124,6 +1238,7 @@ BushuoFragInteraction
   	private void payoutzhier()
   	{
   		//if(ercheckopt())
+  		AudioSound.playbuspayout();
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
@@ -1239,6 +1354,7 @@ BushuoFragInteraction
   	private void payoutzhiwei()
   	{
   		//if(ercheckopt())
+  		AudioSound.playbuspayout();
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
@@ -1296,7 +1412,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;			
+			recLen=10;	
   		}
   		//立即关闭
   		else
@@ -1323,8 +1439,7 @@ BushuoFragInteraction
 		else 
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭读卡器","com.txt");
-	    	zhiposDestroy(0);
+			zhiposDestroy(0);
 		}
 	}
     //用于超时的结束界面
@@ -1345,7 +1460,8 @@ BushuoFragInteraction
   	private void payoutzhipos()
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
-    	mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+  		AudioSound.playbuspayout();
+  		mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
   	}
   
   	//接口返回
@@ -1359,53 +1475,104 @@ BushuoFragInteraction
   				//info(rst.op + ":" + rst.code + "," + rst.code_info);
   				//【操作标识符】LfMISPOSApi下“OP_”开头的静态变量，如：LfMISPOSApi.OP_INIT、LfMISPOSApi.OP_PURCHASE等等
   				//打开串口
-  				if(rst.op.equals(LfMISPOSApi.OP_INIT))
-  				{
-  					//【返回码和信息】code和code_info的返回/说明，见com.landfoneapi.mispos.ErrCode
-  					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getCardcom(),"com.txt");
-  						childmsg.what=CahslessTest.OPENSUCCESS;
-  						childmsg.obj="打开成功"+ToolClass.getCardcom();
-  					}else{
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
-  						childmsg.what=CahslessTest.OPENFAIL;
-  						childmsg.obj="打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info;
-  					}
-  				}
-  				//关闭串口
-  				else if(rst.op.equals(LfMISPOSApi.OP_RELEASE))
-  				{
-  					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭成功","com.txt");
-  						childmsg.what=CahslessTest.CLOSESUCCESS;
-  						childmsg.obj="关闭成功";
-  					}else{
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");						
-  						childmsg.what=CahslessTest.CLOSEFAIL;
-  						childmsg.obj="关闭失败,code:"+rst.code+",info:"+rst.code_info;
-  					}
-  				}
-  				//扣款
-  				else if(rst.op.equals(LfMISPOSApi.OP_PURCHASE))
-  				{
-  					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款成功","com.txt");
-  						childmsg.what=CahslessTest.COSTSUCCESS;
-  						childmsg.obj="扣款成功";
-  					}
-  					else if(rst.code.equals(ErrCode._XY.getCode())){
+				if(rst.op.equals(LfMISPOSApi.OP_INIT))
+				{
+					//【返回码和信息】code和code_info的返回/说明，见com.landfoneapi.mispos.ErrCode
+					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开成功"+ToolClass.getCardcom(),"com.txt");
+						childmsg.what=CahslessTest.OPENSUCCESS;
+						childmsg.obj="打开成功"+ToolClass.getCardcom();
+					}else{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+						childmsg.what=CahslessTest.OPENFAIL;
+						childmsg.obj="打开失败"+ToolClass.getCardcom()+",code:"+rst.code+",info:"+rst.code_info;
+					}
+				}
+				//关闭串口
+				else if(rst.op.equals(LfMISPOSApi.OP_RELEASE))
+				{
+					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭成功","com.txt");
+						childmsg.what=CahslessTest.CLOSESUCCESS;
+						childmsg.obj="关闭成功";
+					}else{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 关闭失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+						childmsg.what=CahslessTest.CLOSEFAIL;
+						childmsg.obj="关闭失败,code:"+rst.code+",info:"+rst.code_info;
+					}
+				}
+				//签到
+				else if (rst.op.equals(LfMISPOSApi.OP_SIGNIN)) 
+				{
+                    if (rst.code.equals(ErrCode._00.getCode())) {//返回00，代表成功
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到成功","com.txt");
+                    } else {
+                        ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+                    }
+                }
+				//结算【结算时间可能会非常长】
+				else if (rst.op.equals(LfMISPOSApi.OP_SETTLE)) 
+				{
+                    if (rst.code.equals(ErrCode._00.getCode())) {//返回00，代表成功
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 结算成功","com.txt");                        
+                    } else {
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 结算失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");		
+                    }
+                } 
+				//扣款
+				else if(rst.op.equals(LfMISPOSApi.OP_PURCHASE))
+				{
+					if(rst.code.equals(ErrCode._00.getCode())){//返回00，代表成功
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款成功","com.txt");
+						childmsg.what=CahslessTest.COSTSUCCESS;
+						childmsg.obj="扣款成功";
+					}
+					else if(rst.code.equals(ErrCode._XY.getCode())){
   						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销成功","com.txt");
   						childmsg.what=CahslessTest.DELETESUCCESS;
   						childmsg.obj="撤销成功";
   					}
-  					else
-  					{
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
-  						childmsg.what=CahslessTest.COSTFAIL;
-  						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
+					else{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						if(rst.code.equals("01"))
+						{
+							cashbalance=rst.code_info;
+						}
+						childmsg.what=CahslessTest.COSTFAIL;
+						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
+					}
+				}
+				//查询
+				else if (rst.op.equals(LfMISPOSApi.OP_QUERY)) 
+				{
+                    if (rst.code.equals(ErrCode._00.getCode()))
+                    {
+                        String tmp = "查询结果:";
+                        tmp += "\n错误代码：" + ((_04_QueryReply) (rst)).getCode();
+                        tmp += ",\n提示信息：" + ((_04_QueryReply) (rst)).getCode_info();
+                        tmp += ",\n卡号:" + ((_04_QueryReply) (rst)).getCardNo();//卡号
+                        tmp += ",\n现金余额:" + ((_04_QueryReply) (rst)).getCashBalance();//现金余额
+                        tmp += ",\n积分余额:" + ((_04_QueryReply) (rst)).getPointBalance();//积分余额
+                        ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
+                        //查询参数获取
+                        cashbalance = ((_04_QueryReply) (rst)).getCashBalance();
+                        childmsg.what=CahslessTest.FINDSUCCESS;
+						childmsg.obj="查询成功="+tmp;
+                        
+                    } 
+                    else if(rst.code.equals(ErrCode._XY.getCode())){
+  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销成功","com.txt");
+  						childmsg.what=CahslessTest.DELETESUCCESS;
+  						childmsg.obj="撤销成功";
   					}
-  				}
-  				//退款
+                    else 
+                    {
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+                        childmsg.what=CahslessTest.FINDFAIL;
+						childmsg.obj="查询失败,code:"+rst.code+",info:"+rst.code_info;
+                    }
+                } 
+				//退款
   				else if(rst.op.equals(LfMISPOSApi.OP_REFUND))
   				{
   					//返回00，代表成功
@@ -1421,40 +1588,40 @@ BushuoFragInteraction
 						childmsg.obj="退款失败,code:"+rst.code+",info:"+rst.code_info;
 					}
 				}
-  				//返回结果
-  				else if(rst.op.equals(LfMISPOSApi.OP_GETRECORD))
-  				{
-  					//返回00，代表成功
-  					if(rst.code.equals(ErrCode._00.getCode()))
-  					{
-  						String tmp = "单据:特定信息=";
-  						tmp += "[" + ((_04_GetRecordReply) (rst)).getSpecInfoField();//特定信息【会员卡需要！！】
-  						/*特定信息说明
-  						+储值卡号(19)
-  						+终端流水号(6)
-  						+终端编号(8)
-  						+批次号(6)
-  						+商户号(15)
-  						+商户名称(60)
-  						+会员名称(60)
-  						+交易时间(6)
-  						+交易日期(8)
-  						+交易单号(14)
-  						+消费金额(12)
-  						+账户余额(12)
-  						+临时交易流水号（26）
-  						以上都是定长，金额都是定长12位，前补0，其他不足位数后补空格
+				//返回结果
+				else if(rst.op.equals(LfMISPOSApi.OP_GETRECORD))
+				{
+					//返回00，代表成功
+					if(rst.code.equals(ErrCode._00.getCode()))
+					{
+						String tmp = "单据:特定信息=";
+						tmp += "[" + ((_04_GetRecordReply) (rst)).getSpecInfoField();//特定信息【会员卡需要！！】
+						/*特定信息说明
+						+储值卡号(19)
+						+终端流水号(6)
+						+终端编号(8)
+						+批次号(6)
+						+商户号(15)
+						+商户名称(60)
+						+会员名称(60)
+						+交易时间(6)
+						+交易日期(8)
+						+交易单号(14)
+						+消费金额(12)
+						+账户余额(12)
+						+临时交易流水号（26）
+						以上都是定长，金额都是定长12位，前补0，其他不足位数后补空格
 
-  						* */
-  						tmp += "],商户代码=[" + ((_04_GetRecordReply) (rst)).getMer();//商户代码
-  						tmp += "],终端号=[" + ((_04_GetRecordReply) (rst)).getTmn();//终端号
-  						tmp += "],卡号=[" + ((_04_GetRecordReply) (rst)).getCardNo();//卡号
-  						tmp += "],交易批次号=[" + ((_04_GetRecordReply) (rst)).getTransacionBatchNo();//交易批次号
-  						tmp += "],原交易类型=[" + ((_04_GetRecordReply) (rst)).getTransacionVoucherNo();//原交易类型
-  						tmp += "],交易日期和时间=[" + ((_04_GetRecordReply) (rst)).getTransacionDatetime();//交易日期和时间
-  						tmp += "],交易金额=[" + ((_04_GetRecordReply) (rst)).getTransacionAmount();//交易金额
-  						tmp +="]";
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
+						* */
+						tmp += "],商户代码=[" + ((_04_GetRecordReply) (rst)).getMer();//商户代码
+						tmp += "],终端号=[" + ((_04_GetRecordReply) (rst)).getTmn();//终端号
+						tmp += "],卡号=[" + ((_04_GetRecordReply) (rst)).getCardNo();//卡号
+						tmp += "],交易批次号=[" + ((_04_GetRecordReply) (rst)).getTransacionBatchNo();//交易批次号
+						tmp += "],原交易类型=[" + ((_04_GetRecordReply) (rst)).getTransacionVoucherNo();//原交易类型
+						tmp += "],交易日期和时间=[" + ((_04_GetRecordReply) (rst)).getTransacionDatetime();//交易日期和时间
+						tmp += "],交易金额=[" + ((_04_GetRecordReply) (rst)).getTransacionAmount();//交易金额
+						tmp +="]";
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 返回成功="+tmp,"com.txt");
 
   						//退款参数获取
 						String tmp_spec = ((_04_GetRecordReply) (rst)).getSpecInfoField();
@@ -1465,24 +1632,29 @@ BushuoFragInteraction
 						if(tmp_spec!=null && tmp_spec_len>(2+19)){
 							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19).trim();
 						}
+						//【剩余金额】
+						if(tmp_spec!=null && tmp_spec_len>(2+19)){
+							cashbalance = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26-12),(tmp_spec_len-26)).trim();
+						}
 						//【临时交易流水号】
 						if(tmp_spec!=null && tmp_spec_len>26){
 							rfd_spec_tmp_serial = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26),tmp_spec_len);
 						}else{//使用空格时，表示上一次的【临时交易流水号】
 							rfd_spec_tmp_serial = String.format("%1$-26s","");
 						}
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial,"com.txt");
-  						childmsg.what=CahslessTest.QUERYSUCCESS;
-  						childmsg.obj=((_04_GetRecordReply) (rst)).getSpecInfoField();
-  					}
-  					else
-  					{
-  						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
-  						childmsg.what=CahslessTest.QUERYFAIL;
-  						childmsg.obj="";
-  					}
-  				}
-  				posmainhand.sendMessage(childmsg);
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial+"剩余金额="+cashbalance,"com.txt");
+						childmsg.what=CahslessTest.QUERYSUCCESS;
+						childmsg.obj="返回成功="+tmp;
+					}
+					else
+					{
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 返回失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						cashbalance="";
+						childmsg.what=CahslessTest.QUERYFAIL;
+						childmsg.obj="返回失败";
+					}
+				}
+				posmainhand.sendMessage(childmsg);
   			}
   		}
 
@@ -1506,17 +1678,23 @@ BushuoFragInteraction
   		//延时关闭
   		if(type==1)
   		{
-  			mMyApi.pos_release();
-			clearamount();
-			recLen=10;					
+  			clearamount();
+			recLen=10;	
   		}
   		//立即关闭
   		else
   		{
-  			mMyApi.pos_release();
-			clearamount();
-	    	viewSwitch(BUSPORT, null);	    	
+  			clearamount();
+	    	viewSwitch(BUSPORT, null);		    	
   		}
+  	    //***********************
+		//进行pos操作
+		//***********************
+        if(isPos==1)
+        {
+        	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+        	mMyApi.pos_query(mIUserCallback);
+        }
   	}
   	
   	
@@ -1561,7 +1739,7 @@ BushuoFragInteraction
 		if(isPrinter>0)
         {
 			//出货成功,打印凭证
-			if(status==1)
+			if((status==1)&&(OrderDetail.getPayType()!=5))
 			{
 				new Handler().postDelayed(new Runnable() 
 				{
@@ -1606,6 +1784,7 @@ BushuoFragInteraction
         				{
         					//扣钱
         		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
+        					ToolClass.setLAST_CHUHUO(true);
         					Intent intent=new Intent();
         			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
         					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
@@ -1624,7 +1803,9 @@ BushuoFragInteraction
         				if(status==1)
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
-        					OrderDetail.addLog(BusPort.this);	
+        					ToolClass.setLAST_CHUHUO(true);
+        					OrderDetail.addLog(BusPort.this);
+        			        AudioSound.playbusfinish();
         					zhiposDestroy(1);
         				}
         				//出货失败,退钱
@@ -1642,7 +1823,9 @@ BushuoFragInteraction
         				if(status==1)
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
-        					OrderDetail.addLog(BusPort.this);					
+        					ToolClass.setLAST_CHUHUO(true);
+        					OrderDetail.addLog(BusPort.this);	
+        					AudioSound.playbusfinish();
         					zhierDestroy(1);
         				}
         				//出货失败,退钱
@@ -1660,7 +1843,9 @@ BushuoFragInteraction
         				if(status==1)
         				{
         					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
-        					OrderDetail.addLog(BusPort.this);					
+        					ToolClass.setLAST_CHUHUO(true);
+        					OrderDetail.addLog(BusPort.this);
+        					AudioSound.playbusfinish();
         					zhiweiDestroy(1);
         				}
         				//出货失败,退钱
@@ -1671,18 +1856,25 @@ BushuoFragInteraction
         					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
         					payoutzhiwei();//退款操作									
         				}
-            			break;    			
+            			break;  
+            		//自提密码页面		
+            		case 5:
+            			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自提密码页面","log.txt");
+            			clearamount();
+        				recLen=3;
+            			break;	
             		//取货码页面		
             		case -1:
             			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
-        				OrderDetail.addLog(BusPort.this);					
+            			ToolClass.setLAST_CHUHUO(true);
+            			OrderDetail.addLog(BusPort.this);					
         				clearamount();
-        				recLen=10;
+        				recLen=3;
             			break;
             	}
             }
 
-		}, 2000);
+		}, 6000);
     	
     	
 	}
@@ -1696,6 +1888,7 @@ BushuoFragInteraction
 		if(money>0)
 		{
 			dialog= ProgressDialog.show(BusPort.this,"正在退币中,金额"+money,"请稍候...");
+			AudioSound.playbuspayout();
 			new Handler().postDelayed(new Runnable() 
 			{
 	            @Override
@@ -2243,7 +2436,8 @@ BushuoFragInteraction
 					businessportFragment = new BusinessportFragment();
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
-	            transaction.replace(R.id.id_content, businessportFragment);
+	            transaction.replace(R.id.id_content, businessportFragment);	
+	            listternermovie.BusportVideoStop(1);
 				break;
 			case BUSGOODSCLASS://商品类别
 				isbus=false;
@@ -2261,6 +2455,7 @@ BushuoFragInteraction
 				if (busgoodsFragment == null) {
 					busgoodsFragment = new BusgoodsFragment();
 	            }
+				proclassID=str;
 				//步骤五、传递这个数据给friendfragment
 				//传递数据
 		        data.clear();
@@ -2308,6 +2503,7 @@ BushuoFragInteraction
 	        	busgoodsselectFragment.setArguments(data);
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, busgoodsselectFragment);
+	            AudioSound.playbusselect();
 				break;
 			case BUSZHIAMOUNT://现金支付
 				isbus=false;
@@ -2337,6 +2533,7 @@ BushuoFragInteraction
 		            }
 
 				}, 1500);
+			    AudioSound.playbuszhiamount();
 				break;	
 			case BUSZHIER://支付宝支付
 				isbus=false;
@@ -2359,7 +2556,8 @@ BushuoFragInteraction
 		        		sendzhier();
 		            }
 
-				}, 1500);		            
+				}, 1500);	
+			    AudioSound.playbuszhier();
 				break;
 			case BUSZHIWEI://微信支付
 				isbus=false;
@@ -2382,7 +2580,8 @@ BushuoFragInteraction
 		        		sendzhiwei();
 		            }
 
-				}, 1500);	           
+				}, 1500);	
+			    AudioSound.playbuszhiwei();
 				break;	
 			case BUSZHIPOS://pos支付
 				isbus=false;
@@ -2394,24 +2593,35 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiposFragment);
-	            ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
-	            //打开串口
-	            //ip、端口、串口、波特率必须准确
-				mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-						,ToolClass.getCardcom(), "9600", mIUserCallback);
-				//延时
-			    new Handler().postDelayed(new Runnable() 
-				{
-		            @Override
-		            public void run() 
-		            {   
-		            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
-		            	listterner.BusportTsxx("提示信息：请刷卡");
-						mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
-				    	iszhipos=1;
-					}
-
-				}, 500);	           
+	            //***********************
+	    		//进行pos操作
+	    		//***********************
+	            if(isPos>0)
+	            {
+		    		if(isPos==1)
+		    		{
+		    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
+		    			waitpos=1;
+		    			mMyApi.pos_cancel();	    	    	
+		    		}	
+		    		else
+		    		{
+		    			//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+				            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+				            	listterner.BusportTsxx("提示信息：请刷卡");
+								mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+						    	iszhipos=1;
+							}
+	
+						}, 500);
+		    		}
+	            }
+	            AudioSound.playbuszhipos();
 				break;	
 			case BUSHUO://出货页面	
 				recLen=10*60;
@@ -2677,7 +2887,16 @@ BushuoFragInteraction
 		//COM服务相关
 		//=============
 		//5.解除注册接收器
-		comBroadreceiver.unregisterReceiver(comreceiver);	
+		comBroadreceiver.unregisterReceiver(comreceiver);
+		//***********************
+		//进行pos操作
+		//***********************
+		if(isPos==1)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销读卡器","com.txt");
+//	    	mMyApi.pos_release();//串口不用关闭了
+            mMyApi.pos_cancel();  
+		}
 		//退出时，返回intent
         Intent intent=new Intent();
         setResult(MaintainActivity.RESULT_CANCELED,intent);

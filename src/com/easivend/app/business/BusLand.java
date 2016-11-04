@@ -12,6 +12,7 @@ import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.COMThread;
@@ -21,6 +22,7 @@ import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.view.PassWord;
 import com.example.evconsole.R;
@@ -49,6 +51,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
+    private int chuhuoLen = 0;//免费出上一个格子柜 
     //交易页面
     Intent intent=null;
     final static int REQUEST_CODE=1; 
@@ -96,7 +99,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	        @Override 
 	        public void run() { 
 	        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt"); 
-	        	  if(isbus==false)
+	        	//屏幕与广告切换  
+	        	if(isbus==false)
 	        	  {
 		        	  ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<recLen="+recLen,"log.txt");
 		        	  recLen--; 		    	      
@@ -106,6 +110,16 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 			    	      switchMovie();
 		              }	
 	        	  }
+	        	//判断3分钟内，如果按下空的货道号可以直接出货
+	        	if(ToolClass.isLAST_CHUHUO())
+	        	{
+	        		chuhuoLen++;
+	        		if(chuhuoLen>=3*60)
+	        		{
+	        			chuhuoLen=0;
+	        			ToolClass.setLAST_CHUHUO(false);
+	        		}
+	        	}
 	        } 
 	    }, 1, 1, TimeUnit.SECONDS);       // timeTask  
 	}
@@ -233,7 +247,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 			        	
 			        	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
 	    			}
-					break;
+	    			break;
 				case 4:
 					intent = new Intent(BusLand.this, BusHuo.class);// 使用Accountflag窗口初始化Intent
 	            	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
@@ -469,7 +483,8 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{		
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode,"log.txt");		
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<businessJNI,requestCode="+requestCode+"resultCode="+resultCode+"LAST_CHUHUO="+ToolClass.isLAST_CHUHUO(),"log.txt");		
+    	
     	//4.注册接收器
 		//comBroadreceiver = LocalBroadcastManager.getInstance(this);
 		//comreceiver=new COMReceiver();
@@ -481,6 +496,7 @@ public class BusLand extends Activity implements MovieFragInteraction,BusFragInt
     	if((requestCode==REQUEST_CODE)&&(resultCode==0x03))
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+			ToolClass.setLAST_CHUHUO(true);
 			OrderDetail.addLog(BusLand.this);	
 			switchMovie();
 		}		

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgjsqd"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/jsqd" />
+    <ImageView
+	       android:id="@+id/imgwhite"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@+id/imgjsqd"
+	       android:src="@drawable/imgwhite" />
+    <TextView
+        android:id="@+id/txtbuszhiamountcount"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgjsqd"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:numeric="integer"
+        android:textColor="#FF0000" 
+        android:text="0" />
+	<TextView
+        android:id="@+id/txtbuszhiamountsp"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgjsqd"
+        android:layout_toRightOf="@+id/txtbuszhiamountcount"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:text="件商品 总计:"
+        />
+	<TextView
+        android:id="@+id/txtbuszhiamountAmount"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/txtbuszhiamountsp"
+        android:layout_below="@+id/imgjsqd"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:numeric="decimal"
+        android:textColor="#FF0000" 
+        android:text="0" />
+	<TextView
+        android:id="@+id/txtbuszhiamountbill"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtbuszhiamountAmount"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:text="投币金额:"
+        />
+	<TextView
+        android:id="@+id/txtbuszhiamountbillAmount"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/txtbuszhiamountbill"
+        android:layout_below="@+id/txtbuszhiamountAmount"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:numeric="decimal"
+        android:textColor="#FF0000" 
+        android:text="0" />	
+   	<TextView
+        android:id="@+id/txtbuszhiamounttime"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtbuszhiamountbillAmount"
+        android:textSize="40sp"
+        android:textStyle="bold"        
+        android:textColor="#FF0000" 
+        android:text="时间:" />	   	
+   	<TextView
+        android:id="@+id/txtbuszhiamounttsxx"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtbuszhiamounttime"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:textColor="#FF0000" 
+        android:text="提示信息"
+        />
+   	<ImageButton
+        android:id="@+id/imgbtnbuszhiamountqxzf"
+        android:layout_below="@+id/txtbuszhiamounttsxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/qxzffang" />
+	<ImageButton
+        android:id="@+id/imgbtnbuszhiamountqtzf"
+        android:layout_below="@+id/txtbuszhiamounttsxx"
+        android:layout_toRightOf="@+id/imgbtnbuszhiamountqxzf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/qtzffang" />
+	<ImageView
+       android:id="@+id/imgzflc"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/imgbtnbuszhiamountqxzf"
+       android:src="@drawable/zflc" />
+	<ImageView
+	       android:id="@+id/imgxqwhite"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@+id/imgzflc" 
+	       android:src="@drawable/imgwhite" />
+	<ImageView 
+   	    android:id = "@+id/ivbuszhiamountbill"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/imgzflc"	
+		android:layout_above="@+id/imgback"
+		android:src="@drawable/billonlyfang"			
+   	/>
+	<ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifuback" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifunext" />       	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinish" />
+</RelativeLayout>

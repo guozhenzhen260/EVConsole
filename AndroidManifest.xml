@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.evconsole"
-    android:versionCode="24"
+    android:versionCode="25"
     android:versionName="3.0" >
 
     <uses-sdk
@@ -259,6 +259,8 @@
 				<action android:name="shutdownalarm" />
 			</intent-filter>
 		</receiver>
+		<receiver android:name="com.easivend.view.WifiChangeBroadcastReceiver"/> 
+		
 	    <service
             android:name="com.easivend.view.DogService"/>
 	    <service
@@ -267,6 +269,8 @@
             android:name="com.easivend.view.COMService"/>
 	    <service
             android:name="com.easivend.view.AlarmService"/>
+	    <service
+            android:name="com.easivend.view.MobileService"/>
     </application>
     <!--允许改变配置信息的权限 -->
     <uses-permission android:name = "android.permission.CHANGE_CONFIGURATION"></uses-permission>
@@ -293,4 +297,5 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.READ_LOGS" />
+	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/> 
 </manifest>

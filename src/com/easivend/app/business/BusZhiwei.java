@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.http.Weixinghttp;
@@ -74,6 +75,7 @@ public class BusZhiwei extends Activity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.buszhiwei);
 		BusZhiweiAct = this;
+		AudioSound.playbuszhiwei();
 		//从商品页面中取得锁选中的商品
 //		Intent intent=getIntent();
 //		Bundle bundle=intent.getExtras();
@@ -276,6 +278,7 @@ public class BusZhiwei extends Activity
 	private void payoutzhiwei()
 	{
 		//if(ercheckopt())
+		AudioSound.playbuspayout();
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
   		{
 			// 将信息发送到子线程中
@@ -437,7 +440,9 @@ public class BusZhiwei extends Activity
 				if(status==1)
 				{
 					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<无退款","log.txt");
-					OrderDetail.addLog(BusZhiwei.this);					
+					ToolClass.setLAST_CHUHUO(true);
+					OrderDetail.addLog(BusZhiwei.this);	
+					AudioSound.playbusfinish();
 					finish();
 				}
 				//出货失败,退钱

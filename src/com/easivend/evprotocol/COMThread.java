@@ -475,7 +475,15 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					Map<String, Integer> list=ToolClass.ReadColumnFile();				
+					Map<String, Integer> list=null;
+					if(cabinet==2)
+					{
+						list=ToolClass.ReadColumnFile2();				
+					}
+					else
+					{
+						list=ToolClass.ReadColumnFile();				
+					}
 										
 					//2.重新组包
 					//往接口回调信息
@@ -503,8 +511,15 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					Map<String, Integer> list8=ToolClass.ReadColumnFile();				
-										
+					Map<String, Integer> list8=null;				
+					if(cabinet==2)
+					{
+						list8=ToolClass.ReadColumnFile2();				
+					}
+					else
+					{
+						list8=ToolClass.ReadColumnFile();				
+					}	
 					//2.重新组包
 					//往接口回调信息
 					allSet.clear();
@@ -566,7 +581,11 @@ public class COMThread implements Runnable
 					//重试2次
 					for(int i=0;i<2;i++)
 					{
-						String rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());
+						String rec9;
+						if(cabinet==2)
+							rec9=EVprotocol.EVtrade(ToolClass.getColumncom2_id(),1,cabinet,column,ToolClass.getGoc());
+						else
+							rec9=EVprotocol.EVtrade(ToolClass.getColumncom_id(),1,cabinet,column,ToolClass.getGoc());	
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec9.toString(),"com.txt");
 	
 						//2.重新组包
@@ -596,7 +615,10 @@ public class COMThread implements Runnable
 									allSet.put("addr", 0);//柜子地址
 									allSet.put("box", 0);//格子地址
 									allSet.put("result", ToolClass.colChuhuorst(11));
-									ToolClass.ResstartPort(3);
+									if(cabinet==2)
+										ToolClass.ResstartPort(5);
+									else
+										ToolClass.ResstartPort(3);	
 									try {
 										Thread.sleep(2000);
 									} catch (InterruptedException e) {
@@ -632,8 +654,16 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					Map<String, Integer> list21=ToolClass.ReadElevatorFile();				
-										
+					Map<String, Integer> list21=null;
+                    if(cabinet==2)
+                    {
+                    	list21=ToolClass.ReadElevatorFile2();                
+                    }
+                    else
+                    {
+                    	list21=ToolClass.ReadElevatorFile();                
+                    }
+					
 					//2.重新组包
 					//往接口回调信息
 					allSet.clear();
@@ -660,8 +690,15 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					Map<String, Integer> list20=ToolClass.ReadElevatorFile();				
-										
+					Map<String, Integer> list20=null;				
+					if(cabinet==2)
+                    {
+						list20=ToolClass.ReadElevatorFile2();                
+                    }
+                    else
+                    {
+                    	list20=ToolClass.ReadElevatorFile();                
+                    }					
 					//2.重新组包
 					//往接口回调信息
 					allSet.clear();
@@ -723,7 +760,11 @@ public class COMThread implements Runnable
 					//重试2次
 					for(int i=0;i<2;i++)
 					{
-						String rec22=EVprotocol.EVtrade(ToolClass.getColumncom_id(),3,cabinet,column,ToolClass.getGoc());
+						String rec22;
+						if(cabinet==2)
+							rec22=EVprotocol.EVtrade(ToolClass.getColumncom2_id(),3,cabinet,column,ToolClass.getGoc());
+						else
+							rec22=EVprotocol.EVtrade(ToolClass.getColumncom_id(),3,cabinet,column,ToolClass.getGoc());
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec22.toString(),"com.txt");
 	
 						//2.重新组包
@@ -753,7 +794,10 @@ public class COMThread implements Runnable
 									allSet.put("addr", 0);//柜子地址
 									allSet.put("box", 0);//格子地址
 									allSet.put("result", ToolClass.elevatorChuhuorst(0x1F));
-									ToolClass.ResstartPort(3);
+									if(cabinet==2)
+										ToolClass.ResstartPort(5);
+									else
+										ToolClass.ResstartPort(3);	
 									try {
 										Thread.sleep(2000);
 									} catch (InterruptedException e) {

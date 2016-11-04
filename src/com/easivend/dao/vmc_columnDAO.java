@@ -17,6 +17,8 @@ package com.easivend.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.easivend.common.ToolClass;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
 import android.content.Context;
@@ -149,7 +151,7 @@ public class vmc_columnDAO
 		 		db.execSQL(
 					"update vmc_column set " +
 					"productID=?,pathCount=?,path_id=?," +
-					"lasttime=(datetime('now', 'localtime')),isupload=0 " +
+					"isupload=0 " +
 					"where cabID=? and columnID=?",
 			        new Object[] { tb_vmc_column.getProductID(),tb_vmc_column.getPathCount(),
 							tb_vmc_column.getPath_id(),
@@ -241,7 +243,7 @@ public class vmc_columnDAO
     	    db.beginTransaction();
     	    try {
 	          // 执行布满该柜货道表
-	          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1,isupload=0 where cabID=? and columnStatus<>2 ", 
+	          db.execSQL("update vmc_column set pathRemain=pathCount,columnStatus=1,isupload=0,lasttime=(datetime('now', 'localtime')) where cabID=? and columnStatus<>2 ", 
 	          		new Object[] { cabID});    
           
 	          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
@@ -441,7 +443,7 @@ public class vmc_columnDAO
     	List<String> alllist=new ArrayList<String>();
     	
     	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
-        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=? order by random()", 
+        Cursor cursor = db.rawQuery("select cabID,columnID from vmc_column where (tihuoPwd is null or tihuoPwd=='') and pathRemain>0 and productID=? order by lasttime asc", 
         		new String[] { productID});// 根据编号查找支出信息，并存储到Cursor类中
         //遍历所有的收入信息
         if (cursor.moveToNext()) 
@@ -512,6 +514,52 @@ public class vmc_columnDAO
  		db.close();
  		return null;// 如果没有数据，则返回0
     }
+    /**
+     * 获取指定出货货道的商品信息,包括存货余量为0的
+     * 
+     * @return
+     */
+    public Tb_vmc_product getColumnproductforzero(String cabID,String columnID) {
+    	String productID=null;
+    	db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+    	Cursor cursor = db.rawQuery("select productID from vmc_column where pathRemain=0 and cabID=? and columnID=?", 
+        		new String[] { cabID,columnID});// 根据编号查找支出信息，并存储到Cursor类中    	
+		
+        //遍历所有的收入信息
+        if (cursor.moveToNext())  
+        {	
+        	productID=cursor.getString(cursor.getColumnIndex("productID"));//商品ID
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+productID+"余量=0","log.txt");
+        	
+        	Cursor cursor2 = db.rawQuery("select productID,productName,productDesc,marketPrice," +
+            		"salesPrice,shelfLife,downloadTime,onloadTime,attBatch1,attBatch2,attBatch3," +
+            		"paixu,isdelete from vmc_product where productID = ?", new String[] { String.valueOf(productID) });// 根据编号查找支出信息，并存储到Cursor类中
+	        if (cursor2.moveToNext()) 
+	        {// 遍历查找到的支出信息
+	
+	            // 将遍历到的支出信息存储到Tb_outaccount类中
+	        	return new Tb_vmc_product(
+	    				cursor2.getString(cursor2.getColumnIndex("productID")), cursor2.getString(cursor2.getColumnIndex("productName")),
+	    				cursor2.getString(cursor2.getColumnIndex("productDesc")),cursor2.getFloat(cursor2.getColumnIndex("marketPrice")),
+	    				cursor2.getFloat(cursor2.getColumnIndex("salesPrice")),cursor2.getInt(cursor2.getColumnIndex("shelfLife")),
+	    				cursor2.getString(cursor2.getColumnIndex("downloadTime")),cursor2.getString(cursor2.getColumnIndex("onloadTime")),
+	    				cursor2.getString(cursor2.getColumnIndex("attBatch1")), cursor2.getString(cursor2.getColumnIndex("attBatch2")),
+	    				cursor2.getString(cursor2.getColumnIndex("attBatch3")),cursor2.getInt(cursor2.getColumnIndex("paixu")),
+	    				cursor2.getInt(cursor2.getColumnIndex("isdelete"))
+	    		);
+	        }
+	        if (!cursor2.isClosed()) 
+     		{  
+     			cursor2.close();  
+     		} 
+        }
+        if (!cursor.isClosed()) 
+ 		{  
+ 			cursor.close();  
+ 		}         
+ 		db.close();
+ 		return null;// 如果没有数据，则返回0
+    }
     
     /**
      * 获取指定出货货道的货道类型
@@ -547,7 +595,7 @@ public class vmc_columnDAO
 	  	  db.beginTransaction();
 	  	  try {
 	          // 执行删除商品表
-	          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0 where cabID=? and columnID=?", 
+	          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0,lasttime=(datetime('now', 'localtime')) where cabID=? and columnID=?", 
 	          		new Object[] { cabID,columnID});    
 	          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
 	          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中

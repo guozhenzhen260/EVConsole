@@ -4,6 +4,7 @@ import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_product;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class BusgoodsselectFragment extends Fragment
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiselpos=null;
 	TextView txtbusgoodselName=null,txtbusgoodselAmount=null;
 	WebView webproductDesc;
+	Button btnreturn=null;
 	private String proID = null;
 	private String productID = null;
 	private String proImage = null;	
@@ -75,6 +78,7 @@ public class BusgoodsselectFragment extends Fragment
          * @param str
          */
         void BusgoodsselectSwitch(int buslevel);//切换到BusZhixx页面
+        void BusgoodsSwitch();//切换到busgoods页面
         void BusgoodsselectFinish();      //切换到business页面
     }
     @Override
@@ -265,6 +269,13 @@ public class BusgoodsselectFragment extends Fragment
 		    	listterner.BusgoodsselectFinish();//步骤二、fragment向activity发送回调信息
 		    }
 		});
+    	btnreturn=(Button)view.findViewById(R.id.btnreturn);
+	    btnreturn.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	listterner.BusgoodsSwitch();//步骤二、fragment向activity发送回调信息
+		    }
+		});	
 		return view;
 	}
 	

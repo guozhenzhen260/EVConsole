@@ -1,0 +1,17 @@
+diff a/src/com/easivend/fragment/BusinesslandFragment.java b/src/com/easivend/fragment/BusinesslandFragment.java	(rejected hunks)
+@@ -110,14 +110,7 @@
+ 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+ 			Bundle savedInstanceState) {
+ 		// TODO Auto-generated method stub
+-		//���ú������������Ĳ��ֲ���
+-		View view;
+-		//����
+-		if(ToolClass.getOrientation()==1)
+-			view = inflater.inflate(R.layout.fragment_businessport, container, false);  
+-		//����
+-		else
+-			view = inflater.inflate(R.layout.fragment_businessland, container, false);  
++		View view = inflater.inflate(R.layout.fragment_businessland, container, false);  
+ 		context=this.getActivity();//��ȡactivity��context	
+ 		//��ʱ�����ع��ҳ��
+ //		timer.schedule(new TimerTask() { 

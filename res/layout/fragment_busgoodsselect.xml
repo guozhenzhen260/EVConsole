@@ -126,4 +126,15 @@
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
 	       android:src="@drawable/busfinish" />
+    <Button 	
+        android:id="@+id/btnreturn"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="返回"
+		android:textColor="@android:color/white"
+		android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_marginBottom="30dp"
+	    android:background="#00000000"
+        android:textSize="65dp"/>
 </RelativeLayout>

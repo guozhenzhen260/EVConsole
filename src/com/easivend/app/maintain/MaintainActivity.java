@@ -25,17 +25,21 @@ import java.util.concurrent.TimeUnit;
 
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
+import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
 import com.easivend.view.DogService;
 import com.easivend.view.EVServerService;
+import com.easivend.view.MobileService;
 import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusLand;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusZhitihuo;
+import com.easivend.common.AudioSound;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -79,7 +83,7 @@ public class MaintainActivity extends Activity
     // 定义int数组，存储功能对应的图标
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
-    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null,printcom=null,posip=null,posipport=null;
+    String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null,printcom=null,posip=null,posipport=null,columncom2=null;
     final static int REQUEST_CODE=1;   
     //获取货柜信息
    //Map<String,Integer> huoSet=new HashMap<String,Integer>();
@@ -122,6 +126,10 @@ public class MaintainActivity extends Activity
 		//获取本应用context
 		ToolClass.setContext(getApplicationContext());
 		
+		//启动网络监测服务
+		startService(new Intent(this,MobileService.class));
+		//加载声音文件
+		AudioSound.initsound();
 		//==========
 		//Dog服务相关
 		//==========
@@ -134,25 +142,7 @@ public class MaintainActivity extends Activity
             @Override
             public void run() 
             {      
-            	//发送指令广播给DogService
-        		Intent intent=new Intent();
-        		intent.putExtra("isallopen", isallopen);
-        		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
-        		//dogBroadreceiver.sendBroadcast(intent); 
-        		sendBroadcast(intent); 
-        		//==========
-            	//EVDog服务相关
-            	//==========
-            	//发送指令广播给DogService
-	    		Intent intent2=new Intent();
-	    		intent2.putExtra("isallopen", isallopen);
-	    		if(isallopen==1)
-	    			intent2.putExtra("watchfeed", 1);
-	    		else
-	    			intent2.putExtra("watchfeed", 0);	
-	    		intent2.setAction("android.intent.action.watchdog");//action与接收器相同
-	    		//dogBroadreceiver.sendBroadcast(intent); 
-	    		sendBroadcast(intent2);
+            	evDog(1);
             }
 
 		}, SPLASH_DISPLAY_LENGHT);
@@ -194,6 +184,7 @@ public class MaintainActivity extends Activity
             	ToolClass.ResstartPort(2);
             	ToolClass.ResstartPort(3);
             	ToolClass.ResstartPort(4);
+            	ToolClass.ResstartPort(5);
             	
             	//7.发送指令广播给COMService
         		Intent intent=new Intent();
@@ -255,6 +246,11 @@ public class MaintainActivity extends Activity
 	        	posipport = list.get("posipport");
 	        	ToolClass.setPosipport(posipport);	
 	        }
+	        if(list.containsKey("isallopen"))//设置副柜串口号
+	        {
+				columncom2 = list.get("isallopen");
+				ToolClass.setColumncom2(columncom2);	
+	        }
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
 	        
@@ -310,17 +306,7 @@ public class MaintainActivity extends Activity
                 	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
                     break;
                 case 6:
-                	//横屏
-    				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-    				{
-    					intent = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-    				}
-    				//竖屏
-    				else
-    				{
-    					intent = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-    				}                	
-                    startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+                	IntentBus();
                     break;
                 case 7:
                 	//创建警告对话框
@@ -365,40 +351,10 @@ public class MaintainActivity extends Activity
 		// TODO Auto-generated method stub
 		if(requestCode==REQUEST_CODE)
 		{
-			if(resultCode==MaintainActivity.RESULT_CANCELED)
-			{				
+			if(isallopen==1)
+			{
+				evDog(0); 
 			}	
-			else if(resultCode==MaintainActivity.RESULT_OK)
-			{	
-				//从配置文件获取数据
-				Map<String, String> list=ToolClass.ReadConfigFile();
-				if(list!=null)
-				{
-			        if(list.containsKey("isallopen"))
-			        {
-			        	isallopen=Integer.parseInt(list.get("isallopen"));	
-			        	//发送指令广播给DogService
-		        		Intent intent=new Intent();
-		        		intent.putExtra("isallopen", isallopen);
-		        		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
-		        		//dogBroadreceiver.sendBroadcast(intent);
-		        		sendBroadcast(intent); 
-		        		//==========
-		            	//EVDog服务相关
-		            	//==========
-		            	//发送指令广播给DogService
-			    		Intent intent2=new Intent();
-			    		intent2.putExtra("isallopen", isallopen);
-			    		if(isallopen==1)
-			    			intent2.putExtra("watchfeed", 1);
-			    		else
-			    			intent2.putExtra("watchfeed", 0);	
-			    		intent2.setAction("android.intent.action.watchdog");//action与接收器相同
-			    		//dogBroadreceiver.sendBroadcast(intent); 
-			    		sendBroadcast(intent2);
-			        }
-				}
-			}
 		}	
 	}
 		
@@ -426,18 +382,7 @@ public class MaintainActivity extends Activity
 				{
 					issale=true;
 					//签到完成，自动开启售货程序
-					Intent intbus;
-					//横屏
-					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-					{
-						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-					}
-					//竖屏
-					else
-					{
-						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-					}
-					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+					IntentBus();
 				}
 	    		break;
 			case EVServerhttp.SETFAILMAIN:
@@ -449,23 +394,91 @@ public class MaintainActivity extends Activity
 				{
 					issale=true;
 					//签到完成，自动开启售货程序
-					Intent intbus;
-					//横屏
-					if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-					{
-						intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
-					}
-					//竖屏
-					else
-					{
-						intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
-					}
-					startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+					IntentBus();
 				}
 	    		break;	
 			}			
 		}
 
+	}
+	
+	//签到完成，自动开启售货程序
+	private void IntentBus()
+	{
+		//如果看门狗没打开，就打开它
+		if(isallopen==0)
+			evDog(1);
+		//签到完成，自动开启售货程序
+		Intent intbus = null;
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(MaintainActivity.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		//使用大屏广告页面
+    		if(tb_inaccount.getEmptyProduct()==1)
+    		{
+    			intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+    		}
+    		else
+    		{
+    			//横屏
+				if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+				{
+					intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+				}
+				//竖屏
+				else
+				{
+					intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+				}				
+    		}
+    		startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+    	}
+    	else
+		{
+			//横屏
+			if(ToolClass.getOrientation()==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+			{
+				intbus = new Intent(MaintainActivity.this, BusLand.class);// 使用Accountflag窗口初始化Intent
+			}
+			//竖屏
+			else
+			{
+				intbus = new Intent(MaintainActivity.this, BusPort.class);// 使用Accountflag窗口初始化Intent
+			}	
+			startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
+		}	
+	}
+	
+	//Dog服务的配置:1.保持常打开,0不保持打开
+	private void evDog(int allopen)
+	{	
+		isallopen=allopen;
+		if(isallopen==1)
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=打开看门狗","log.txt");
+		else
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=关闭看门狗","log.txt");
+		
+    	//发送指令广播给DogService
+		Intent intent=new Intent();
+		intent.putExtra("isallopen", isallopen);
+		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
+		//dogBroadreceiver.sendBroadcast(intent);
+		sendBroadcast(intent); 
+		//==========
+    	//EVDog服务相关
+    	//==========
+    	//发送指令广播给DogService
+		Intent intent2=new Intent();
+		intent2.putExtra("isallopen", isallopen);
+		if(isallopen==1)
+			intent2.putExtra("watchfeed", 1);
+		else
+			intent2.putExtra("watchfeed", 0);	
+		intent2.setAction("android.intent.action.watchdog");//action与接收器相同
+		//dogBroadreceiver.sendBroadcast(intent); 
+		sendBroadcast(intent2);
 	}
 		
 	
@@ -555,20 +568,7 @@ public class MaintainActivity extends Activity
                 			@Override
                 			public void run() 
                 			{      
-                				//从配置文件获取数据
-                				Map<String, String> list=ToolClass.ReadConfigFile();
-                				if(list!=null)
-                				{
-                			        if(list.containsKey("isallopen"))
-                			        {
-                			        	//发送指令广播给DogService
-                			    		Intent intent=new Intent();
-                			    		intent.putExtra("isallopen", isallopen);
-                			    		intent.setAction("android.intent.action.dogserversend");//action与接收器相同
-                			    		//dogBroadreceiver.sendBroadcast(intent); 
-                			    		sendBroadcast(intent); 
-                			        }
-                				}
+                				evDog(1);
                 			}
 
                 		}, 1000);

@@ -1,5 +1,6 @@
 package com.easivend.app.business;
 
+import com.easivend.common.AudioSound;
 import com.easivend.common.ProPictureAdapter;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_ProductAdapter;
@@ -205,7 +206,10 @@ public class Busgoods extends Activity
 	    	prosales=productAdapter.getProsales();
 	    	procount=productAdapter.getProcount();
 	    	count=proID.length;
-	        page=(count%3>0)?(count/3)+1:(count/3);
+	    	if(ToolClass.getOrientation()==1)	
+	    		page=(count%9>0)?(count/9)+1:(count/9);
+	    	else
+	    		page=(count%3>0)?(count/3)+1:(count/3);
 	        pageindex=0;
 	        updategrid(pageindex);	    	
 		}
@@ -214,8 +218,18 @@ public class Busgoods extends Activity
 	
 	private void updategrid(int pagein)
     {
-    	int max=((pagein*3+3)>count)?count:(pagein*3+3);
-    	int index=pagein*3;
+		int max=0;
+		int index=0;
+		if(ToolClass.getOrientation()==1)	
+		{
+	    	max=((pagein*9+9)>count)?count:(pagein*9+9);
+	    	index=pagein*9;
+		}
+		else
+		{
+	    	max=((pagein*3+3)>count)?count:(pagein*3+3);
+	    	index=pagein*3;
+		}
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<count="+count+",page="+page+",pageindex="+pagein+"index="+index+"max="+max,"log.txt");
     	StringBuilder info=new StringBuilder();
     	info.append(pagein+1).append("/").append(page);    	

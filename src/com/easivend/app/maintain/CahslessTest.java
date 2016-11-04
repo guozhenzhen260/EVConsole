@@ -10,6 +10,7 @@ import com.landfoneapi.mispos.ILfListener;
 import com.landfoneapi.mispos.LfMISPOSApi;
 import com.landfoneapi.protocol.pkg.REPLY;
 import com.landfoneapi.protocol.pkg._04_GetRecordReply;
+import com.landfoneapi.protocol.pkg._04_QueryReply;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -28,19 +29,23 @@ public class CahslessTest extends Activity {
 	public final static int CLOSEFAIL=4;//关闭失败
 	public final static int COSTSUCCESS=5;//扣款成功
 	public final static int COSTFAIL=6;//扣款失败
-	public final static int QUERYSUCCESS=7;//查询成功
-	public final static int QUERYFAIL=8;//查询失败
+	public final static int QUERYSUCCESS=7;//取交易信息成功
+	public final static int QUERYFAIL=8;//取交易信息失败
 	public final static int DELETESUCCESS=9;//撤销成功
 	public final static int DELETEFAIL=10;//撤销失败
 	public final static int PAYOUTSUCCESS=11;//退款成功
 	public final static int PAYOUTFAIL=12;//退款失败
+	public final static int FINDSUCCESS=13;//查询成功
+	public final static int FINDFAIL=14;//查询失败
 	private TextView txtcashlesstest=null;
 	private EditText edtcashlesstest=null;
-	private Button btncashlesstestopen=null,btncashlesstestok=null,btncashlesstestquery=null
-			,btncashlesstestdelete=null,btncashlesstestpayout=null,btncashlesstestclose=null,
-			btncashlesstestcancel=null;
+	private Button btncashlesstestopen=null,btncashlesstestok=null,btncashlesstestfind=null,
+			btncashlesstestquery=null,btncashlesstestdelete=null,btncashlesstestpayout=null,
+			btncashlesstestclose=null,btncashlesstestcancel=null;
 	private Handler mainhand=null;
 	private LfMISPOSApi mMyApi = new LfMISPOSApi();
+	//查询参数
+	private String cashbalance = "";
 	//退款参数
 	private String rfd_card_no = "";
 	private String rfd_spec_tmp_serial = "";
@@ -95,7 +100,13 @@ public class CahslessTest extends Activity {
 						break;
 					case PAYOUTFAIL:	
 						txtcashlesstest.setText(msg.obj.toString());
-						break;		
+						break;	
+					case FINDSUCCESS:
+						txtcashlesstest.setText(msg.obj.toString());
+						break;
+					case FINDFAIL:	
+						txtcashlesstest.setText(msg.obj.toString());
+						break;	
 				}
 			}
 		};				
@@ -113,6 +124,16 @@ public class CahslessTest extends Activity {
 						,ToolClass.getCardcom(), "9600", mIUserCallback);
 		    }
 		});
+		//查询
+		btncashlesstestfind = (Button)findViewById(R.id.btncashlesstestfind);		
+		btncashlesstestfind.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {	
+		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器查询卡余额","com.txt");
+		    	txtcashlesstest.setText("读卡器查询卡余额");
+		    	mMyApi.pos_query(mIUserCallback);
+		    }
+		});
 		//扣款
 		btncashlesstestok = (Button)findViewById(R.id.btncashlesstestok);
 		btncashlesstestok.setOnClickListener(new OnClickListener() {
@@ -124,7 +145,7 @@ public class CahslessTest extends Activity {
 				mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);				
 		    }
 		});
-		//查询
+		//取交易信息
 		btncashlesstestquery = (Button)findViewById(R.id.btncashlesstestquery);		
 		btncashlesstestquery.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -212,6 +233,24 @@ public class CahslessTest extends Activity {
 						childmsg.obj="关闭失败,code:"+rst.code+",info:"+rst.code_info;
 					}
 				}
+				//签到
+				else if (rst.op.equals(LfMISPOSApi.OP_SIGNIN)) 
+				{
+                    if (rst.code.equals(ErrCode._00.getCode())) {//返回00，代表成功
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到成功","com.txt");
+                    } else {
+                        ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+                    }
+                }
+				//结算【结算时间可能会非常长】
+				else if (rst.op.equals(LfMISPOSApi.OP_SETTLE)) 
+				{
+                    if (rst.code.equals(ErrCode._00.getCode())) {//返回00，代表成功
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 结算成功","com.txt");                        
+                    } else {
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 结算失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");		
+                    }
+                } 
 				//扣款
 				else if(rst.op.equals(LfMISPOSApi.OP_PURCHASE))
 				{
@@ -227,10 +266,39 @@ public class CahslessTest extends Activity {
   					}
 					else{
 						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 扣款失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						if(rst.code.equals("01"))
+						{
+							cashbalance=rst.code_info;
+						}
 						childmsg.what=COSTFAIL;
 						childmsg.obj="扣款失败,code:"+rst.code+",info:"+rst.code_info;
 					}
 				}
+				//查询
+				else if (rst.op.equals(LfMISPOSApi.OP_QUERY)) 
+				{
+                    if (rst.code.equals(ErrCode._00.getCode()))
+                    {
+                        String tmp = "查询结果:";
+                        tmp += "\n错误代码：" + ((_04_QueryReply) (rst)).getCode();
+                        tmp += ",\n提示信息：" + ((_04_QueryReply) (rst)).getCode_info();
+                        tmp += ",\n卡号:" + ((_04_QueryReply) (rst)).getCardNo();//卡号
+                        tmp += ",\n现金余额:" + ((_04_QueryReply) (rst)).getCashBalance();//现金余额
+                        tmp += ",\n积分余额:" + ((_04_QueryReply) (rst)).getPointBalance();//积分余额
+                        ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
+                        //查询参数获取
+                        cashbalance = ((_04_QueryReply) (rst)).getCashBalance();
+                        childmsg.what=FINDSUCCESS;
+						childmsg.obj="查询成功="+tmp;
+                        
+                    } 
+                    else 
+                    {
+                    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+                        childmsg.what=FINDFAIL;
+						childmsg.obj="查询失败,code:"+rst.code+",info:"+rst.code_info;
+                    }
+                } 
 				//退款
   				else if(rst.op.equals(LfMISPOSApi.OP_REFUND))
   				{
@@ -280,7 +348,7 @@ public class CahslessTest extends Activity {
 						tmp += "],交易日期和时间=[" + ((_04_GetRecordReply) (rst)).getTransacionDatetime();//交易日期和时间
 						tmp += "],交易金额=[" + ((_04_GetRecordReply) (rst)).getTransacionAmount();//交易金额
 						tmp +="]";
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询成功="+tmp,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 返回成功="+tmp,"com.txt");
 
   						//退款参数获取
 						String tmp_spec = ((_04_GetRecordReply) (rst)).getSpecInfoField();
@@ -291,21 +359,25 @@ public class CahslessTest extends Activity {
 						if(tmp_spec!=null && tmp_spec_len>(2+19)){
 							rfd_card_no = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring(0+2,2+19).trim();
 						}
+						//【剩余金额】
+						if(tmp_spec!=null && tmp_spec_len>(2+19)){
+							cashbalance = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26-12),(tmp_spec_len-26)).trim();
+						}
 						//【临时交易流水号】
 						if(tmp_spec!=null && tmp_spec_len>26){
 							rfd_spec_tmp_serial = (((_04_GetRecordReply) (rst)).getSpecInfoField()).substring((tmp_spec_len-26),tmp_spec_len);
 						}else{//使用空格时，表示上一次的【临时交易流水号】
 							rfd_spec_tmp_serial = String.format("%1$-26s","");
 						}
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 退款参数=金额"+amount+"卡号="+rfd_card_no+"流水号="+rfd_spec_tmp_serial+"剩余金额="+cashbalance,"com.txt");
 						childmsg.what=QUERYSUCCESS;
-						childmsg.obj="查询成功="+tmp;
+						childmsg.obj="返回成功="+tmp;
 					}
 					else
 					{
-						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 查询失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 返回失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");
 						childmsg.what=QUERYFAIL;
-						childmsg.obj="查询失败";
+						childmsg.obj="返回失败";
 					}
 				}
 				mainhand.sendMessage(childmsg);

@@ -13,6 +13,7 @@ import com.easivend.chart.Line;
 import com.easivend.chart.Stack;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_OrderAdapter;
+import com.easivend.dao.vmc_orderDAO;
 import com.example.evconsole.R;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -54,7 +55,7 @@ public class Order extends TabActivity
 			txtdebtAmountValue=null,txtrealCardValue=null,txtpayTimeValue=null,txtproductNameValue=null,txtsalesPriceValue=null,
 			txtcabIDValue=null,txtcolumnIDValue=null;
 	private EditText edtordergridstart=null,edtordergridend=null;
-	private Button btnordergridquery=null,btnordergriddel=null,btnordergridexit=null,btnordergridStack=null,btnordergridLine=null;	
+	private Button btnordergridquery=null,btnordergriddel=null,btnordergridalldel=null,btnordergridexit=null,btnordergridStack=null,btnordergridLine=null;	
 	private Spinner spinordergridtongji=null;
 	private String [] mStringArray; 
 	private ArrayAdapter<String> mAdapter ;
@@ -253,6 +254,40 @@ public class Order extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	delgrid();
+		    }
+		});
+    	//删除所有记录
+    	btnordergridalldel = (Button) findViewById(R.id.btnordergridalldel);
+    	btnordergridalldel.setOnClickListener(new OnClickListener() {
+		    @Override
+		    public void onClick(View arg0) {
+		    	//创建警告对话框
+		    	Dialog alert=new AlertDialog.Builder(Order.this)
+		    		.setTitle("对话框")//标题
+		    		.setMessage("您确定要删除所有记录吗，注意：删除之后将不能恢复？")//表示对话框中得内容
+		    		.setIcon(R.drawable.ic_launcher)//设置logo
+		    		.setPositiveButton("删除", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+		    			{				
+			    				@Override
+			    				public void onClick(DialogInterface dialog, int which) 
+			    				{
+			    					//删除交易记录
+			    		            vmc_orderDAO orderDAO = new vmc_orderDAO(Order.this);
+			    		            orderDAO.deteleall();
+			    				}
+		    		      }
+		    			)		    		        
+				        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+				        	{			
+								@Override
+								public void onClick(DialogInterface dialog, int which) 
+								{
+									// TODO Auto-generated method stub				
+								}
+				        	}
+				        )
+				        .create();//创建一个对话框
+				        alert.show();//显示对话框			    	
 		    }
 		});
     	//退出

@@ -40,10 +40,9 @@ import android.widget.Toast;
 
 public class Login extends Activity 
 {
-	private EditText txtlogin,txtbent,txtcolumn,txtcardcom,txtprintcom,txtextracom,txtposip,txtposipport;// 创建EditText对象
-	private TextView tvVersion=null,tvprintcom=null,tvextracom=null,tvposip=null,tvposipport=null;
+	private EditText txtlogin,txtbent,txtcolumn,txtcardcom,txtprintcom,txtextracom,txtposip,txtposipport,txtcolumn2;// 创建EditText对象
+	private TextView tvVersion=null,tvprintcom=null,tvextracom=null,tvposip=null,tvposipport=null,tvcolumn2=null;
     private Button btnlogin,btnclose,btnGaoji,btnDel,btnDelImg,btnDelads;// 创建两个Button对象
-    private Switch switchallopen;
     String com =null;
     String bentcom =null;
     String columncom =null;
@@ -52,7 +51,7 @@ public class Login extends Activity
     String printcom =null;
     String posip=null;
     String posipport=null;
-    int isallopen=1;//是否保持持续一直打开,1一直打开,0关闭后不打开
+    String columncom2 =null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -60,8 +59,7 @@ public class Login extends Activity
 		setContentView(R.layout.login);// 设置布局文件
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());		
-		switchallopen = (Switch)findViewById(R.id.switchallopen); //获取到控件  
-        txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取现金设备串口号文本框
+		txtlogin = (EditText) findViewById(R.id.txtLogin);// 获取现金设备串口号文本框
         txtbent = (EditText) findViewById(R.id.txtbent);// 获取格子柜串口号文本框
         txtcolumn = (EditText) findViewById(R.id.txtcolumn);// 获取主柜串口号文本框
         txtcardcom = (EditText) findViewById(R.id.txtserver);// 获取读卡器串口号文本框
@@ -73,6 +71,8 @@ public class Login extends Activity
         txtposip = (EditText) findViewById(R.id.txtposip);//获取外协设备串口号文本框
         tvposipport = (TextView) findViewById(R.id.tvposipport);        
         txtposipport = (EditText) findViewById(R.id.txtposipport);//获取外协设备串口号文本框
+        tvcolumn2 = (TextView) findViewById(R.id.tvcolumn2);        
+        txtcolumn2 = (EditText) findViewById(R.id.txtcolumn2);//获取副弹簧/升降机柜串口号
         tvVersion = (TextView) findViewById(R.id.tvVersion);//本机版本号
         btnDel = (Button) findViewById(R.id.btnDel);// 获取清除全部商品货道信息
         btnDelImg = (Button) findViewById(R.id.btnDelImg);// 获取清除商品图片缓存信息
@@ -85,6 +85,8 @@ public class Login extends Activity
         txtposip.setVisibility(View.GONE);
         tvposipport.setVisibility(View.GONE); 
         txtposipport.setVisibility(View.GONE);
+        tvcolumn2.setVisibility(View.GONE); 
+        txtcolumn2.setVisibility(View.GONE);
         btnDel.setVisibility(View.GONE);
         btnDelImg.setVisibility(View.GONE);
         btnDelads.setVisibility(View.GONE);
@@ -124,6 +126,10 @@ public class Login extends Activity
 	        {
 	        	posipport = list.get("posipport");
 	        }
+	        if(list.containsKey("isallopen"))//设置主柜串口号
+	        {
+				columncom2 = list.get("isallopen");	
+	        }
         }
         txtlogin.setText(com);
         txtbent.setText(bentcom);
@@ -133,7 +139,7 @@ public class Login extends Activity
         txtextracom.setText(extracom);
         txtposip.setText(posip);
         txtposipport.setText(posipport);
-        switchallopen.setChecked((isallopen==1)?true:false);
+        txtcolumn2.setText(columncom2); 
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
         btnGaoji = (Button) findViewById(R.id.btnGaoji);// 获取高级按钮
@@ -147,16 +153,16 @@ public class Login extends Activity
             @Override
             public void onClick(View arg0)
             {
-            	com = txtlogin.getText().toString();
-    	        bentcom = txtbent.getText().toString(); 
-    	        columncom = txtcolumn.getText().toString(); 
-    	        printcom = txtprintcom.getText().toString();
-    	        extracom = txtextracom.getText().toString(); 
-    	        posip = txtposip.getText().toString(); 
-    	        posipport = txtposipport.getText().toString(); 
-    	        isallopen= (switchallopen.isChecked()==true)?1:0;
-    	        cardcom = txtcardcom.getText().toString(); 
-            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,printcom,String.valueOf(isallopen),posip,posipport);            	
+            	com = ToolClass.replaceBlank(txtlogin.getText().toString());
+    	        bentcom = ToolClass.replaceBlank(txtbent.getText().toString()); 
+    	        columncom = ToolClass.replaceBlank(txtcolumn.getText().toString()); 
+    	        printcom = ToolClass.replaceBlank(txtprintcom.getText().toString());
+    	        extracom = ToolClass.replaceBlank(txtextracom.getText().toString()); 
+    	        posip = ToolClass.replaceBlank(txtposip.getText().toString()); 
+    	        posipport = ToolClass.replaceBlank(txtposipport.getText().toString()); 
+    	        columncom2 = ToolClass.replaceBlank(txtcolumn2.getText().toString());
+    	        cardcom = ToolClass.replaceBlank(txtcardcom.getText().toString()); 
+            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,printcom,columncom2,posip,posipport);            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
@@ -179,6 +185,8 @@ public class Login extends Activity
                     txtposip.setVisibility(View.VISIBLE);
                     tvposipport.setVisibility(View.VISIBLE); 
                     txtposipport.setVisibility(View.VISIBLE);
+                    tvcolumn2.setVisibility(View.VISIBLE); 
+                    txtcolumn2.setVisibility(View.VISIBLE);
                     btnDel.setVisibility(View.VISIBLE);
                     btnDelImg.setVisibility(View.VISIBLE);
                     btnDelads.setVisibility(View.VISIBLE);
@@ -193,6 +201,8 @@ public class Login extends Activity
                     txtposip.setVisibility(View.GONE);
                     tvposipport.setVisibility(View.GONE); 
                     txtposipport.setVisibility(View.GONE);
+                    tvcolumn2.setVisibility(View.GONE); 
+                    txtcolumn2.setVisibility(View.GONE);
                     btnDel.setVisibility(View.GONE);
                     btnDelImg.setVisibility(View.GONE);
                     btnDelads.setVisibility(View.GONE);

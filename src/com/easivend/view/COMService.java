@@ -1187,6 +1187,7 @@ public class COMService extends Service {
 		EVprotocol.EVPortRelease(ToolClass.getColumncom());
 		EVprotocol.EVPortRelease(ToolClass.getCom());
 		EVprotocol.EVPortRelease(ToolClass.getExtracom());
+		EVprotocol.EVPortRelease(ToolClass.getColumncom2());
 		if(ToolClass.getExtraComType()==1)
 		{
 			childextrahand=extracomserial.obtainHandler();

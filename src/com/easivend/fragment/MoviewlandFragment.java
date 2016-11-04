@@ -29,6 +29,7 @@ import android.view.View.OnTouchListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MoviewlandFragment extends Fragment {
 	//VideoView
@@ -38,10 +39,13 @@ public class MoviewlandFragment extends Fragment {
     Random r=new Random(); 
     private List<String> mMusicList = new ArrayList<String>();  
     private WebView webtishiInfo;
-    private ImageView ivads=null;
+    private ImageView ivads=null,ivmobile=null;
+    private TextView txtcashlessamount=null;
     private List<String> imgMusicList = new ArrayList<String>();  
-    private boolean viewvideo=false;
+    private boolean viewvideo=false;//true正在播放视频,false没有播放视频
+    private boolean videopause=false;//true正在交易，不播放视频,false空闲状态，可以播放视频
     private final int SPLASH_DISPLAY_LENGHT = 30000; // 延迟30秒
+    private int per=0;
     private Context context;
     
     //=========================
@@ -92,6 +96,8 @@ public class MoviewlandFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_movieland, container, false);  
 		context=this.getActivity();//获取activity的context
+		txtcashlessamount=(TextView)view.findViewById(R.id.txtcashlessamount);
+		txtcashlessamount.setVisibility(View.GONE);//卡余额关闭		
 		videoView=(MyVideoView)view.findViewById(R.id.video);
 		//得到提示描述
 		webtishiInfo = (WebView) view.findViewById(R.id.webtishiInfo); 
@@ -104,6 +110,23 @@ public class MoviewlandFragment extends Fragment {
 				changefragment();
 			}
 		});
+		//得到网络状态
+		ivmobile=(ImageView)view.findViewById(R.id.ivmobile);
+		switch(ToolClass.getNetType())
+		{
+			case 1:
+				ivmobile.setImageResource(R.drawable.network);
+				break;
+			case 2:
+				ivmobile.setImageResource(R.drawable.wifi);
+				break;
+			case 3:
+				ivmobile.setImageResource(R.drawable.mobile);
+				break;	
+			case 4:
+				ivmobile.setImageResource(R.drawable.nosignal);
+				break;	
+		}
 		listFiles(); 
 		startVideo();
 		/**
@@ -138,7 +161,65 @@ public class MoviewlandFragment extends Fragment {
 			listFiles(); 
 			startVideo();
 		}
+		
+		@Override
+		public void BusportCashless(String cashbalance) {
+			// TODO Auto-generated method stub
+			ToolClass.Log(ToolClass.INFO,"EV_COM","APP<卡余额="+cashbalance,"com.txt");			
+			txtcashlessamount.setVisibility(View.VISIBLE);
+			txtcashlessamount.setText("卡余额:"+cashbalance);
+			//延时
+		    new Handler().postDelayed(new Runnable() 
+			{
+	            @Override
+	            public void run() 
+	            {   
+	            	txtcashlessamount.setText("");
+	            	txtcashlessamount.setVisibility(View.GONE);
+				}
 
+			}, 5000);
+		}
+				
+		@Override
+		//type=0暂停视频播放,1恢复视频播放
+		public void BusportVideoStop(int type) {
+			// TODO Auto-generated method stub
+			if(type==0)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<暂停视频文件","log.txt");
+				//视频和图片文件都要有才行
+		    	if((mMusicList.size()>0)||(imgMusicList.size()>0))
+		    	{
+		    		//播放视频
+			    	if((viewvideo==true)&&(mMusicList.size()>0))
+			    	{
+			    		videoView.pause(); 
+			    	}
+			    	else
+			    	{
+			    		videopause=true;
+			    	}
+		    	}				
+			}
+			else if(type==1)
+			{
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<恢复视频文件","log.txt");
+				//视频和图片文件都要有才行
+		    	if((mMusicList.size()>0)||(imgMusicList.size()>0))
+		    	{
+		    		//播放视频
+			    	if((viewvideo==true)&&(mMusicList.size()>0))
+			    	{
+			    		videoView.start();
+			    	}
+			    	else
+			    	{
+			    		videopause=false;
+			    	}
+		    	}				
+			}
+		}		
 	}
 
 	
@@ -189,6 +270,7 @@ public class MoviewlandFragment extends Fragment {
                     @Override  
                     public void onCompletion(MediaPlayer mp) {  
                         // TODO Auto-generated method stub  
+                    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<播放完成...","log.txt");
                     	show();//播放完毕再继续下一首  
                     }  
                 });  
@@ -197,7 +279,8 @@ public class MoviewlandFragment extends Fragment {
               
             @Override  
             public boolean onError(MediaPlayer mp, int what, int extra) {  
-                // TODO Auto-generated method stub  
+                // TODO Auto-generated method stub 
+            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<播放故障...","log.txt");
             	show();//播放出错再继续下一首  
                 return true;  
             }  
@@ -232,7 +315,7 @@ public class MoviewlandFragment extends Fragment {
     	if((mMusicList.size()>0)||(imgMusicList.size()>0))
     	{
 	    	//播放视频
-	    	if((viewvideo==false)&&(mMusicList.size()>0))
+	    	if((viewvideo==false)&&(mMusicList.size()>0)&&(videopause==false))
 	    	{
 	    		viewvideo=true;
 	    		ivads.setVisibility(View.GONE);//图片关闭

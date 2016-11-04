@@ -29,7 +29,7 @@ public class Tb_vmc_system_parameter
     private String mainPwd;// 维护密码
     private int amount;// 现金开关0关，1开，默认0
     private int card;// 银联开关0关，1开，默认0
-    private int zhifubaofaca;// 支付宝当面付开关0关，1开，默认0
+    private int zhifubaofaca;// pos开关0关，1开，默认0
     private int zhifubaoer;// 支付宝二维码开关0关，1开，默认0
     private int weixing;// 微信开关0关，1开，默认0
     private int printer;// 打印机开关0关，1开，默认0

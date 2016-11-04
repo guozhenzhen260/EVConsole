@@ -11,6 +11,7 @@ import java.util.Queue;
 
 import com.bean.ComBean;
 import com.easivend.app.maintain.PrintTest;
+import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
@@ -54,7 +55,7 @@ public class BusHuo extends Activity
 	private String huoID = null;
     private float prosales = 0;
     private int count = 0;
-    private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
+    private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描,5取货密码
     private TextView txtbushuoname = null;
     private ImageView ivbushuoquhuo=null;
     private int tempx=0;
@@ -346,11 +347,21 @@ public class BusHuo extends Activity
 						txtbushuoname.setTextColor(android.graphics.Color.BLUE);
 						chuhuoLog(1);//记录日志
 						ivbushuoquhuo.setImageResource(R.drawable.chusuccessland);
+						//格子柜
+						if(cabinetTypevar==5)
+						{
+							AudioSound.playbushuogezi();
+						}
+						//普通柜
+						else
+						{
+							AudioSound.playbushuotang();
+						}
 						//=======
 						//打印机相关
 						//=======
 						//打印
-						if(isPrinter>0)
+						if((isPrinter>0)&&(zhifutype!=5))
 				        {
 							new Handler().postDelayed(new Runnable() 
 							{
@@ -418,7 +429,7 @@ public class BusHuo extends Activity
 	                    	finish();	
 	                    }
 	
-					}, 2000);
+					}, 6000);
 					break;
 				}
 			//按钮返回

@@ -20,10 +20,36 @@
 	        android:layout_width="match_parent"   
 	        android:layout_height="match_parent" 
 	        />
+    <ImageView  
+	        android:id="@+id/ivmobile"  
+	        android:layout_width="wrap_content"   
+	        android:layout_height="wrap_content" 
+	        android:layout_alignParentTop="true"
+	    	android:layout_alignParentLeft="true"
+	     />
 	 <ImageView
 	       android:layout_alignParentBottom="true"
 	       android:layout_alignParentLeft="true"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
 	       android:src="@drawable/ditu" />
+	 <TextView 	
+        android:id="@+id/txtditu"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="点击屏幕购买"
+		android:textColor="@android:color/white"
+		android:layout_alignParentBottom="true"
+	    android:layout_centerHorizontal="true"
+        android:textSize="60dp"/>
+	 <TextView 	
+        android:id="@+id/txtcashlessamount"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="余额:"
+		android:textStyle="bold"
+		android:textColor="@android:color/white"
+		android:layout_alignParentBottom="true"
+	    android:layout_alignParentRight="true"
+        android:textSize="50dp"/>
 </RelativeLayout>

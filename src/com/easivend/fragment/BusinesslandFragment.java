@@ -4,12 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.easivend.app.maintain.HuodaoTest;
+import com.easivend.common.AudioSound;
 import com.easivend.common.HuoPictureAdapter;
+import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_HuoAdapter;
+import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
@@ -42,8 +46,8 @@ public class BusinesslandFragment extends Fragment
 	final static int REQUEST_CODE=1; 	
 	EditText txtadsTip=null;
 	ImageButton btnads1=null, btnads2=null,btnads3=null,btnads4=null,btnads5=null,btnads6=null,
-			btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadsclass=null,btnadscancel=null,btnadsenter=null;
-	ImageView ivquhuo=null,ivgmys=null,ivczjx=null;
+			btnads7=null,btnads8=null,btnads9=null,btnads0=null,btnadscancel=null,btnadsenter=null;
+	ImageView ivquhuo=null,ivgmys=null,ivczjx=null,btnadsclass=null;
 	Intent intent=null;
 	private boolean quhuo=false;//true使用取货码功能
 	private static int count=0;
@@ -110,7 +114,14 @@ public class BusinesslandFragment extends Fragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		View view = inflater.inflate(R.layout.fragment_businessland, container, false);  
+		//设置横屏还是竖屏的布局策略
+		View view;
+		//竖屏
+		if(ToolClass.getOrientation()==1)
+			view = inflater.inflate(R.layout.fragment_businessport, container, false);  
+		//横屏
+		else
+			view = inflater.inflate(R.layout.fragment_businessland, container, false);  
 		context=this.getActivity();//获取activity的context	
 		//定时器返回广告页面
 //		timer.schedule(new TimerTask() { 
@@ -238,7 +249,7 @@ public class BusinesslandFragment extends Fragment
 		    	}
 		    }
 		});
-		btnadsclass = (ImageButton) view.findViewById(R.id.btnadsclass);
+		btnadsclass = (ImageView) view.findViewById(R.id.btnadsclass);
 		btnadsclass.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
@@ -258,6 +269,7 @@ public class BusinesslandFragment extends Fragment
 //                	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag		    		
                 	listterner.gotoBusiness(2,null);
 		    	}
+		    	AudioSound.playbusiness();
 		    	
 		    }
 		});
@@ -330,6 +342,7 @@ public class BusinesslandFragment extends Fragment
 		{
 			cabID=huo.substring(0,1);
 		    huoID=huo.substring(1,huo.length());
+		    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+huoID,"log.txt");
 		    vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
 		    Tb_vmc_product tb_inaccount = columnDAO.getColumnproduct(cabID,huoID);
 		    if(tb_inaccount!=null)
@@ -379,15 +392,72 @@ public class BusinesslandFragment extends Fragment
 		    }
 		    else
 		    {
-		    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
-						+productID+" proType="
-						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
-						+"1","log.txt");
-			    count=0;
+		    	count=0;
 			    huo="";
 			    txtadsTip.setText("");
-			    // 弹出信息提示
-			    ToolClass.failToast("抱歉，本商品已售完！");					
+                ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品huoID="+huoID+"isLAST_CHUHUO="+ToolClass.isLAST_CHUHUO(),"log.txt");
+                //开格子柜门
+		    	if(ToolClass.isLAST_CHUHUO())	
+		    	{
+		    		vmc_columnDAO columnDAO2 = new vmc_columnDAO(context);// 创建InaccountDAO对象		    
+				    Tb_vmc_product tb_inaccount2 = columnDAO2.getColumnproductforzero(cabID,huoID);
+				    if(tb_inaccount2!=null)
+				    {
+				    	//查找货道类型
+		        		vmc_cabinetDAO cabinetDAO3 = new vmc_cabinetDAO(context);// 创建InaccountDAO对象
+		        	    // 获取所有收入信息，并存储到List泛型集合中
+		        	    Tb_vmc_cabinet listinfos3 = cabinetDAO3.findScrollData(String.valueOf(Integer.parseInt(cabID)));
+		        	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+tb_inaccount2.getProductID()+"柜类型="+listinfos3.getCabType(),"log.txt");
+		        	    if(listinfos3.getCabType()==5)
+		        	    {
+		        	    	productID=tb_inaccount2.getProductID().toString();
+		    			    prosales=String.valueOf(tb_inaccount2.getSalesPrice());
+		    			    proImage=tb_inaccount2.getAttBatch1();
+		    			    proID=productID+"-"+tb_inaccount2.getProductName().toString();
+		    			    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="
+		    						+productID+" proType="
+		    						+"2"+" cabID="+cabID+" huoID="+huoID+" prosales="+prosales+" count="
+		    						+"1","log.txt");
+							//免费开门
+		    			    Map<String, String>str=new HashMap<String, String>();
+		    	        	str.put("proID", proID);
+		    	        	str.put("productID", productID);
+		    	        	str.put("proImage", proImage);
+		    	        	str.put("prosales", prosales);
+		    	        	str.put("procount", "1");
+		    	        	str.put("proType", "2");//1代表通过商品ID出货,2代表通过货道出货
+		    	        	str.put("cabID", cabID);//出货柜号,proType=1时无效
+		    	        	str.put("huoID", huoID);//出货货道号,proType=1时无效
+		    	        	str.put("payType", "5");//
+		    	        	
+		    	        	OrderDetail.setProID(str.get("proID"));
+		    		    	OrderDetail.setProductID(str.get("productID"));
+		    		    	OrderDetail.setProType(str.get("proType"));
+		    		    	OrderDetail.setShouldPay(Float.parseFloat(str.get("prosales")));
+		    		    	OrderDetail.setShouldNo(1);
+		    		    	OrderDetail.setCabID(str.get("cabID"));
+		    		    	OrderDetail.setColumnID(str.get("huoID"));
+		    		    	OrderDetail.setPayType(5);
+		    	        	listterner.gotoBusiness(4,str);						    
+		        	    }
+		        	    else
+				    	{
+					    	// 弹出信息提示
+						    ToolClass.failToast("抱歉，本商品已售完！");	
+				    	}
+				    }
+				    else
+			    	{
+				    	// 弹出信息提示
+					    ToolClass.failToast("抱歉，本商品已售完！");	
+			    	}
+		    	}
+		    	//货道无法售卖
+		    	else
+		    	{
+			    	// 弹出信息提示
+				    ToolClass.failToast("抱歉，本商品已售完！");	
+		    	}				
 		    }
 		    
 		}

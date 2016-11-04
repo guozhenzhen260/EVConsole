@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <ImageView
+	       android:id="@+id/imgcpxq"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/cpxq" />
+    <ImageView
+	       android:id="@+id/imgxqwhite"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@+id/imgcpxq" 
+	       android:src="@drawable/xqwhite" />
+    <ImageView  
+	        android:id="@+id/ivbusgoodselProduct"  
+	        android:layout_width="335dp"   
+	        android:layout_height="335dp"  
+	        android:layout_below="@+id/imgcpxq" 
+	        android:layout_alignParentLeft="true"
+	     />	
+	<TextView
+            android:id="@+id/txtbusgoodselName"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/imgcpxq" 
+	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
+	        android:layout_marginLeft="47dp"
+	        android:textSize="40sp"
+            android:textStyle="bold"
+	        />
+	<TextView
+            android:id="@+id/txtbusgoodselAmounttxt"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/txtbusgoodselName"
+	        android:layout_toRightOf="@+id/ivbusgoodselProduct"
+	        android:layout_marginLeft="47dp"
+	        android:textSize="40sp"
+            android:textStyle="bold"
+            android:textColor="#FF6633" 
+	        android:text="零售价:"
+	        />		    
+	<TextView
+            android:id="@+id/txtbusgoodselAmount"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/txtbusgoodselName"
+	        android:layout_toRightOf="@+id/txtbusgoodselAmounttxt"	       
+	        android:textSize="40sp"
+            android:textStyle="bold"
+	        android:numeric="decimal"
+	        android:textColor="#FF6633" 
+	        android:text="0" />
+	<ImageView 
+   	    android:id = "@+id/ivbuszhiselzhier"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbusgoodselProduct"
+		android:layout_marginLeft="47dp"
+		android:src="@drawable/zhier"			
+   	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselweixing"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselzhier"
+		android:src="@drawable/weixing"			
+   	/> 	
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselamount"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselweixing"
+		android:src="@drawable/amount"			
+   	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselpos"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselamount"
+		android:src="@drawable/zhipos"			
+   	/>
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiseltihuo"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbusgoodselAmounttxt"
+		android:layout_toRightOf="@+id/ivbuszhiselpos"
+		android:layout_marginLeft="20dp"	
+		android:src="@drawable/tihuopwd"			
+   	/> 
+	<TextView
+            android:id="@+id/txtbusgoodselDes"
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/ivbusgoodselProduct"
+	        android:textSize="50sp"
+            android:textStyle="bold"		        
+            android:text="产品介绍"
+	        />      
+	<WebView
+            android:id="@+id/webproductDesc"
+            android:textSize="40sp"
+	        android:layout_below="@+id/txtbusgoodselDes"
+	        android:layout_above="@+id/imgback"
+			android:layout_width="fill_parent" 
+	        android:layout_height="fill_parent"
+	        />
+	
+   		
+	<ImageView
+	       android:id="@+id/imgback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_alignParentLeft="true"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifuback" />	
+	<ImageView
+	       android:id="@+id/imgnext"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgback"  
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/zhifunext" />        	         
+    <ImageView
+	       android:id="@+id/imgbtnbusgoodsback"
+	       android:layout_alignParentBottom="true"
+	       android:layout_toRightOf="@+id/imgnext" 
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:src="@drawable/busfinish" />
+
+</RelativeLayout>

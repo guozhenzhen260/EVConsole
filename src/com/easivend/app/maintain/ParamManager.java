@@ -183,8 +183,8 @@ public class ParamManager extends TabActivity
     	btnmachinecheck.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
 		    public void onClick(View arg0) {
-		    	String devID = edtdevID.getText().toString();
-		    	String devhCode = edtdevhCode.getText().toString();
+		    	String devID = ToolClass.replaceBlank(edtdevID.getText().toString());
+		    	String devhCode = ToolClass.replaceBlank(edtdevhCode.getText().toString());
 				if((ToolClass.isEmptynull(devID)!=true)&&(ToolClass.isEmptynull(devhCode)!=true)
 		    		)
 				{
@@ -329,7 +329,7 @@ public class ParamManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	Intent intent = new Intent(ParamManager.this, OpendoorTest.class);// 使用AddInaccount窗口初始化Intent
-		    	intent.putExtra("id", edtdevhCode.getText().toString());
+		    	intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
@@ -346,7 +346,7 @@ public class ParamManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	Intent intent = new Intent(ParamManager.this, ZhifubaoTest.class);// 使用AddInaccount窗口初始化Intent
-		        intent.putExtra("id", edtdevhCode.getText().toString());
+		        intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
@@ -363,7 +363,7 @@ public class ParamManager extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {
 		    	Intent intent = new Intent(ParamManager.this, WeixingTest.class);// 使用AddInaccount窗口初始化Intent
-		    	intent.putExtra("id", edtdevhCode.getText().toString());
+		    	intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
@@ -447,13 +447,13 @@ public class ParamManager extends TabActivity
     
     private void saveparam()
     {
-    	String devID = edtdevID.getText().toString();
-    	String devhCode = edtdevhCode.getText().toString();
+    	String devID = ToolClass.replaceBlank(edtdevID.getText().toString());
+    	String devhCode = ToolClass.replaceBlank(edtdevhCode.getText().toString());
     	int isNet = (switchisNet.isChecked()==true)?1:0;
     	int isBuhuo = (switchisbuhuo.isChecked()==true)?1:0;
     	int isbuyCar = (switchisbuyCar.isChecked()==true)?1:0;
     	int isQiangbuy = (switchisqiangbuy.isChecked()==true)?1:0;
-    	String mainPwd= edtmainPwd.getText().toString();
+    	String mainPwd= ToolClass.replaceBlank(edtmainPwd.getText().toString());
     	float marketAmount = Float.parseFloat(edtmarketAmount.getText().toString()); 
     	float billAmount = Float.parseFloat(edtbillAmount.getText().toString()); 
     	int amount = (switchamount.isChecked()==true)?1:0;

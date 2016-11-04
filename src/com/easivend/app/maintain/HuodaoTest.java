@@ -1454,6 +1454,10 @@ public class HuodaoTest extends TabActivity
 						{
 							getelevatorfile();
 						}
+						else
+						{
+							clearhuofile();
+						}
 					}
 				}
 			}
@@ -3778,18 +3782,33 @@ public class HuodaoTest extends TabActivity
 			// TODO: handle exception
 		}
 		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"货道状态:"+allSet.toString(),"log.txt");	
-		ToolClass.WriteColumnFile(allSet.toString());
-		ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
-        // 弹出信息提示
-        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+		if(cabinetsetvar==2)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"副柜货道状态:"+allSet.toString(),"log.txt");	
+			ToolClass.WriteColumnFile2(allSet.toString());
+			ToolClass.addOptLog(HuodaoTest.this,1,"修改副柜物理货道对应表");
+	        // 弹出信息提示
+	        Toast.makeText(HuodaoTest.this, "〖修改副柜物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"货道状态:"+allSet.toString(),"log.txt");	
+			ToolClass.WriteColumnFile(allSet.toString());
+			ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
+	        // 弹出信息提示
+	        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	//读取逻辑货道实际对应物理货道的文件
 	private void gethuofile()
 	{
-		int logic=1,physic;
-		Map<String, Integer> allset=ToolClass.ReadColumnFile();  
+		int logic=1,physic;		
+		Map<String, Integer> allset=null; 
+		if(cabinetsetvar==2)
+			allset=ToolClass.ReadColumnFile2(); 
+		else
+			allset=ToolClass.ReadColumnFile(); 
 		if(allset!=null)
 		{
 			//第一层
@@ -4329,6 +4348,75 @@ public class HuodaoTest extends TabActivity
 				btnhuoset88.setChecked(false);
 			}
 		}
+	}
+	
+	//清空逻辑货道实际对应物理货道的文件
+	private void clearhuofile()
+	{
+		btnhuoset11.setChecked(false);
+		btnhuoset12.setChecked(false);
+		btnhuoset13.setChecked(false);
+		btnhuoset14.setChecked(false);
+		btnhuoset15.setChecked(false);
+		btnhuoset16.setChecked(false);
+		btnhuoset17.setChecked(false);
+		btnhuoset18.setChecked(false);
+		btnhuoset21.setChecked(false);
+		btnhuoset22.setChecked(false);
+		btnhuoset23.setChecked(false);
+		btnhuoset24.setChecked(false);
+		btnhuoset25.setChecked(false);
+		btnhuoset26.setChecked(false);
+		btnhuoset27.setChecked(false);
+		btnhuoset28.setChecked(false);
+		btnhuoset31.setChecked(false);
+		btnhuoset32.setChecked(false);
+		btnhuoset33.setChecked(false);
+		btnhuoset34.setChecked(false);
+		btnhuoset35.setChecked(false);
+		btnhuoset36.setChecked(false);
+		btnhuoset37.setChecked(false);
+		btnhuoset38.setChecked(false);
+		btnhuoset41.setChecked(false);
+		btnhuoset42.setChecked(false);
+		btnhuoset43.setChecked(false);
+		btnhuoset44.setChecked(false);
+		btnhuoset45.setChecked(false);
+		btnhuoset46.setChecked(false);
+		btnhuoset47.setChecked(false);
+		btnhuoset48.setChecked(false);
+		btnhuoset51.setChecked(false);
+		btnhuoset52.setChecked(false);
+		btnhuoset53.setChecked(false);
+		btnhuoset54.setChecked(false);
+		btnhuoset55.setChecked(false);
+		btnhuoset56.setChecked(false);
+		btnhuoset57.setChecked(false);
+		btnhuoset58.setChecked(false);
+		btnhuoset61.setChecked(false);
+		btnhuoset62.setChecked(false);
+		btnhuoset63.setChecked(false);
+		btnhuoset64.setChecked(false);
+		btnhuoset65.setChecked(false);
+		btnhuoset66.setChecked(false);
+		btnhuoset67.setChecked(false);
+		btnhuoset68.setChecked(false);
+		btnhuoset71.setChecked(false);
+		btnhuoset72.setChecked(false);
+		btnhuoset73.setChecked(false);
+		btnhuoset74.setChecked(false);
+		btnhuoset75.setChecked(false);
+		btnhuoset76.setChecked(false);
+		btnhuoset77.setChecked(false);
+		btnhuoset78.setChecked(false);
+		btnhuoset81.setChecked(false);
+		btnhuoset82.setChecked(false);
+		btnhuoset83.setChecked(false);
+		btnhuoset84.setChecked(false);
+		btnhuoset85.setChecked(false);
+		btnhuoset86.setChecked(false);
+		btnhuoset87.setChecked(false);
+		btnhuoset88.setChecked(false);
 	}
 	
 	//========
@@ -5665,18 +5753,33 @@ public class HuodaoTest extends TabActivity
 			// TODO: handle exception
 		}
 		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
-		ToolClass.WriteElevatorFile(allSet.toString());
-		ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
-        // 弹出信息提示
-        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
-	}
+        if(cabinetsetvar==2)
+        {
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
+			ToolClass.WriteElevatorFile2(allSet.toString());
+			ToolClass.addOptLog(HuodaoTest.this,1,"修改物理副柜货道对应表");
+	        // 弹出信息提示
+	        Toast.makeText(HuodaoTest.this, "〖修改物理副柜货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<"+allSet.length()+"升降机状态:"+allSet.toString(),"log.txt");	
+			ToolClass.WriteElevatorFile(allSet.toString());
+			ToolClass.addOptLog(HuodaoTest.this,1,"修改物理货道对应表");
+	        // 弹出信息提示
+	        Toast.makeText(HuodaoTest.this, "〖修改物理货道对应表〗成功！", Toast.LENGTH_SHORT).show();
+        }
+    }
 	
 	//读取逻辑货道实际对应物理货道的文件
 	private void getelevatorfile()
 	{
 		int logic=1,physic;
-		Map<String, Integer> allset=ToolClass.ReadElevatorFile();  
+		Map<String, Integer> allset=null; 
+		if(cabinetsetvar==2)
+			allset=ToolClass.ReadElevatorFile2(); 
+		else
+			allset=ToolClass.ReadElevatorFile(); 
 		if(allset!=null)
 		{
 			//第一层
