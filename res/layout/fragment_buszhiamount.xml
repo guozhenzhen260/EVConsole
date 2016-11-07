@@ -85,30 +85,65 @@
         />
 	<ImageButton
         android:id="@+id/imgbtnbuszhiamountqxzf"
-        android:layout_below="@+id/txtbuszhiamounttsxx"
+        android:layout_below="@+id/imgjsqd"
+        android:layout_toRightOf="@+id/txtbuszhiamountAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qxzffang" />
 	<ImageView
-       android:id="@+id/imgzflc"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_below="@+id/imgbtnbuszhiamountqxzf"
-       android:src="@drawable/zflc" />
-	<ImageView
 	       android:id="@+id/imgxqwhite"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
-	       android:layout_below="@+id/imgzflc" 
+	       android:layout_below="@+id/txtbuszhiamounttsxx" 
 	       android:src="@drawable/imgwhite" />
 	<ImageView 
-   	    android:id = "@+id/ivbuszhiamountbill"
+   	    android:id = "@+id/ivbuszhiselzhier"
    	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/imgzflc"	
-		android:layout_above="@+id/imgback"
-		android:src="@drawable/billonlyfang"			
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbuszhiamounttsxx"
+		android:layout_marginLeft="47dp"
+		android:src="@drawable/zhierlarge"			
+   	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselweixing"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbuszhiamounttsxx"
+		android:layout_toRightOf="@+id/ivbuszhiselzhier"
+		android:src="@drawable/weixinglarge"			
+   	/> 	
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselamount"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbuszhiamounttsxx"
+		android:layout_toRightOf="@+id/ivbuszhiselweixing"
+		android:src="@drawable/amountlarge"			
+   	/> 
+   	<ImageView 
+   	    android:id = "@+id/ivbuszhiselpos"
+   	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"	
+		android:layout_below="@+id/txtbuszhiamounttsxx"
+		android:layout_toRightOf="@+id/ivbuszhiselamount"
+		android:src="@drawable/zhiposlarge"			
    	/>
+   	<ImageView
+	    android:id="@+id/ivbuszhier"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivbuszhiselzhier"
+        android:layout_marginLeft="47dp"
+        android:src="@drawable/zhierwait"
+        />  
+    <ImageView
+	    android:id="@+id/ivbuszhiwei"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivbuszhiselweixing"
+        android:layout_toRightOf="@+id/ivbuszhiselzhier"
+        android:src="@drawable/zhierwait"
+        />     	
 	<ImageView
 	       android:id="@+id/imgback"
 	       android:layout_alignParentBottom="true"
