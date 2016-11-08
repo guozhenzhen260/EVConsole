@@ -257,6 +257,7 @@ BushuoFragInteraction
         void BusportChjg(int sta);      //出货结果
         //非现金页面
         void BusportSend(String str);      //二维码
+        void BusportSendWei(String str);      //微信
     }
     public interface BusPortMovieFragInteraction
     {
@@ -415,34 +416,33 @@ BushuoFragInteraction
 		                		sendzhier();
 		                    }
 	                    }
-		        	}		        	
-		        	//=================
-	        		//==微信支付页面相关
-	        		//=================
-		        	else if(gotoswitch==BUSZHIWEI)
-		        	{
-			        	//发送查询交易指令
+	                    
+	                    //=================
+		        		//==微信支付页面相关
+		        		//=================
+	                    //发送查询交易指令
 	                    if(iszhiwei==1)
 	                    {
-		                    queryLen++;
-		                    if(queryLen>=4)
+	                    	queryzhiweiLen++;
+		                    if(queryzhiweiLen>=4)
 		                    {
-		                    	queryLen=0;
+		                    	queryzhiweiLen=0;
 		                    	queryzhiwei();
 		                    }
 	                    }
 	                    //发送订单交易指令
 	                    else if(iszhiwei==0)
 	                    {
-		                    queryLen++;
-		                    if(queryLen>=10)
+	                    	queryzhiweiLen++;
+		                    if(queryzhiweiLen>=10)
 		                    {
-		                    	queryLen=0;
+		                    	queryzhiweiLen=0;
 		                    	//发送订单
 		                		sendzhiwei();
 		                    }
 	                    }
 		        	}
+		        	
 		        	
 		        	//=================
 	        		//==pos支付页面相关
@@ -575,7 +575,7 @@ BushuoFragInteraction
 				switch (msg.what)
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
-						listterner.BusportSend(msg.obj.toString());
+						listterner.BusportSendWei(msg.obj.toString());
 						iszhiwei=1;
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
@@ -616,6 +616,7 @@ BushuoFragInteraction
 						listterner.BusportTsxx("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
 						iszhiwei=2;
+                        zhifutype="4";
 						tochuhuo();
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -1095,12 +1096,22 @@ BushuoFragInteraction
     	{
     		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhier退币按钮无效","log.txt");
     	}
+		//微信模块如果本次扫码已经结束，可以购买，则不进行退款操作
+		else if(iszhiwei==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
+    	}
 		else
 		{
 			//支付宝模块:生成二维码了，需要撤销
 			if(iszhier==1)
 			{
 				deletezhier();
+			}
+			//支付宝模块:生成二维码了，需要撤销
+			if(iszhiwei==1)
+			{
+				deletezhiwei();
 			}
 			
 			if(iszhiamount==1)
@@ -1186,8 +1197,7 @@ BushuoFragInteraction
 	  		childmsg.what=Zhifubaohttp.SETCHILD;
 	  		JSONObject ev=null;
 	  		try {
-	  			ev=new JSONObject();
-	  			out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
+	  			ev=new JSONObject();	  			
 	  	        ev.put("out_trade_no", out_trade_no);
 	  			ev.put("total_fee", String.valueOf(amount));
 	  			Log.i("EV_JNI","Send0.1="+ev.toString());
@@ -1327,8 +1337,7 @@ BushuoFragInteraction
 	  		childmsg.what=Weixinghttp.SETCHILD;
 	  		JSONObject ev=null;
 	  		try {
-	  			ev=new JSONObject();
-	  			out_trade_no=ToolClass.out_trade_no(BusPort.this);
+	  			ev=new JSONObject();	  			
 	  	        ev.put("out_trade_no", out_trade_no);
 	  			ev.put("total_fee", String.valueOf(amount));
 	  			Log.i("EV_JNI","Send0.1="+ev.toString());
@@ -1415,7 +1424,6 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
-  		zhiweiDestroy(0);
   	}
   	
     //关闭页面:type=1延时10s关闭,0立即关闭
@@ -2580,17 +2588,29 @@ BushuoFragInteraction
 				            {   
 					            //发送订单
 				        		sendzhier();
+				        		queryzhierLen=0;
 				            }
 
-						}, 1500);
+						}, 1000);
 		    		}
-		    		if(tb_inaccount.getWeixing()==0)
-		    		{
-		    			//关闭
-		    		}
-		    		else
+		    		//微信
+		    		if(tb_inaccount.getWeixing()>0)
 		    		{
 		    			//打开
+		    			//新建一个线程并启动
+			            weixingthread.execute(weixinghttp);
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+				            	//发送订单
+				        		sendzhiwei();
+				        		queryzhiweiLen=0;
+				            }
+
+						}, 4000);
 		    		}
 		    		if(tb_inaccount.getZhifubaofaca()==0)
 		    		{

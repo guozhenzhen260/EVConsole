@@ -160,6 +160,12 @@ public class BuszhierFragment extends Fragment
 			ivbuszhier.setImageBitmap(ToolClass.createQRImage(str));
 		}
 
+		@Override
+		public void BusportSendWei(String str) {
+			// TODO Auto-generated method stub
+			
+		}
+
 		
 	}
 }

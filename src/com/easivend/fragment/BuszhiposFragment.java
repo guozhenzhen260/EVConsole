@@ -143,6 +143,12 @@ public class BuszhiposFragment extends Fragment
 			
 		}
 
+		@Override
+		public void BusportSendWei(String str) {
+			// TODO Auto-generated method stub
+			
+		}
+
 		
 	}
 
