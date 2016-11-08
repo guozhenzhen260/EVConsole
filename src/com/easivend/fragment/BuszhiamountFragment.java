@@ -3,6 +3,7 @@ package com.easivend.fragment;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
@@ -198,7 +199,7 @@ public class BuszhiamountFragment extends Fragment
 		@Override
 		public void BusportSend(String str) {
 			// TODO Auto-generated method stub
-			
+			ivbuszhier.setImageBitmap(ToolClass.createQRImage(str));
 		}
 
 		
