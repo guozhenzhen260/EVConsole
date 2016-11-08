@@ -441,23 +441,24 @@ BushuoFragInteraction
 		                		sendzhiwei();
 		                    }
 	                    }
+	                    
+	                    //=================
+		        		//==pos支付页面相关
+		        		//=================
+			        	else if(gotoswitch==BUSZHIPOS)
+			        	{
+				        	//发送查询交易指令
+		                    if(iszhipos==1)
+		                    {		                    
+		                    }
+		                    //发送订单交易指令
+		                    else if(iszhipos==0)
+		                    {		                    
+		                    }
+			        	}
 		        	}
 		        	
 		        	
-		        	//=================
-	        		//==pos支付页面相关
-	        		//=================
-		        	else if(gotoswitch==BUSZHIPOS)
-		        	{
-			        	//发送查询交易指令
-	                    if(iszhipos==1)
-	                    {		                    
-	                    }
-	                    //发送订单交易指令
-	                    else if(iszhipos==0)
-	                    {		                    
-	                    }
-		        	}
 	        	  }
 	        	  //判断3分钟内，如果按下空的货道号可以直接出货
 	        	  if(ToolClass.isLAST_CHUHUO())
@@ -719,6 +720,7 @@ BushuoFragInteraction
 				            @Override
 				            public void run() 
 				            {   
+		                        zhifutype="1";
 								tochuhuo();	
 							}
 
@@ -726,7 +728,7 @@ BushuoFragInteraction
 						break;
 					case CahslessTest.DELETESUCCESS:
 					case CahslessTest.DELETEFAIL:	
-						if(gotoswitch==BUSZHIPOS)
+						if(gotoswitch==BUSZHIAMOUNT)
 						{
 							if(waitpos==1)
 							{
@@ -744,22 +746,28 @@ BushuoFragInteraction
 									}
 
 								}, 500);
-							}
-							else
+							}							
+						}	
+						else if(gotoswitch==BUSPORT)
+						{
+							//延时
+						    new Handler().postDelayed(new Runnable() 
 							{
-								//延时
-							    new Handler().postDelayed(new Runnable() 
-								{
-						            @Override
-						            public void run() 
-						            {         
-						            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-										zhiposDestroy(0);
-									}
-		
-								}, 300);
-							}
-						}					
+					            @Override
+					            public void run() 
+					            {         
+					            	//***********************
+					        		//进行pos操作
+					        		//***********************
+					                if(isPos==1)
+					                {
+					                	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+					                	mMyApi.pos_query(mIUserCallback);
+					                }
+								}
+	
+							}, 300);
+						}						
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						if(ispayoutopt==1)
@@ -1101,6 +1109,11 @@ BushuoFragInteraction
     	{
     		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
     	}
+		//pos模块如果本次已经刷卡，可以购买，则不进行退款操作
+    	if(iszhipos==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhipos退币按钮无效","log.txt");
+    	}
 		else
 		{
 			//支付宝模块:生成二维码了，需要撤销
@@ -1112,6 +1125,11 @@ BushuoFragInteraction
 			if(iszhiwei==1)
 			{
 				deletezhiwei();
+			}
+			//pos模块:发送扣款了，需要撤销
+			if(iszhipos==1)
+			{
+				deletezhipos();
 			}
 			
 			if(iszhiamount==1)
@@ -2612,13 +2630,38 @@ BushuoFragInteraction
 
 						}, 4000);
 		    		}
-		    		if(tb_inaccount.getZhifubaofaca()==0)
-		    		{
-		    			//关闭
-		    		}
-		    		else
+		    		//pos机
+		    		if(tb_inaccount.getZhifubaofaca()>0)
 		    		{
 		    			//打开
+		    			//***********************
+			    		//进行pos操作
+			    		//***********************
+			            if(isPos>0)
+			            {
+				    		if(isPos==1)
+				    		{
+				    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
+				    			waitpos=1;
+				    			mMyApi.pos_cancel();	    	    	
+				    		}	
+				    		else
+				    		{
+				    			//延时
+							    new Handler().postDelayed(new Runnable() 
+								{
+						            @Override
+						            public void run() 
+						            {   
+						            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+						            	listterner.BusportTsxx("提示信息：请刷卡");
+										mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+								    	iszhipos=1;
+									}
+			
+								}, 500);
+				    		}
+			            }
 		    		}    		
 		    	}
 				break;	
@@ -2983,6 +3026,7 @@ BushuoFragInteraction
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销读卡器","com.txt");
 //	    	mMyApi.pos_release();//串口不用关闭了
+			gotoswitch=0;
             mMyApi.pos_cancel();  
 		}
 		//退出时，返回intent
