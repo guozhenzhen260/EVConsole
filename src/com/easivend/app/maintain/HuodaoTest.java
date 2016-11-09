@@ -122,6 +122,7 @@ public class HuodaoTest extends TabActivity
 	private Button btnhuochu=null,btnhuochuall=null;// 创建Button对象“出货”
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
+	private Button btnhuopre=null,btnhuonext=null;// 创建Button对象“上一道，下一道”
 	private EditText edtcolumn=null;
 	private TextView txtlight=null,txtcold=null,txthot=null;
 	private Switch switchlight = null,switcold = null,switchhot = null;	
@@ -326,6 +327,8 @@ public class HuodaoTest extends TabActivity
 		txthuorst=(TextView)findViewById(R.id.txthuorst);
 		txthuoallrst=(TextView)findViewById(R.id.txthuoallrst);
 		txthuotestrst=(TextView)findViewById(R.id.txthuotestrst);
+		btnhuopre = (Button) findViewById(R.id.btnhuopre);
+		btnhuonext = (Button) findViewById(R.id.btnhuonext);
 		btnhuochu = (Button) findViewById(R.id.btnhuochu);
 		btnhuochuall = (Button) findViewById(R.id.btnhuochuall);
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
@@ -424,6 +427,26 @@ public class HuodaoTest extends TabActivity
 			}
 		});
 		
+		btnhuopre.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(ToolClass.isEmptynull(edtcolumn.getText().toString())!=true)
+		    	{
+		    		int i=Integer.parseInt(edtcolumn.getText().toString());
+		    		if(i>1)
+		    			edtcolumn.setText(String.valueOf(i-1));
+		    	}
+		    }
+		});
+		btnhuonext.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(ToolClass.isEmptynull(edtcolumn.getText().toString())!=true)
+		    	{
+		    		edtcolumn.setText(String.valueOf(Integer.parseInt(edtcolumn.getText().toString())+1));
+			    }
+		    }
+		});
 		
 		btnhuochu.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
