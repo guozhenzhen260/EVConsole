@@ -1126,10 +1126,9 @@ BushuoFragInteraction
 				intent.setAction("android.intent.action.comsend");//action与接收器相同
 				comBroadreceiver.sendBroadcast(intent);
 	  		} 
-	  		else 
-	  		{  			
-	  			amountDestroy(0);
-			} 
+			
+			//立即退出
+	  		amountDestroy(0);			
 		}
 	    
 	}
@@ -1142,18 +1141,20 @@ BushuoFragInteraction
 		{
 			//清数据
 	    	clearamount();
-  			//关闭纸币硬币器
-  	    	BillEnable(0);
   	    	recLen=10;
   	    	AudioSound.playbusfinish();
 		}
 		//立即关闭
 		else
 		{
-			//关闭纸币硬币器
-	    	BillEnable(0);
 			clearamount();
 			viewSwitch(BUSPORT, null);
+		}
+		
+		//关闭纸币硬币器
+		if(iszhiamountsel>0)
+		{
+			BillEnable(0);
 		}
 	}
 	
@@ -2526,16 +2527,9 @@ BushuoFragInteraction
 	            AudioSound.playbusselect();
 				break;
 			case BUSZHIAMOUNT://现金支付
-				isbus=false;
-				
-				//Heart操作
-			    Intent intent2=new Intent();
-		    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
-				intent2.setAction("android.intent.action.comsend");//action与接收器相同
-				comBroadreceiver.sendBroadcast(intent2);
+				isbus=false;			
 				
 				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo(); 
-				zhifutype="0";
 				out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
 				//切换页面
 				if (buszhiamountFragment == null) {
@@ -2543,17 +2537,7 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiamountFragment);
-	            //延时
-			    new Handler().postDelayed(new Runnable() 
-				{
-		            @Override
-		            public void run() 
-		            {   
-		            	//打开纸币器
-						BillEnable(1);
-		            }
-
-				}, 1500);
+	           
 			    
 			    
 			    
@@ -2569,6 +2553,23 @@ BushuoFragInteraction
 		    		{
 		    			//打开
 		    			iszhiamountsel=1;
+		    			//Heart操作
+					    Intent intent2=new Intent();
+				    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
+						intent2.setAction("android.intent.action.comsend");//action与接收器相同
+						comBroadreceiver.sendBroadcast(intent2);
+						 //延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+				            	//打开纸币器
+								BillEnable(1);
+								queryamountLen=0;
+				            }
+
+						}, 800);
 		    		}	
 		    		//支付宝
 		    		if(tb_inaccount.getZhifubaoer()>0)
@@ -2588,7 +2589,7 @@ BushuoFragInteraction
 				        		queryzhierLen=0;
 				            }
 
-						}, 1000);
+						}, 500);
 		    		}
 		    		//微信
 		    		if(tb_inaccount.getWeixing()>0)
@@ -2608,7 +2609,7 @@ BushuoFragInteraction
 				        		queryzhiweiLen=0;
 				            }
 
-						}, 4000);
+						}, 3000);
 		    		}
 		    		//pos机
 		    		if(tb_inaccount.getZhifubaofaca()>0)
@@ -2639,7 +2640,7 @@ BushuoFragInteraction
 								    	iszhipos=1;
 									}
 			
-								}, 500);
+								}, 300);
 				    		}
 			            }
 		    		}    		
@@ -2867,8 +2868,7 @@ BushuoFragInteraction
 						}
 				    	dialog.dismiss();
 						if(gotoswitch==BUSZHIAMOUNT)
-			  	    	{
-			  	    		amountDestroy(0);	
+			  	    	{			  	    		
 			  	    	}
 			  	    	else
 			  	    	{
