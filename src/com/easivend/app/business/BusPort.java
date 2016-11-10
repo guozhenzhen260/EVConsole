@@ -189,7 +189,7 @@ BushuoFragInteraction
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
     private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
-    private int waitpos=0;//1刚进入pos页面,0没有进入pos页面
+    
     //查询参数
   	private String cashbalance = "";
     //退款参数
@@ -509,7 +509,7 @@ BushuoFragInteraction
 						listterner.BusportTsxx("交易结果:交易成功");
 						iszhier=2;
 //						//reamin_amount=String.valueOf(amount);
-						zhifutype="3";
+						zhifutype="3";						
 						tochuhuo();
 						break;
 					case Zhifubaohttp.SETQUERYMAIN://子线程接收主线程消息
@@ -598,7 +598,7 @@ BushuoFragInteraction
 						listterner.BusportTsxx("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
 						iszhiwei=2;
-                        zhifutype="4";
+                        zhifutype="4";                        
 						tochuhuo();
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -711,23 +711,19 @@ BushuoFragInteraction
 					case CahslessTest.DELETEFAIL:	
 						if(gotoswitch==BUSZHIAMOUNT)
 						{
-							if(waitpos==1)
+							//延时
+						    new Handler().postDelayed(new Runnable() 
 							{
-								waitpos=0;
-								//延时
-							    new Handler().postDelayed(new Runnable() 
-								{
-						            @Override
-						            public void run() 
-						            {   
-						            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
-						            	listterner.BusportTsxx("提示信息：请刷卡");
-										mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
-								    	iszhipos=1;
-									}
+					            @Override
+					            public void run() 
+					            {   
+					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+					            	listterner.BusportTsxx("提示信息：请刷卡");
+									mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+							    	iszhipos=1;
+								}
 
-								}, 500);
-							}							
+							}, 500);							
 						}	
 						else if(gotoswitch==BUSPORT)
 						{
@@ -1112,6 +1108,18 @@ BushuoFragInteraction
 			{
 				deletezhipos();
 			}
+			//扣款失败，不用撤销，直接下一条查询
+			else if(iszhipos==0)
+			{
+				//***********************
+				//进行pos操作
+				//***********************
+		        if(isPos==1)
+		        {
+		        	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+		        	mMyApi.pos_query(mIUserCallback);
+		        }
+			}
 			
 			if(iszhiamount==1)
 	  		{
@@ -1142,7 +1150,7 @@ BushuoFragInteraction
 			//清数据
 	    	clearamount();
   	    	recLen=10;
-  	    	AudioSound.playbusfinish();
+  	    	AudioSound.playbusfinish();  	    	
 		}
 		//立即关闭
 		else
@@ -1798,6 +1806,26 @@ BushuoFragInteraction
             	{
             		//现金页面
             		case 0:
+            			if(isPos>0)
+						{
+							//pos模块:发送扣款了，需要撤销
+							if(iszhipos==1)
+							{
+								deletezhipos();
+							}
+							//扣款失败，不用撤销，直接下一条查询
+							else if(iszhipos==0)
+							{
+								//***********************
+								//进行pos操作
+								//***********************
+						        if(isPos==1)
+						        {
+						        	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+						        	mMyApi.pos_query(mIUserCallback);
+						        }
+							}
+						}
             			//viewSwitch(BUSZHIAMOUNT, null);
             			//1.
           				//出货成功,扣钱
@@ -1840,6 +1868,26 @@ BushuoFragInteraction
             			break;	
             		//支付宝页面	
             		case 3:
+            			if(isPos>0)
+						{
+							//pos模块:发送扣款了，需要撤销
+							if(iszhipos==1)
+							{
+								deletezhipos();
+							}
+							//扣款失败，不用撤销，直接下一条查询
+							else if(iszhipos==0)
+							{
+								//***********************
+								//进行pos操作
+								//***********************
+						        if(isPos==1)
+						        {
+						        	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+						        	mMyApi.pos_query(mIUserCallback);
+						        }
+							}
+						}
             			//出货成功,结束交易
         				if(status==1)
         				{
@@ -1860,6 +1908,26 @@ BushuoFragInteraction
             			break;
             		//微信页面	
             		case 4:
+            			if(isPos>0)
+						{
+							//pos模块:发送扣款了，需要撤销
+							if(iszhipos==1)
+							{
+								deletezhipos();
+							}
+							//扣款失败，不用撤销，直接下一条查询
+							else if(iszhipos==0)
+							{
+								//***********************
+								//进行pos操作
+								//***********************
+						        if(isPos==1)
+						        {
+						        	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+						        	mMyApi.pos_query(mIUserCallback);
+						        }
+							}
+						}
             			//出货成功,结束交易
         				if(status==1)
         				{
@@ -2623,7 +2691,6 @@ BushuoFragInteraction
 				    		if(isPos==1)
 				    		{
 				    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
-				    			waitpos=1;
 				    			mMyApi.pos_cancel();	    	    	
 				    		}	
 				    		else
@@ -2827,7 +2894,7 @@ BushuoFragInteraction
 						  		if(money>=amount)
 						  		{
 						  			iszhienable=2;
-						  			zhifutype="0";
+						  			zhifutype="0";						  			
 						  			tochuhuo();
 						  		}
 						  	}
