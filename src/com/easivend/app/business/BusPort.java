@@ -43,12 +43,6 @@ import com.easivend.fragment.BusinessportFragment;
 import com.easivend.fragment.BusinessportFragment.BusportFragInteraction;
 import com.easivend.fragment.BuszhiamountFragment;
 import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
-import com.easivend.fragment.BuszhierFragment;
-import com.easivend.fragment.BuszhierFragment.BuszhierFragInteraction;
-import com.easivend.fragment.BuszhiposFragment;
-import com.easivend.fragment.BuszhiposFragment.BuszhiposFragInteraction;
-import com.easivend.fragment.BuszhiweiFragment;
-import com.easivend.fragment.BuszhiweiFragment.BuszhiweiFragInteraction;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
@@ -106,12 +100,6 @@ BusgoodsFragInteraction,
 BusgoodsselectFragInteraction,
 //Buszhiamount页面接口
 BuszhiamountFragInteraction,
-//Buszhipos页面接口
-BuszhiposFragInteraction,
-//Buszhier页面接口
-BuszhierFragInteraction,
-//Buszhiwei页面接口
-BuszhiweiFragInteraction,
 //Bushuo页面接口
 BushuoFragInteraction
 {
@@ -120,9 +108,6 @@ BushuoFragInteraction
 	private BusgoodsFragment busgoodsFragment;
 	private BusgoodsselectFragment busgoodsselectFragment;
 	private BuszhiamountFragment buszhiamountFragment;
-	private BuszhierFragment buszhierFragment;
-	private BuszhiweiFragment buszhiweiFragment;
-	private BuszhiposFragment buszhiposFragment;
 	private BushuoFragment bushuoFragment;
 	//交易页面
     Intent intent=null;
@@ -1138,12 +1123,7 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhier页面相关接口
   	//=======================
-    //步骤三、实现Buszhier接口,转到首页面
-    @Override
-	public void BuszhierFinish() {
-		// TODO Auto-generated method stub    	
-	}
-    
+   
     
     //发送订单
   	private void sendzhier()
@@ -1263,13 +1243,7 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhiwei页面相关接口
   	//=======================
-    //步骤三、实现Buszhiwei接口,转到首页面
-  	@Override
-	public void BuszhiweiFinish() {
-		// TODO Auto-generated method stub
-  		//如果本次扫码已经结束，可以购买，则不进行退款操作    	
-	}
-    
+       
     //发送订单
   	private void sendzhiwei()
   	{	
@@ -1390,12 +1364,7 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhipos页面相关接口
   	//=======================
-    //步骤三、实现Buszhipos接口,转到首页面
-  	@Override
-	public void BuszhiposFinish() {
-		// TODO Auto-generated method stub  		
-	}
-    
+      
   	
     //撤销交易
   	private void deletezhipos()
