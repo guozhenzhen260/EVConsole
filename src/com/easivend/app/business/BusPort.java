@@ -714,7 +714,14 @@ BushuoFragInteraction
 					            {   
 					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
 					            	listterner.BusportTsxx("提示信息：请刷卡");
-									mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+					            	if(isPossel==1)//会员卡
+					                {
+					                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
+					                }
+					                else if(isPossel>1)//银行卡
+					                {
+					                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
+					                }
 							    	zhiposcheck=true;
 								}
 
@@ -1380,7 +1387,14 @@ BushuoFragInteraction
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
   		AudioSound.playbuspayout();
-  		mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+  	    if(isPossel==1)//会员卡
+  		{
+  			mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,0, mIUserCallback);
+  		}
+  		else if(isPossel>1)//银行卡
+  		{
+  			mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,1, mIUserCallback);
+  		}
   		zhiposcheck=true;
   	}
   
@@ -2533,7 +2547,14 @@ BushuoFragInteraction
 						            {   
 						            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
 						            	listterner.BusportTsxx("提示信息：请刷卡");
-										mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+						            	if(isPossel==1)//会员卡
+						                {
+						                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
+						                }
+						                else if(isPossel>1)//银行卡
+						                {
+						                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
+						                }	
 								    	zhiposcheck=true;
 									}
 			

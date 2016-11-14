@@ -1,6 +1,9 @@
 package com.easivend.app.maintain;
 
+import com.easivend.app.business.BusPort;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 import com.landfone.common.utils.IUserCallback;
 import com.landfoneapi.mispos.Display;
@@ -37,6 +40,7 @@ public class CahslessTest extends Activity {
 	public final static int PAYOUTFAIL=12;//退款失败
 	public final static int FINDSUCCESS=13;//查询成功
 	public final static int FINDFAIL=14;//查询失败
+	private int isPossel=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
 	private TextView txtcashlesstest=null;
 	private EditText edtcashlesstest=null;
 	private Button btncashlesstestopen=null,btncashlesstestok=null,btncashlesstestfind=null,
@@ -109,7 +113,17 @@ public class CahslessTest extends Activity {
 						break;	
 				}
 			}
-		};				
+		};			
+		//***********************
+		//进行pos操作
+		//***********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(CahslessTest.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		isPossel=tb_inaccount.getZhifubaofaca();    		
+    	}	
 		txtcashlesstest = (TextView)findViewById(R.id.txtcashlesstest);
 		edtcashlesstest = (EditText)findViewById(R.id.edtcashlesstest);
 		//打开
@@ -141,8 +155,15 @@ public class CahslessTest extends Activity {
 		    public void onClick(View arg0) {	
 		    	amount=Float.parseFloat(edtcashlesstest.getText().toString());
 		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
-		    	txtcashlesstest.setText("读卡器扣款="+amount);
-				mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);				
+		    	txtcashlesstest.setText("读卡器扣款="+amount);	
+		    	if(isPossel==1)//会员卡
+		    	{
+		    		mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
+		    	}
+		    	else if(isPossel>1)//银行卡
+		    	{
+		    		mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
+		    	}
 		    }
 		});
 		//取交易信息
@@ -172,7 +193,14 @@ public class CahslessTest extends Activity {
 		    public void onClick(View arg0) {
 		    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
 		    	txtcashlesstest.setText("读卡器退款="+amount);
-		    	mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+		    	if(isPossel==1)//会员卡
+		    	{
+		    		mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,0, mIUserCallback);
+		    	}
+		    	else if(isPossel>1)//银行卡
+		    	{
+	                mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,1, mIUserCallback);
+	            }
 		    }
 		});
 		//关闭

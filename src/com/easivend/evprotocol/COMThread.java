@@ -837,8 +837,8 @@ public class COMThread implements Runnable
 						// TODO Auto-generated catch block
 						e1.printStackTrace(); 
 					}
-					//重试5次
-					for(int i=0;i<5;i++)
+					//重试2次
+					for(int i=0;i<2;i++)
 					{
 						String rec10=EVprotocol.EVmdbEnable(ToolClass.getCom_id(),bill,coin,opt);
 						ToolClass.Log(ToolClass.INFO,"EV_COM",i+"API<<"+rec10.toString(),"com.txt");

@@ -9,6 +9,8 @@ import com.easivend.app.maintain.CahslessTest;
 import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 import com.landfone.common.utils.IUserCallback;
 import com.landfoneapi.mispos.Display;
@@ -57,6 +59,7 @@ public class BusZhipos extends Activity
 //    private String prosales = null;
 //    private String count = null;
 //    private String reamin_amount = null;
+    private int isPossel=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
     private String zhifutype = "1";//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
 	float amount=0;//商品需要支付金额
 	private LfMISPOSApi mMyApi = new LfMISPOSApi();
@@ -220,9 +223,21 @@ public class BusZhipos extends Activity
 		};
 		//打开串口
 		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
-		//ip、端口、串口、波特率必须准确
-		mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-				,ToolClass.getCardcom(), "9600", mIUserCallback);		
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusZhipos.this);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		isPossel=tb_inaccount.getZhifubaofaca();
+    		if(tb_inaccount.getZhifubaofaca()>0)
+    		{
+    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
+    	        //打开串口
+    			//ip、端口、串口、波特率必须准确
+    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
+    					,ToolClass.getCardcom(), "9600", mIUserCallback);	   			
+    		}
+    	}				
 		//延时
 	    new Handler().postDelayed(new Runnable() 
 		{
@@ -231,7 +246,14 @@ public class BusZhipos extends Activity
             {         
             	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
             	txtbuszhipostsxx.setText("提示信息：请刷卡");
-            	mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
+            	if(isPossel==1)//会员卡
+                {
+                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
+                }
+                else if(isPossel>1)//银行卡
+                {
+                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
+                }
 		    	iszhipos=1;
             }
 
@@ -302,7 +324,14 @@ public class BusZhipos extends Activity
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
   		AudioSound.playbuspayout();
-  		mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+  	    if(isPossel==1)//会员卡
+  		{
+  			mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,0, mIUserCallback);
+  		}
+  		else if(isPossel>1)//银行卡
+  		{
+  			mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,1, mIUserCallback);
+  		}
   	}
 	
 	//接口返回
