@@ -43,12 +43,6 @@ import com.easivend.fragment.BusinessportFragment;
 import com.easivend.fragment.BusinessportFragment.BusportFragInteraction;
 import com.easivend.fragment.BuszhiamountFragment;
 import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
-import com.easivend.fragment.BuszhierFragment;
-import com.easivend.fragment.BuszhierFragment.BuszhierFragInteraction;
-import com.easivend.fragment.BuszhiposFragment;
-import com.easivend.fragment.BuszhiposFragment.BuszhiposFragInteraction;
-import com.easivend.fragment.BuszhiweiFragment;
-import com.easivend.fragment.BuszhiweiFragment.BuszhiweiFragInteraction;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
@@ -106,12 +100,6 @@ BusgoodsFragInteraction,
 BusgoodsselectFragInteraction,
 //Buszhiamount页面接口
 BuszhiamountFragInteraction,
-//Buszhipos页面接口
-BuszhiposFragInteraction,
-//Buszhier页面接口
-BuszhierFragInteraction,
-//Buszhiwei页面接口
-BuszhiweiFragInteraction,
 //Bushuo页面接口
 BushuoFragInteraction
 {
@@ -120,9 +108,6 @@ BushuoFragInteraction
 	private BusgoodsFragment busgoodsFragment;
 	private BusgoodsselectFragment busgoodsselectFragment;
 	private BuszhiamountFragment buszhiamountFragment;
-	private BuszhierFragment buszhierFragment;
-	private BuszhiweiFragment buszhiweiFragment;
-	private BuszhiposFragment buszhiposFragment;
 	private BushuoFragment bushuoFragment;
 	//交易页面
     Intent intent=null;
@@ -151,6 +136,7 @@ BushuoFragInteraction
 	//==现金支付页面相关
 	//=================
 	private int queryLen = 0; 
+	private int queryamountLen = 0,queryzhierLen = 0,queryzhiweiLen = 0,queryzhiposLen = 0; 
 	private int billdev=1;//是否需要打开纸币器,1需要
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令，2本次投币已经结束
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
@@ -160,6 +146,7 @@ BushuoFragInteraction
 	private int iszhiamount=0;//1成功投入钱,0没有成功投入钱
     private boolean ischuhuo=false;//true已经出货过了，可以上报日志
 	float RealNote=0,RealCoin=0,RealAmount=0;//退币金额	
+	private int iszhiamountsel=0;//0没有设置现金，1有设置现金
 	//=================
 	//==支付宝支付页面相关
 	//=================
@@ -170,22 +157,25 @@ BushuoFragInteraction
     private int iszhier=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
     private int ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
+    private int iszhiersel=0;//0没有设置支付宝，1有设置支付宝
     //=================
   	//==微信支付页面相关
-  	//=================
+  	//=================    
     //线程进行微信二维码操作
     private ExecutorService weixingthread=null;
     private Handler weixingmainhand=null,weixingchildhand=null;   
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次投币已经结束
+    private int iszhiweisel=0;//0没有设置微信，1有设置微信
+    private boolean weicheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
     //=================
   	//==pos支付页面相关
   	//=================
-    private int isPos=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
+    private int isPossel=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
     private LfMISPOSApi mMyApi = new LfMISPOSApi();
     private Handler posmainhand=null;
-    private int iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
-    private int waitpos=0;//1刚进入pos页面,0没有进入pos页面
+    private boolean zhiposcheck=false;//1正在请求的线程操作中,0没有请求的线程操作
+    private int iszhipos=0;//0未刷卡,1需要刷卡操作,2刷卡扣款已经完成并且金额足够
     //查询参数
   	private String cashbalance = "";
     //退款参数
@@ -256,6 +246,7 @@ BushuoFragInteraction
         void BusportChjg(int sta);      //出货结果
         //非现金页面
         void BusportSend(String str);      //二维码
+        void BusportSendWei(String str);      //微信
     }
     public interface BusPortMovieFragInteraction
     {
@@ -328,27 +319,6 @@ BushuoFragInteraction
 				          {
 				        	  BuszhiamountFinish();
 				          }
-				          //=================
-			        	  //==支付宝支付页面相关
-			        	  //=================
-				          else if(gotoswitch==BUSZHIER)
-				          {
-				        	  timeoutBuszhierFinish();
-				          }
-				          //=================
-			        	  //==微信支付页面相关
-			        	  //=================
-				          else if(gotoswitch==BUSZHIWEI)
-				          {
-				        	  timeoutBuszhiweiFinish();
-				          }
-				          //=================
-			        	  //==微信支付页面相关
-			        	  //=================
-				          else if(gotoswitch==BUSZHIPOS)
-				          {
-				        	  timeoutBuszhiposFinish();
-				          }
 				          else
 				          {
 				        	  viewSwitch(BUSPORT,null);	  
@@ -356,109 +326,121 @@ BushuoFragInteraction
 		                  	                   
 		              }	
 		        	//=================
-	        		//==现金支付页面相关
+	        		//==合一支付页面相关
 	        		//=================
 		        	if(gotoswitch==BUSZHIAMOUNT)
 		        	{
-			        	//发送查询交易指令
-	                    if(iszhienable==1)
-	                    {
-		                    queryLen++;
-		                    if(queryLen>=5)
+		        		//=================
+		        		//==现金支付页面相关
+		        		//=================
+		        		if(iszhiamountsel>0)
+		        		{
+				        	//发送查询交易指令
+		                    if(iszhienable==1)
 		                    {
-		                    	queryLen=0;
-		                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
-		                    	//Heart操作
-							    Intent intent2=new Intent();
-						    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
-								intent2.setAction("android.intent.action.comsend");//action与接收器相同
-								comBroadreceiver.sendBroadcast(intent2);
+		                    	queryamountLen++;
+			                    if(queryamountLen>=5)
+			                    {
+			                    	queryamountLen=0;
+			                    	//EVprotocolAPI.EV_mdbHeart(ToolClass.getCom_id());
+			                    	//Heart操作
+								    Intent intent2=new Intent();
+							    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
+									intent2.setAction("android.intent.action.comsend");//action与接收器相同
+									comBroadreceiver.sendBroadcast(intent2);
+			                    }
 		                    }
-	                    }
-	                    //发送打开纸币硬币器指令
-	                    else if(iszhienable==0)
-	                    {
-	                    	queryLen++;
-		                    if(queryLen>=10)
+		                    //发送打开纸币硬币器指令
+		                    else if(iszhienable==0)
 		                    {
-		                    	queryLen=0;
-		                    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
-		                    	BillEnable(1);
+		                    	queryamountLen++;
+			                    if(queryamountLen>=10)
+			                    {
+			                    	queryamountLen=0;
+			                    	//EVprotocolAPI.EV_mdbEnable(ToolClass.getCom_id(),1,1,1);
+			                    	BillEnable(1);
+			                    }
 		                    }
-	                    }
+		        		}
+	                    
+	                    //=================
+		        		//==支付宝支付页面相关
+		        		//=================
+		        		if(iszhiersel>0)
+		        		{
+		                    //发送查询交易指令
+		                    if(iszhier==1)
+		                    {
+		                    	queryzhierLen++;
+			                    if(queryzhierLen>=4)
+			                    {
+			                    	queryzhierLen=0;
+			                    	queryzhier();
+			                    }
+		                    }
+		                    //发送订单交易指令
+		                    else if(iszhier==0)
+		                    {
+		                    	queryzhierLen++;
+			                    if(queryzhierLen>=10)
+			                    {
+			                    	queryzhierLen=0;
+			                    	//发送订单
+			                		sendzhier();
+			                    }
+		                    }
+		        		}
+	                    
+	                    //=================
+		        		//==微信支付页面相关
+		        		//=================
+		        		if(iszhiweisel>0)
+		        		{
+		                    //发送查询交易指令
+		                    if(iszhiwei==1)
+		                    {
+		                    	queryzhiweiLen++;
+			                    if(queryzhiweiLen>=4)
+			                    {
+			                    	queryzhiweiLen=0;
+			                    	queryzhiwei();
+			                    }
+		                    }
+		                    //发送订单交易指令
+		                    else if(iszhiwei==0)
+		                    {
+		                    	queryzhiweiLen++;
+			                    if(queryzhiweiLen>=10)
+			                    {
+			                    	queryzhiweiLen=0;
+			                    	//发送订单
+			                		sendzhiwei();
+			                    }
+		                    }
+		        		}
+	                    	                    
 		        	}
-		        		        	
 		        	
-		        	//=================
-	        		//==支付宝支付页面相关
-	        		//=================
-		        	else if(gotoswitch==BUSZHIER)
-		        	{
-			        	//发送查询交易指令
-	                    if(iszhier==1)
-	                    {
-		                    queryLen++;
-		                    if(queryLen>=4)
-		                    {
-		                    	queryLen=0;
-		                    	queryzhier();
-		                    }
-	                    }
-	                    //发送订单交易指令
-	                    else if(iszhier==0)
-	                    {
-		                    queryLen++;
-		                    if(queryLen>=10)
-		                    {
-		                    	queryLen=0;
-		                    	//发送订单
-		                		sendzhier();
-		                    }
-	                    }
-		        	}
 		        	
-		        	//=================
-	        		//==微信支付页面相关
-	        		//=================
-		        	else if(gotoswitch==BUSZHIWEI)
-		        	{
-			        	//发送查询交易指令
-	                    if(iszhiwei==1)
+	        	  }
+	        	  
+	        	  //=================
+	        	  //==pos相关
+	        	  //=================
+	        	  if(isPossel>0)
+	        	  {
+	        		  queryzhiposLen++;
+	                    if(queryzhiposLen>=4)
 	                    {
-		                    queryLen++;
-		                    if(queryLen>=4)
-		                    {
-		                    	queryLen=0;
-		                    	queryzhiwei();
-		                    }
+	                    	queryzhiposLen=0;
+			        		//有查询功能                         没有请求的线程操作                 没有进刷卡交易页面
+			      			if((isPossel==1)&&(zhiposcheck==false)&&(iszhipos==0))
+			      			{
+			      				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
+			      				mMyApi.pos_query(mIUserCallback);
+			      				zhiposcheck=true;
+			      			}
 	                    }
-	                    //发送订单交易指令
-	                    else if(iszhiwei==0)
-	                    {
-		                    queryLen++;
-		                    if(queryLen>=10)
-		                    {
-		                    	queryLen=0;
-		                    	//发送订单
-		                		sendzhiwei();
-		                    }
-	                    }
-		        	}
-		        	
-		        	//=================
-	        		//==pos支付页面相关
-	        		//=================
-		        	else if(gotoswitch==BUSZHIPOS)
-		        	{
-			        	//发送查询交易指令
-	                    if(iszhipos==1)
-	                    {		                    
-	                    }
-	                    //发送订单交易指令
-	                    else if(iszhipos==0)
-	                    {		                    
-	                    }
-		        	}
 	        	  }
 	        	  //判断3分钟内，如果按下空的货道号可以直接出货
 	        	  if(ToolClass.isLAST_CHUHUO())
@@ -528,6 +510,7 @@ BushuoFragInteraction
 						listterner.BusportTsxx("交易结果:交易成功");
 						iszhier=2;
 //						//reamin_amount=String.valueOf(amount);
+						zhifutype="3";						
 						tochuhuo();
 						break;
 					case Zhifubaohttp.SETQUERYMAIN://子线程接收主线程消息
@@ -570,12 +553,12 @@ BushuoFragInteraction
 			@Override
 			public void handleMessage(Message msg) {
 				//barweixingtest.setVisibility(View.GONE);
-				ercheck=false;
+				weicheck=false;
 				// TODO Auto-generated method stub				
 				switch (msg.what)
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
-						listterner.BusportSend(msg.obj.toString());
+						listterner.BusportSendWei(msg.obj.toString());
 						iszhiwei=1;
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
@@ -616,6 +599,7 @@ BushuoFragInteraction
 						listterner.BusportTsxx("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
 						iszhiwei=2;
+                        zhifutype="4";                        
 						tochuhuo();
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -658,20 +642,14 @@ BushuoFragInteraction
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-    		isPos=tb_inaccount.getZhifubaofaca();
+    		isPossel=tb_inaccount.getZhifubaofaca();
     		if(tb_inaccount.getZhifubaofaca()>0)
     		{
     			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
     	        //打开串口
     	        //ip、端口、串口、波特率必须准确
     			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-    					,ToolClass.getCardcom(), "9600", mIUserCallback);
-    			//有查询功能
-    			if(isPos==1)
-    			{
-    				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
-    				mMyApi.pos_query(mIUserCallback);
-    			}
+    					,ToolClass.getCardcom(), "9600", mIUserCallback);    			
     		}
     	}				
 		posmainhand=new Handler()
@@ -679,7 +657,8 @@ BushuoFragInteraction
 
 			@Override
 			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub				
+				// TODO Auto-generated method stub	
+				zhiposcheck=false;
 				switch (msg.what) 
 				{
 					case CahslessTest.OPENSUCCESS:
@@ -701,13 +680,13 @@ BushuoFragInteraction
 				            {         
 				            	//读卡器获取交易信息
 								mMyApi.pos_getrecord("000000000000000", "00000000","000000", mIUserCallback);
-							}
+								zhiposcheck=true;
+				            }
 
 						}, 300);
 						break;
 					case CahslessTest.COSTFAIL:	
 						listterner.BusportTsxx("提示信息：扣款失败"+cashbalance);
-						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
 					case CahslessTest.QUERYFAIL:	
@@ -718,47 +697,37 @@ BushuoFragInteraction
 				            @Override
 				            public void run() 
 				            {   
-								tochuhuo();	
+		                        zhifutype="1";
+		                        tochuhuo();	
 							}
 
 						}, 3000);
 						break;
 					case CahslessTest.DELETESUCCESS:
 					case CahslessTest.DELETEFAIL:	
-						if(gotoswitch==BUSZHIPOS)
+						if(iszhipos==1)
 						{
-							if(waitpos==1)
+							//延时
+						    new Handler().postDelayed(new Runnable() 
 							{
-								waitpos=0;
-								//延时
-							    new Handler().postDelayed(new Runnable() 
-								{
-						            @Override
-						            public void run() 
-						            {   
-						            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
-						            	listterner.BusportTsxx("提示信息：请刷卡");
-										mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
-								    	iszhipos=1;
-									}
+					            @Override
+					            public void run() 
+					            {   
+					            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+					            	listterner.BusportTsxx("提示信息：请刷卡");
+					            	if(isPossel==1)//会员卡
+					                {
+					                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
+					                }
+					                else if(isPossel>1)//银行卡
+					                {
+					                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
+					                }
+							    	zhiposcheck=true;
+								}
 
-								}, 500);
-							}
-							else
-							{
-								//延时
-							    new Handler().postDelayed(new Runnable() 
-								{
-						            @Override
-						            public void run() 
-						            {         
-						            	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-										zhiposDestroy(0);
-									}
-		
-								}, 300);
-							}
-						}					
+							}, 500);							
+						}				
 						break;						
 					case CahslessTest.PAYOUTSUCCESS:
 						if(ispayoutopt==1)
@@ -806,21 +775,9 @@ BushuoFragInteraction
 						}
 						break;	
 					case CahslessTest.FINDSUCCESS:
-						//有查询功能
-						if(isPos==1)
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
-							mMyApi.pos_query(mIUserCallback);
-							listternermovie.BusportCashless(cashbalance);
-						}
+						listternermovie.BusportCashless(cashbalance);
 						break;
-					case CahslessTest.FINDFAIL:
-						//有查询功能
-						if(isPos==1)
-						{
-							ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
-							mMyApi.pos_query(mIUserCallback);
-						}
+					case CahslessTest.FINDFAIL:						
 						break;
 				}
 			}
@@ -1085,28 +1042,62 @@ BushuoFragInteraction
 	@Override
 	public void BuszhiamountFinish() {
 		// TODO Auto-generated method stub
-		//如果本次投币已经结束，可以购买，则不进行退币操作
+		//现金模块如果本次投币已经结束，可以购买，则不进行退币操作
 		if(iszhienable==2)
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMBusPort 退币按钮无效","com.txt");
 		}
-		else if(iszhiamount==1)
-  		{
-  			dialog= ProgressDialog.show(BusPort.this,"正在退币中","请稍候...");
-  			OrderDetail.setPayStatus(2);//支付失败
-  			//退币
-  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
-  			Intent intent=new Intent();
-	    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
-			intent.putExtra("bill", 1);	
-			intent.putExtra("coin", 1);	
-			intent.setAction("android.intent.action.comsend");//action与接收器相同
-			comBroadreceiver.sendBroadcast(intent);
-  		} 
-  		else 
-  		{  			
-  			amountDestroy(0);
-		} 	    
+		//支付宝模块如果本次扫码已经结束，可以购买，则不进行退款操作
+		else if(iszhier==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhier退币按钮无效","log.txt");
+    	}
+		//微信模块如果本次扫码已经结束，可以购买，则不进行退款操作
+		else if(iszhiwei==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
+    	}
+		//pos模块如果本次已经刷卡，可以购买，则不进行退款操作
+    	if(iszhipos==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhipos退币按钮无效","log.txt");
+    	}
+		else
+		{
+			//支付宝模块:生成二维码了，需要撤销
+			if(iszhier==1)
+			{
+				deletezhier();
+			}
+			//支付宝模块:生成二维码了，需要撤销
+			if(iszhiwei==1)
+			{
+				deletezhiwei();
+			}
+			//pos模块:发送扣款了，需要撤销
+			if(zhiposcheck)
+			{
+				deletezhipos();
+			}
+			
+			
+			if(iszhiamount==1)
+	  		{
+	  			dialog= ProgressDialog.show(BusPort.this,"正在退币中","请稍候...");
+	  			OrderDetail.setPayStatus(2);//支付失败
+	  			//退币
+	  	    	//EVprotocolAPI.EV_mdbPayback(ToolClass.getCom_id(),1,1);
+	  			Intent intent=new Intent();
+		    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_PAYBACK);	
+				intent.putExtra("bill", 1);	
+				intent.putExtra("coin", 1);	
+				intent.setAction("android.intent.action.comsend");//action与接收器相同
+				comBroadreceiver.sendBroadcast(intent);
+	  		} 
+			
+			//立即退出
+	  		amountDestroy(0);			
+		}
 	    
 	}
 	
@@ -1118,18 +1109,20 @@ BushuoFragInteraction
 		{
 			//清数据
 	    	clearamount();
-  			//关闭纸币硬币器
-  	    	BillEnable(0);
   	    	recLen=10;
-  	    	AudioSound.playbusfinish();
+  	    	AudioSound.playbusfinish();  	    	
 		}
 		//立即关闭
 		else
 		{
-			//关闭纸币硬币器
-	    	BillEnable(0);
 			clearamount();
 			viewSwitch(BUSPORT, null);
+		}
+		
+		//关闭纸币硬币器
+		if(iszhiamountsel>0)
+		{
+			BillEnable(0);
 		}
 	}
 	
@@ -1138,28 +1131,7 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhier页面相关接口
   	//=======================
-    //步骤三、实现Buszhier接口,转到首页面
-    @Override
-	public void BuszhierFinish() {
-		// TODO Auto-generated method stub
-    	//如果本次扫码已经结束，可以购买，则不进行退款操作
-    	if(iszhier==2)
-    	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhier退币按钮无效","log.txt");
-    	}
-    	else if(iszhier==1)
-			deletezhier();
-		else 
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-			zhierDestroy(0);
-		}
-	}
-    //用于超时的结束界面
-  	private void timeoutBuszhierFinish()
-  	{
-  		BuszhierFinish();
-  	}
+   
     
     //发送订单
   	private void sendzhier()
@@ -1172,8 +1144,7 @@ BushuoFragInteraction
 	  		childmsg.what=Zhifubaohttp.SETCHILD;
 	  		JSONObject ev=null;
 	  		try {
-	  			ev=new JSONObject();
-	  			out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
+	  			ev=new JSONObject();	  			
 	  	        ev.put("out_trade_no", out_trade_no);
 	  			ev.put("total_fee", String.valueOf(amount));
 	  			Log.i("EV_JNI","Send0.1="+ev.toString());
@@ -1232,7 +1203,6 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		zhifubaochildhand.sendMessage(childmsg);
   		}
-  		zhierDestroy(0);
   	}
     //退款
   	private void payoutzhier()
@@ -1281,32 +1251,24 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhiwei页面相关接口
   	//=======================
-    //步骤三、实现Buszhiwei接口,转到首页面
-  	@Override
-	public void BuszhiweiFinish() {
-		// TODO Auto-generated method stub
-  		//如果本次扫码已经结束，可以购买，则不进行退款操作
-    	if(iszhiwei==2)
-    	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
-    	}
-    	else if(iszhiwei==1)
-			deletezhiwei();
-		else 
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-			zhiweiDestroy(0);
-		}
-	}
-    //用于超时的结束界面
-  	private void timeoutBuszhiweiFinish()
+    //判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作
+  	private boolean weicheckopt()
   	{
-  		BuszhiweiFinish();
-  	}
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicheck="+weicheck,"log.txt");
+  		if(weicheck==false)
+  		{
+  			weicheck=true;
+  			return true;
+  		}
+  		else
+  		{
+  			return false;
+		}
+  	}  
     //发送订单
   	private void sendzhiwei()
   	{	
-  		if(ercheckopt())
+  		if(weicheckopt())
   		{
 	      	// 将信息发送到子线程中
 	      	weixingchildhand=weixinghttp.obtainHandler();
@@ -1314,8 +1276,7 @@ BushuoFragInteraction
 	  		childmsg.what=Weixinghttp.SETCHILD;
 	  		JSONObject ev=null;
 	  		try {
-	  			ev=new JSONObject();
-	  			out_trade_no=ToolClass.out_trade_no(BusPort.this);
+	  			ev=new JSONObject();	  			
 	  	        ev.put("out_trade_no", out_trade_no);
 	  			ev.put("total_fee", String.valueOf(amount));
 	  			Log.i("EV_JNI","Send0.1="+ev.toString());
@@ -1330,7 +1291,7 @@ BushuoFragInteraction
   	//查询交易
   	private void queryzhiwei()
   	{
-  		if(ercheckopt())
+  		if(weicheckopt())
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -1353,9 +1314,9 @@ BushuoFragInteraction
   	//退款交易
   	private void payoutzhiwei()
   	{
-  		//if(ercheckopt())
+  		//if(weicheckopt())
   		AudioSound.playbuspayout();
-  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicheckopt="+weicheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -1381,9 +1342,9 @@ BushuoFragInteraction
 	//撤销交易
   	private void deletezhiwei()
   	{
-  		//if(ercheckopt())
+  		//if(weicheckoptopt())
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
-  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicheckopt="+weicheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -1402,7 +1363,6 @@ BushuoFragInteraction
 	  		childmsg.obj=ev;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
-  		zhiweiDestroy(0);
   	}
   	
     //关闭页面:type=1延时10s关闭,0立即关闭
@@ -1425,28 +1385,7 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhipos页面相关接口
   	//=======================
-    //步骤三、实现Buszhipos接口,转到首页面
-  	@Override
-	public void BuszhiposFinish() {
-		// TODO Auto-generated method stub
-  		//如果本次扫码已经结束，可以购买，则不进行退款操作
-    	if(iszhipos==2)
-    	{
-    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhipos退币按钮无效","log.txt");
-    	}
-    	else if(iszhipos==1)
-			deletezhipos();
-		else 
-		{
-			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=BUSPORT","log.txt");
-			zhiposDestroy(0);
-		}
-	}
-    //用于超时的结束界面
-  	private void timeoutBuszhiposFinish()
-  	{
-  		BuszhiposFinish();
-  	}
+      
   	
     //撤销交易
   	private void deletezhipos()
@@ -1454,6 +1393,7 @@ BushuoFragInteraction
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 操作撤销（刷卡前）..","com.txt");
     	mMyApi.pos_cancel();
+    	zhiposcheck=true;
   	}
   	
     //退款交易
@@ -1461,7 +1401,15 @@ BushuoFragInteraction
   	{
   		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器退款="+amount,"com.txt");
   		AudioSound.playbuspayout();
-  		mMyApi.pos_refund(rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial, mIUserCallback);
+  	    if(isPossel==1)//会员卡
+  		{
+  			mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,0, mIUserCallback);
+  		}
+  		else if(isPossel>1)//银行卡
+  		{
+            mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,1,"      ",1, mIUserCallback);
+        }
+  		zhiposcheck=true;
   	}
   
   	//接口返回
@@ -1686,15 +1634,7 @@ BushuoFragInteraction
   		{
   			clearamount();
 	    	viewSwitch(BUSPORT, null);		    	
-  		}
-  	    //***********************
-		//进行pos操作
-		//***********************
-        if(isPos==1)
-        {
-        	ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<======>下一条查询","log.txt");
-        	mMyApi.pos_query(mIUserCallback);
-        }
+  		}  	    
   	}
   	
   	
@@ -1776,7 +1716,7 @@ BushuoFragInteraction
             	switch(OrderDetail.getPayType())
             	{
             		//现金页面
-            		case 0:
+            		case 0:            			
             			//viewSwitch(BUSZHIAMOUNT, null);
             			//1.
           				//出货成功,扣钱
@@ -1818,7 +1758,7 @@ BushuoFragInteraction
         				}
             			break;	
             		//支付宝页面	
-            		case 3:
+            		case 3:            			
             			//出货成功,结束交易
         				if(status==1)
         				{
@@ -1838,7 +1778,7 @@ BushuoFragInteraction
         				}
             			break;
             		//微信页面	
-            		case 4:
+            		case 4:            			
             			//出货成功,结束交易
         				if(status==1)
         				{
@@ -2325,15 +2265,21 @@ BushuoFragInteraction
 //    	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
     	OrderDetail.setOrdereID(out_trade_no);
     	OrderDetail.setPayType(Integer.parseInt(zhifutype));
-    	if(gotoswitch==BUSZHIAMOUNT)
-    	{    	
-        	BillEnable(0);	
-    	}
-    	else if(gotoswitch==BUSZHIER)
+    	
+    	//现金模块
+    	if(iszhiamountsel>0)
     	{
-        	OrderDetail.setSmallCard(amount);
+    		BillEnable(0);	//关闭现金设备
     	}
-    	else if(gotoswitch==BUSZHIWEI)
+    	//pos模块
+    	iszhipos=2;
+    	if(zhiposcheck==true)//正在请求的线程操作中，需要撤销
+		{
+			deletezhipos();
+		}
+    	//支付宝微信模块,以及pos模块
+    	//非现金金额
+    	if(zhifutype.equals("0")!=true)
     	{
     		OrderDetail.setSmallCard(amount);
     	}
@@ -2395,7 +2341,8 @@ BushuoFragInteraction
   	    //微信页面
   		iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
   		//pos页面
-  		iszhipos=0;//1成功发送了扣款请求,0没有发送成功扣款请求，2刷卡扣款已经完成并且金额足够
+  		iszhipos=0;//0未刷卡,2刷卡扣款已经完成并且金额足够
+  		
   		ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
   	    //打印机页面
   		isPrinter=0;//0没有设置打印机，1有设置打印机，2打印机自检成功，可以打印
@@ -2506,15 +2453,9 @@ BushuoFragInteraction
 	            AudioSound.playbusselect();
 				break;
 			case BUSZHIAMOUNT://现金支付
-				isbus=false;
-				//Heart操作
-			    Intent intent2=new Intent();
-		    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
-				intent2.setAction("android.intent.action.comsend");//action与接收器相同
-				comBroadreceiver.sendBroadcast(intent2);
+				isbus=false;			
 				
 				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo(); 
-				zhifutype="0";
 				out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
 				//切换页面
 				if (buszhiamountFragment == null) {
@@ -2522,107 +2463,121 @@ BushuoFragInteraction
 	            }
 	            // 使用当前Fragment的布局替代id_content的控件
 	            transaction.replace(R.id.id_content, buszhiamountFragment);
-	            //延时
-			    new Handler().postDelayed(new Runnable() 
-				{
-		            @Override
-		            public void run() 
-		            {   
-		            	//打开纸币器
-						BillEnable(1);
-		            }
-
-				}, 1500);
-			    AudioSound.playbuszhiamount();
-				break;	
-			case BUSZHIER://支付宝支付
-				isbus=false;
-				zhifutype="3";
-				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
-				if (buszhierFragment == null) {
-					buszhierFragment = new BuszhierFragment();
-	            }
-				// 使用当前Fragment的布局替代id_content的控件
-	            transaction.replace(R.id.id_content, buszhierFragment);
-				//新建一个线程并启动
-				zhifubaothread.execute(zhifubaohttp);
-				//延时
-			    new Handler().postDelayed(new Runnable() 
-				{
-		            @Override
-		            public void run() 
-		            {   
-			            //发送订单
-		        		sendzhier();
-		            }
-
-				}, 1500);	
-			    AudioSound.playbuszhier();
-				break;
-			case BUSZHIWEI://微信支付
-				isbus=false;
-				zhifutype="4";
-				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
-				if (buszhiweiFragment == null) {
-					buszhiweiFragment = new BuszhiweiFragment();
-	            }
-	            // 使用当前Fragment的布局替代id_content的控件
-	            transaction.replace(R.id.id_content, buszhiweiFragment);
-	            //新建一个线程并启动
-	            weixingthread.execute(weixinghttp);
-				//延时
-			    new Handler().postDelayed(new Runnable() 
-				{
-		            @Override
-		            public void run() 
-		            {   
-		            	//发送订单
-		        		sendzhiwei();
-		            }
-
-				}, 1500);	
-			    AudioSound.playbuszhiwei();
-				break;	
-			case BUSZHIPOS://pos支付
-				isbus=false;
-				amount=OrderDetail.getShouldPay()*OrderDetail.getShouldNo();
-				zhifutype="1";				
-				out_trade_no=ToolClass.out_trade_no(BusPort.this);// 创建InaccountDAO对象;
-				if (buszhiposFragment == null) {
-					buszhiposFragment = new BuszhiposFragment();
-	            }
-	            // 使用当前Fragment的布局替代id_content的控件
-	            transaction.replace(R.id.id_content, buszhiposFragment);
-	            //***********************
-	    		//进行pos操作
-	    		//***********************
-	            if(isPos>0)
-	            {
-		    		if(isPos==1)
+	           
+			    
+			    
+			    
+			    //*********************
+				//搜索可以得到的支付方式
+				//*********************
+				vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(BusPort.this);// 创建InaccountDAO对象
+			    // 获取所有收入信息，并存储到List泛型集合中
+		    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+		    	if(tb_inaccount!=null)
+		    	{
+		    		if(tb_inaccount.getAmount()>0)
 		    		{
-		    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销查询","com.txt");
-		    			waitpos=1;
-		    			mMyApi.pos_cancel();	    	    	
-		    		}	
-		    		else
-		    		{
-		    			//延时
+		    			//打开
+		    			iszhiamountsel=1;
+		    			//Heart操作
+					    Intent intent2=new Intent();
+				    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_HEART);
+						intent2.setAction("android.intent.action.comsend");//action与接收器相同
+						comBroadreceiver.sendBroadcast(intent2);
+						 //延时
 					    new Handler().postDelayed(new Runnable() 
 						{
 				            @Override
 				            public void run() 
 				            {   
-				            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
-				            	listterner.BusportTsxx("提示信息：请刷卡");
-								mMyApi.pos_purchase(ToolClass.MoneySend(amount), mIUserCallback);	
-						    	iszhipos=1;
-							}
-	
+				            	//打开纸币器
+								BillEnable(1);
+								queryamountLen=0;
+				            }
+
+						}, 400);
+		    		}	
+		    		//支付宝
+		    		if(tb_inaccount.getZhifubaoer()>0)
+		    		{
+		    			iszhiersel=1;
+		    			//打开
+		    			//新建一个线程并启动
+						zhifubaothread.execute(zhifubaohttp);
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+					            //发送订单
+				        		sendzhier();
+				        		queryzhierLen=0;
+				            }
+
+						}, 300);
+		    		}
+		    		//微信
+		    		if(tb_inaccount.getWeixing()>0)
+		    		{
+		    			iszhiweisel=1;
+		    			//打开
+		    			//新建一个线程并启动
+			            weixingthread.execute(weixinghttp);
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+				            	//发送订单
+				        		sendzhiwei();
+				        		queryzhiweiLen=0;
+				            }
+
 						}, 500);
 		    		}
-	            }
-	            AudioSound.playbuszhipos();
-				break;	
+		    		//pos机
+		    		if(tb_inaccount.getZhifubaofaca()>0)
+		    		{
+		    			//打开
+		    			//***********************
+			    		//进行pos操作
+			    		//***********************
+			            if(isPossel>0)
+			            {
+			            	iszhipos=1;
+				    		if(zhiposcheck==true)//正在请求的线程操作中，需要撤销
+				    		{
+				    			deletezhipos();
+				    		}	
+				    		else
+				    		{
+				    			//延时
+							    new Handler().postDelayed(new Runnable() 
+								{
+						            @Override
+						            public void run() 
+						            {   
+						            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
+						            	listterner.BusportTsxx("提示信息：请刷卡");
+						            	if(isPossel==1)//会员卡
+						                {
+						                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
+						                }
+						                else if(isPossel>1)//银行卡
+						                {
+						                    mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
+						                }	
+								    	zhiposcheck=true;
+									}
+			
+								}, 700);
+				    		}
+			            }
+		    		}    		
+		    	}
+				break;				
 			case BUSHUO://出货页面	
 				recLen=10*60;
 				isbus=false;
@@ -2804,6 +2759,7 @@ BushuoFragInteraction
 						  		if(money>=amount)
 						  		{
 						  			iszhienable=2;
+						  			zhifutype="0";						  			
 						  			tochuhuo();
 						  		}
 						  	}
@@ -2844,8 +2800,7 @@ BushuoFragInteraction
 						}
 				    	dialog.dismiss();
 						if(gotoswitch==BUSZHIAMOUNT)
-			  	    	{
-			  	    		amountDestroy(0);	
+			  	    	{			  	    		
 			  	    	}
 			  	    	else
 			  	    	{
@@ -2891,10 +2846,11 @@ BushuoFragInteraction
 		//***********************
 		//进行pos操作
 		//***********************
-		if(isPos==1)
+		if(isPossel>0)
 		{
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销读卡器","com.txt");
 //	    	mMyApi.pos_release();//串口不用关闭了
+			gotoswitch=0;
             mMyApi.pos_cancel();  
 		}
 		//退出时，返回intent

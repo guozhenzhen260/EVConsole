@@ -3,6 +3,9 @@ package com.easivend.fragment;
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
+import com.easivend.common.ToolClass;
+import com.easivend.dao.vmc_system_parameterDAO;
+import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
@@ -23,7 +26,9 @@ public class BuszhiamountFragment extends Fragment
 			txtbuszhiamounttsxx=null;
 	ImageButton imgbtnbuszhiamountqxzf=null,imgbtnbuszhiamountqtzf=null;
 	ImageView imgbtnbusgoodsback=null;
-	float amount=0;//商品需要支付金额	 
+	float amount=0;//商品需要支付金额	
+	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiselpos=null;
+	ImageView ivbuszhier=null,ivbuszhiwei=null;
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -112,6 +117,57 @@ public class BuszhiamountFragment extends Fragment
 	     * @param activity
 	     */
 		BusPort.setCallBack(new buportInterfaceImp());
+		ivbuszhiselamount = (ImageView) view.findViewById(R.id.ivbuszhiselamount);
+		ivbuszhiselzhier = (ImageView) view.findViewById(R.id.ivbuszhiselzhier);
+		ivbuszhiselweixing = (ImageView) view.findViewById(R.id.ivbuszhiselweixing);	
+		ivbuszhiselpos = (ImageView) view.findViewById(R.id.ivbuszhiselpos);
+		ivbuszhier = (ImageView) view.findViewById(R.id.ivbuszhier);
+		ivbuszhiwei = (ImageView) view.findViewById(R.id.ivbuszhiwei);
+		//*********************
+		//搜索可以得到的支付方式
+		//*********************
+		vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+	    // 获取所有收入信息，并存储到List泛型集合中
+    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+    	if(tb_inaccount!=null)
+    	{
+    		if(tb_inaccount.getAmount()==0)
+    		{
+    			ivbuszhiselamount.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+    		}	
+    		if(tb_inaccount.getZhifubaoer()==0)
+    		{
+    			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+    			ivbuszhier.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+    			ivbuszhier.setVisibility(View.VISIBLE);//打开
+    		}
+    		if(tb_inaccount.getWeixing()==0)
+    		{
+    			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+    			ivbuszhiwei.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+    			ivbuszhiwei.setVisibility(View.VISIBLE);//打开
+    		}
+    		if(tb_inaccount.getZhifubaofaca()==0)
+    		{
+    			ivbuszhiselpos.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
+    		}    		
+    	}
 		return view;
 	}
 	
@@ -143,7 +199,13 @@ public class BuszhiamountFragment extends Fragment
 		@Override
 		public void BusportSend(String str) {
 			// TODO Auto-generated method stub
-			
+			ivbuszhier.setImageBitmap(ToolClass.createQRImage(str));
+		}
+
+		@Override
+		public void BusportSendWei(String str) {
+			// TODO Auto-generated method stub
+			ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(str));
 		}
 
 		

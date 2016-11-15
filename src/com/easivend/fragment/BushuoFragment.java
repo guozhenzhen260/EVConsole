@@ -311,5 +311,11 @@ public class BushuoFragment extends Fragment
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void BusportSendWei(String str) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

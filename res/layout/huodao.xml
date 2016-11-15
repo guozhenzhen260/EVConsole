@@ -184,6 +184,18 @@
 							        android:layout_weight="1"
 							        android:numeric="integer"
 							        android:text="1" />
+						          <Button
+						             android:id="@+id/btnhuopre"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"  
+						             android:background="@drawable/button_selector"           
+						             android:text="上一道" />
+						           <Button
+						             android:id="@+id/btnhuonext"
+						             android:layout_width="100dp"
+						             android:layout_height="70dp"  
+						             android:background="@drawable/button_selector"           
+						             android:text="下一道" />
 					         </LinearLayout>
 					    </TableRow>  	
 					    <View                              
