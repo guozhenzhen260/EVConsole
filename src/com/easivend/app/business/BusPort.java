@@ -1407,8 +1407,8 @@ BushuoFragInteraction
   		}
   		else if(isPossel>1)//ÒøÐÐ¿¨
   		{
-  			mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,ToolClass.MoneySend(amount),rfd_spec_tmp_serial,1, mIUserCallback);
-  		}
+            mMyApi.pos_refund("000000000000000", "00000000",rfd_card_no,1,"      ",1, mIUserCallback);
+        }
   		zhiposcheck=true;
   	}
   
