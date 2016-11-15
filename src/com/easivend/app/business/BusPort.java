@@ -167,6 +167,7 @@ BushuoFragInteraction
     Weixinghttp weixinghttp=null;
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次投币已经结束
     private int iszhiweisel=0;//0没有设置微信，1有设置微信
+    private boolean weicheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
     //=================
   	//==pos支付页面相关
   	//=================
@@ -552,7 +553,7 @@ BushuoFragInteraction
 			@Override
 			public void handleMessage(Message msg) {
 				//barweixingtest.setVisibility(View.GONE);
-				ercheck=false;
+				weicheck=false;
 				// TODO Auto-generated method stub				
 				switch (msg.what)
 				{
@@ -1250,11 +1251,24 @@ BushuoFragInteraction
     //=======================
   	//实现Buszhiwei页面相关接口
   	//=======================
-       
+    //判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作
+  	private boolean weicheckopt()
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicheck="+weicheck,"log.txt");
+  		if(weicheck==false)
+  		{
+  			weicheck=true;
+  			return true;
+  		}
+  		else
+  		{
+  			return false;
+		}
+  	}  
     //发送订单
   	private void sendzhiwei()
   	{	
-  		if(ercheckopt())
+  		if(weicheckopt())
   		{
 	      	// 将信息发送到子线程中
 	      	weixingchildhand=weixinghttp.obtainHandler();
@@ -1277,7 +1291,7 @@ BushuoFragInteraction
   	//查询交易
   	private void queryzhiwei()
   	{
-  		if(ercheckopt())
+  		if(weicheckopt())
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -1300,9 +1314,9 @@ BushuoFragInteraction
   	//退款交易
   	private void payoutzhiwei()
   	{
-  		//if(ercheckopt())
+  		//if(weicheckopt())
   		AudioSound.playbuspayout();
-  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicheckopt="+weicheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -1328,9 +1342,9 @@ BushuoFragInteraction
 	//撤销交易
   	private void deletezhiwei()
   	{
-  		//if(ercheckopt())
+  		//if(weicheckoptopt())
   		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<viewSwitch=撤销交易","log.txt");
-  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ercheck="+ercheck,"log.txt");
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicheckopt="+weicheck,"log.txt");
   		{
 	  		// 将信息发送到子线程中
 	  		weixingchildhand=weixinghttp.obtainHandler();
@@ -2481,7 +2495,7 @@ BushuoFragInteraction
 								queryamountLen=0;
 				            }
 
-						}, 800);
+						}, 400);
 		    		}	
 		    		//支付宝
 		    		if(tb_inaccount.getZhifubaoer()>0)
@@ -2501,7 +2515,7 @@ BushuoFragInteraction
 				        		queryzhierLen=0;
 				            }
 
-						}, 500);
+						}, 300);
 		    		}
 		    		//微信
 		    		if(tb_inaccount.getWeixing()>0)
@@ -2521,7 +2535,7 @@ BushuoFragInteraction
 				        		queryzhiweiLen=0;
 				            }
 
-						}, 3000);
+						}, 500);
 		    		}
 		    		//pos机
 		    		if(tb_inaccount.getZhifubaofaca()>0)
@@ -2558,7 +2572,7 @@ BushuoFragInteraction
 								    	zhiposcheck=true;
 									}
 			
-								}, 300);
+								}, 700);
 				    		}
 			            }
 		    		}    		

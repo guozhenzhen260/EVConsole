@@ -3,5 +3,6 @@
     <string-array name="cashless_Type">  
         <item>0关闭</item>            
         <item>1朗方280</item>
+        <item>1朗方290</item>
     </string-array>
 </resources>
