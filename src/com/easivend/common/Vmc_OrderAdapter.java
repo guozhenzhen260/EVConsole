@@ -28,6 +28,7 @@ public class Vmc_OrderAdapter
 	String[] realAmount;// 现金退币金额
 	String[] debtAmount;// 欠款金额
 	String[] realCard;// 非现金退币金额
+	String[] rfd_card_no;//卡号
 	String[] payTime;//支付时间
 	//详细支付订单
 	String[] productID;//商品id
@@ -80,6 +81,7 @@ public class Vmc_OrderAdapter
   		realAmount = new String[listinfos.size()];// 现金退币金额
   		debtAmount = new String[listinfos.size()];// 欠款金额
   		realCard = new String[listinfos.size()];// 非现金退币金额
+  		rfd_card_no = new String[listinfos.size()];//卡号
   		payTime = new String[listinfos.size()];//支付时间
   		//详细支付订单
   		productID = new String[listinfos.size()];//商品id
@@ -129,6 +131,7 @@ public class Vmc_OrderAdapter
   			realAmount[m] = String.valueOf(tb_inaccount.getRealAmount());// 现金退币金额
   			debtAmount[m] = String.valueOf(tb_inaccount.getDebtAmount());// 欠款金额
   			realCard[m] = String.valueOf(tb_inaccount.getRealCard());// 非现金退币金额
+  			rfd_card_no[m]= tb_inaccount.getRfd_card_no();
   			payTime[m] = String.valueOf(tb_inaccount.getPayTime());//支付时间
   			//数字类型订单信息
   			payTypevalue[m] = tb_inaccount.getPayType();
@@ -209,6 +212,7 @@ public class Vmc_OrderAdapter
 		realAmount = new String[listinfos.size()];// 现金退币金额
 		debtAmount = new String[listinfos.size()];// 欠款金额
 		realCard = new String[listinfos.size()];// 非现金退币金额
+		rfd_card_no = new String[listinfos.size()];//卡号
 		payTime = new String[listinfos.size()];//支付时间
 		//详细支付订单
 		productID = new String[listinfos.size()];//商品id
@@ -258,6 +262,7 @@ public class Vmc_OrderAdapter
 			realAmount[m] = String.valueOf(tb_inaccount.getRealAmount());// 现金退币金额
 			debtAmount[m] = String.valueOf(tb_inaccount.getDebtAmount());// 欠款金额
 			realCard[m] = String.valueOf(tb_inaccount.getRealCard());// 非现金退币金额
+			rfd_card_no[m]= tb_inaccount.getRfd_card_no();
 			payTime[m] = String.valueOf(tb_inaccount.getPayTime());//支付时间
 			//数字类型订单信息
 			payTypevalue[m] = tb_inaccount.getPayType();
@@ -462,6 +467,15 @@ public class Vmc_OrderAdapter
 	public void setRealCard(String[] realCard) {
 		this.realCard = realCard;
 	}
+	
+	public String[] getRfd_card_no() {
+		return rfd_card_no;
+	}
+
+	public void setRfd_card_no(String[] rfd_card_no) {
+		this.rfd_card_no = rfd_card_no;
+	}
+
 	public String[] getProductID() {
 		return productID;
 	}

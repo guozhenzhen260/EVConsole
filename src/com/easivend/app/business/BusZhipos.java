@@ -504,6 +504,7 @@ public class BusZhipos extends Activity
       	OrderDetail.setOrdereID(out_trade_no);
       	OrderDetail.setPayType(Integer.parseInt(zhifutype));
       	OrderDetail.setSmallCard(amount);
+      	OrderDetail.setRfd_card_no(rfd_card_no);
       	startActivityForResult(intent, REQUEST_CODE);// ´ò¿ªAccountflag
   	}
   	

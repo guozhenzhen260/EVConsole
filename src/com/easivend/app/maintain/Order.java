@@ -83,6 +83,7 @@ public class Order extends TabActivity
 	private	String[] realAmount;// 现金退币金额
 	private	String[] debtAmount;// 欠款金额
 	private	String[] realCard;// 非现金退币金额
+	private String[] rfd_card_no;//卡号
 	private	String[] payTime;//支付时间
 		//详细支付订单
 	private	String[] productID;//商品id
@@ -484,6 +485,7 @@ public class Order extends TabActivity
 			realAmount = vmc_OrderAdapter.getRealAmount();// 现金退币金额
 			debtAmount = vmc_OrderAdapter.getDebtAmount();// 欠款金额
 			realCard = vmc_OrderAdapter.getRealCard();// 非现金退币金额
+			rfd_card_no = vmc_OrderAdapter.getRfd_card_no();//卡号
 			payTime = vmc_OrderAdapter.getPayTime();//支付时间
 			//详细支付订单
 			productID = vmc_OrderAdapter.getProductID();//商品id

@@ -2308,6 +2308,7 @@ public class EVServerhttp implements Runnable {
 		int orderStatus=0;
 		String productName="";
 		String RefundAmount="";
+		String rfd_card_no="";
 		//一期后台
 		String NOTE_AMOUNT="",COIN_AMOUNT="",CASH_AMOUNT="",REFUND_NOTE_AMOUNT="",
 				REFUND_COIN_AMOUNT="",REFUND_CASH_AMOUNT="",AMOUNT_OWED="",Amount="",
@@ -2331,6 +2332,7 @@ public class EVServerhttp implements Runnable {
 			productName=jsonObject.getString("productName");
 			RefundAmount=jsonObject.getString("RefundAmount");
 			Status=jsonObject.getInt("Status");
+			rfd_card_no=jsonObject.getString("rfd_card_no");
 			if(ToolClass.getServerVer()==0)//旧的后台
 			{
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
@@ -2351,7 +2353,7 @@ public class EVServerhttp implements Runnable {
 				PATH_NO=jsonObject.getString("PATH_NO");
 				ToolClass.Log(ToolClass.INFO,"EV_SERVER","Send0.2=orderNo="+orderNo+"orderTime="+orderTime+"orderStatus="+orderStatus+"payStatus="
 						+payStatus+"payType="+payType+"shouldPay="+shouldPay+"RefundAmount="+RefundAmount+"Status="+Status+"productNo="+productNo+"quantity="+quantity+
-						"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName+"NOTE_AMOUNT="+NOTE_AMOUNT+"COIN_AMOUNT="+COIN_AMOUNT
+						"actualQuantity="+actualQuantity+"customerPrice="+customerPrice+"productName="+productName+"rfd_card_no="+rfd_card_no+"NOTE_AMOUNT="+NOTE_AMOUNT+"COIN_AMOUNT="+COIN_AMOUNT
 						+"CASH_AMOUNT="+CASH_AMOUNT+"REFUND_NOTE_AMOUNT="+REFUND_NOTE_AMOUNT+"REFUND_COIN_AMOUNT="+REFUND_COIN_AMOUNT+"REFUND_CASH_AMOUNT="+REFUND_CASH_AMOUNT
 						+"AMOUNT_OWED="+AMOUNT_OWED+"Amount="+Amount+"Cab="+Cab+"PATH_NO="+PATH_NO,"server.txt");			
 			}

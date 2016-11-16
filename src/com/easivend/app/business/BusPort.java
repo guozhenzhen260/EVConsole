@@ -2265,6 +2265,7 @@ BushuoFragInteraction
 //    	startActivityForResult(intent, REQUEST_CODE);// 打开Accountflag
     	OrderDetail.setOrdereID(out_trade_no);
     	OrderDetail.setPayType(Integer.parseInt(zhifutype));
+    	OrderDetail.setRfd_card_no(rfd_card_no);
     	
     	//现金模块
     	if(iszhiamountsel>0)
@@ -2341,7 +2342,10 @@ BushuoFragInteraction
   	    //微信页面
   		iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
   		//pos页面
-  		iszhipos=0;//0未刷卡,2刷卡扣款已经完成并且金额足够
+  		iszhipos=0;//0未刷卡,2刷卡扣款已经完成并且金额足够  	
+  	  	cashbalance = "";//查询参数  	    
+  	   	rfd_card_no = "";//退款参数
+  	   	rfd_spec_tmp_serial = "";
   		
   		ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
   	    //打印机页面

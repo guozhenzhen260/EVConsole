@@ -60,7 +60,6 @@ import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class EVServerService extends Service {
-	private final int SPLASH_DISPLAY_LENGHT = 3000; // 延迟3秒
 	private Thread thread=null;
     private Handler mainhand=null,childhand=null;  
     private String vmc_no=null;
@@ -1130,6 +1129,7 @@ public class EVServerService extends Service {
 		String[] realAmount;// 现金退币金额
 		String[] debtAmount;// 欠款金额
 		String[] realCard;// 非现金退币金额
+		String[] rfd_card_no;//卡号
 		String[] payTime;//支付时间
 			//详细支付订单
 		String[] productID;//商品id
@@ -1179,6 +1179,7 @@ public class EVServerService extends Service {
 		realAmount = vmc_OrderAdapter.getRealAmount();// 现金退币金额
 		debtAmount = vmc_OrderAdapter.getDebtAmount();// 欠款金额
 		realCard = vmc_OrderAdapter.getRealCard();// 非现金退币金额
+		rfd_card_no = vmc_OrderAdapter.getRfd_card_no();//卡号
 		payTime = vmc_OrderAdapter.getPayTime();//支付时间
 		//详细支付订单
 		productID = vmc_OrderAdapter.getProductID();//商品id
@@ -1288,6 +1289,7 @@ public class EVServerService extends Service {
 		    	object.put("shouldPay", shouldPay[x]);//商品总金额		    	
 		    	object.put("RefundAmount", RefundAmount);//退款总金额
 		    	object.put("Status", Status);//退款状态:0：未退款；1：正在退款；2：退款成功；3：退款失败
+		    	object.put("rfd_card_no", rfd_card_no[x]);//卡号
 		    	object.put("productNo", productID[x]);		    	
 		    	object.put("quantity", 1);
 		    	object.put("actualQuantity", actualQuantity);

@@ -43,6 +43,7 @@ public class OrderDetail
 	private static float realAmount = 0;// 现金退币金额
 	private static float debtAmount = 0;// 欠款金额
 	private static float realCard = 0;// 非现金退币金额
+	private static String rfd_card_no = "";//卡号
 	//订单详细信息表      
 	private static String productID = "";// 商品ID
     private static int yujiHuo = 0;//预计出货:数量1个
@@ -61,7 +62,7 @@ public class OrderDetail
 					RealStatus, smallNote, smallConi,
 					smallAmount, smallCard, shouldPay, shouldNo,
 					realNote, realCoin, realAmount, debtAmount,
-					realCard, date);
+					realCard, rfd_card_no,date);
 		Tb_vmc_order_product tb_vmc_order_product=new Tb_vmc_order_product(ordereID, productID, yujiHuo,
 	    		realHuo, cabID, columnID, huoStatus);
 		orderDAO.add(tb_vmc_order_pay, tb_vmc_order_product);
@@ -89,6 +90,7 @@ public class OrderDetail
     	 realAmount = 0;// 现金退币金额
     	 debtAmount = 0;// 欠款金额
     	 realCard = 0;// 非现金退币金额
+    	 rfd_card_no="";//卡号
     	//订单详细信息表      
     	 productID = "";// 商品ID
          yujiHuo = 0;//预计出货:数量1个
@@ -200,6 +202,14 @@ public class OrderDetail
 	public static void setRealCard(float realCard) {
 		OrderDetail.realCard = realCard;
 	}
+	
+	public static String getRfd_card_no() {
+		return rfd_card_no;
+	}
+	public static void setRfd_card_no(String rfd_card_no) {
+		OrderDetail.rfd_card_no = rfd_card_no;
+	}
+	
 	public static String getProductID() {
 		return productID;
 	}

@@ -48,16 +48,16 @@ public class vmc_orderDAO
 	 				"insert into vmc_order_pay" +
 	 				"(" +
 	 				"ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
-	 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime,isupload" +
+	 				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,rfd_card_no,payTime,isupload" +
 	 				") " +
 	 				"values" +
 	 				"(" +
-	 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime')),0" +
+	 				"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,(datetime('now', 'localtime')),0" +
 	 				")",
 	 		        new Object[] { tb_vmc_order_pay.getOrdereID(), tb_vmc_order_pay.getPayType(),tb_vmc_order_pay.getPayStatus(), tb_vmc_order_pay.getRealStatus(),
 	 						tb_vmc_order_pay.getSmallNote(), tb_vmc_order_pay.getSmallConi(),tb_vmc_order_pay.getSmallAmount(), tb_vmc_order_pay.getSmallCard(),
 	 						tb_vmc_order_pay.getShouldPay(), tb_vmc_order_pay.getShouldNo(), tb_vmc_order_pay.getRealNote(), tb_vmc_order_pay.getRealCoin(), 
-	 						tb_vmc_order_pay.getRealAmount(), tb_vmc_order_pay.getDebtAmount(), tb_vmc_order_pay.getRealCard()});
+	 						tb_vmc_order_pay.getRealAmount(), tb_vmc_order_pay.getDebtAmount(), tb_vmc_order_pay.getRealCard(),tb_vmc_order_pay.getRfd_card_no()});
 	 		
 			// 执行添加订单详细信息表	
 	 		db.execSQL(
@@ -159,7 +159,7 @@ public class vmc_orderDAO
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
-				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime " +
+				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,rfd_card_no,payTime " +
 				" FROM [vmc_order_pay] where isupload<>1", null);// 获取收入信息表中的最大编号
 		while (cursor.moveToNext()) 
         {
@@ -173,7 +173,8 @@ public class vmc_orderDAO
         				cursor.getFloat(cursor.getColumnIndex("shouldPay")), cursor.getInt(cursor.getColumnIndex("shouldNo")),
         				cursor.getFloat(cursor.getColumnIndex("realNote")),cursor.getFloat(cursor.getColumnIndex("realCoin")),
         				cursor.getFloat(cursor.getColumnIndex("realAmount")),cursor.getFloat(cursor.getColumnIndex("debtAmount")),
-        				cursor.getFloat(cursor.getColumnIndex("realCard")),cursor.getString(cursor.getColumnIndex("payTime"))
+        				cursor.getFloat(cursor.getColumnIndex("realCard")),cursor.getString(cursor.getColumnIndex("rfd_card_no")),
+        				cursor.getString(cursor.getColumnIndex("payTime"))
         		)
            );
         }
@@ -219,7 +220,7 @@ public class vmc_orderDAO
 		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
         //取得时间范围内订单支付单号
 		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
-				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,payTime " +
+				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,rfd_card_no,payTime " +
 				" FROM [vmc_order_pay] where payTime between ? and ?", 
 				new String[] { starttime,endtime });// 获取收入信息表中的最大编号
 		while (cursor.moveToNext()) 
@@ -234,7 +235,8 @@ public class vmc_orderDAO
         				cursor.getFloat(cursor.getColumnIndex("shouldPay")), cursor.getInt(cursor.getColumnIndex("shouldNo")),
         				cursor.getFloat(cursor.getColumnIndex("realNote")),cursor.getFloat(cursor.getColumnIndex("realCoin")),
         				cursor.getFloat(cursor.getColumnIndex("realAmount")),cursor.getFloat(cursor.getColumnIndex("debtAmount")),
-        				cursor.getFloat(cursor.getColumnIndex("realCard")),cursor.getString(cursor.getColumnIndex("payTime"))
+        				cursor.getFloat(cursor.getColumnIndex("realCard")),cursor.getString(cursor.getColumnIndex("rfd_card_no")),
+        				cursor.getString(cursor.getColumnIndex("payTime"))
         		)
            );
         }

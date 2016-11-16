@@ -33,13 +33,14 @@ public class Tb_vmc_order_pay
 	private float realAmount;// 现金退币金额
 	private float debtAmount;// 欠款金额
 	private float realCard;// 非现金退币金额
+	private String rfd_card_no = "";//卡号
 	private String payTime;//支付时间
 	// 定义有参构造函数，用来初始化收入信息实体类中的各个字段
 	public Tb_vmc_order_pay(String ordereID, int payType, int payStatus,
 			int RealStatus, float smallNote, float smallConi,
 			float smallAmount, float smallCard, float shouldPay, int shouldNo,
 			float realNote, float realCoin, float realAmount, float debtAmount,
-			float realCard, String payTime) {
+			float realCard, String rfd_card_no,String payTime) {
 		super();
 		this.ordereID = ordereID;
 		this.payType = payType;
@@ -56,6 +57,7 @@ public class Tb_vmc_order_pay
 		this.realAmount = realAmount;
 		this.debtAmount = debtAmount;
 		this.realCard = realCard;
+		this.rfd_card_no=rfd_card_no;
 		this.payTime = payTime;
 	}
 	public String getOrdereID() {
@@ -147,6 +149,13 @@ public class Tb_vmc_order_pay
 	}
 	public void setRealCard(float realCard) {
 		this.realCard = realCard;
+	}
+	
+	public String getRfd_card_no() {
+		return rfd_card_no;
+	}
+	public void setRfd_card_no(String rfd_card_no) {
+		this.rfd_card_no = rfd_card_no;
 	}
 	public String getPayTime() {
 		return payTime;
