@@ -381,6 +381,12 @@
 				        android:layout_width="wrap_content"
 					    android:layout_height="wrap_content"	
 					    android:orientation="horizontal" >
+					    <Button
+				             android:id="@+id/btnhuoall"
+				             android:layout_width="100dp"
+				             android:layout_height="70dp"
+				             android:background="@drawable/button_selector"
+				             android:text="详细信息" />
 				        <TextView
 				            android:minWidth="160px"
 				            android:textSize="40sp"

@@ -16,6 +16,7 @@
 package com.easivend.app.maintain;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -107,6 +108,9 @@ public class HuodaoTest extends TabActivity
 	private int autohuonum=0;//循环出到第几次了
 	//循环测试结果
 	Map<String, Integer> huoalltest= new LinkedHashMap<String,Integer>();
+	//循环测试详细结果
+	Map<String,String> huoallinfo = new IdentityHashMap<String,String>();
+	private boolean allinfo=false;//true表示查看详细故障信息,false表示查看统计信息
 	// 定义货道列表
 	Vmc_HuoAdapter huoAdapter=null;
 	GridView gvhuodao=null;
@@ -123,6 +127,7 @@ public class HuodaoTest extends TabActivity
 	private Button btnhuocancel=null;// 创建Button对象“重置”
 	private Button btnhuoexit=null;// 创建Button对象“退出”
 	private Button btnhuopre=null,btnhuonext=null;// 创建Button对象“上一道，下一道”
+	private Button btnhuoall=null;//循环出货统计信息
 	private EditText edtcolumn=null;
 	private TextView txtlight=null,txtcold=null,txthot=null;
 	private Switch switchlight = null,switcold = null,switchhot = null;	
@@ -333,6 +338,7 @@ public class HuodaoTest extends TabActivity
 		btnhuochuall = (Button) findViewById(R.id.btnhuochuall);
 		btnhuocancel = (Button) findViewById(R.id.btnhuocancel);
 		btnhuoexit = (Button) findViewById(R.id.btnhuoexit);
+		btnhuoall = (Button) findViewById(R.id.btnhuoall);
 		edtcolumn = (EditText) findViewById(R.id.edtcolumn);
 		txtlight = (TextView) findViewById(R.id.txtlight);		
 		txtcold = (TextView) findViewById(R.id.txtcold);
@@ -459,21 +465,24 @@ public class HuodaoTest extends TabActivity
 		});
 		btnhuochuall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
 		    @Override
-		    public void onClick(View arg0) {	
+		    public void onClick(View arg0) {
+		    	//开始循环出货
 		    	if(autohuonno==false)
 		    	{
 		    		autohuonno=true;
 			    	btnhuochuall.setText("结束循环出货");
 			    	autohuonum=1;
 			    	huonno=1;
+		    		huoalltest.clear();		
+		    		huoallinfo.clear();
 			    	comsend(COMService.EV_CHUHUOCHILD,huonno);
 		    	}
+		    	//结束循环出货
 		    	else
 		    	{
 		    		autohuonno=false;
+		    		btnhuochuall.setText("开始循环出货");
 		    		autohuonum=0;
-		    		huoalltest.clear();
-			    	btnhuochuall.setText("开始循环出货");
 		    	}
 		    }
 		});
@@ -487,6 +496,27 @@ public class HuodaoTest extends TabActivity
 		    @Override
 		    public void onClick(View arg0) {		    	
 		    	finishActivity();
+		    }
+		});
+		btnhuoall.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(ToolClass.isEmptynull(edtcolumn.getText().toString())!=true)
+		    	{
+		    		if(!allinfo)
+		    		{
+		    			allinfo=true;
+		    			btnhuoall.setText("统计信息");
+		    			txthuoallrst.setText(huoallinfo.toString());
+		    		}
+		    		else
+		    		{
+		    			allinfo=false;
+		    			btnhuoall.setText("详细信息");
+		    			String str="出货次数:["+autohuonum+"],故障信息"+huoalltest.toString();
+		    			txthuoallrst.setText(str);
+		    		}	
+			    }
 		    }
 		});
 		
@@ -1713,6 +1743,7 @@ public class HuodaoTest extends TabActivity
 
 				huoSet.clear();
 				huoalltest.clear();
+				huoallinfo.clear();
 				//输出内容
 				Set<Entry<String, Integer>> allmap=Set.entrySet();  //实例化
 				Iterator<Entry<String, Integer>> iter=allmap.iterator();
@@ -2262,6 +2293,7 @@ public class HuodaoTest extends TabActivity
 			{
 				huoalltest.put(tempno, 1);
 			}
+			huoallinfo.put(tempno, str.toString());
 		}
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","huoalltest="+huoalltest.toString(),"log.txt");	
 	}
