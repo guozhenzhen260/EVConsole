@@ -267,6 +267,18 @@
 				        android:layout_height="wrap_content"
 				        android:numeric="integer"
 				        android:text="0" />
+			         <Button
+			             android:id="@+id/btnhuopre"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"  
+			             android:background="@drawable/button_selector"           
+			             android:text="减一个" />
+			           <Button
+			             android:id="@+id/btnhuonext"
+			             android:layout_width="100dp"
+			             android:layout_height="70dp"  
+			             android:background="@drawable/button_selector"           
+			             android:text="加一个" />
 	            </LinearLayout>	        
 		    </TableRow>  
 		    <View                              

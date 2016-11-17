@@ -42,6 +42,7 @@ public class HuodaoSet extends Activity
 	private View popview=null;
 	private PopupWindow popWin=null;
 	private GridView gvselectProduct=null;
+	private Button btnhuopre=null,btnhuonext=null;// 创建Button对象“上一道，下一道”
 	private Button btnselectexit=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
 	@Override
@@ -66,6 +67,8 @@ public class HuodaoSet extends Activity
 		txthuoIslast = (TextView) findViewById(R.id.txthuoIslast);
 		edthuopathCount = (EditText) findViewById(R.id.edthuopathCount);
 		edttihuoPwd = (EditText) findViewById(R.id.edttihuoPwd);
+		btnhuopre = (Button) findViewById(R.id.btnhuopre);
+		btnhuonext = (Button) findViewById(R.id.btnhuonext);
 		
 		edthuopathCount.addTextChangedListener(new TextWatcher() {
 			
@@ -110,6 +113,35 @@ public class HuodaoSet extends Activity
 				
 			}
 		}); 
+		btnhuopre.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
+		    	{
+		    		int i=Integer.parseInt(edthuopathRemain.getText().toString());
+		    		if(i>1)
+		    			edthuopathRemain.setText(String.valueOf(i-1));
+		    	}
+		    }
+		});
+		btnhuonext.setOnClickListener(new OnClickListener() {// 为出货按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	if(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
+		    	{
+		    		int i=Integer.parseInt(edthuopathRemain.getText().toString());
+		    		int j=Integer.parseInt(edthuopathCount.getText().toString());
+		    		if(i>=j)
+		    		{
+		    			ToolClass.failToast("剩余数量不能大于总货道容量!");
+		    		}
+		    		else
+		    		{
+		    			edthuopathRemain.setText(String.valueOf(Integer.parseInt(edthuopathRemain.getText().toString())+1));
+		    		}
+			    }
+		    }
+		});
 		//从商品页面中取得锁选中的商品
 		Intent intent=getIntent();
 		Bundle bundle=intent.getExtras();
