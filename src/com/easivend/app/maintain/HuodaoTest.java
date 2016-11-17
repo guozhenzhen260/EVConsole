@@ -211,23 +211,16 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				if(chuhuopt)
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
+				//只有有柜号的时候，才请求加载柜内货道信息
+				if(cabinetID!=null)
 				{
-					// 弹出信息提示
-					ToolClass.failToast("请在[本次出货完成]之后，再选择其他货柜！");
-				}
-				else
-				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
-					//只有有柜号的时候，才请求加载柜内货道信息
-					if(cabinetID!=null)
-					{
-						barhuomanager.setVisibility(View.VISIBLE); 
-						cabinetsetvar=Integer.parseInt(cabinetID[arg2]);
-						cabinetTypepeivar=cabinetType[arg2]; 
-						spinhuotestCab.setSelection(arg2);
-						queryhuodao();					
-					}	
+					barhuomanager.setVisibility(View.VISIBLE); 
+					cabinetsetvar=Integer.parseInt(cabinetID[arg2]);
+					cabinetTypepeivar=cabinetType[arg2]; 
+					spinhuotestCab.setSelection(arg2);
+					spinhuopeiCab.setSelection(arg2);
+					queryhuodao();					
 				}
 			}
 
@@ -407,22 +400,15 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				if(chuhuopt)
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
+				//只有有柜号的时候，才请求加载柜内货道信息
+				if(cabinetID!=null)
 				{
-					// 弹出信息提示
-					ToolClass.failToast("请在[本次出货完成]之后，再选择其他货柜！");
-				}
-				else
-				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
-					//只有有柜号的时候，才请求加载柜内货道信息
-					if(cabinetID!=null)
-					{
-						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
-						cabinetTypepeivar=cabinetType[arg2]; 
-						spinhuosetCab.setSelection(arg2);
-						queryhuodao();	
-					}	
+					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+					cabinetTypepeivar=cabinetType[arg2]; 
+					spinhuosetCab.setSelection(arg2);
+					spinhuopeiCab.setSelection(arg2);
+					queryhuodao();	
 				}
 			}
 
@@ -1484,33 +1470,27 @@ public class HuodaoTest extends TabActivity
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				if(chuhuopt)
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
+				//只有有柜号的时候，才请求加载柜内货道信息
+				if(cabinetID!=null)
 				{
-					// 弹出信息提示
-					ToolClass.failToast("请在[本次出货完成]之后，再选择其他货柜！");
-				}
-				else
-				{
-					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<选择柜="+cabinetID[arg2],"log.txt");
-					//只有有柜号的时候，才请求加载柜内货道信息
-					if(cabinetID!=null)
+					cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
+					cabinetTypepeivar=cabinetType[arg2]; 
+					spinhuosetCab.setSelection(arg2);
+					spinhuotestCab.setSelection(arg2);
+					//弹簧货道
+					if(cabinetTypepeivar==1)
 					{
-						cabinetsetvar=Integer.parseInt(cabinetID[arg2]); 
-						cabinetTypepeivar=cabinetType[arg2]; 
-						//弹簧货道
-						if(cabinetTypepeivar==1)
-						{
-							gethuofile();
-						}
-						//升降机货道
-						else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
-						{
-							getelevatorfile();
-						}
-						else
-						{
-							clearhuofile();
-						}
+						gethuofile();
+					}
+					//升降机货道
+					else if((cabinetTypepeivar==2)||(cabinetTypepeivar==3))
+					{
+						getelevatorfile();
+					}
+					else
+					{
+						clearhuofile();
 					}
 				}
 			}
