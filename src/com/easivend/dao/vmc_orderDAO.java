@@ -151,6 +151,52 @@ public class vmc_orderDAO
 	        db.close(); 
 	    }
     }
+	//删除一个时间点之前的已经上传过的日志
+	public void deteleforserver(String starttime)
+	{   
+		List<String> alllist=new ArrayList<String>();// 创建集合对象
+		ToolClass.Log(ToolClass.INFO,"EV_DOG","APP<<删除订单现在时刻是"+starttime,"dog.txt");         
+		db = helper.getWritableDatabase();// 初始化SQLiteDatabase对象
+        //取得时间范围内订单支付单号
+		Cursor cursor = db.rawQuery("select ordereID,payType,payStatus,RealStatus,smallNote,smallConi,smallAmount," +
+				"smallCard,shouldPay,shouldNo,realNote,realCoin,realAmount,debtAmount,realCard,rfd_card_no,payTime " +
+				" FROM [vmc_order_pay] where payTime <= ? and isupload=1", 
+				new String[] { starttime });// 获取收入信息表中的最大编号
+		while (cursor.moveToNext()) 
+		{
+			alllist.add(cursor.getString(cursor.getColumnIndex("ordereID")));
+		}
+		
+		// 开启一个事务
+		db.beginTransaction();
+		try {
+			for(int i=0;i<alllist.size();i++) 
+			{	
+				// 执行删除订单详细信息表	
+				db.execSQL(
+						"delete from vmc_order_product where orderID=?",
+						new Object[] { alllist.get(i)});
+				// 执行添加订单支付表	
+				db.execSQL(
+						"delete from vmc_order_pay where ordereID=?",
+						new Object[] { alllist.get(i)});
+			}
+
+			// 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
+			db.setTransactionSuccessful();
+		} catch (Exception e) {
+			// process it
+			e.printStackTrace();
+		} finally {
+			// 会检查事务的标志是否为成功，如果为成功则提交事务，否则回滚事务
+			db.endTransaction();
+			if (!cursor.isClosed()) 
+			{  
+				cursor.close();  
+			}  
+			db.close(); 
+		}
+    }
 	//查找所有的订单支付数据
 	public List<Tb_vmc_order_pay> getScrollPay() 
 	{   
@@ -213,7 +259,7 @@ public class vmc_orderDAO
 	    }
   	}  	
 	//查找时间范围内的订单支付数据
-	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 
+	public List<Tb_vmc_order_pay> getScrollPay(String starttime, String endtime) 	
 	{   
 		List<Tb_vmc_order_pay> tb_inaccount = new ArrayList<Tb_vmc_order_pay>();// 创建集合对象
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<现在时刻是"+starttime+",到"+endtime,"log.txt");         

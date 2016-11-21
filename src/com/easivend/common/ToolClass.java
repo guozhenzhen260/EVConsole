@@ -62,6 +62,7 @@ import com.easivend.app.maintain.ParamManager;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_logDAO;
+import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.model.Tb_vmc_cabinet;
@@ -635,7 +636,8 @@ public class ToolClass
     	    }
         	//6.将目录下的所有文件，如果有超出半个月的，全部删除
         	delFiles(dirName);
-        	
+        	//7.删除如果有超出半个月的，已经上传了的交易记录
+        	delOrders();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1005,6 +1007,42 @@ public class ToolClass
 			}
 		}    
     }
+    
+    /* 如果超过半个月，已经上传过的交易记录，就删除
+	  * */  
+   public static void delOrders() 
+   {  
+	   	//1.设置起始时间和结束时间
+	   	SimpleDateFormat df;  
+	   	String mYear,mMon,mDay;
+	   	
+   	   //本周起始时间
+       Calendar todayStart = Calendar.getInstance(); 
+       todayStart.setFirstDayOfWeek(Calendar.MONDAY);  
+       todayStart.set(Calendar.HOUR_OF_DAY, 0);  
+       todayStart.set(Calendar.MINUTE, 0);  
+       todayStart.set(Calendar.SECOND, 0);  
+       todayStart.set(Calendar.MILLISECOND, 0); 
+       todayStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); 
+       //再推前两周
+       todayStart.add(Calendar.WEEK_OF_YEAR, -2);
+       Date date = todayStart.getTime(); 
+       
+       //获取年
+       df = new SimpleDateFormat("yyyy");//设置日期格式
+       mYear=df.format(date);
+       //获取月
+       df = new SimpleDateFormat("MM");//设置日期格式
+       mMon=df.format(date);
+       //获取日
+       df = new SimpleDateFormat("dd");//设置日期格式
+       mDay=df.format(date);
+       String start=mYear+"-"+mMon+"-"+mDay;
+       ToolClass.Log(ToolClass.INFO,"EV_DOG","保存交易记录的起始时间="+start,"dog.txt");
+       // 创建InaccountDAO对象
+       vmc_orderDAO orderDAO = new vmc_orderDAO(context); 
+       orderDAO.deteleforserver(start);
+   }
     
     /**
      * 递归删除certzip文件和文件夹
@@ -3104,8 +3142,8 @@ public class ToolClass
      //要转换的地址或字符串,可以是中文
      public static Bitmap createQRImage(String url)
      {
-    	int QR_WIDTH = 200;
-		int QR_HEIGHT = 200; 
+    	int QR_WIDTH = 230;
+		int QR_HEIGHT = 230; 
      	try
      	{
      		//判断URL合法性
