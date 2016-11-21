@@ -227,15 +227,24 @@ public class BusZhipos extends Activity
 	    // 获取所有收入信息，并存储到List泛型集合中
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
-    	{
-    		isPossel=tb_inaccount.getZhifubaofaca();
+    	{    		
     		if(tb_inaccount.getZhifubaofaca()>0)
     		{
-    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
-    	        //打开串口
-    			//ip、端口、串口、波特率必须准确
-    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-    					,ToolClass.getCardcom(), "9600", mIUserCallback);	   			
+    			if((ToolClass.isEmptynull(ToolClass.getPosip())==false)
+			      &&(ToolClass.getPosip().equals("null")==false)
+			      &&(ToolClass.isEmptynull(ToolClass.getPosipport())==false)
+			      &&(ToolClass.getPosipport().equals("null")==false)
+			      &&(ToolClass.isEmptynull(ToolClass.getCardcom())==false)
+			      &&(ToolClass.getCardcom().equals("null")==false)
+			    )
+    			{
+    				isPossel=tb_inaccount.getZhifubaofaca();
+	    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
+	    	        //打开串口
+	    			//ip、端口、串口、波特率必须准确
+	    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
+	    					,ToolClass.getCardcom(), "9600", mIUserCallback);	   			
+    			}
     		}
     	}				
 		//延时
