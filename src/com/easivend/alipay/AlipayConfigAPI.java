@@ -1,6 +1,5 @@
 package com.easivend.alipay;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.easivend.alipay.AlipayConfig;
-import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.ToolClass;
 
 public class AlipayConfigAPI {

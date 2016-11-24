@@ -20,7 +20,6 @@ import com.example.evconsole.R;
 
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TabActivity;

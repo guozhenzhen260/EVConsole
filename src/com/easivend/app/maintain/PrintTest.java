@@ -1,6 +1,5 @@
 package com.easivend.app.maintain;
 
-import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
 import com.example.evconsole.R;
 import com.example.printdemo.MyFunc;
@@ -17,19 +16,14 @@ import java.util.Queue;
 import com.bean.ComBean;
 import com.printsdk.cmd.PrintCmd;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.Activity;
 import android.content.SharedPreferences;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;

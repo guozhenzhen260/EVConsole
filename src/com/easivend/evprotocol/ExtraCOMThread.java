@@ -2,7 +2,6 @@ package com.easivend.evprotocol;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;

@@ -1,13 +1,8 @@
 package com.easivend.app.maintain;
 
-import java.util.concurrent.TimeUnit;
-
 import com.easivend.dao.vmc_machinesetDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.http.EVServerhttp;
-import com.easivend.app.business.BusLand;
-import com.easivend.app.business.BusPort;
-import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
 import com.easivend.common.MachineExpanseListAdapter;
 import com.easivend.common.ShowSortAdapter;
 import com.easivend.common.ToolClass;
@@ -23,7 +18,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;

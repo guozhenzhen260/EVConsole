@@ -1,6 +1,5 @@
 package com.easivend.app.maintain;
 
-import com.easivend.app.business.BusPort;
 import com.easivend.common.ToolClass;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_system_parameter;
@@ -9,7 +8,6 @@ import com.landfone.common.utils.IUserCallback;
 import com.landfoneapi.mispos.Display;
 import com.landfoneapi.mispos.DisplayType;
 import com.landfoneapi.mispos.ErrCode;
-import com.landfoneapi.mispos.ILfListener;
 import com.landfoneapi.mispos.LfMISPOSApi;
 import com.landfoneapi.protocol.pkg.REPLY;
 import com.landfoneapi.protocol.pkg._04_GetRecordReply;

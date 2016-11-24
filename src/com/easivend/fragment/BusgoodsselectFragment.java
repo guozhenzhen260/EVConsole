@@ -1,14 +1,10 @@
 package com.easivend.fragment;
 
 import com.easivend.app.business.BusPort;
-import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
-import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_productDAO;
-import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_product;
-import com.easivend.model.Tb_vmc_system_parameter;
 import com.example.evconsole.R;
 
 import android.app.Activity;
@@ -23,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 

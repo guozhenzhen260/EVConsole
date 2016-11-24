@@ -11,7 +11,6 @@ import com.easivend.weixing.WeiConfigAPI;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 public class Weixinghttp implements Runnable 
 {

@@ -1,10 +1,7 @@
 package com.easivend.app.business;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import com.easivend.app.business.BusLand.COMReceiver;
-import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
@@ -32,7 +29,6 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 

@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import com.easivend.alipay.AlipayConfig;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.common.ToolClass;
@@ -18,7 +17,6 @@ import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.alipay.HttpRequester;
 import com.easivend.alipay.HttpRespons;
-import com.easivend.app.maintain.ParamManager;
 import com.example.alizhifu.AlipayAPI;
 
 public class Zhifubaohttp implements Runnable

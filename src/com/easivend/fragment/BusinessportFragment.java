@@ -3,8 +3,6 @@ package com.easivend.fragment;
 import java.util.HashMap;
 import java.util.Map;
 import com.easivend.app.business.BusPort;
-import com.easivend.app.business.BusZhitihuo;
-import com.easivend.app.business.BusgoodsSelect;
 import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
@@ -28,18 +26,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class BusinessportFragment extends Fragment {
 	EditText txtadsTip=null;

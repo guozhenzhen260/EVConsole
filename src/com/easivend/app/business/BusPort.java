@@ -21,7 +21,6 @@ import com.bean.ComBean;
 import com.easivend.app.maintain.CahslessTest;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.app.maintain.PrintTest;
-import com.easivend.app.maintain.MaintainActivity.EVServerReceiver;
 import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
@@ -50,8 +49,6 @@ import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
-import com.easivend.view.EVServerService;
-import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 import com.example.printdemo.MyFunc;
 import com.example.printdemo.SerialHelper;
@@ -75,19 +72,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class BusPort extends Activity implements 
 //businessÒ³Ãæ½Ó¿Ú

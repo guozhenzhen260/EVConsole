@@ -1,6 +1,5 @@
 package com.easivend.alipay;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import com.easivend.alipay.AlipayConfig;
 
 /* *
  *类名：AlipayFunction

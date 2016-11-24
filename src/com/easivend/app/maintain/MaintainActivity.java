@@ -16,18 +16,14 @@
 package com.easivend.app.maintain;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.easivend.dao.vmc_cabinetDAO;
-import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
-import com.easivend.evprotocol.EVprotocol;
 import com.easivend.http.EVServerhttp;
 import com.easivend.model.Tb_vmc_system_parameter;
 import com.easivend.view.COMService;
@@ -38,7 +34,6 @@ import com.easivend.weixing.WeiConfigAPI;
 import com.easivend.alipay.AlipayConfigAPI;
 import com.easivend.app.business.BusLand;
 import com.easivend.app.business.BusPort;
-import com.easivend.app.business.BusZhitihuo;
 import com.easivend.common.AudioSound;
 import com.easivend.common.PictureAdapter;
 import com.easivend.common.SerializableMap;
@@ -58,18 +53,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 

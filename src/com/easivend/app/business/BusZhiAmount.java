@@ -15,7 +15,6 @@ import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.easivend.model.Tb_vmc_cabinet;
-import com.easivend.view.COMService;
 import com.example.evconsole.R;
 
 import android.app.Activity;

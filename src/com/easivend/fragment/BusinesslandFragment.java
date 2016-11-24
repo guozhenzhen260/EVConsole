@@ -3,12 +3,9 @@ package com.easivend.fragment;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.easivend.app.maintain.HuodaoTest;
 import com.easivend.common.AudioSound;
-import com.easivend.common.HuoPictureAdapter;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
-import com.easivend.common.Vmc_HuoAdapter;
 import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_classDAO;
 import com.easivend.dao.vmc_columnDAO;
@@ -24,23 +21,17 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
 public class BusinesslandFragment extends Fragment 
 {	
 	final static int REQUEST_CODE=1; 	

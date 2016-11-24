@@ -6,25 +6,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.easivend.app.business.BusHuo.COMReceiver;
-import com.easivend.app.business.BusPort.EVServerReceiver;
 import com.easivend.app.maintain.MaintainActivity;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.SerializableMap;
 import com.easivend.common.ToolClass;
-import com.easivend.dao.vmc_cabinetDAO;
 import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.evprotocol.COMThread;
-import com.easivend.evprotocol.EVprotocol;
 import com.easivend.fragment.BusinesslandFragment;
 import com.easivend.fragment.BusinesslandFragment.BusFragInteraction;
 import com.easivend.fragment.MoviewlandFragment;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
-import com.easivend.model.Tb_vmc_cabinet;
 import com.easivend.model.Tb_vmc_product;
-import com.easivend.view.PassWord;
 import com.example.evconsole.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -37,12 +31,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class BusLand extends Activity implements MovieFragInteraction,BusFragInteraction{	
     private MoviewlandFragment moviewlandFragment;
