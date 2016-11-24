@@ -31,12 +31,9 @@ import com.easivend.evprotocol.COMThread;
 import com.easivend.evprotocol.EVprotocol;
 import com.example.evconsole.R;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -50,9 +47,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 
+@SuppressWarnings("deprecation")
 public class AddInaccount extends TabActivity
 {
 	private TabHost mytabhost = null;
@@ -63,8 +60,8 @@ public class AddInaccount extends TabActivity
 	private String [] billStringArray; 
 	private ArrayAdapter<String> billAdapter ;
 	private EditText edtpayout=null;
-	private TextView txtbillmanagerpar=null,txtbillmanagerpar2=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillin2=null,txtbillmanagerbillincount=null
-			,txtbillmanagerbillpay=null,txtbillmanagerbillpay2=null,txtbillmanagerbillpaycount=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
+	private TextView txtbillmanagerpar=null,txtbillmanagerpar2=null,txtbillmanagerstate=null,txtbillmanagerbillin=null,txtbillmanagerbillin2=null
+			,txtbillmanagerbillpay=null,txtbillmanagerbillpay2=null,txtbillmanagerbillpayamount=null,txtbillpayin=null,
 			txtpaymoney=null,txtbillpayback=null,txtbillerr=null;
 	private Button btnbillon=null,btnbilloff=null,btnbillquery=null,btnbillset=null,btnbillexit=null,btnbillpayout=null;// 创建Button对象“退出”
 	//硬币器
@@ -72,7 +69,7 @@ public class AddInaccount extends TabActivity
 	private String [] coinStringArray; 
 	private ArrayAdapter<String> coinAdapter ;
 	private TextView txtcoinmanagerpar=null,txtcoinmanagerpar2=null,txtcoinmanagerstate=null,txtcoinpayback=null,txtcoinerr=null,
-			txtcoinmanagercoinincount=null,txtcoinmanagercoininamount=null,txtcoinpayin=null,txtcoinpaymoney=null;
+			txtcoinmanagercoininamount=null,txtcoinpayin=null,txtcoinpaymoney=null;
 	private EditText txtcoinmanagercoinin1=null,txtcoinmanagercoinin2=null,txtcoinmanagercoinin3=null,txtcoinmanagercoinin4=null,
 			txtcoinmanagercoinin5=null,txtcoinmanagercoinin6=null,txtcoinmanagercoinin7=null,txtcoinmanagercoinin8=null,
 			txtcoinmanagercoinin9=null,txtcoinmanagercoinin10=null,txtcoinmanagercoinin11=null,txtcoinmanagercoinin12=null,
@@ -97,6 +94,7 @@ public class AddInaccount extends TabActivity
 	//COM服务相关
 	LocalBroadcastManager comBroadreceiver;
 	COMReceiver comreceiver;
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -143,10 +141,8 @@ public class AddInaccount extends TabActivity
 	  	txtbillerr = (TextView) findViewById(R.id.txtbillerr);
 	  	txtbillmanagerbillin = (TextView) findViewById(R.id.txtbillmanagerbillin);
 	  	txtbillmanagerbillin2 = (TextView) findViewById(R.id.txtbillmanagerbillin2);
-	  	txtbillmanagerbillincount = (TextView) findViewById(R.id.txtbillmanagerbillincount);
 	  	txtbillmanagerbillpay = (TextView) findViewById(R.id.txtbillmanagerbillpay);
 	  	txtbillmanagerbillpay2 = (TextView) findViewById(R.id.txtbillmanagerbillpay2);
-	  	txtbillmanagerbillpaycount = (TextView) findViewById(R.id.txtbillmanagerbillpaycount);
 	  	txtbillmanagerbillpayamount = (TextView) findViewById(R.id.txtbillmanagerbillpayamount);
 	  	txtbillpayin = (TextView) findViewById(R.id.txtbillpayin);
 	  	txtpaymoney = (TextView) findViewById(R.id.txtpaymoney);
@@ -277,7 +273,6 @@ public class AddInaccount extends TabActivity
 	  	txtcoinmanagerstate = (TextView) findViewById(R.id.txtcoinmanagerstate);
 	  	txtcoinpayback = (TextView) findViewById(R.id.txtcoinpayback);
 	  	txtcoinerr = (TextView) findViewById(R.id.txtcoinerr);
-	  	txtcoinmanagercoinincount = (TextView) findViewById(R.id.txtcoinmanagercoinincount);
 	  	txtcoinmanagercoininamount = (TextView) findViewById(R.id.txtcoinmanagercoininamount);
 	  	txtcoinpayin = (TextView) findViewById(R.id.txtcoinpayin);
 	  	txtcoinpaymoney = (TextView) findViewById(R.id.txtcoinpaymoney);
@@ -841,92 +836,92 @@ public class AddInaccount extends TabActivity
 
 	}
 	
-	private void CoinConfig()
-	{
-		//创建警告对话框
-    	Dialog alert=new AlertDialog.Builder(AddInaccount.this)
-    		.setTitle("对话框")//标题
-    		.setMessage("您确定要配置硬币器和找零器吗？")//表示对话框中得内容
-    		.setIcon(R.drawable.ic_launcher)//设置logo
-    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
-    			{				
-	    				@Override
-	    				public void onClick(DialogInterface dialog, int which) 
-	    				{
-	    					// TODO Auto-generated method stub	
-	    					Map<String, Integer>ch_r=new LinkedHashMap<String, Integer>();
-	    			    	Map<String, Integer>ch_d=new LinkedHashMap<String, Integer>();
-	    			    	ch_r.put("1", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin1.getText().toString())));
-	    			    	ch_r.put("2", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin2.getText().toString())));
-	    			    	ch_r.put("3", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin3.getText().toString())));
-	    			    	ch_r.put("4", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin4.getText().toString())));
-	    			    	ch_r.put("5", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin5.getText().toString())));
-	    			    	ch_r.put("6", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin6.getText().toString())));
-	    			    	ch_r.put("7", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin7.getText().toString())));
-	    			    	ch_r.put("8", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin8.getText().toString())));
-	    			    	ch_r.put("9", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin9.getText().toString())));
-	    			    	ch_r.put("10", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin10.getText().toString())));
-	    			    	ch_r.put("11", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin11.getText().toString())));
-	    			    	ch_r.put("12", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin12.getText().toString())));
-	    			    	ch_r.put("13", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin13.getText().toString())));
-	    			    	ch_r.put("14", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin14.getText().toString())));
-	    			    	ch_r.put("15", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin15.getText().toString())));
-	    			    	ch_r.put("16", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin16.getText().toString())));
-	    			    	
-	    			    	ch_d.put("1", ToolClass.MoneySend(Float.parseFloat(txthopperin1.getText().toString())));
-	    			    	ch_d.put("2", ToolClass.MoneySend(Float.parseFloat(txthopperin2.getText().toString())));
-	    			    	ch_d.put("3", ToolClass.MoneySend(Float.parseFloat(txthopperin3.getText().toString())));
-	    			    	ch_d.put("4", ToolClass.MoneySend(Float.parseFloat(txthopperin4.getText().toString())));
-	    			    	ch_d.put("5", ToolClass.MoneySend(Float.parseFloat(txthopperin5.getText().toString())));
-	    			    	ch_d.put("6", ToolClass.MoneySend(Float.parseFloat(txthopperin6.getText().toString())));
-	    			    	ch_d.put("7", ToolClass.MoneySend(Float.parseFloat(txthopperin7.getText().toString())));
-	    			    	ch_d.put("8", ToolClass.MoneySend(Float.parseFloat(txthopperin8.getText().toString())));
-	    			    	ch_d.put("9", 0);
-	    			    	ch_d.put("10", 0);
-	    			    	ch_d.put("11", 0);
-	    			    	ch_d.put("12", 0);
-	    			    	ch_d.put("13", 0);
-	    			    	ch_d.put("14", 0);
-	    			    	ch_d.put("15", 0);
-	    			    	ch_d.put("16", 0);
-	    			    	//EVprotocolAPI.EV_mdbCoinConfig(ToolClass.getCom_id(),spincoinmanagercoin.getSelectedItemPosition(),spinhopper.getSelectedItemPosition(),ch_r,ch_d);
-	    			    	//ToolClass.Log(ToolClass.INFO,"EV_COM","cointype="+spincoinmanagercoin.getSelectedItemPosition()+"hoppertype="+spinhopper.getSelectedItemPosition(),"com.txt");
-	    			    	Intent intent2=new Intent();
-	    			    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_C_CON);
-	    			    	intent2.putExtra("acceptor", spincoinmanagercoin.getSelectedItemPosition());
-	    			    	intent2.putExtra("dispenser", spinhopper.getSelectedItemPosition());
-	    			    	//传递数据
-					        SerializableMap myMap=new SerializableMap();
-					        myMap.setMap(ch_r);//将map数据添加到封装的myMap<span></span>中
-					        Bundle bundle=new Bundle();
-					        bundle.putSerializable("ch_r", myMap);
-					        intent2.putExtras(bundle);
-					        //传递数据
-					        SerializableMap myMap2=new SerializableMap();
-					        myMap2.setMap(ch_d);//将map数据添加到封装的myMap<span></span>中
-					        Bundle bundle2=new Bundle();
-					        bundle2.putSerializable("ch_d", myMap2);
-					        intent2.putExtras(bundle2);
-	    			    	intent2.setAction("android.intent.action.comsend");//action与接收器相同
-	    					comBroadreceiver.sendBroadcast(intent2);
-	    					devopt=EVprotocol.EV_MDB_B_CON;
-	    			    	// 弹出信息提示
-				            Toast.makeText(AddInaccount.this, "配置硬币器找零器成功！", Toast.LENGTH_SHORT).show();
-				     }
-    		      }
-    			)		    		        
-		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
-		        	{			
-						@Override
-						public void onClick(DialogInterface dialog, int which) 
-						{
-							// TODO Auto-generated method stub				
-						}
-		        	}
-		        )
-		        .create();//创建一个对话框
-		        alert.show();//显示对话框
-	}
+//	private void CoinConfig()
+//	{
+//		//创建警告对话框
+//    	Dialog alert=new AlertDialog.Builder(AddInaccount.this)
+//    		.setTitle("对话框")//标题
+//    		.setMessage("您确定要配置硬币器和找零器吗？")//表示对话框中得内容
+//    		.setIcon(R.drawable.ic_launcher)//设置logo
+//    		.setPositiveButton("配置", new DialogInterface.OnClickListener()//退出按钮，点击后调用监听事件
+//    			{				
+//	    				@Override
+//	    				public void onClick(DialogInterface dialog, int which) 
+//	    				{
+//	    					// TODO Auto-generated method stub	
+//	    					Map<String, Integer>ch_r=new LinkedHashMap<String, Integer>();
+//	    			    	Map<String, Integer>ch_d=new LinkedHashMap<String, Integer>();
+//	    			    	ch_r.put("1", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin1.getText().toString())));
+//	    			    	ch_r.put("2", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin2.getText().toString())));
+//	    			    	ch_r.put("3", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin3.getText().toString())));
+//	    			    	ch_r.put("4", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin4.getText().toString())));
+//	    			    	ch_r.put("5", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin5.getText().toString())));
+//	    			    	ch_r.put("6", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin6.getText().toString())));
+//	    			    	ch_r.put("7", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin7.getText().toString())));
+//	    			    	ch_r.put("8", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin8.getText().toString())));
+//	    			    	ch_r.put("9", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin9.getText().toString())));
+//	    			    	ch_r.put("10", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin10.getText().toString())));
+//	    			    	ch_r.put("11", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin11.getText().toString())));
+//	    			    	ch_r.put("12", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin12.getText().toString())));
+//	    			    	ch_r.put("13", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin13.getText().toString())));
+//	    			    	ch_r.put("14", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin14.getText().toString())));
+//	    			    	ch_r.put("15", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin15.getText().toString())));
+//	    			    	ch_r.put("16", ToolClass.MoneySend(Float.parseFloat(txtcoinmanagercoinin16.getText().toString())));
+//	    			    	
+//	    			    	ch_d.put("1", ToolClass.MoneySend(Float.parseFloat(txthopperin1.getText().toString())));
+//	    			    	ch_d.put("2", ToolClass.MoneySend(Float.parseFloat(txthopperin2.getText().toString())));
+//	    			    	ch_d.put("3", ToolClass.MoneySend(Float.parseFloat(txthopperin3.getText().toString())));
+//	    			    	ch_d.put("4", ToolClass.MoneySend(Float.parseFloat(txthopperin4.getText().toString())));
+//	    			    	ch_d.put("5", ToolClass.MoneySend(Float.parseFloat(txthopperin5.getText().toString())));
+//	    			    	ch_d.put("6", ToolClass.MoneySend(Float.parseFloat(txthopperin6.getText().toString())));
+//	    			    	ch_d.put("7", ToolClass.MoneySend(Float.parseFloat(txthopperin7.getText().toString())));
+//	    			    	ch_d.put("8", ToolClass.MoneySend(Float.parseFloat(txthopperin8.getText().toString())));
+//	    			    	ch_d.put("9", 0);
+//	    			    	ch_d.put("10", 0);
+//	    			    	ch_d.put("11", 0);
+//	    			    	ch_d.put("12", 0);
+//	    			    	ch_d.put("13", 0);
+//	    			    	ch_d.put("14", 0);
+//	    			    	ch_d.put("15", 0);
+//	    			    	ch_d.put("16", 0);
+//	    			    	//EVprotocolAPI.EV_mdbCoinConfig(ToolClass.getCom_id(),spincoinmanagercoin.getSelectedItemPosition(),spinhopper.getSelectedItemPosition(),ch_r,ch_d);
+//	    			    	//ToolClass.Log(ToolClass.INFO,"EV_COM","cointype="+spincoinmanagercoin.getSelectedItemPosition()+"hoppertype="+spinhopper.getSelectedItemPosition(),"com.txt");
+//	    			    	Intent intent2=new Intent();
+//	    			    	intent2.putExtra("EVWhat", EVprotocol.EV_MDB_C_CON);
+//	    			    	intent2.putExtra("acceptor", spincoinmanagercoin.getSelectedItemPosition());
+//	    			    	intent2.putExtra("dispenser", spinhopper.getSelectedItemPosition());
+//	    			    	//传递数据
+//					        SerializableMap myMap=new SerializableMap();
+//					        myMap.setMap(ch_r);//将map数据添加到封装的myMap<span></span>中
+//					        Bundle bundle=new Bundle();
+//					        bundle.putSerializable("ch_r", myMap);
+//					        intent2.putExtras(bundle);
+//					        //传递数据
+//					        SerializableMap myMap2=new SerializableMap();
+//					        myMap2.setMap(ch_d);//将map数据添加到封装的myMap<span></span>中
+//					        Bundle bundle2=new Bundle();
+//					        bundle2.putSerializable("ch_d", myMap2);
+//					        intent2.putExtras(bundle2);
+//	    			    	intent2.setAction("android.intent.action.comsend");//action与接收器相同
+//	    					comBroadreceiver.sendBroadcast(intent2);
+//	    					devopt=EVprotocol.EV_MDB_B_CON;
+//	    			    	// 弹出信息提示
+//				            Toast.makeText(AddInaccount.this, "配置硬币器找零器成功！", Toast.LENGTH_SHORT).show();
+//				     }
+//    		      }
+//    			)		    		        
+//		        .setNegativeButton("取消", new DialogInterface.OnClickListener()//取消按钮，点击后调用监听事件
+//		        	{			
+//						@Override
+//						public void onClick(DialogInterface dialog, int which) 
+//						{
+//							// TODO Auto-generated method stub				
+//						}
+//		        	}
+//		        )
+//		        .create();//创建一个对话框
+//		        alert.show();//显示对话框
+//	}
 	//关闭页面
 	private void finishActivity()
 	{
@@ -959,6 +954,7 @@ public class AddInaccount extends TabActivity
 			finish();
 		}
 	}
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onDestroy() {		
 		//=============

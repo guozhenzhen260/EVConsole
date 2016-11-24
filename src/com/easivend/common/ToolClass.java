@@ -420,8 +420,7 @@ public class ToolClass
     {
     	final String SDCARD_DIR=File.separator+"sdcard"+File.separator+"ev";
     	final String NOSDCARD_DIR=File.separator+"ev";
-    	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null;
     	Map<String, String> list=null;
     	    	
         try {
@@ -814,7 +813,6 @@ public class ToolClass
 	               InputStream inStream = new FileInputStream(oldPath); //读入原文件   
 	               FileOutputStream fs = new FileOutputStream(newPath);   
 	               byte[] buffer = new byte[1444];   
-	               int length;   
 	               while ( (byteread = inStream.read(buffer)) != -1) {   
 	                   bytesum += byteread; //字节数 文件大小   
 	                   System.out.println(bytesum);   
@@ -1094,8 +1092,7 @@ public class ToolClass
     {
     	String  sDir =null;
     	File fileName=null;
-    	boolean fileext=false;
-        try {
+    	try {
         	sDir = ToolClass.getEV_DIR()+File.separator+"CertFile";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
@@ -1151,8 +1148,7 @@ public class ToolClass
     {
     	String  sDir =null;
     	File fileName=null;
-    	boolean fileext=false;
-        try {
+    	try {
         	sDir = ToolClass.getEV_DIR()+File.separator+"APKFile";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
@@ -1572,8 +1568,7 @@ public class ToolClass
     {
     	String  sDir =null;
     	File fileName=null;
-    	boolean fileext=false;
-        try {
+    	try {
         	sDir = ToolClass.getEV_DIR()+File.separator+"CertFile";
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
@@ -1598,8 +1593,7 @@ public class ToolClass
     {
     	String  sDir =null;
     	File fileName=null;
-    	boolean fileext=false;
-        try {
+    	try {
         	sDir = ToolClass.getEV_DIR()+File.separator+ads;
         	  File dirName = new File(sDir);
         	 //如果目录不存在，则创建目录
@@ -2507,7 +2501,7 @@ public class ToolClass
     	int MOTO_NOTMOVE_BIT=(1 << 3); //bit3电机不能转(也算电机故障)
     	int MOTO_NOTRETURN_BIT=(1 << 4);   //bit4电机没转到正确位置(也算电机故障)
     	int GOODS_NOTPASS_BIT=(1 << 5);   //bit5商品没出(出货确认没检测到)
-    	int DRV_CMDERR_BIT   =(1 << 6);   //bit6命令错误(只有发送命令和查询命令着两个命令，如果发了其他的命令就报错)
+//    	int DRV_CMDERR_BIT   =(1 << 6);   //bit6命令错误(只有发送命令和查询命令着两个命令，如果发了其他的命令就报错)
     	int DRV_GOCERR_BIT   =(1 << 7);   //bit7出货检测模块状态(GOC故障)
     	if(Rst == 0x00)
     	{
@@ -2874,18 +2868,18 @@ public class ToolClass
      */    
     public static int elevatorChuhuorst(int Rst)
     {    
-    	int LIFT_VENDOUT_COM_ERR	=		0x1F;		//通信故障
-    	int LIFT_VENDOUT_FAULT		=		0x12;		//升降机故障
-    	int LIFT_VENDOUT_BUSY		=		0x11;		//升降机忙
-    	int LIFT_VENDOUT_FAIL		=		0;			//出货失败 通信失败
-    	int LIFT_VENDOUT_SUC		=		1;			//出货成功
-    	int LIFT_VENDOUT_DATAERR	=		2;			//数据错误
+//    	int LIFT_VENDOUT_COM_ERR	=		0x1F;		//通信故障
+//    	int LIFT_VENDOUT_FAULT		=		0x12;		//升降机故障
+//    	int LIFT_VENDOUT_BUSY		=		0x11;		//升降机忙
+//    	int LIFT_VENDOUT_FAIL		=		0;			//出货失败 通信失败
+//    	int LIFT_VENDOUT_SUC		=		1;			//出货成功
+//    	int LIFT_VENDOUT_DATAERR	=		2;			//数据错误
     	int LIFT_VENDOUT_EMPTY		=		3;			//无货
     	int LIFT_VENDOUT_STUCK		=		4 ; 			//卡货
-    	int LIFT_VNEDOUT_DOOR_NOT_OPEN	=	5;			//取货门未开启
-    	int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
-    	int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
-    	int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
+//    	int LIFT_VNEDOUT_DOOR_NOT_OPEN	=	5;			//取货门未开启
+//    	int LIFT_VENDOUT_GOODS_NOT_TAKE=	6;			//货物未取走
+//    	int LIFT_VENDOUT_OTHER_FAULT	=	7	;		//其他故障
+//    	int LIFT_VENDOUT_VENDING		=	0x88;		//正在出货
     	if(Rst==LIFT_VENDOUT_EMPTY)
     	{
     		return 4;

@@ -29,7 +29,7 @@ public class WifiChangeBroadcastReceiver extends BroadcastReceiver {
              //wifi速度  
              int speed = wifiInfo.getLinkSpeed();  
              //wifi速度单位  
-             String units = WifiInfo.LINK_SPEED_UNITS;  
+//             String units = WifiInfo.LINK_SPEED_UNITS;  
              ToolClass.Log(ToolClass.INFO,"EV_JNI","ssid="+ssid+",signalLevel="+signalLevel+",speed="+speed,"jni.txt");
              brInteraction.setText("ssid="+ssid+",signalLevel="+signalLevel+",speed="+speed);  
          }  

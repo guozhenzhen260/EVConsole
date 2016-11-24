@@ -44,6 +44,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
 
+@SuppressWarnings("deprecation")
 public class Order extends TabActivity
 {
 	private TabHost mytabhost = null;
@@ -74,17 +75,17 @@ public class Order extends TabActivity
 	private	String[] smallConi;// 硬币金额
 	private	String[] smallAmount;// 现金投入金额
 	private	String[] smallCard;// 非现金支付金额
-	private	String[] shouldPay;// 商品总金额
-	private	String[] shouldNo;// 商品总数量
+//	private	String[] shouldPay;// 商品总金额
+//	private	String[] shouldNo;// 商品总数量
 	private	String[] realNote;// 纸币退币金额
 	private	String[] realCoin;// 硬币退币金额
 	private	String[] realAmount;// 现金退币金额
 	private	String[] debtAmount;// 欠款金额
 	private	String[] realCard;// 非现金退币金额
-	private String[] rfd_card_no;//卡号
+//	private String[] rfd_card_no;//卡号
 	private	String[] payTime;//支付时间
 		//详细支付订单
-	private	String[] productID;//商品id
+//	private	String[] productID;//商品id
 	private	String[] cabID;//货柜号
 	private String[] columnID;//货道号
 	    //商品信息
@@ -93,17 +94,17 @@ public class Order extends TabActivity
 	
 	//数字类型订单信息
     //总支付订单
-	private double[] smallNotevalue;// 纸币金额
-	private double[] smallConivalue;// 硬币金额
-	private double[] smallAmountvalue;// 现金投入金额
-	private double[] smallCardvalue;// 非现金支付金额
-	private double[] shouldPayvalue;// 商品总金额
-	private double[] shouldNovalue;// 商品总数量
-	private double[] realNotevalue;// 纸币退币金额
-	private double[] realCoinvalue;// 硬币退币金额
-	private double[] realAmountvalue;// 现金退币金额
-	private double[] debtAmountvalue;// 欠款金额
-	private double[] realCardvalue;// 非现金退币金额
+//	private double[] smallNotevalue;// 纸币金额
+//	private double[] smallConivalue;// 硬币金额
+//	private double[] smallAmountvalue;// 现金投入金额
+//	private double[] smallCardvalue;// 非现金支付金额
+//	private double[] shouldPayvalue;// 商品总金额
+//	private double[] shouldNovalue;// 商品总数量
+//	private double[] realNotevalue;// 纸币退币金额
+//	private double[] realCoinvalue;// 硬币退币金额
+//	private double[] realAmountvalue;// 现金退币金额
+//	private double[] debtAmountvalue;// 欠款金额
+//	private double[] realCardvalue;// 非现金退币金额
   	//商品信息
 	private double[] salesPricevalue;// 优惠价,如”20.00”
 	private int ourdercount=0;//记录的数量
@@ -113,7 +114,7 @@ public class Order extends TabActivity
     private List<Map<String,String>> listMap = new ArrayList<Map<String,String>>();
     
     //生成图表
-    private String title="";//标题
+//    private String title="";//标题
     //金额统计
 	private double[] Amountvalue=new double[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	//数量统计
@@ -121,6 +122,7 @@ public class Order extends TabActivity
 	private double Amountmax=0,Countmax=0;//最大值
 	private int tongjitype=0;//0统计金额,1统计数量
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -476,17 +478,17 @@ public class Order extends TabActivity
 			smallConi = vmc_OrderAdapter.getSmallConi();// 硬币金额
 			smallAmount = vmc_OrderAdapter.getSmallAmount();// 现金投入金额
 			smallCard = vmc_OrderAdapter.getSmallCard();// 非现金支付金额
-			shouldPay = vmc_OrderAdapter.getShouldPay();// 商品总金额
-			shouldNo = vmc_OrderAdapter.getShouldNo();// 商品总数量
+//			shouldPay = vmc_OrderAdapter.getShouldPay();// 商品总金额
+//			shouldNo = vmc_OrderAdapter.getShouldNo();// 商品总数量
 			realNote = vmc_OrderAdapter.getRealNote();// 纸币退币金额
 			realCoin = vmc_OrderAdapter.getRealCoin();// 硬币退币金额
 			realAmount = vmc_OrderAdapter.getRealAmount();// 现金退币金额
 			debtAmount = vmc_OrderAdapter.getDebtAmount();// 欠款金额
 			realCard = vmc_OrderAdapter.getRealCard();// 非现金退币金额
-			rfd_card_no = vmc_OrderAdapter.getRfd_card_no();//卡号
+//			rfd_card_no = vmc_OrderAdapter.getRfd_card_no();//卡号
 			payTime = vmc_OrderAdapter.getPayTime();//支付时间
 			//详细支付订单
-			productID = vmc_OrderAdapter.getProductID();//商品id
+//			productID = vmc_OrderAdapter.getProductID();//商品id
 			cabID = vmc_OrderAdapter.getCabID();//货柜号
 		    columnID = vmc_OrderAdapter.getColumnID();//货道号
 		    //商品信息
@@ -494,17 +496,17 @@ public class Order extends TabActivity
 		    salesPrice = vmc_OrderAdapter.getSalesPrice();// 优惠价,如”20.00”
 		    
 		    //数字类型订单信息
-		    smallNotevalue= vmc_OrderAdapter.getSmallNotevalue();// 纸币金额
-		    smallConivalue= vmc_OrderAdapter.getSmallConivalue();// 硬币金额
-		    smallAmountvalue= vmc_OrderAdapter.getSmallAmountvalue();// 现金投入金额
-		    smallCardvalue= vmc_OrderAdapter.getSmallCardvalue();// 非现金支付金额
-		    shouldPayvalue= vmc_OrderAdapter.getShouldPayvalue();// 商品总金额
-		    shouldNovalue= vmc_OrderAdapter.getShouldNovalue();// 商品总数量
-		    realNotevalue= vmc_OrderAdapter.getRealNotevalue();// 纸币退币金额
-		    realCoinvalue= vmc_OrderAdapter.getRealCoinvalue();// 硬币退币金额
-		    realAmountvalue= vmc_OrderAdapter.getRealAmountvalue();// 现金退币金额
-		    debtAmountvalue= vmc_OrderAdapter.getDebtAmountvalue();// 欠款金额
-		    realCardvalue= vmc_OrderAdapter.getRealCardvalue();// 非现金退币金额
+//		    smallNotevalue= vmc_OrderAdapter.getSmallNotevalue();// 纸币金额
+//		    smallConivalue= vmc_OrderAdapter.getSmallConivalue();// 硬币金额
+//		    smallAmountvalue= vmc_OrderAdapter.getSmallAmountvalue();// 现金投入金额
+//		    smallCardvalue= vmc_OrderAdapter.getSmallCardvalue();// 非现金支付金额
+//		    shouldPayvalue= vmc_OrderAdapter.getShouldPayvalue();// 商品总金额
+//		    shouldNovalue= vmc_OrderAdapter.getShouldNovalue();// 商品总数量
+//		    realNotevalue= vmc_OrderAdapter.getRealNotevalue();// 纸币退币金额
+//		    realCoinvalue= vmc_OrderAdapter.getRealCoinvalue();// 硬币退币金额
+//		    realAmountvalue= vmc_OrderAdapter.getRealAmountvalue();// 现金退币金额
+//		    debtAmountvalue= vmc_OrderAdapter.getDebtAmountvalue();// 欠款金额
+//		    realCardvalue= vmc_OrderAdapter.getRealCardvalue();// 非现金退币金额
 		    //商品信息
 		    salesPricevalue= vmc_OrderAdapter.getSalesPricevalue();// 优惠价,如”20.00”
 		    ourdercount=vmc_OrderAdapter.getCount();
@@ -667,6 +669,7 @@ public class Order extends TabActivity
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<amount="+Amountmax+",count="+Countmax,"log.txt");
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onDestroy() {
     	//退出时，返回intent

@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -43,6 +42,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TimePicker;
 
 
+@SuppressWarnings("deprecation")
 public class ParamManager extends TabActivity 
 {
 	private TabHost mytabhost = null;
@@ -67,12 +67,12 @@ public class ParamManager extends TabActivity
 		{"",""},{"",""},{"",""}};
 	private ExpandableListView emachinelistview = null;	
 	private Button btnmachinerunSave=null,btnmachinerunCancel=null;
-	private Uri uri=null;
 	private String imgDir=null;
 	private Tb_vmc_machineset tb_vmc_machineset=null;
 	//Server服务相关
 	LocalBroadcastManager localBroadreceiver;
 	EVServerReceiver receiver;
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -830,7 +830,8 @@ public class ParamManager extends TabActivity
 			ToolClass.failToast("数据添加失败！");	
 		}	    		    	
 	}
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
 	protected void onDestroy() {
     	//=============
 		//Server服务相关

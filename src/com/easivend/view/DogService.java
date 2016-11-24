@@ -161,7 +161,7 @@ public class DogService extends Service {
     	Date date = todayStart.getTime(); 
         String starttime=tempDate.format(date);
         ParsePosition posstart = new ParsePosition(0);  
-    	Date dstart = (Date) tempDate.parse(starttime, posstart);
+//    	Date dstart = (Date) tempDate.parse(starttime, posstart);
     	ToolClass.Log(ToolClass.INFO,"EV_DOG","整理时间="+starttime+",="+todayStart.getTimeInMillis(),"dog.txt");
         //删除原闹钟
     	delalarm();

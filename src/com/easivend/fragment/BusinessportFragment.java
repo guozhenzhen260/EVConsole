@@ -58,7 +58,7 @@ public class BusinessportFragment extends Fragment {
     private String prosales = null; 
     private Context context;
     //密码框
-    private final static int REQUEST_CODE=1;//声明请求标识
+//    private final static int REQUEST_CODE=1;//声明请求标识
     
     //=========================
     //fragment与activity回调相关

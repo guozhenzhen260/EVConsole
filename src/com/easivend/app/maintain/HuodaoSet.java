@@ -25,9 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +37,7 @@ public class HuodaoSet extends Activity
 			txthuosalesPrice=null,txthuocolumnStatus=null,txthuoshelfLife=null,txthuolasttime=null,txthuoIslast=null;	
 	private EditText edthuopathCount=null,edthuopathRemain=null,edttihuoPwd=null;
 	private String huoID=null,cabID=null,temphuostatus=null,huostatus=null,productID=null,imgDir=null;;
-	private View popview=null;
-	private PopupWindow popWin=null;
-	private GridView gvselectProduct=null;
 	private Button btnhuopre=null,btnhuonext=null;// 创建Button对象“上一道，下一道”
-	private Button btnselectexit=null;
 	private final static int REQUEST_CODE=1;//声明请求标识
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

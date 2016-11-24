@@ -1978,7 +1978,7 @@ BushuoFragInteraction
 	private void PrintBankQueue() {
 		try {
 			// –°∆±±ÍÃ‚
-			byte[] bValue = new byte[100];
+//			byte[] bValue = new byte[100];
 			ComA.send(PrintCmd.SetBold(0));
 			ComA.send(PrintCmd.SetAlignment(1));
 			ComA.send(PrintCmd.SetSizetext(1, 1));

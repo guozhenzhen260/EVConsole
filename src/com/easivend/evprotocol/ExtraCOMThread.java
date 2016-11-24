@@ -361,12 +361,11 @@ public class ExtraCOMThread implements Runnable {
 			}
 			else if(decimalPlaces==2)
 			{
-				tempMoney = tempMoney;
+//				tempMoney = tempMoney;
 			}
 			else if(decimalPlaces==0)
 			{
 				tempMoney = tempMoney*100;
-				//tempMoney = tempMoney;
 			}
 			//АэИз:6ФЄ=600·Ц	
 			return tempMoney;

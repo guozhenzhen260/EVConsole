@@ -2902,10 +2902,10 @@ public class EVServerhttp implements Runnable {
                     fileOutputStream = new FileOutputStream(file);  
                     byte[] buf = new byte[1024];  
                     int ch = -1;  
-                    int count = 0;  
+//                    int count = 0;  
                     while ((ch = is.read(buf)) != -1) {  
                         fileOutputStream.write(buf, 0, ch);  
-                        count += ch;  
+//                        count += ch;  
                         if (length > 0) {  
                         }  
                     }  
@@ -3383,10 +3383,10 @@ public class EVServerhttp implements Runnable {
                     fileOutputStream = new FileOutputStream(file);  
                     byte[] buf = new byte[1024];  
                     int ch = -1;  
-                    int count = 0;  
+//                    int count = 0;  
                     while ((ch = is.read(buf)) != -1) {  
                         fileOutputStream.write(buf, 0, ch);  
-                        count += ch;  
+//                        count += ch;  
                         if (length > 0) {  
                         }  
                     }  
@@ -3678,10 +3678,10 @@ public class EVServerhttp implements Runnable {
                     fileOutputStream = new FileOutputStream(file);  
                     byte[] buf = new byte[1024];  
                     int ch = -1;  
-                    int count = 0;  
+//                    int count = 0;  
                     while ((ch = is.read(buf)) != -1) {  
                         fileOutputStream.write(buf, 0, ch);  
-                        count += ch;  
+//                        count += ch;  
                         if (length > 0) {  
                         }  
                     }  

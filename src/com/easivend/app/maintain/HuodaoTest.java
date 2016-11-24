@@ -75,6 +75,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 
+@SuppressWarnings("deprecation")
 public class HuodaoTest extends TabActivity 
 {
 	private TabHost mytabhost = null;
@@ -148,10 +149,10 @@ public class HuodaoTest extends TabActivity
 	private boolean autochu=false;//true表示在进行循环自检配置
 	//测试进度对话框
 	ProgressDialog dialog= null;
-	private Handler myhHandler=null;
 	//COM服务相关
 	LocalBroadcastManager comBroadreceiver;
 	COMReceiver comreceiver;
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -1861,6 +1862,7 @@ public class HuodaoTest extends TabActivity
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onDestroy() {
 		timer.shutdown();
@@ -1878,7 +1880,6 @@ public class HuodaoTest extends TabActivity
 	//添加柜号
 	private void cabinetAdd()
 	{
-		final String[] values=null;
 		View myview=null;    
 		String [] mStringArray; 
 		ArrayAdapter<String> mAdapter ;
@@ -3830,7 +3831,7 @@ public class HuodaoTest extends TabActivity
 	//读取逻辑货道实际对应物理货道的文件
 	private void gethuofile()
 	{
-		int logic=1,physic;		
+		int physic;		
 		Map<String, Integer> allset=null; 
 		if(cabinetsetvar==2)
 			allset=ToolClass.ReadColumnFile2(); 
@@ -5801,7 +5802,7 @@ public class HuodaoTest extends TabActivity
 	//读取逻辑货道实际对应物理货道的文件
 	private void getelevatorfile()
 	{
-		int logic=1,physic;
+		int physic;
 		Map<String, Integer> allset=null; 
 		if(cabinetsetvar==2)
 			allset=ToolClass.ReadElevatorFile2(); 

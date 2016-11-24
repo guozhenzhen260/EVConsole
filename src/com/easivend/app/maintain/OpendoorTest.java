@@ -16,11 +16,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 
 public class OpendoorTest extends Activity 
 {
-	private EditText edtcabid=null,edthuoid=null;
 	private Button btnchuhuo=null,btncancel=null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +27,6 @@ public class OpendoorTest extends Activity
 		setContentView(R.layout.opendoortest);
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
-		edtcabid = (EditText) findViewById(R.id.edtcabid);
-		edthuoid = (EditText) findViewById(R.id.edthuoid);
 		//出货
 		btnchuhuo = (Button)findViewById(R.id.btnchuhuo);		
 		btnchuhuo.setOnClickListener(new OnClickListener() {

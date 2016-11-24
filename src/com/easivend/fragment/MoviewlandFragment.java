@@ -15,7 +15,6 @@ import com.easivend.view.MyVideoView;
 import  com.example.evconsole.R;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -34,8 +33,7 @@ import android.widget.TextView;
 public class MoviewlandFragment extends Fragment {
 	//VideoView
 	private MyVideoView videoView=null;
-	private File filev;
-	private int curIndex = 0,isClick=0;//  
+	private int curIndex = 0;//  
     Random r=new Random(); 
     private List<String> mMusicList = new ArrayList<String>();  
     private WebView webtishiInfo;
@@ -45,8 +43,6 @@ public class MoviewlandFragment extends Fragment {
     private boolean viewvideo=false;//true正在播放视频,false没有播放视频
     private boolean videopause=false;//true正在交易，不播放视频,false空闲状态，可以播放视频
     private final int SPLASH_DISPLAY_LENGHT = 30000; // 延迟30秒
-    private int per=0;
-    private Context context;
     
     //=========================
     //fragment与activity回调相关
@@ -95,7 +91,6 @@ public class MoviewlandFragment extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_movieland, container, false);  
-		context=this.getActivity();//获取activity的context
 		txtcashlessamount=(TextView)view.findViewById(R.id.txtcashlessamount);
 		txtcashlessamount.setVisibility(View.GONE);//卡余额关闭		
 		videoView=(MyVideoView)view.findViewById(R.id.video);
@@ -400,7 +395,7 @@ public class MoviewlandFragment extends Fragment {
     private boolean checkAds(String CLS_URL)
     {
     	String ATT_ID="",TypeStr="";
-  		int FileType=0;//1图片,2视频
+//  		int FileType=0;//1图片,2视频
   		boolean rst=false;
   		if(CLS_URL.equals("null")!=true)
   		{
@@ -412,13 +407,13 @@ public class MoviewlandFragment extends Fragment {
 		    //是否视频文件
 		    if(MediaFileAdapter.isVideoFileType(tmp)==true)
 		    {
-		    	FileType=2;
+//		    	FileType=2;
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","广告视频ATT_ID="+ATT_ID+"."+TypeStr,"log.txt");										
 		    }
 		    //是否图片文件
 		    else if(MediaFileAdapter.isImgFileType(tmp)==true)
 		    {
-		    	FileType=1;
+//		    	FileType=1;
 	  			ToolClass.Log(ToolClass.INFO,"EV_JNI","广告图片ATT_ID="+ATT_ID+"."+TypeStr,"log.txt");										
 	  		}
   			

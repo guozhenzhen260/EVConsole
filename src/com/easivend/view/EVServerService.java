@@ -1142,7 +1142,7 @@ public class EVServerService extends Service {
 		double[] realCardvalue;// 非现金退币金额
 	  	//商品信息
 		double[] salesPricevalue;// 优惠价,如”20.00”
-		int ourdercount=0;//记录的数量
+//		int ourdercount=0;//记录的数量
 		JSONArray array=new JSONArray();
 		
 		
@@ -1191,7 +1191,7 @@ public class EVServerService extends Service {
 	    realCardvalue= vmc_OrderAdapter.getRealCardvalue();// 非现金退币金额
 	    //商品信息
 	    salesPricevalue= vmc_OrderAdapter.getSalesPricevalue();// 优惠价,如”20.00”
-	    ourdercount=vmc_OrderAdapter.getCount();
+//	    ourdercount=vmc_OrderAdapter.getCount();
 	    
 	    int orderStatus=0;//1未支付,2出货成功,3出货未完成
 	    int payStatue=0;//0未付款,1正在付款,2付款完成,3付款失败
@@ -1340,7 +1340,6 @@ public class EVServerService extends Service {
 	//获取需要上报的货道
 	private JSONArray columngrid()
 	{				
-		int ourdercount=0;//记录的数量
 		JSONArray array=new JSONArray();
 		
 		// 创建InaccountDAO对象
@@ -1444,11 +1443,7 @@ public class EVServerService extends Service {
      */
     private void installApk(String ATTIDS)
     {        	
-    	//1.静默安装
-    	Process process = null;  
-        OutputStream out = null;
-        boolean result = false;  
-        
+    	
         ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序["+ATTIDS+"]开始安装...","server.txt");
         String attimg=ATTIDS.substring(ATTIDS.lastIndexOf(".") + 1).toUpperCase();
         ToolClass.Log(ToolClass.INFO,"EV_SERVER","程序格式["+attimg+"]","server.txt");
@@ -1610,7 +1605,7 @@ public class EVServerService extends Service {
     	Date date = todayStart.getTime(); 
         String starttime=tempDate.format(date);
         ParsePosition posstart = new ParsePosition(0);  
-    	Date dstart = (Date) tempDate.parse(starttime, posstart);
+//    	Date dstart = (Date) tempDate.parse(starttime, posstart);
     	ToolClass.Log(ToolClass.INFO,"EV_SERVER","重启时间="+starttime+",="+todayStart.getTimeInMillis(),"server.txt");
     	//删除原闹钟
     	delalarm();

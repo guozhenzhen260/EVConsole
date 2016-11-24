@@ -51,6 +51,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.TabSpec;
 
+@SuppressWarnings("deprecation")
 public class GoodsManager extends TabActivity 
 {
 	private TabHost mytabhost = null;
@@ -67,7 +68,7 @@ public class GoodsManager extends TabActivity
 	private String[] proclassID = null;//用来分离出类型编号
 	private String[] proclassName = null;//用来分离出类型名称
 	private String[] imgDirs=null;
-	private EditText edtclassid=null,edtclassname=null,edtfindProduct=null;
+	private EditText edtclassid=null,edtclassname=null;
 	private ImageView imgclassname=null;
 	private Button btnclassname=null,btnclassadd=null,btnclassupdate=null,btnclassdel=null,btnclassexit=null;// 创建Button对象“退出”
 	private Button btnproadd=null,btnprodel=null,btnprodelselect=null,btnproexit=null;	
@@ -78,6 +79,7 @@ public class GoodsManager extends TabActivity
     private String datasort="shoudong";
     
     		
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -553,6 +555,7 @@ public class GoodsManager extends TabActivity
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onDestroy() {
     	//退出时，返回intent

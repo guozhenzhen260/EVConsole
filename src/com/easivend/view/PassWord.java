@@ -40,7 +40,7 @@ public class PassWord extends Activity
     private DeviceReceiver mydevice=new DeviceReceiver();  
     private List<String> deviceList=new ArrayList<String>();  
     private ListView deviceListview;  
-    private Button btserch,btn_msg_send,btn_end; 
+    private Button btserch,btn_msg_send; 
     private EditText editMsgView;
     private ArrayAdapter<String> adapter;  
     private boolean hasregister=false; 
