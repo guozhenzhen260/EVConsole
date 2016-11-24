@@ -253,14 +253,17 @@ public class BusZhipos extends Activity
             @Override
             public void run() 
             {         
-            	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount,"com.txt");
             	txtbuszhipostsxx.setText("提示信息：请刷卡");
             	if(isPossel==1)//会员卡
                 {
+            		ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount+"[pos_purchase]<<amount_fen="+ToolClass.MoneySend(amount)
+            				+"type="+0,"com.txt");
                     mMyApi.pos_purchase(ToolClass.MoneySend(amount), 0,mIUserCallback);
                 }
                 else if(isPossel>1)//银行卡
                 {
+                	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 读卡器扣款="+amount+"[pos_purchase]<<amount_fen="+ToolClass.MoneySend(amount)
+                			+"type="+1,"com.txt");
                     mMyApi.pos_purchase(ToolClass.MoneySend(amount), 1,mIUserCallback);
                 }
 		    	iszhipos=1;

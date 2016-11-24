@@ -184,8 +184,8 @@ public class HuodaoSet extends Activity
 		    	int pathCount= 0;
 		    	int pathRemain= 0;
 		    	String tihuoPwd="";
-		    	if(ToolClass.isEmptynull(edttihuoPwd.getText().toString())!=true)
-		    		tihuoPwd= edttihuoPwd.getText().toString();
+		    	//if(ToolClass.isEmptynull(edttihuoPwd.getText().toString())!=true)
+		    	//	tihuoPwd= edttihuoPwd.getText().toString();
 		    	if(ToolClass.isEmptynull(edthuopathCount.getText().toString())!=true)
 		    		pathCount= Integer.parseInt(edthuopathCount.getText().toString());
 		    	if(ToolClass.isEmptynull(edthuopathRemain.getText().toString())!=true)
