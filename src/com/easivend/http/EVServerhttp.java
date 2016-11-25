@@ -2406,7 +2406,8 @@ public class EVServerhttp implements Runnable {
 				orderpay.put("REFUND_CASH_AMOUNT", REFUND_CASH_AMOUNT);
 				orderpay.put("AMOUNT_OWED", AMOUNT_OWED);
 				orderpay.put("Status", Status);//0：未退款；1：正在退款；2：退款成功；3：退款失败'
-			}
+				orderpay.put("ONE_CARD_ID", rfd_card_no);//卡号
+			}			
 			ToolClass.Log(ToolClass.INFO,"EV_SERVER","orderpay="+orderpay.toString(),"server.txt");
 			
 			JSONObject orderrefund=new JSONObject();
