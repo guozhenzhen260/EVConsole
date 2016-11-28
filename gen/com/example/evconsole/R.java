@@ -18,6 +18,450 @@ public final class R {
     }
     public static final class attr {
     }
+    public static final class color {
+        /**  蜜色 
+         */
+        public static final int aliceblue=0x7f060083;
+        /**  亚麻色 
+         */
+        public static final int antiquewhite=0x7f06002c;
+        /**  中灰兰色 
+         */
+        public static final int aqua=0x7f060073;
+        /**  粟色 
+         */
+        public static final int aquamarine=0x7f060053;
+        /**  鲜肉色 
+         */
+        public static final int azure=0x7f06002e;
+        /**  烟白色 
+         */
+        public static final int beige=0x7f060020;
+        /**  浅玫瑰色 
+         */
+        public static final int bisque=0x7f060015;
+        /**  海军色 
+         */
+        public static final int black=0x7f06007b;
+        /**  番木色 
+         */
+        public static final int blanchedalmond=0x7f060013;
+        /**  暗绿色 
+         */
+        public static final int blue=0x7f06005b;
+        /**  暗红色 
+         */
+        public static final int blueviolet=0x7f06008e;
+        /**  暗灰色 
+         */
+        public static final int brown=0x7f060047;
+        /**  亮青色 
+         */
+        public static final int burlywood=0x7f060092;
+        /**  菊兰色 
+         */
+        public static final int cadetblue=0x7f060068;
+        /**  碧绿色 
+         */
+        public static final int chartreuse=0x7f060054;
+        /**  茶色 
+         */
+        public static final int chocolate=0x7f060036;
+        /**  暗桔黄色 
+         */
+        public static final int coral=0x7f06001b;
+        /**  中绿色 
+         */
+        public static final int cornflowerblue=0x7f060067;
+        /**  柠檬绸色 
+         */
+        public static final int cornsilk=0x7f06000f;
+        /**  实木色 
+         */
+        public static final int crimson=0x7f060093;
+        /**  浅绿色 
+         */
+        public static final int cyan=0x7f060074;
+        /**  中兰色 
+         */
+        public static final int darkblue=0x7f06005d;
+        /**  中暗蓝色 
+         */
+        public static final int darkcyan=0x7f060057;
+        /**  中粉紫色 
+         */
+        public static final int darkgoldenrod=0x7f06003e;
+        /**  亮蓝色 
+         */
+        public static final int darkgray=0x7f060045;
+        /**  绿色 
+         */
+        public static final int darkgreen=0x7f06005a;
+        /**  暗灰色 
+         */
+        public static final int darkgrey=0x7f060046;
+        /**  银色 
+         */
+        public static final int darkkhaki=0x7f06003b;
+        /**  重褐色 
+         */
+        public static final int darkmagenta=0x7f06008c;
+        /**  军兰色 
+         */
+        public static final int darkolivegreen=0x7f060069;
+        /**  亮肉色 
+         */
+        public static final int darkorange=0x7f06001a;
+        /**  赭色 
+         */
+        public static final int darkorchid=0x7f060049;
+        /**  暗洋红 
+         */
+        public static final int darkred=0x7f06008d;
+        /**  紫罗兰色 
+         */
+        public static final int darksalmon=0x7f060088;
+        /**  亮绿色 
+         */
+        public static final int darkseagreen=0x7f06008a;
+        /**  中绿宝石 
+         */
+        public static final int darkslateblue=0x7f06006c;
+        /**  黑色 
+         */
+        public static final int darkslategray=0x7f06007c;
+        /**  暗瓦灰色 
+         */
+        public static final int darkslategrey=0x7f06007d;
+        /**  中春绿色 
+         */
+        public static final int darkturquoise=0x7f060078;
+        /**  苍绿色 
+         */
+        public static final int darkviolet=0x7f06004b;
+        /**  红橙色 
+         */
+        public static final int deeppink=0x7f060025;
+        /**  暗宝石绿 
+         */
+        public static final int deepskyblue=0x7f060079;
+        /**  石蓝色 
+         */
+        public static final int dimgray=0x7f060064;
+        /**  暗灰色 
+         */
+        public static final int dimgrey=0x7f060065;
+        /**  亮海蓝色 
+         */
+        public static final int dodgerblue=0x7f060081;
+        /**  暗金黄色 
+         */
+        public static final int firebrick=0x7f06003f;
+        /**  雪白色 
+         */
+        public static final int floralwhite=0x7f06000d;
+        /**  海绿色 
+         */
+        public static final int forestgreen=0x7f06007f;
+        /**  深粉红色 
+         */
+        public static final int fuchsia=0x7f060026;
+        /**  洋李色 
+         */
+        public static final int gainsboro=0x7f060095;
+        /**  热粉红色 
+         */
+        public static final int ghostwhite=0x7f06001d;
+        /**  桃色 
+         */
+        public static final int gold=0x7f060008;
+        /**  苍紫罗兰色 
+         */
+        public static final int goldenrod=0x7f060030;
+        /**  天蓝色 
+         */
+        public static final int gray=0x7f06004e;
+        /**  水鸭色 
+         */
+        public static final int green=0x7f060059;
+        /**  苍宝石绿 
+         */
+        public static final int greenyellow=0x7f060043;
+        /**  灰色 
+         */
+        public static final int grey=0x7f06004f;
+        /**  闪兰色 
+         */
+        public static final int honeydew=0x7f060082;
+        /**  珊瑚色 
+         */
+        public static final int hotpink=0x7f06001c;
+        /**  秘鲁色 
+         */
+        public static final int indianred=0x7f060038;
+        /**  暗橄榄绿 
+         */
+        public static final int indigo=0x7f06006a;
+        /**  金色 
+         */
+        public static final int ivory=0x7f060009;
+        /**  艾利斯兰 
+         */
+        public static final int khaki=0x7f060084;
+        /**  亮天蓝色 
+         */
+        public static final int lavender=0x7f060090;
+        /**  海贝色 
+         */
+        public static final int lavenderblush=0x7f060011;
+        /**  黄绿色 
+         */
+        public static final int lawngreen=0x7f060055;
+        /**  花白色 
+         */
+        public static final int lemonchiffon=0x7f06000e;
+        /**  黄绿色 
+         */
+        public static final int lightblue=0x7f060044;
+        /**  黄褐色 
+         */
+        public static final int lightcoral=0x7f060085;
+        /**  淡紫色 
+         */
+        public static final int lightcyan=0x7f060091;
+        /**  老花色 
+         */
+        public static final int lightgoldenrodyellow=0x7f06002a;
+        /**  蓟色 
+         */
+        public static final int lightgray=0x7f060033;
+        /**  暗肉色 
+         */
+        public static final int lightgreen=0x7f060089;
+        /**  亮灰色 
+         */
+        public static final int lightgrey=0x7f060034;
+        /**  粉红色 
+         */
+        public static final int lightpink=0x7f060005;
+        /**  橙色 
+         */
+        public static final int lightsalmon=0x7f060019;
+        /**  森林绿 
+         */
+        public static final int lightseagreen=0x7f060080;
+        /**  紫罗兰蓝色 
+         */
+        public static final int lightskyblue=0x7f06008f;
+        /**  暗蓝色 
+         */
+        public static final int lightslategray=0x7f06005e;
+        /**  亮蓝灰 
+         */
+        public static final int lightslategrey=0x7f06005f;
+        /**  粉蓝色 
+         */
+        public static final int lightsteelblue=0x7f060041;
+        /**  象牙色 
+         */
+        public static final int lightyellow=0x7f06000a;
+        /**  春绿色 
+         */
+        public static final int lime=0x7f060076;
+        /**  中海蓝 
+         */
+        public static final int limegreen=0x7f060071;
+        /**  亮金黄色 
+         */
+        public static final int linen=0x7f06002b;
+        /**  紫红色 
+         */
+        public static final int magenta=0x7f060027;
+        /**  紫色 
+         */
+        public static final int maroon=0x7f060052;
+        /**  暗灰色 
+         */
+        public static final int mediumaquamarine=0x7f060066;
+        /**  蓝色 
+         */
+        public static final int mediumblue=0x7f06005c;
+        /**  褐玫瑰红 
+         */
+        public static final int mediumorchid=0x7f06003d;
+        /**  暗紫罗兰色 
+         */
+        public static final int mediumpurple=0x7f06004c;
+        /**  青绿色 
+         */
+        public static final int mediumseagreen=0x7f060070;
+        /**  草绿色 
+         */
+        public static final int mediumslateblue=0x7f060056;
+        /**  酸橙色 
+         */
+        public static final int mediumspringgreen=0x7f060077;
+        /**  靛青色 
+         */
+        public static final int mediumturquoise=0x7f06006b;
+        /**  印第安红 
+         */
+        public static final int mediumvioletred=0x7f060039;
+        /**  橙绿色 
+         */
+        public static final int midnightblue=0x7f060072;
+        /**  幽灵白 
+         */
+        public static final int mintcream=0x7f06001e;
+        /**  白杏色 
+         */
+        public static final int mistyrose=0x7f060014;
+        /**  桔黄色 
+         */
+        public static final int moccasin=0x7f060016;
+        /**  鹿皮色 
+         */
+        public static final int navajowhite=0x7f060017;
+        /**  深天蓝色 
+         */
+        public static final int navy=0x7f06007a;
+        /**  红色 
+         */
+        public static final int oldlace=0x7f060029;
+        /**  灰色 
+         */
+        public static final int olive=0x7f060050;
+        /**  灰石色 
+         */
+        public static final int olivedrab=0x7f060062;
+        /**  纳瓦白 
+         */
+        public static final int orange=0x7f060018;
+        /**  西红柿色 
+         */
+        public static final int orangered=0x7f060024;
+        /**  金麒麟色 
+         */
+        public static final int orchid=0x7f060031;
+        /**  亮珊瑚色 
+         */
+        public static final int palegoldenrod=0x7f060086;
+        /**  暗紫色 
+         */
+        public static final int palegreen=0x7f06004a;
+        /**  亮钢兰色 
+         */
+        public static final int paleturquoise=0x7f060042;
+        /**  天蓝色 
+         */
+        public static final int palevioletred=0x7f06002f;
+        /**  淡紫红 
+         */
+        public static final int papayawhip=0x7f060012;
+        /**  白色 
+         */
+        public static final int peachpuff=0x7f060007;
+        /**  巧可力色 
+         */
+        public static final int peru=0x7f060037;
+        public static final int pink=0x7f060004;
+        /**  暗深红色 
+         */
+        public static final int plum=0x7f060094;
+        /**  火砖色 
+         */
+        public static final int powderblue=0x7f060040;
+        /**  橄榄色 
+         */
+        public static final int purple=0x7f060051;
+        /**  红紫色 
+         */
+        public static final int red=0x7f060028;
+        /**  暗黄褐色 
+         */
+        public static final int rosybrown=0x7f06003c;
+        /**  钢兰色 
+         */
+        public static final int royalblue=0x7f06006e;
+        /**  暗海兰色 
+         */
+        public static final int saddlebrown=0x7f06008b;
+        /**  古董白 
+         */
+        public static final int salmon=0x7f06002d;
+        /**  浅黄色 
+         */
+        public static final int sandybrown=0x7f060022;
+        /**  米绸色 
+         */
+        public static final int seaShell=0x7f060010;
+        /**  暗瓦灰色 
+         */
+        public static final int seagreen=0x7f06007e;
+        /**  褐色 
+         */
+        public static final int sienna=0x7f060048;
+        /**  中紫罗兰色 
+         */
+        public static final int silver=0x7f06003a;
+        /**  中紫色 
+         */
+        public static final int skyblue=0x7f06004d;
+        /**  深绿褐色 
+         */
+        public static final int slateblue=0x7f060063;
+        /**  亮蓝灰 
+         */
+        public static final int slategray=0x7f060060;
+        /**  灰石色 
+         */
+        public static final int slategrey=0x7f060061;
+        /**  黄色 
+         */
+        public static final int snow=0x7f06000c;
+        public static final int solid_blue=0x7f060001;
+        public static final int solid_green=0x7f060002;
+        /**  透明背景 
+         */
+        public static final int solid_red=0x7f060000;
+        public static final int solid_yellow=0x7f060003;
+        /**  青色 
+         */
+        public static final int springgreen=0x7f060075;
+        /**  暗灰蓝色 
+         */
+        public static final int steelblue=0x7f06006d;
+        /**  亮灰色 
+         */
+        public static final int tan=0x7f060035;
+        /**  暗青色 
+         */
+        public static final int teal=0x7f060058;
+        /**  淡紫色 
+         */
+        public static final int thistle=0x7f060032;
+        /**  沙褐色 
+         */
+        public static final int tomato=0x7f060023;
+        /**  皇家蓝 
+         */
+        public static final int turquoise=0x7f06006f;
+        /**  苍麒麟色 
+         */
+        public static final int violet=0x7f060087;
+        /**  米色 
+         */
+        public static final int wheat=0x7f060021;
+        /**  亮粉红色 
+         */
+        public static final int white=0x7f060006;
+        /**  薄荷色 
+         */
+        public static final int whitesmoke=0x7f06001f;
+        /**  亮黄色 
+         */
+        public static final int yellow=0x7f06000b;
+    }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
@@ -25,8 +469,8 @@ public final class R {
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f060000;
-        public static final int activity_vertical_margin=0x7f060001;
+        public static final int activity_horizontal_margin=0x7f070000;
+        public static final int activity_vertical_margin=0x7f070001;
     }
     public static final class drawable {
         public static final int accountflag=0x7f020000;
@@ -66,6 +510,7 @@ public final class R {
         public static final int amountsmallland=0x7f020022;
         public static final int billcoin=0x7f020023;
         public static final int billonlyfang=0x7f020024;
+        public static final int blue=0x7f020080;
         public static final int busfinish=0x7f020025;
         public static final int busfinishland=0x7f020026;
         public static final int button_selector=0x7f020027;
@@ -78,648 +523,663 @@ public final class R {
         public static final int chusuccessland=0x7f02002e;
         public static final int chuwait=0x7f02002f;
         public static final int chuwaitland=0x7f020030;
-        public static final int clr_normal=0x7f02007a;
-        public static final int clr_pressed=0x7f02007b;
-        public static final int cpflland=0x7f020031;
-        public static final int cpxq=0x7f020032;
-        public static final int cpxqland=0x7f020033;
-        public static final int czjx=0x7f020034;
-        public static final int czjxland=0x7f020035;
-        public static final int ditu=0x7f020036;
-        public static final int exit=0x7f020037;
-        public static final int fljmland=0x7f020038;
-        public static final int gmsp=0x7f020039;
-        public static final int gmys=0x7f02003a;
-        public static final int gmysland=0x7f02003b;
-        public static final int ic_launcher=0x7f02003c;
-        public static final int imgback=0x7f02003d;
-        public static final int imgbackland=0x7f02003e;
-        public static final int imgnext=0x7f02003f;
-        public static final int imgnextland=0x7f020040;
-        public static final int imgwhite=0x7f020041;
-        public static final int inaccountinfo=0x7f020042;
-        public static final int jsqd=0x7f020043;
-        public static final int mobile=0x7f020044;
-        public static final int network=0x7f020045;
-        public static final int nosignal=0x7f020046;
-        public static final int outaccountinfo=0x7f020047;
-        public static final int productimg=0x7f020048;
-        public static final int qtzffang=0x7f020049;
-        public static final int qtzffangland=0x7f02004a;
-        public static final int quhuo=0x7f02004b;
-        public static final int quhuopwd=0x7f02004c;
-        public static final int quhuopwdland=0x7f02004d;
-        public static final int qxzffang=0x7f02004e;
-        public static final int qxzffangland=0x7f02004f;
-        public static final int search=0x7f020050;
-        public static final int showinfo=0x7f020051;
-        public static final int shpfl=0x7f020052;
-        public static final int shpflland=0x7f020053;
-        public static final int sysset=0x7f020054;
-        public static final int tihuopwd=0x7f020055;
-        public static final int weiland=0x7f020056;
-        public static final int weitsxxland=0x7f020057;
-        public static final int weixing=0x7f020058;
-        public static final int weixinglarge=0x7f020059;
-        public static final int weixinglargeland=0x7f02005a;
-        public static final int weixingnormal=0x7f02005b;
-        public static final int weixingnormalland=0x7f02005c;
-        public static final int weixingsmall=0x7f02005d;
-        public static final int weixingsmallland=0x7f02005e;
-        public static final int wifi=0x7f02005f;
-        public static final int wufenleiimg=0x7f020060;
-        public static final int wutupian=0x7f020061;
-        public static final int xjzfland=0x7f020062;
-        public static final int xqwhite=0x7f020063;
-        public static final int ysq=0x7f020064;
-        public static final int zfbland=0x7f020065;
-        public static final int zfbtsxxland=0x7f020066;
-        public static final int zflc=0x7f020067;
-        public static final int zhier=0x7f020068;
-        public static final int zhierfang=0x7f020069;
-        public static final int zhierlarge=0x7f02006a;
-        public static final int zhierlargeland=0x7f02006b;
-        public static final int zhiernormal=0x7f02006c;
-        public static final int zhiernormalland=0x7f02006d;
-        public static final int zhiersamll=0x7f02006e;
-        public static final int zhiersmallland=0x7f02006f;
-        public static final int zhierwait=0x7f020070;
-        public static final int zhierwaitland=0x7f020071;
-        public static final int zhifuback=0x7f020072;
-        public static final int zhifubackland=0x7f020073;
-        public static final int zhifunext=0x7f020074;
-        public static final int zhifunextland=0x7f020075;
-        public static final int zhipos=0x7f020076;
-        public static final int zhiposlarge=0x7f020077;
-        public static final int zhiposnormal=0x7f020078;
-        public static final int zhiweifang=0x7f020079;
+        public static final int clr_normal=0x7f020086;
+        public static final int clr_pressed=0x7f020087;
+        public static final int cornerbtn_style=0x7f020031;
+        public static final int cornerbtn_style2=0x7f020032;
+        public static final int cpflland=0x7f020033;
+        public static final int cpxq=0x7f020034;
+        public static final int cpxqland=0x7f020035;
+        public static final int czjx=0x7f020036;
+        public static final int czjxland=0x7f020037;
+        public static final int ditu=0x7f020038;
+        public static final int editsharp=0x7f020039;
+        public static final int editsharp2=0x7f02003a;
+        public static final int editsharp3=0x7f02003b;
+        public static final int exit=0x7f02003c;
+        public static final int fljmland=0x7f02003d;
+        public static final int gmsp=0x7f02003e;
+        public static final int gmys=0x7f02003f;
+        public static final int gmysland=0x7f020040;
+        public static final int green=0x7f020081;
+        public static final int ic_launcher=0x7f020041;
+        public static final int imgback=0x7f020042;
+        public static final int imgbackland=0x7f020043;
+        public static final int imgnext=0x7f020044;
+        public static final int imgnextland=0x7f020045;
+        public static final int imgwhite=0x7f020046;
+        public static final int inaccountinfo=0x7f020047;
+        public static final int jsqd=0x7f020048;
+        public static final int mobile=0x7f020049;
+        public static final int network=0x7f02004a;
+        public static final int nosignal=0x7f02004b;
+        public static final int outaccountinfo=0x7f02004c;
+        public static final int productimg=0x7f02004d;
+        public static final int qtzffang=0x7f02004e;
+        public static final int qtzffangland=0x7f02004f;
+        public static final int quhuo=0x7f020050;
+        public static final int quhuopwd=0x7f020051;
+        public static final int quhuopwdland=0x7f020052;
+        public static final int qxzffang=0x7f020053;
+        public static final int qxzffangland=0x7f020054;
+        public static final int red=0x7f02007f;
+        public static final int screen_background_black=0x7f020083;
+        public static final int search=0x7f020055;
+        public static final int showinfo=0x7f020056;
+        public static final int shpfl=0x7f020057;
+        public static final int shpflland=0x7f020058;
+        public static final int sysset=0x7f020059;
+        public static final int tihuopwd=0x7f02005a;
+        /**  屏幕背景黑色 
+         */
+        public static final int translucent_background=0x7f020084;
+        /**  半透明背景 
+         */
+        public static final int transparent_background=0x7f020085;
+        public static final int weiland=0x7f02005b;
+        public static final int weitsxxland=0x7f02005c;
+        public static final int weixing=0x7f02005d;
+        public static final int weixinglarge=0x7f02005e;
+        public static final int weixinglargeland=0x7f02005f;
+        public static final int weixingnormal=0x7f020060;
+        public static final int weixingnormalland=0x7f020061;
+        public static final int weixingsmall=0x7f020062;
+        public static final int weixingsmallland=0x7f020063;
+        public static final int wifi=0x7f020064;
+        public static final int wufenleiimg=0x7f020065;
+        public static final int wutupian=0x7f020066;
+        public static final int xjzfland=0x7f020067;
+        public static final int xqwhite=0x7f020068;
+        public static final int yellow=0x7f020082;
+        public static final int ysq=0x7f020069;
+        public static final int zfbland=0x7f02006a;
+        public static final int zfbtsxxland=0x7f02006b;
+        public static final int zflc=0x7f02006c;
+        public static final int zhier=0x7f02006d;
+        public static final int zhierfang=0x7f02006e;
+        public static final int zhierlarge=0x7f02006f;
+        public static final int zhierlargeland=0x7f020070;
+        public static final int zhiernormal=0x7f020071;
+        public static final int zhiernormalland=0x7f020072;
+        public static final int zhiersamll=0x7f020073;
+        public static final int zhiersmallland=0x7f020074;
+        public static final int zhierwait=0x7f020075;
+        public static final int zhierwaitland=0x7f020076;
+        public static final int zhifuback=0x7f020077;
+        public static final int zhifubackland=0x7f020078;
+        public static final int zhifunext=0x7f020079;
+        public static final int zhifunextland=0x7f02007a;
+        public static final int zhipos=0x7f02007b;
+        public static final int zhiposlarge=0x7f02007c;
+        public static final int zhiposnormal=0x7f02007d;
+        public static final int zhiweifang=0x7f02007e;
     }
     public static final class id {
-        public static final int ItemImage=0x7f0a00b8;
-        public static final int ItemTitle=0x7f0a00b9;
-        public static final int action_settings=0x7f0a0234;
-        public static final int addr=0x7f0a0172;
-        public static final int barhuomanager=0x7f0a00e8;
-        public static final int barweixingtest=0x7f0a0220;
-        public static final int barzhifubaotest=0x7f0a0229;
-        public static final int btnCashless=0x7f0a01ec;
-        public static final int btnClose=0x7f0a0184;
-        public static final int btnDel=0x7f0a0191;
-        public static final int btnDelImg=0x7f0a0192;
-        public static final int btnDelads=0x7f0a0193;
-        public static final int btnGaoji=0x7f0a0186;
-        public static final int btnImg=0x7f0a00d4;
-        public static final int btnLogin=0x7f0a0185;
-        public static final int btn_msg_send=0x7f0a0200;
-        public static final int btnaddProSave=0x7f0a00dd;
-        public static final int btnaddProexit=0x7f0a00de;
-        public static final int btnads0=0x7f0a0097;
-        public static final int btnads1=0x7f0a008d;
-        public static final int btnads2=0x7f0a008e;
-        public static final int btnads3=0x7f0a008f;
-        public static final int btnads4=0x7f0a0090;
-        public static final int btnads5=0x7f0a0091;
-        public static final int btnads6=0x7f0a0092;
-        public static final int btnads7=0x7f0a0093;
-        public static final int btnads8=0x7f0a0094;
-        public static final int btnads9=0x7f0a0095;
-        public static final int btnadscancel=0x7f0a0096;
-        public static final int btnadsclass=0x7f0a008c;
-        public static final int btnadsenter=0x7f0a0098;
-        public static final int btnamount=0x7f0a01e8;
-        public static final int btnbillexit2=0x7f0a0016;
-        public static final int btnbilloff=0x7f0a0013;
-        public static final int btnbillon=0x7f0a0012;
-        public static final int btnbillpayout=0x7f0a0010;
-        public static final int btnbillquery=0x7f0a0014;
-        public static final int btnbillset=0x7f0a0015;
-        public static final int btncancel=0x7f0a019e;
-        public static final int btncard=0x7f0a01ea;
-        public static final int btncashlesstestcancel=0x7f0a00ad;
-        public static final int btncashlesstestclose=0x7f0a00ac;
-        public static final int btncashlesstestdelete=0x7f0a00aa;
-        public static final int btncashlesstestfind=0x7f0a00a7;
-        public static final int btncashlesstestok=0x7f0a00a8;
-        public static final int btncashlesstestopen=0x7f0a00a6;
-        public static final int btncashlesstestpayout=0x7f0a00ab;
-        public static final int btncashlesstestquery=0x7f0a00a9;
-        public static final int btnchuhuo=0x7f0a019d;
-        public static final int btnclassadd=0x7f0a00c3;
-        public static final int btnclassdel=0x7f0a00c5;
-        public static final int btnclassexit=0x7f0a00c6;
-        public static final int btnclassname=0x7f0a00c2;
-        public static final int btnclassupdate=0x7f0a00c4;
-        public static final int btnclose=0x7f0a0212;
-        public static final int btncoinexit=0x7f0a0038;
-        public static final int btncoinoff=0x7f0a0035;
-        public static final int btncoinon=0x7f0a0034;
-        public static final int btncoinpayout=0x7f0a0032;
-        public static final int btncoinquery=0x7f0a0036;
-        public static final int btncoinset=0x7f0a0037;
-        public static final int btndeviceSave=0x7f0a01f6;
-        public static final int btndeviceexit=0x7f0a01f7;
-        public static final int btnexit=0x7f0a0214;
-        public static final int btnhopperexit=0x7f0a004e;
-        public static final int btnhopperpay=0x7f0a004c;
-        public static final int btnhopperpaymoney=0x7f0a0045;
-        public static final int btnhopperpaynum=0x7f0a0049;
-        public static final int btnhopperquery=0x7f0a004b;
-        public static final int btnhopperset=0x7f0a004d;
-        public static final int btnhuoProID=0x7f0a0162;
-        public static final int btnhuoaddSave=0x7f0a0170;
-        public static final int btnhuoall=0x7f0a00fc;
-        public static final int btnhuocancel=0x7f0a00f9;
-        public static final int btnhuochu=0x7f0a00f8;
-        public static final int btnhuochuall=0x7f0a00fa;
-        public static final int btnhuodelSave=0x7f0a0171;
-        public static final int btnhuoexit=0x7f0a00fb;
-        public static final int btnhuonext=0x7f0a00ef;
-        public static final int btnhuopre=0x7f0a00ee;
-        public static final int btnhuoset11=0x7f0a0100;
-        public static final int btnhuoset110=0x7f0a0109;
-        public static final int btnhuoset12=0x7f0a0101;
-        public static final int btnhuoset13=0x7f0a0102;
-        public static final int btnhuoset14=0x7f0a0103;
-        public static final int btnhuoset15=0x7f0a0104;
-        public static final int btnhuoset16=0x7f0a0105;
-        public static final int btnhuoset17=0x7f0a0106;
-        public static final int btnhuoset18=0x7f0a0107;
-        public static final int btnhuoset19=0x7f0a0108;
-        public static final int btnhuoset21=0x7f0a010b;
-        public static final int btnhuoset210=0x7f0a0114;
-        public static final int btnhuoset22=0x7f0a010c;
-        public static final int btnhuoset23=0x7f0a010d;
-        public static final int btnhuoset24=0x7f0a010e;
-        public static final int btnhuoset25=0x7f0a010f;
-        public static final int btnhuoset26=0x7f0a0110;
-        public static final int btnhuoset27=0x7f0a0111;
-        public static final int btnhuoset28=0x7f0a0112;
-        public static final int btnhuoset29=0x7f0a0113;
-        public static final int btnhuoset31=0x7f0a0116;
-        public static final int btnhuoset310=0x7f0a011f;
-        public static final int btnhuoset32=0x7f0a0117;
-        public static final int btnhuoset33=0x7f0a0118;
-        public static final int btnhuoset34=0x7f0a0119;
-        public static final int btnhuoset35=0x7f0a011a;
-        public static final int btnhuoset36=0x7f0a011b;
-        public static final int btnhuoset37=0x7f0a011c;
-        public static final int btnhuoset38=0x7f0a011d;
-        public static final int btnhuoset39=0x7f0a011e;
-        public static final int btnhuoset41=0x7f0a0121;
-        public static final int btnhuoset410=0x7f0a012a;
-        public static final int btnhuoset42=0x7f0a0122;
-        public static final int btnhuoset43=0x7f0a0123;
-        public static final int btnhuoset44=0x7f0a0124;
-        public static final int btnhuoset45=0x7f0a0125;
-        public static final int btnhuoset46=0x7f0a0126;
-        public static final int btnhuoset47=0x7f0a0127;
-        public static final int btnhuoset48=0x7f0a0128;
-        public static final int btnhuoset49=0x7f0a0129;
-        public static final int btnhuoset51=0x7f0a012c;
-        public static final int btnhuoset510=0x7f0a0135;
-        public static final int btnhuoset52=0x7f0a012d;
-        public static final int btnhuoset53=0x7f0a012e;
-        public static final int btnhuoset54=0x7f0a012f;
-        public static final int btnhuoset55=0x7f0a0130;
-        public static final int btnhuoset56=0x7f0a0131;
-        public static final int btnhuoset57=0x7f0a0132;
-        public static final int btnhuoset58=0x7f0a0133;
-        public static final int btnhuoset59=0x7f0a0134;
-        public static final int btnhuoset61=0x7f0a0137;
-        public static final int btnhuoset610=0x7f0a0140;
-        public static final int btnhuoset62=0x7f0a0138;
-        public static final int btnhuoset63=0x7f0a0139;
-        public static final int btnhuoset64=0x7f0a013a;
-        public static final int btnhuoset65=0x7f0a013b;
-        public static final int btnhuoset66=0x7f0a013c;
-        public static final int btnhuoset67=0x7f0a013d;
-        public static final int btnhuoset68=0x7f0a013e;
-        public static final int btnhuoset69=0x7f0a013f;
-        public static final int btnhuoset71=0x7f0a0142;
-        public static final int btnhuoset710=0x7f0a014b;
-        public static final int btnhuoset72=0x7f0a0143;
-        public static final int btnhuoset73=0x7f0a0144;
-        public static final int btnhuoset74=0x7f0a0145;
-        public static final int btnhuoset75=0x7f0a0146;
-        public static final int btnhuoset76=0x7f0a0147;
-        public static final int btnhuoset77=0x7f0a0148;
-        public static final int btnhuoset78=0x7f0a0149;
-        public static final int btnhuoset79=0x7f0a014a;
-        public static final int btnhuoset81=0x7f0a014d;
-        public static final int btnhuoset810=0x7f0a0156;
-        public static final int btnhuoset82=0x7f0a014e;
-        public static final int btnhuoset83=0x7f0a014f;
-        public static final int btnhuoset84=0x7f0a0150;
-        public static final int btnhuoset85=0x7f0a0151;
-        public static final int btnhuoset86=0x7f0a0152;
-        public static final int btnhuoset87=0x7f0a0153;
-        public static final int btnhuoset88=0x7f0a0154;
-        public static final int btnhuoset89=0x7f0a0155;
-        public static final int btnhuosetadd=0x7f0a00e1;
-        public static final int btnhuosetautohuo=0x7f0a015a;
-        public static final int btnhuosetbu=0x7f0a00e3;
-        public static final int btnhuosetc1=0x7f0a00ff;
-        public static final int btnhuosetc2=0x7f0a010a;
-        public static final int btnhuosetc3=0x7f0a0115;
-        public static final int btnhuosetc4=0x7f0a0120;
-        public static final int btnhuosetc5=0x7f0a012b;
-        public static final int btnhuosetc6=0x7f0a0136;
-        public static final int btnhuosetc7=0x7f0a0141;
-        public static final int btnhuosetc8=0x7f0a014c;
-        public static final int btnhuosetclear=0x7f0a00e4;
-        public static final int btnhuosetclose=0x7f0a015b;
-        public static final int btnhuosetdel=0x7f0a00e2;
-        public static final int btnhuosetexit=0x7f0a00e5;
-        public static final int btnhuosetsethuo=0x7f0a0159;
-        public static final int btnloggriddel=0x7f0a017a;
-        public static final int btnloggridexit=0x7f0a017b;
-        public static final int btnloggridquery=0x7f0a0179;
-        public static final int btnmachineSave=0x7f0a01e4;
-        public static final int btnmachinecheck=0x7f0a01d5;
-        public static final int btnmachineexit=0x7f0a01e5;
-        public static final int btnmachinerunCancel=0x7f0a01fb;
-        public static final int btnmachinerunSave=0x7f0a01fa;
-        public static final int btnopen=0x7f0a020f;
-        public static final int btnordergridLine=0x7f0a01ce;
-        public static final int btnordergridStack=0x7f0a01cd;
-        public static final int btnordergridalldel=0x7f0a01ca;
-        public static final int btnordergriddel=0x7f0a01c9;
-        public static final int btnordergridexit=0x7f0a01cf;
-        public static final int btnordergridquery=0x7f0a01c8;
-        public static final int btnprint=0x7f0a0211;
-        public static final int btnprinter=0x7f0a01f5;
-        public static final int btnprinttest=0x7f0a01d7;
-        public static final int btnproadd=0x7f0a00cd;
-        public static final int btnprodel=0x7f0a00ce;
-        public static final int btnprodelselect=0x7f0a00cf;
-        public static final int btnproexit=0x7f0a00d0;
-        public static final int btnquery=0x7f0a0210;
-        public static final int btnreturn=0x7f0a00ae;
-        public static final int btnsave=0x7f0a0213;
-        public static final int btnselectexit=0x7f0a00d2;
-        public static final int btnweixing=0x7f0a01f3;
-        public static final int btnweixingtestcancel=0x7f0a0227;
-        public static final int btnweixingtestdelete=0x7f0a0225;
-        public static final int btnweixingtestok=0x7f0a0223;
-        public static final int btnweixingtestpayout=0x7f0a0226;
-        public static final int btnweixingtestquery=0x7f0a0224;
-        public static final int btnzhifubaoer=0x7f0a01f1;
-        public static final int btnzhifubaotestcancel=0x7f0a0230;
-        public static final int btnzhifubaotestdelete=0x7f0a022e;
-        public static final int btnzhifubaotestok=0x7f0a022c;
-        public static final int btnzhifubaotestpayout=0x7f0a022f;
-        public static final int btnzhifubaotestquery=0x7f0a022d;
-        public static final int busgoodsclassImage=0x7f0a0056;
-        public static final int busgoodsclassName=0x7f0a0057;
-        public static final int chkdate=0x7f0a020b;
-        public static final int chkdocter=0x7f0a020c;
-        public static final int chker=0x7f0a0209;
-        public static final int chkno=0x7f0a0205;
-        public static final int chksum=0x7f0a0206;
-        public static final int chkthank=0x7f0a0207;
-        public static final int chktitle1=0x7f0a0201;
-        public static final int chktitle2=0x7f0a0203;
-        public static final int count=0x7f0a0216;
-        public static final int devicelist=0x7f0a01fc;
-        public static final int diaEndTime=0x7f0a021e;
-        public static final int diaStartTime=0x7f0a021d;
-        public static final int dialogcab=0x7f0a021a;
-        public static final int dialoginte=0x7f0a021c;
-        public static final int dialogspincabtype=0x7f0a021b;
-        public static final int editMsgView=0x7f0a01ff;
-        public static final int edit_bottombar=0x7f0a01fd;
-        public static final int editer=0x7f0a020a;
-        public static final int editthank=0x7f0a0208;
-        public static final int edittitle1=0x7f0a0202;
-        public static final int edittitle2=0x7f0a0204;
-        public static final int edtbillAmount=0x7f0a01e3;
-        public static final int edtcabid=0x7f0a019a;
-        public static final int edtcashlesstest=0x7f0a00a5;
-        public static final int edtclassid=0x7f0a00bf;
-        public static final int edtclassname=0x7f0a00c0;
-        public static final int edtcoinpayout=0x7f0a0031;
-        public static final int edtcolumn=0x7f0a00ed;
-        public static final int edtdevID=0x7f0a01d3;
-        public static final int edtdevhCode=0x7f0a01d4;
-        public static final int edthopperpayno=0x7f0a0047;
-        public static final int edthopperpaynum=0x7f0a0048;
-        public static final int edthopperpayout=0x7f0a0044;
-        public static final int edthuoid=0x7f0a019c;
-        public static final int edthuopathCount=0x7f0a016a;
-        public static final int edthuopathRemain=0x7f0a016b;
-        public static final int edtloggridend=0x7f0a0178;
-        public static final int edtloggridstart=0x7f0a0176;
-        public static final int edtmainPwd=0x7f0a01db;
-        public static final int edtmarketAmount=0x7f0a01e2;
-        public static final int edtmarketPrice=0x7f0a00d7;
-        public static final int edtordergridend=0x7f0a01c7;
-        public static final int edtordergridstart=0x7f0a01c5;
-        public static final int edtpayout=0x7f0a000f;
-        public static final int edtproductID=0x7f0a00d5;
-        public static final int edtproductName=0x7f0a00d6;
-        public static final int edtrstDay=0x7f0a01de;
-        public static final int edtrstTime=0x7f0a01dd;
-        public static final int edtsalesPrice=0x7f0a00d8;
-        public static final int edtselectKey=0x7f0a00d9;
-        public static final int edtshelfLife=0x7f0a00da;
-        public static final int edttihuoPwd=0x7f0a0165;
-        public static final int edtweixingtest=0x7f0a0222;
-        public static final int edtzhifubaotest=0x7f0a022b;
-        public static final int emachinelistview=0x7f0a01f9;
-        public static final int gvInfo=0x7f0a0198;
-        public static final int gvProduct=0x7f0a00c8;
-        public static final int gvbusgoodsProduct=0x7f0a0050;
-        public static final int gvbusgoodsclass=0x7f0a0055;
-        public static final int gvhuodao=0x7f0a00e0;
-        public static final int gvselectProduct=0x7f0a00d1;
-        public static final int huoID=0x7f0a015d;
-        public static final int huoImage=0x7f0a015c;
-        public static final int huoRemain=0x7f0a0160;
-        public static final int huolasttime=0x7f0a015f;
-        public static final int huoproID=0x7f0a015e;
-        public static final int id_content=0x7f0a0068;
-        public static final int id_fragment_movieland=0x7f0a0069;
-        public static final int imgback=0x7f0a0052;
-        public static final int imgbtnbusgoodsback=0x7f0a0051;
-        public static final int imgbtnbuszhiamountqtzf=0x7f0a0075;
-        public static final int imgbtnbuszhiamountqxzf=0x7f0a0074;
-        public static final int imgbtnbuszhierqtzf=0x7f0a0080;
-        public static final int imgbtnbuszhierqxzf=0x7f0a007f;
-        public static final int imgbtnbuszhiposqtzf=0x7f0a0089;
-        public static final int imgbtnbuszhiposqxzf=0x7f0a0088;
-        public static final int imgbtnbuszhitihuoback=0x7f0a0099;
-        public static final int imgbtnbuszhiweiqtzf=0x7f0a00a2;
-        public static final int imgbtnbuszhiweiqxzf=0x7f0a00a1;
-        public static final int imgchts=0x7f0a0065;
-        public static final int imgclassname=0x7f0a00c1;
-        public static final int imgcpfl=0x7f0a004f;
-        public static final int imgcpxq=0x7f0a0058;
-        public static final int imgjsqd=0x7f0a006b;
-        public static final int imgnext=0x7f0a0053;
-        public static final int imgweixingtest=0x7f0a021f;
-        public static final int imgwhite=0x7f0a0076;
-        public static final int imgxqwhite=0x7f0a0062;
-        public static final int imgzflc=0x7f0a0077;
-        public static final int imgzhifubaotest=0x7f0a0228;
-        public static final int isworking=0x7f0a01a0;
-        public static final int ivProduct=0x7f0a00d3;
-        public static final int ivads=0x7f0a00b4;
-        public static final int ivadstip=0x7f0a00b2;
-        public static final int ivbusgoodselProduct=0x7f0a0059;
-        public static final int ivbushuoquhuo=0x7f0a0066;
-        public static final int ivbuszhiamountbill=0x7f0a0073;
-        public static final int ivbuszhier=0x7f0a007d;
-        public static final int ivbuszhierb=0x7f0a007e;
-        public static final int ivbuszhierbeijing=0x7f0a0081;
-        public static final int ivbuszhipos=0x7f0a0087;
-        public static final int ivbuszhiposbill=0x7f0a008a;
-        public static final int ivbuszhiselamount=0x7f0a005f;
-        public static final int ivbuszhiselpos=0x7f0a0060;
-        public static final int ivbuszhiseltihuo=0x7f0a0061;
-        public static final int ivbuszhiselweixing=0x7f0a005e;
-        public static final int ivbuszhiselzhier=0x7f0a005d;
-        public static final int ivbuszhiwei=0x7f0a009f;
-        public static final int ivbuszhiweib=0x7f0a00a0;
-        public static final int ivbuszhiweibeijing=0x7f0a00a3;
-        public static final int ivczjx=0x7f0a00b0;
-        public static final int ivgmys=0x7f0a00af;
-        public static final int ivhuoProID=0x7f0a0161;
-        public static final int ivmobile=0x7f0a00b5;
-        public static final int ivquhuo=0x7f0a00b1;
-        public static final int job=0x7f0a00bd;
-        public static final int lvclass=0x7f0a00be;
-        public static final int lvlog=0x7f0a0174;
-        public static final int lvorder=0x7f0a01a1;
-        public static final int newpwd=0x7f0a0232;
-        public static final int newpwd2=0x7f0a0233;
-        public static final int oldpwd=0x7f0a0231;
-        public static final int onloadTime=0x7f0a00dc;
-        public static final int proID=0x7f0a0217;
-        public static final int proImage=0x7f0a0215;
-        public static final int promarket=0x7f0a0218;
-        public static final int prosales=0x7f0a0219;
-        public static final int rbtnclose=0x7f0a01ee;
-        public static final int rbtnzhifubao1=0x7f0a01ef;
-        public static final int rbtnzhifubao2=0x7f0a01f0;
-        public static final int spinCashless=0x7f0a01eb;
-        public static final int spinbillmanagerbill=0x7f0a0001;
-        public static final int spincoinmanagercoin=0x7f0a0018;
-        public static final int spinhopper=0x7f0a003a;
-        public static final int spinhuopeiCab=0x7f0a0158;
-        public static final int spinhuosetCab=0x7f0a00e7;
-        public static final int spinhuotestCab=0x7f0a00eb;
-        public static final int spinordergridtongji=0x7f0a01cc;
-        public static final int spinparamsort=0x7f0a01e1;
-        public static final int spinproductclassID=0x7f0a00db;
-        public static final int start_seach=0x7f0a01fe;
-        public static final int student=0x7f0a0173;
-        public static final int switchamount=0x7f0a01e7;
-        public static final int switchbaozhiProduct=0x7f0a01df;
-        public static final int switchcard=0x7f0a01e9;
-        public static final int switchemptyProduct=0x7f0a01e0;
-        public static final int switchhot=0x7f0a00f7;
-        public static final int switchisNet=0x7f0a01d6;
-        public static final int switchisbuhuo=0x7f0a01d8;
-        public static final int switchisbuyCar=0x7f0a01d9;
-        public static final int switchisqiangbuy=0x7f0a01da;
-        public static final int switchlanguage=0x7f0a01dc;
-        public static final int switchlight=0x7f0a00f3;
-        public static final int switchprinter=0x7f0a01f4;
-        public static final int switchweixing=0x7f0a01f2;
-        public static final int switcold=0x7f0a00f5;
-        public static final int tab_billmanager=0x7f0a0000;
-        public static final int tab_class=0x7f0a00bc;
-        public static final int tab_coinmanager=0x7f0a0017;
-        public static final int tab_device=0x7f0a01e6;
-        public static final int tab_grid=0x7f0a019f;
-        public static final int tab_huodaomanager=0x7f0a00df;
-        public static final int tab_huodaoset=0x7f0a00fe;
-        public static final int tab_huodaotest=0x7f0a00ea;
-        public static final int tab_machine=0x7f0a01d2;
-        public static final int tab_payoutmanager=0x7f0a0039;
-        public static final int tab_picture=0x7f0a01d0;
-        public static final int tab_product=0x7f0a00c7;
-        public static final int tab_run=0x7f0a01f8;
-        public static final int tvLogin=0x7f0a017d;
-        public static final int tvVersion=0x7f0a017c;
-        public static final int tvbent=0x7f0a017f;
-        public static final int tvcard=0x7f0a0182;
-        public static final int tvcolumn=0x7f0a0181;
-        public static final int tvcolumn2=0x7f0a018f;
-        public static final int tvextracom=0x7f0a0189;
-        public static final int tvposip=0x7f0a018b;
-        public static final int tvposipport=0x7f0a018d;
-        public static final int tvprintcom=0x7f0a0187;
-        public static final int txtLogin=0x7f0a017e;
-        public static final int txtMsg=0x7f0a020e;
-        public static final int txtRealStatus=0x7f0a01a6;
-        public static final int txtRealStatusValue=0x7f0a01a7;
-        public static final int txtadsTip=0x7f0a008b;
-        public static final int txtbent=0x7f0a0180;
-        public static final int txtbillerr=0x7f0a0006;
-        public static final int txtbillmanagerbillin=0x7f0a0007;
-        public static final int txtbillmanagerbillin2=0x7f0a0008;
-        public static final int txtbillmanagerbillincount=0x7f0a0009;
-        public static final int txtbillmanagerbillpay=0x7f0a000a;
-        public static final int txtbillmanagerbillpay2=0x7f0a000b;
-        public static final int txtbillmanagerbillpayamount=0x7f0a000d;
-        public static final int txtbillmanagerbillpaycount=0x7f0a000c;
-        public static final int txtbillmanagerpar=0x7f0a0002;
-        public static final int txtbillmanagerpar2=0x7f0a0003;
-        public static final int txtbillmanagerstate=0x7f0a0004;
-        public static final int txtbillpayback=0x7f0a0005;
-        public static final int txtbillpayin=0x7f0a000e;
-        public static final int txtbusgoodselAmount=0x7f0a005c;
-        public static final int txtbusgoodselAmounttxt=0x7f0a005b;
-        public static final int txtbusgoodselDes=0x7f0a0063;
-        public static final int txtbusgoodselName=0x7f0a005a;
-        public static final int txtbushuoname=0x7f0a0067;
-        public static final int txtbuszhiamerount=0x7f0a007a;
-        public static final int txtbuszhiamountAmount=0x7f0a006e;
-        public static final int txtbuszhiamountbill=0x7f0a006f;
-        public static final int txtbuszhiamountbillAmount=0x7f0a0070;
-        public static final int txtbuszhiamountcount=0x7f0a006c;
-        public static final int txtbuszhiamountsp=0x7f0a006d;
-        public static final int txtbuszhiamounttime=0x7f0a0071;
-        public static final int txtbuszhiamounttsxx=0x7f0a0072;
-        public static final int txtbuszhiercount=0x7f0a0078;
-        public static final int txtbuszhierrst=0x7f0a007b;
-        public static final int txtbuszhiersp=0x7f0a0079;
-        public static final int txtbuszhiertime=0x7f0a007c;
-        public static final int txtbuszhiposAmount=0x7f0a0084;
-        public static final int txtbuszhiposcount=0x7f0a0082;
-        public static final int txtbuszhipossp=0x7f0a0083;
-        public static final int txtbuszhipostime=0x7f0a0085;
-        public static final int txtbuszhipostsxx=0x7f0a0086;
-        public static final int txtbuszhiweicount=0x7f0a009a;
-        public static final int txtbuszhiweirount=0x7f0a009c;
-        public static final int txtbuszhiweirst=0x7f0a009d;
-        public static final int txtbuszhiweisp=0x7f0a009b;
-        public static final int txtbuszhiweitime=0x7f0a009e;
-        public static final int txtcabID=0x7f0a01c0;
-        public static final int txtcabIDValue=0x7f0a01c1;
-        public static final int txtcabid=0x7f0a0199;
-        public static final int txtcashlessamount=0x7f0a00b7;
-        public static final int txtcashlesstest=0x7f0a00a4;
-        public static final int txtclassID=0x7f0a00ba;
-        public static final int txtclassName=0x7f0a00bb;
-        public static final int txtcoinerr=0x7f0a001d;
-        public static final int txtcoinmanagercoinin1=0x7f0a001e;
-        public static final int txtcoinmanagercoinin10=0x7f0a0027;
-        public static final int txtcoinmanagercoinin11=0x7f0a0028;
-        public static final int txtcoinmanagercoinin12=0x7f0a0029;
-        public static final int txtcoinmanagercoinin13=0x7f0a002a;
-        public static final int txtcoinmanagercoinin14=0x7f0a002b;
-        public static final int txtcoinmanagercoinin15=0x7f0a002c;
-        public static final int txtcoinmanagercoinin16=0x7f0a002d;
-        public static final int txtcoinmanagercoinin2=0x7f0a001f;
-        public static final int txtcoinmanagercoinin3=0x7f0a0020;
-        public static final int txtcoinmanagercoinin4=0x7f0a0021;
-        public static final int txtcoinmanagercoinin5=0x7f0a0022;
-        public static final int txtcoinmanagercoinin6=0x7f0a0023;
-        public static final int txtcoinmanagercoinin7=0x7f0a0024;
-        public static final int txtcoinmanagercoinin8=0x7f0a0025;
-        public static final int txtcoinmanagercoinin9=0x7f0a0026;
-        public static final int txtcoinmanagercoininamount=0x7f0a002f;
-        public static final int txtcoinmanagercoinincount=0x7f0a002e;
-        public static final int txtcoinmanagerpar=0x7f0a0019;
-        public static final int txtcoinmanagerpar2=0x7f0a001a;
-        public static final int txtcoinmanagerstate=0x7f0a001b;
-        public static final int txtcoinpayback=0x7f0a001c;
-        public static final int txtcoinpayin=0x7f0a0030;
-        public static final int txtcoinpaymoney=0x7f0a0033;
-        public static final int txtcold=0x7f0a00f4;
-        public static final int txtcolumn=0x7f0a00ec;
-        public static final int txtcolumn2=0x7f0a0190;
-        public static final int txtcolumnID=0x7f0a01c2;
-        public static final int txtcolumnIDValue=0x7f0a01c3;
-        public static final int txtdebtAmount=0x7f0a01b6;
-        public static final int txtdebtAmountValue=0x7f0a01b7;
-        public static final int txtditu=0x7f0a00b6;
-        public static final int txtextracom=0x7f0a018a;
-        public static final int txthopperin1=0x7f0a003b;
-        public static final int txthopperin2=0x7f0a003c;
-        public static final int txthopperin3=0x7f0a003d;
-        public static final int txthopperin4=0x7f0a003e;
-        public static final int txthopperin5=0x7f0a003f;
-        public static final int txthopperin6=0x7f0a0040;
-        public static final int txthopperin7=0x7f0a0041;
-        public static final int txthopperin8=0x7f0a0042;
-        public static final int txthopperincount=0x7f0a0043;
-        public static final int txthopperpaymoney=0x7f0a0046;
-        public static final int txthopperpaynum=0x7f0a004a;
-        public static final int txthot=0x7f0a00f6;
-        public static final int txthuoCabID=0x7f0a0163;
-        public static final int txthuoColID=0x7f0a0164;
-        public static final int txthuoIslast=0x7f0a016f;
-        public static final int txthuoProID=0x7f0a0166;
-        public static final int txthuoProName=0x7f0a0167;
-        public static final int txthuoallrst=0x7f0a00fd;
-        public static final int txthuocolumnStatus=0x7f0a016c;
-        public static final int txthuoid=0x7f0a019b;
-        public static final int txthuolasttime=0x7f0a016e;
-        public static final int txthuomarketPrice=0x7f0a0168;
-        public static final int txthuorst=0x7f0a00f1;
-        public static final int txthuosalesPrice=0x7f0a0169;
-        public static final int txthuosetCab=0x7f0a0157;
-        public static final int txthuosetno=0x7f0a00e6;
-        public static final int txthuosetrst=0x7f0a00e9;
-        public static final int txthuoshelfLife=0x7f0a016d;
-        public static final int txthuotestrst=0x7f0a00f0;
-        public static final int txtlight=0x7f0a00f2;
-        public static final int txtlogDesc=0x7f0a0196;
-        public static final int txtlogID=0x7f0a0194;
-        public static final int txtlogTime=0x7f0a0197;
-        public static final int txtlogType=0x7f0a0195;
-        public static final int txtloggridend=0x7f0a0177;
-        public static final int txtloggridstart=0x7f0a0175;
-        public static final int txtordereID=0x7f0a01d1;
-        public static final int txtordergridend=0x7f0a01c6;
-        public static final int txtordergridstart=0x7f0a01c4;
-        public static final int txtordergridtongji=0x7f0a01cb;
-        public static final int txtpage=0x7f0a0054;
-        public static final int txtpayStatus=0x7f0a01a4;
-        public static final int txtpayStatusValue=0x7f0a01a5;
-        public static final int txtpayTime=0x7f0a01ba;
-        public static final int txtpayTimeValue=0x7f0a01bb;
-        public static final int txtpayType=0x7f0a01a2;
-        public static final int txtpayTypeValue=0x7f0a01a3;
-        public static final int txtpaymoney=0x7f0a0011;
-        public static final int txtposip=0x7f0a018c;
-        public static final int txtposipport=0x7f0a018e;
-        public static final int txtprintcom=0x7f0a0188;
-        public static final int txtproductName=0x7f0a01bc;
-        public static final int txtproductNameValue=0x7f0a01bd;
-        public static final int txtproid=0x7f0a00c9;
-        public static final int txtproidValue=0x7f0a00ca;
-        public static final int txtproname=0x7f0a00cb;
-        public static final int txtpronameValue=0x7f0a00cc;
-        public static final int txtrealAmount=0x7f0a01b4;
-        public static final int txtrealAmountValue=0x7f0a01b5;
-        public static final int txtrealCard=0x7f0a01b8;
-        public static final int txtrealCardValue=0x7f0a01b9;
-        public static final int txtrealCoin=0x7f0a01b2;
-        public static final int txtrealCoinValue=0x7f0a01b3;
-        public static final int txtrealNote=0x7f0a01b0;
-        public static final int txtrealNoteValue=0x7f0a01b1;
-        public static final int txtsalesPrice=0x7f0a01be;
-        public static final int txtsalesPriceValue=0x7f0a01bf;
-        public static final int txtserver=0x7f0a0183;
-        public static final int txtsmallAmount=0x7f0a01ac;
-        public static final int txtsmallAmountValue=0x7f0a01ad;
-        public static final int txtsmallCard=0x7f0a01ae;
-        public static final int txtsmallCardValue=0x7f0a01af;
-        public static final int txtsmallConi=0x7f0a01aa;
-        public static final int txtsmallConiValue=0x7f0a01ab;
-        public static final int txtsmallNote=0x7f0a01a8;
-        public static final int txtsmallNoteValue=0x7f0a01a9;
-        public static final int txtweixingtest=0x7f0a0221;
-        public static final int txtzhifubaotest=0x7f0a022a;
-        public static final int txtztai=0x7f0a020d;
-        public static final int video=0x7f0a00b3;
-        public static final int webproductDesc=0x7f0a0064;
-        public static final int webtishiInfo=0x7f0a006a;
-        public static final int zhifubaogrp=0x7f0a01ed;
+        public static final int ItemImage=0x7f0b00b8;
+        public static final int ItemTitle=0x7f0b00b9;
+        public static final int action_settings=0x7f0b0234;
+        public static final int addr=0x7f0b0172;
+        public static final int barhuomanager=0x7f0b00e8;
+        public static final int barweixingtest=0x7f0b0220;
+        public static final int barzhifubaotest=0x7f0b0229;
+        public static final int btnCashless=0x7f0b01ec;
+        public static final int btnClose=0x7f0b0184;
+        public static final int btnDel=0x7f0b0191;
+        public static final int btnDelImg=0x7f0b0192;
+        public static final int btnDelads=0x7f0b0193;
+        public static final int btnGaoji=0x7f0b0186;
+        public static final int btnImg=0x7f0b00d4;
+        public static final int btnLogin=0x7f0b0185;
+        public static final int btn_msg_send=0x7f0b0200;
+        public static final int btnaddProSave=0x7f0b00dd;
+        public static final int btnaddProexit=0x7f0b00de;
+        public static final int btnads0=0x7f0b0097;
+        public static final int btnads1=0x7f0b008d;
+        public static final int btnads2=0x7f0b008e;
+        public static final int btnads3=0x7f0b008f;
+        public static final int btnads4=0x7f0b0090;
+        public static final int btnads5=0x7f0b0091;
+        public static final int btnads6=0x7f0b0092;
+        public static final int btnads7=0x7f0b0093;
+        public static final int btnads8=0x7f0b0094;
+        public static final int btnads9=0x7f0b0095;
+        public static final int btnadscancel=0x7f0b0096;
+        public static final int btnadsclass=0x7f0b008c;
+        public static final int btnadsenter=0x7f0b0098;
+        public static final int btnamount=0x7f0b01e8;
+        public static final int btnbillexit2=0x7f0b0016;
+        public static final int btnbilloff=0x7f0b0013;
+        public static final int btnbillon=0x7f0b0012;
+        public static final int btnbillpayout=0x7f0b0010;
+        public static final int btnbillquery=0x7f0b0014;
+        public static final int btnbillset=0x7f0b0015;
+        public static final int btncancel=0x7f0b019e;
+        public static final int btncard=0x7f0b01ea;
+        public static final int btncashlesstestcancel=0x7f0b00ad;
+        public static final int btncashlesstestclose=0x7f0b00ac;
+        public static final int btncashlesstestdelete=0x7f0b00aa;
+        public static final int btncashlesstestfind=0x7f0b00a7;
+        public static final int btncashlesstestok=0x7f0b00a8;
+        public static final int btncashlesstestopen=0x7f0b00a6;
+        public static final int btncashlesstestpayout=0x7f0b00ab;
+        public static final int btncashlesstestquery=0x7f0b00a9;
+        public static final int btnchuhuo=0x7f0b019d;
+        public static final int btnclassadd=0x7f0b00c3;
+        public static final int btnclassdel=0x7f0b00c5;
+        public static final int btnclassexit=0x7f0b00c6;
+        public static final int btnclassname=0x7f0b00c2;
+        public static final int btnclassupdate=0x7f0b00c4;
+        public static final int btnclose=0x7f0b0212;
+        public static final int btncoinexit=0x7f0b0038;
+        public static final int btncoinoff=0x7f0b0035;
+        public static final int btncoinon=0x7f0b0034;
+        public static final int btncoinpayout=0x7f0b0032;
+        public static final int btncoinquery=0x7f0b0036;
+        public static final int btncoinset=0x7f0b0037;
+        public static final int btndeviceSave=0x7f0b01f6;
+        public static final int btndeviceexit=0x7f0b01f7;
+        public static final int btnexit=0x7f0b0214;
+        public static final int btnhopperexit=0x7f0b004e;
+        public static final int btnhopperpay=0x7f0b004c;
+        public static final int btnhopperpaymoney=0x7f0b0045;
+        public static final int btnhopperpaynum=0x7f0b0049;
+        public static final int btnhopperquery=0x7f0b004b;
+        public static final int btnhopperset=0x7f0b004d;
+        public static final int btnhuoProID=0x7f0b0162;
+        public static final int btnhuoaddSave=0x7f0b0170;
+        public static final int btnhuoall=0x7f0b00fc;
+        public static final int btnhuocancel=0x7f0b00f9;
+        public static final int btnhuochu=0x7f0b00f8;
+        public static final int btnhuochuall=0x7f0b00fa;
+        public static final int btnhuodelSave=0x7f0b0171;
+        public static final int btnhuoexit=0x7f0b00fb;
+        public static final int btnhuonext=0x7f0b00ef;
+        public static final int btnhuopre=0x7f0b00ee;
+        public static final int btnhuoset11=0x7f0b0100;
+        public static final int btnhuoset110=0x7f0b0109;
+        public static final int btnhuoset12=0x7f0b0101;
+        public static final int btnhuoset13=0x7f0b0102;
+        public static final int btnhuoset14=0x7f0b0103;
+        public static final int btnhuoset15=0x7f0b0104;
+        public static final int btnhuoset16=0x7f0b0105;
+        public static final int btnhuoset17=0x7f0b0106;
+        public static final int btnhuoset18=0x7f0b0107;
+        public static final int btnhuoset19=0x7f0b0108;
+        public static final int btnhuoset21=0x7f0b010b;
+        public static final int btnhuoset210=0x7f0b0114;
+        public static final int btnhuoset22=0x7f0b010c;
+        public static final int btnhuoset23=0x7f0b010d;
+        public static final int btnhuoset24=0x7f0b010e;
+        public static final int btnhuoset25=0x7f0b010f;
+        public static final int btnhuoset26=0x7f0b0110;
+        public static final int btnhuoset27=0x7f0b0111;
+        public static final int btnhuoset28=0x7f0b0112;
+        public static final int btnhuoset29=0x7f0b0113;
+        public static final int btnhuoset31=0x7f0b0116;
+        public static final int btnhuoset310=0x7f0b011f;
+        public static final int btnhuoset32=0x7f0b0117;
+        public static final int btnhuoset33=0x7f0b0118;
+        public static final int btnhuoset34=0x7f0b0119;
+        public static final int btnhuoset35=0x7f0b011a;
+        public static final int btnhuoset36=0x7f0b011b;
+        public static final int btnhuoset37=0x7f0b011c;
+        public static final int btnhuoset38=0x7f0b011d;
+        public static final int btnhuoset39=0x7f0b011e;
+        public static final int btnhuoset41=0x7f0b0121;
+        public static final int btnhuoset410=0x7f0b012a;
+        public static final int btnhuoset42=0x7f0b0122;
+        public static final int btnhuoset43=0x7f0b0123;
+        public static final int btnhuoset44=0x7f0b0124;
+        public static final int btnhuoset45=0x7f0b0125;
+        public static final int btnhuoset46=0x7f0b0126;
+        public static final int btnhuoset47=0x7f0b0127;
+        public static final int btnhuoset48=0x7f0b0128;
+        public static final int btnhuoset49=0x7f0b0129;
+        public static final int btnhuoset51=0x7f0b012c;
+        public static final int btnhuoset510=0x7f0b0135;
+        public static final int btnhuoset52=0x7f0b012d;
+        public static final int btnhuoset53=0x7f0b012e;
+        public static final int btnhuoset54=0x7f0b012f;
+        public static final int btnhuoset55=0x7f0b0130;
+        public static final int btnhuoset56=0x7f0b0131;
+        public static final int btnhuoset57=0x7f0b0132;
+        public static final int btnhuoset58=0x7f0b0133;
+        public static final int btnhuoset59=0x7f0b0134;
+        public static final int btnhuoset61=0x7f0b0137;
+        public static final int btnhuoset610=0x7f0b0140;
+        public static final int btnhuoset62=0x7f0b0138;
+        public static final int btnhuoset63=0x7f0b0139;
+        public static final int btnhuoset64=0x7f0b013a;
+        public static final int btnhuoset65=0x7f0b013b;
+        public static final int btnhuoset66=0x7f0b013c;
+        public static final int btnhuoset67=0x7f0b013d;
+        public static final int btnhuoset68=0x7f0b013e;
+        public static final int btnhuoset69=0x7f0b013f;
+        public static final int btnhuoset71=0x7f0b0142;
+        public static final int btnhuoset710=0x7f0b014b;
+        public static final int btnhuoset72=0x7f0b0143;
+        public static final int btnhuoset73=0x7f0b0144;
+        public static final int btnhuoset74=0x7f0b0145;
+        public static final int btnhuoset75=0x7f0b0146;
+        public static final int btnhuoset76=0x7f0b0147;
+        public static final int btnhuoset77=0x7f0b0148;
+        public static final int btnhuoset78=0x7f0b0149;
+        public static final int btnhuoset79=0x7f0b014a;
+        public static final int btnhuoset81=0x7f0b014d;
+        public static final int btnhuoset810=0x7f0b0156;
+        public static final int btnhuoset82=0x7f0b014e;
+        public static final int btnhuoset83=0x7f0b014f;
+        public static final int btnhuoset84=0x7f0b0150;
+        public static final int btnhuoset85=0x7f0b0151;
+        public static final int btnhuoset86=0x7f0b0152;
+        public static final int btnhuoset87=0x7f0b0153;
+        public static final int btnhuoset88=0x7f0b0154;
+        public static final int btnhuoset89=0x7f0b0155;
+        public static final int btnhuosetadd=0x7f0b00e1;
+        public static final int btnhuosetautohuo=0x7f0b015a;
+        public static final int btnhuosetbu=0x7f0b00e3;
+        public static final int btnhuosetc1=0x7f0b00ff;
+        public static final int btnhuosetc2=0x7f0b010a;
+        public static final int btnhuosetc3=0x7f0b0115;
+        public static final int btnhuosetc4=0x7f0b0120;
+        public static final int btnhuosetc5=0x7f0b012b;
+        public static final int btnhuosetc6=0x7f0b0136;
+        public static final int btnhuosetc7=0x7f0b0141;
+        public static final int btnhuosetc8=0x7f0b014c;
+        public static final int btnhuosetclear=0x7f0b00e4;
+        public static final int btnhuosetclose=0x7f0b015b;
+        public static final int btnhuosetdel=0x7f0b00e2;
+        public static final int btnhuosetexit=0x7f0b00e5;
+        public static final int btnhuosetsethuo=0x7f0b0159;
+        public static final int btnloggriddel=0x7f0b017a;
+        public static final int btnloggridexit=0x7f0b017b;
+        public static final int btnloggridquery=0x7f0b0179;
+        public static final int btnmachineSave=0x7f0b01e4;
+        public static final int btnmachinecheck=0x7f0b01d5;
+        public static final int btnmachineexit=0x7f0b01e5;
+        public static final int btnmachinerunCancel=0x7f0b01fb;
+        public static final int btnmachinerunSave=0x7f0b01fa;
+        public static final int btnopen=0x7f0b020f;
+        public static final int btnordergridLine=0x7f0b01ce;
+        public static final int btnordergridStack=0x7f0b01cd;
+        public static final int btnordergridalldel=0x7f0b01ca;
+        public static final int btnordergriddel=0x7f0b01c9;
+        public static final int btnordergridexit=0x7f0b01cf;
+        public static final int btnordergridquery=0x7f0b01c8;
+        public static final int btnprint=0x7f0b0211;
+        public static final int btnprinter=0x7f0b01f5;
+        public static final int btnprinttest=0x7f0b01d7;
+        public static final int btnproadd=0x7f0b00cd;
+        public static final int btnprodel=0x7f0b00ce;
+        public static final int btnprodelselect=0x7f0b00cf;
+        public static final int btnproexit=0x7f0b00d0;
+        public static final int btnquery=0x7f0b0210;
+        public static final int btnreturn=0x7f0b00ae;
+        public static final int btnsave=0x7f0b0213;
+        public static final int btnselectexit=0x7f0b00d2;
+        public static final int btnweixing=0x7f0b01f3;
+        public static final int btnweixingtestcancel=0x7f0b0227;
+        public static final int btnweixingtestdelete=0x7f0b0225;
+        public static final int btnweixingtestok=0x7f0b0223;
+        public static final int btnweixingtestpayout=0x7f0b0226;
+        public static final int btnweixingtestquery=0x7f0b0224;
+        public static final int btnzhifubaoer=0x7f0b01f1;
+        public static final int btnzhifubaotestcancel=0x7f0b0230;
+        public static final int btnzhifubaotestdelete=0x7f0b022e;
+        public static final int btnzhifubaotestok=0x7f0b022c;
+        public static final int btnzhifubaotestpayout=0x7f0b022f;
+        public static final int btnzhifubaotestquery=0x7f0b022d;
+        public static final int busgoodsclassImage=0x7f0b0056;
+        public static final int busgoodsclassName=0x7f0b0057;
+        public static final int chkdate=0x7f0b020b;
+        public static final int chkdocter=0x7f0b020c;
+        public static final int chker=0x7f0b0209;
+        public static final int chkno=0x7f0b0205;
+        public static final int chksum=0x7f0b0206;
+        public static final int chkthank=0x7f0b0207;
+        public static final int chktitle1=0x7f0b0201;
+        public static final int chktitle2=0x7f0b0203;
+        public static final int count=0x7f0b0216;
+        public static final int devicelist=0x7f0b01fc;
+        public static final int diaEndTime=0x7f0b021e;
+        public static final int diaStartTime=0x7f0b021d;
+        public static final int dialogcab=0x7f0b021a;
+        public static final int dialoginte=0x7f0b021c;
+        public static final int dialogspincabtype=0x7f0b021b;
+        public static final int editMsgView=0x7f0b01ff;
+        public static final int edit_bottombar=0x7f0b01fd;
+        public static final int editer=0x7f0b020a;
+        public static final int editthank=0x7f0b0208;
+        public static final int edittitle1=0x7f0b0202;
+        public static final int edittitle2=0x7f0b0204;
+        public static final int edtbillAmount=0x7f0b01e3;
+        public static final int edtcabid=0x7f0b019a;
+        public static final int edtcashlesstest=0x7f0b00a5;
+        public static final int edtclassid=0x7f0b00bf;
+        public static final int edtclassname=0x7f0b00c0;
+        public static final int edtcoinpayout=0x7f0b0031;
+        public static final int edtcolumn=0x7f0b00ed;
+        public static final int edtdevID=0x7f0b01d3;
+        public static final int edtdevhCode=0x7f0b01d4;
+        public static final int edthopperpayno=0x7f0b0047;
+        public static final int edthopperpaynum=0x7f0b0048;
+        public static final int edthopperpayout=0x7f0b0044;
+        public static final int edthuoid=0x7f0b019c;
+        public static final int edthuopathCount=0x7f0b016a;
+        public static final int edthuopathRemain=0x7f0b016b;
+        public static final int edtloggridend=0x7f0b0178;
+        public static final int edtloggridstart=0x7f0b0176;
+        public static final int edtmainPwd=0x7f0b01db;
+        public static final int edtmarketAmount=0x7f0b01e2;
+        public static final int edtmarketPrice=0x7f0b00d7;
+        public static final int edtordergridend=0x7f0b01c7;
+        public static final int edtordergridstart=0x7f0b01c5;
+        public static final int edtpayout=0x7f0b000f;
+        public static final int edtproductID=0x7f0b00d5;
+        public static final int edtproductName=0x7f0b00d6;
+        public static final int edtrstDay=0x7f0b01de;
+        public static final int edtrstTime=0x7f0b01dd;
+        public static final int edtsalesPrice=0x7f0b00d8;
+        public static final int edtselectKey=0x7f0b00d9;
+        public static final int edtshelfLife=0x7f0b00da;
+        public static final int edttihuoPwd=0x7f0b0165;
+        public static final int edtweixingtest=0x7f0b0222;
+        public static final int edtzhifubaotest=0x7f0b022b;
+        public static final int emachinelistview=0x7f0b01f9;
+        public static final int gvInfo=0x7f0b0198;
+        public static final int gvProduct=0x7f0b00c8;
+        public static final int gvbusgoodsProduct=0x7f0b0050;
+        public static final int gvbusgoodsclass=0x7f0b0055;
+        public static final int gvhuodao=0x7f0b00e0;
+        public static final int gvselectProduct=0x7f0b00d1;
+        public static final int huoID=0x7f0b015d;
+        public static final int huoImage=0x7f0b015c;
+        public static final int huoRemain=0x7f0b0160;
+        public static final int huolasttime=0x7f0b015f;
+        public static final int huoproID=0x7f0b015e;
+        public static final int id_content=0x7f0b0068;
+        public static final int id_fragment_movieland=0x7f0b0069;
+        public static final int imgback=0x7f0b0052;
+        public static final int imgbtnbusgoodsback=0x7f0b0051;
+        public static final int imgbtnbuszhiamountqtzf=0x7f0b0075;
+        public static final int imgbtnbuszhiamountqxzf=0x7f0b0074;
+        public static final int imgbtnbuszhierqtzf=0x7f0b0080;
+        public static final int imgbtnbuszhierqxzf=0x7f0b007f;
+        public static final int imgbtnbuszhiposqtzf=0x7f0b0089;
+        public static final int imgbtnbuszhiposqxzf=0x7f0b0088;
+        public static final int imgbtnbuszhitihuoback=0x7f0b0099;
+        public static final int imgbtnbuszhiweiqtzf=0x7f0b00a2;
+        public static final int imgbtnbuszhiweiqxzf=0x7f0b00a1;
+        public static final int imgchts=0x7f0b0065;
+        public static final int imgclassname=0x7f0b00c1;
+        public static final int imgcpfl=0x7f0b004f;
+        public static final int imgcpxq=0x7f0b0058;
+        public static final int imgjsqd=0x7f0b006b;
+        public static final int imgnext=0x7f0b0053;
+        public static final int imgweixingtest=0x7f0b021f;
+        public static final int imgwhite=0x7f0b0076;
+        public static final int imgxqwhite=0x7f0b0062;
+        public static final int imgzflc=0x7f0b0077;
+        public static final int imgzhifubaotest=0x7f0b0228;
+        public static final int isworking=0x7f0b01a0;
+        public static final int ivProduct=0x7f0b00d3;
+        public static final int ivads=0x7f0b00b4;
+        public static final int ivadstip=0x7f0b00b2;
+        public static final int ivbusgoodselProduct=0x7f0b0059;
+        public static final int ivbushuoquhuo=0x7f0b0066;
+        public static final int ivbuszhiamountbill=0x7f0b0073;
+        public static final int ivbuszhier=0x7f0b007d;
+        public static final int ivbuszhierb=0x7f0b007e;
+        public static final int ivbuszhierbeijing=0x7f0b0081;
+        public static final int ivbuszhipos=0x7f0b0087;
+        public static final int ivbuszhiposbill=0x7f0b008a;
+        public static final int ivbuszhiselamount=0x7f0b005f;
+        public static final int ivbuszhiselpos=0x7f0b0060;
+        public static final int ivbuszhiseltihuo=0x7f0b0061;
+        public static final int ivbuszhiselweixing=0x7f0b005e;
+        public static final int ivbuszhiselzhier=0x7f0b005d;
+        public static final int ivbuszhiwei=0x7f0b009f;
+        public static final int ivbuszhiweib=0x7f0b00a0;
+        public static final int ivbuszhiweibeijing=0x7f0b00a3;
+        public static final int ivczjx=0x7f0b00b0;
+        public static final int ivgmys=0x7f0b00af;
+        public static final int ivhuoProID=0x7f0b0161;
+        public static final int ivmobile=0x7f0b00b5;
+        public static final int ivquhuo=0x7f0b00b1;
+        public static final int job=0x7f0b00bd;
+        public static final int lvclass=0x7f0b00be;
+        public static final int lvlog=0x7f0b0174;
+        public static final int lvorder=0x7f0b01a1;
+        public static final int newpwd=0x7f0b0232;
+        public static final int newpwd2=0x7f0b0233;
+        public static final int oldpwd=0x7f0b0231;
+        public static final int onloadTime=0x7f0b00dc;
+        public static final int proID=0x7f0b0217;
+        public static final int proImage=0x7f0b0215;
+        public static final int promarket=0x7f0b0218;
+        public static final int prosales=0x7f0b0219;
+        public static final int rbtnclose=0x7f0b01ee;
+        public static final int rbtnzhifubao1=0x7f0b01ef;
+        public static final int rbtnzhifubao2=0x7f0b01f0;
+        public static final int spinCashless=0x7f0b01eb;
+        public static final int spinbillmanagerbill=0x7f0b0001;
+        public static final int spincoinmanagercoin=0x7f0b0018;
+        public static final int spinhopper=0x7f0b003a;
+        public static final int spinhuopeiCab=0x7f0b0158;
+        public static final int spinhuosetCab=0x7f0b00e7;
+        public static final int spinhuotestCab=0x7f0b00eb;
+        public static final int spinordergridtongji=0x7f0b01cc;
+        public static final int spinparamsort=0x7f0b01e1;
+        public static final int spinproductclassID=0x7f0b00db;
+        public static final int start_seach=0x7f0b01fe;
+        public static final int student=0x7f0b0173;
+        public static final int switchamount=0x7f0b01e7;
+        public static final int switchbaozhiProduct=0x7f0b01df;
+        public static final int switchcard=0x7f0b01e9;
+        public static final int switchemptyProduct=0x7f0b01e0;
+        public static final int switchhot=0x7f0b00f7;
+        public static final int switchisNet=0x7f0b01d6;
+        public static final int switchisbuhuo=0x7f0b01d8;
+        public static final int switchisbuyCar=0x7f0b01d9;
+        public static final int switchisqiangbuy=0x7f0b01da;
+        public static final int switchlanguage=0x7f0b01dc;
+        public static final int switchlight=0x7f0b00f3;
+        public static final int switchprinter=0x7f0b01f4;
+        public static final int switchweixing=0x7f0b01f2;
+        public static final int switcold=0x7f0b00f5;
+        public static final int tab_billmanager=0x7f0b0000;
+        public static final int tab_class=0x7f0b00bc;
+        public static final int tab_coinmanager=0x7f0b0017;
+        public static final int tab_device=0x7f0b01e6;
+        public static final int tab_grid=0x7f0b019f;
+        public static final int tab_huodaomanager=0x7f0b00df;
+        public static final int tab_huodaoset=0x7f0b00fe;
+        public static final int tab_huodaotest=0x7f0b00ea;
+        public static final int tab_machine=0x7f0b01d2;
+        public static final int tab_payoutmanager=0x7f0b0039;
+        public static final int tab_picture=0x7f0b01d0;
+        public static final int tab_product=0x7f0b00c7;
+        public static final int tab_run=0x7f0b01f8;
+        public static final int tvLogin=0x7f0b017d;
+        public static final int tvVersion=0x7f0b017c;
+        public static final int tvbent=0x7f0b017f;
+        public static final int tvcard=0x7f0b0182;
+        public static final int tvcolumn=0x7f0b0181;
+        public static final int tvcolumn2=0x7f0b018f;
+        public static final int tvextracom=0x7f0b0189;
+        public static final int tvposip=0x7f0b018b;
+        public static final int tvposipport=0x7f0b018d;
+        public static final int tvprintcom=0x7f0b0187;
+        public static final int txtLogin=0x7f0b017e;
+        public static final int txtMsg=0x7f0b020e;
+        public static final int txtRealStatus=0x7f0b01a6;
+        public static final int txtRealStatusValue=0x7f0b01a7;
+        public static final int txtadsTip=0x7f0b008b;
+        public static final int txtbent=0x7f0b0180;
+        public static final int txtbillerr=0x7f0b0006;
+        public static final int txtbillmanagerbillin=0x7f0b0007;
+        public static final int txtbillmanagerbillin2=0x7f0b0008;
+        public static final int txtbillmanagerbillincount=0x7f0b0009;
+        public static final int txtbillmanagerbillpay=0x7f0b000a;
+        public static final int txtbillmanagerbillpay2=0x7f0b000b;
+        public static final int txtbillmanagerbillpayamount=0x7f0b000d;
+        public static final int txtbillmanagerbillpaycount=0x7f0b000c;
+        public static final int txtbillmanagerpar=0x7f0b0002;
+        public static final int txtbillmanagerpar2=0x7f0b0003;
+        public static final int txtbillmanagerstate=0x7f0b0004;
+        public static final int txtbillpayback=0x7f0b0005;
+        public static final int txtbillpayin=0x7f0b000e;
+        public static final int txtbusgoodselAmount=0x7f0b005c;
+        public static final int txtbusgoodselAmounttxt=0x7f0b005b;
+        public static final int txtbusgoodselDes=0x7f0b0063;
+        public static final int txtbusgoodselName=0x7f0b005a;
+        public static final int txtbushuoname=0x7f0b0067;
+        public static final int txtbuszhiamerount=0x7f0b007a;
+        public static final int txtbuszhiamountAmount=0x7f0b006e;
+        public static final int txtbuszhiamountbill=0x7f0b006f;
+        public static final int txtbuszhiamountbillAmount=0x7f0b0070;
+        public static final int txtbuszhiamountcount=0x7f0b006c;
+        public static final int txtbuszhiamountsp=0x7f0b006d;
+        public static final int txtbuszhiamounttime=0x7f0b0071;
+        public static final int txtbuszhiamounttsxx=0x7f0b0072;
+        public static final int txtbuszhiercount=0x7f0b0078;
+        public static final int txtbuszhierrst=0x7f0b007b;
+        public static final int txtbuszhiersp=0x7f0b0079;
+        public static final int txtbuszhiertime=0x7f0b007c;
+        public static final int txtbuszhiposAmount=0x7f0b0084;
+        public static final int txtbuszhiposcount=0x7f0b0082;
+        public static final int txtbuszhipossp=0x7f0b0083;
+        public static final int txtbuszhipostime=0x7f0b0085;
+        public static final int txtbuszhipostsxx=0x7f0b0086;
+        public static final int txtbuszhiweicount=0x7f0b009a;
+        public static final int txtbuszhiweirount=0x7f0b009c;
+        public static final int txtbuszhiweirst=0x7f0b009d;
+        public static final int txtbuszhiweisp=0x7f0b009b;
+        public static final int txtbuszhiweitime=0x7f0b009e;
+        public static final int txtcabID=0x7f0b01c0;
+        public static final int txtcabIDValue=0x7f0b01c1;
+        public static final int txtcabid=0x7f0b0199;
+        public static final int txtcashlessamount=0x7f0b00b7;
+        public static final int txtcashlesstest=0x7f0b00a4;
+        public static final int txtclassID=0x7f0b00ba;
+        public static final int txtclassName=0x7f0b00bb;
+        public static final int txtcoinerr=0x7f0b001d;
+        public static final int txtcoinmanagercoinin1=0x7f0b001e;
+        public static final int txtcoinmanagercoinin10=0x7f0b0027;
+        public static final int txtcoinmanagercoinin11=0x7f0b0028;
+        public static final int txtcoinmanagercoinin12=0x7f0b0029;
+        public static final int txtcoinmanagercoinin13=0x7f0b002a;
+        public static final int txtcoinmanagercoinin14=0x7f0b002b;
+        public static final int txtcoinmanagercoinin15=0x7f0b002c;
+        public static final int txtcoinmanagercoinin16=0x7f0b002d;
+        public static final int txtcoinmanagercoinin2=0x7f0b001f;
+        public static final int txtcoinmanagercoinin3=0x7f0b0020;
+        public static final int txtcoinmanagercoinin4=0x7f0b0021;
+        public static final int txtcoinmanagercoinin5=0x7f0b0022;
+        public static final int txtcoinmanagercoinin6=0x7f0b0023;
+        public static final int txtcoinmanagercoinin7=0x7f0b0024;
+        public static final int txtcoinmanagercoinin8=0x7f0b0025;
+        public static final int txtcoinmanagercoinin9=0x7f0b0026;
+        public static final int txtcoinmanagercoininamount=0x7f0b002f;
+        public static final int txtcoinmanagercoinincount=0x7f0b002e;
+        public static final int txtcoinmanagerpar=0x7f0b0019;
+        public static final int txtcoinmanagerpar2=0x7f0b001a;
+        public static final int txtcoinmanagerstate=0x7f0b001b;
+        public static final int txtcoinpayback=0x7f0b001c;
+        public static final int txtcoinpayin=0x7f0b0030;
+        public static final int txtcoinpaymoney=0x7f0b0033;
+        public static final int txtcold=0x7f0b00f4;
+        public static final int txtcolumn=0x7f0b00ec;
+        public static final int txtcolumn2=0x7f0b0190;
+        public static final int txtcolumnID=0x7f0b01c2;
+        public static final int txtcolumnIDValue=0x7f0b01c3;
+        public static final int txtdebtAmount=0x7f0b01b6;
+        public static final int txtdebtAmountValue=0x7f0b01b7;
+        public static final int txtditu=0x7f0b00b6;
+        public static final int txtextracom=0x7f0b018a;
+        public static final int txthopperin1=0x7f0b003b;
+        public static final int txthopperin2=0x7f0b003c;
+        public static final int txthopperin3=0x7f0b003d;
+        public static final int txthopperin4=0x7f0b003e;
+        public static final int txthopperin5=0x7f0b003f;
+        public static final int txthopperin6=0x7f0b0040;
+        public static final int txthopperin7=0x7f0b0041;
+        public static final int txthopperin8=0x7f0b0042;
+        public static final int txthopperincount=0x7f0b0043;
+        public static final int txthopperpaymoney=0x7f0b0046;
+        public static final int txthopperpaynum=0x7f0b004a;
+        public static final int txthot=0x7f0b00f6;
+        public static final int txthuoCabID=0x7f0b0163;
+        public static final int txthuoColID=0x7f0b0164;
+        public static final int txthuoIslast=0x7f0b016f;
+        public static final int txthuoProID=0x7f0b0166;
+        public static final int txthuoProName=0x7f0b0167;
+        public static final int txthuoallrst=0x7f0b00fd;
+        public static final int txthuocolumnStatus=0x7f0b016c;
+        public static final int txthuoid=0x7f0b019b;
+        public static final int txthuolasttime=0x7f0b016e;
+        public static final int txthuomarketPrice=0x7f0b0168;
+        public static final int txthuorst=0x7f0b00f1;
+        public static final int txthuosalesPrice=0x7f0b0169;
+        public static final int txthuosetCab=0x7f0b0157;
+        public static final int txthuosetno=0x7f0b00e6;
+        public static final int txthuosetrst=0x7f0b00e9;
+        public static final int txthuoshelfLife=0x7f0b016d;
+        public static final int txthuotestrst=0x7f0b00f0;
+        public static final int txtlight=0x7f0b00f2;
+        public static final int txtlogDesc=0x7f0b0196;
+        public static final int txtlogID=0x7f0b0194;
+        public static final int txtlogTime=0x7f0b0197;
+        public static final int txtlogType=0x7f0b0195;
+        public static final int txtloggridend=0x7f0b0177;
+        public static final int txtloggridstart=0x7f0b0175;
+        public static final int txtordereID=0x7f0b01d1;
+        public static final int txtordergridend=0x7f0b01c6;
+        public static final int txtordergridstart=0x7f0b01c4;
+        public static final int txtordergridtongji=0x7f0b01cb;
+        public static final int txtpage=0x7f0b0054;
+        public static final int txtpayStatus=0x7f0b01a4;
+        public static final int txtpayStatusValue=0x7f0b01a5;
+        public static final int txtpayTime=0x7f0b01ba;
+        public static final int txtpayTimeValue=0x7f0b01bb;
+        public static final int txtpayType=0x7f0b01a2;
+        public static final int txtpayTypeValue=0x7f0b01a3;
+        public static final int txtpaymoney=0x7f0b0011;
+        public static final int txtposip=0x7f0b018c;
+        public static final int txtposipport=0x7f0b018e;
+        public static final int txtprintcom=0x7f0b0188;
+        public static final int txtproductName=0x7f0b01bc;
+        public static final int txtproductNameValue=0x7f0b01bd;
+        public static final int txtproid=0x7f0b00c9;
+        public static final int txtproidValue=0x7f0b00ca;
+        public static final int txtproname=0x7f0b00cb;
+        public static final int txtpronameValue=0x7f0b00cc;
+        public static final int txtrealAmount=0x7f0b01b4;
+        public static final int txtrealAmountValue=0x7f0b01b5;
+        public static final int txtrealCard=0x7f0b01b8;
+        public static final int txtrealCardValue=0x7f0b01b9;
+        public static final int txtrealCoin=0x7f0b01b2;
+        public static final int txtrealCoinValue=0x7f0b01b3;
+        public static final int txtrealNote=0x7f0b01b0;
+        public static final int txtrealNoteValue=0x7f0b01b1;
+        public static final int txtsalesPrice=0x7f0b01be;
+        public static final int txtsalesPriceValue=0x7f0b01bf;
+        public static final int txtserver=0x7f0b0183;
+        public static final int txtsmallAmount=0x7f0b01ac;
+        public static final int txtsmallAmountValue=0x7f0b01ad;
+        public static final int txtsmallCard=0x7f0b01ae;
+        public static final int txtsmallCardValue=0x7f0b01af;
+        public static final int txtsmallConi=0x7f0b01aa;
+        public static final int txtsmallConiValue=0x7f0b01ab;
+        public static final int txtsmallNote=0x7f0b01a8;
+        public static final int txtsmallNoteValue=0x7f0b01a9;
+        public static final int txtweixingtest=0x7f0b0221;
+        public static final int txtzhifubaotest=0x7f0b022a;
+        public static final int txtztai=0x7f0b020d;
+        public static final int video=0x7f0b00b3;
+        public static final int webproductDesc=0x7f0b0064;
+        public static final int webtishiInfo=0x7f0b006a;
+        public static final int zhifubaogrp=0x7f0b01ed;
     }
     public static final class layout {
         public static final int addinaccount=0x7f030000;
@@ -773,7 +1233,7 @@ public final class R {
         public static final int zhitipwd=0x7f030030;
     }
     public static final class menu {
-        public static final int maintain=0x7f090000;
+        public static final int maintain=0x7f0a0000;
     }
     public static final class raw {
         public static final int busfinish=0x7f040000;
@@ -790,9 +1250,9 @@ public final class R {
         public static final int welcomeegg=0x7f04000b;
     }
     public static final class string {
-        public static final int action_settings=0x7f070001;
-        public static final int app_name=0x7f070000;
-        public static final int hello_world=0x7f070002;
+        public static final int action_settings=0x7f080001;
+        public static final int app_name=0x7f080000;
+        public static final int hello_world=0x7f080002;
     }
     public static final class style {
         /** 
@@ -816,10 +1276,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f080000;
+        public static final int AppBaseTheme=0x7f090000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f080001;
+        public static final int AppTheme=0x7f090001;
     }
 }

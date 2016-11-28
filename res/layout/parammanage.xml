@@ -43,7 +43,8 @@
 							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"
 							        android:textSize="40sp"
-						            android:textStyle="bold"		        
+						            android:textStyle="bold"	
+						            android:background="@drawable/editsharp3"	        
 							        android:text="" />
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -70,7 +71,8 @@
 							        android:layout_width="wrap_content" 
 							        android:layout_height="wrap_content"							        
 							        android:textSize="40sp"
-						            android:textStyle="bold"		        
+						            android:textStyle="bold"	
+						            android:background="@drawable/editsharp3"	        
 							        android:text="" />
 						         
 						         <Button   
@@ -78,7 +80,7 @@
 							        android:text="签到验证"
 							        android:layout_width="wrap_content"
 									android:layout_height="70dp" 
-									android:background="@drawable/button_selector"   
+									android:background="@drawable/cornerbtn_style"  
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -111,7 +113,7 @@
 						             android:layout_width="100dp"
 									 android:layout_height="70dp"  
 						             android:enabled="false"  
-						             android:background="@drawable/button_selector"         
+						             android:background="@drawable/cornerbtn_style"       
 						             android:text="测试" />     
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -438,14 +440,14 @@
 							        android:text="保存"
 							        android:layout_width="100dp"
 									android:layout_height="70dp"  
-									android:background="@drawable/button_selector"
+									android:background="@drawable/cornerbtn_style2" 
 							    /> 
 							    <Button   
 							        android:id="@+id/btnmachineexit"  
 							        android:text="退出"
 							        android:layout_width="100dp"
 									android:layout_height="70dp" 
-									android:background="@drawable/button_selector"   
+									android:background="@drawable/cornerbtn_style2"   
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -505,7 +507,7 @@
 						             android:layout_width="100dp"
 									 android:layout_height="70dp"  
 						             android:enabled="false"  
-						             android:background="@drawable/button_selector"         
+						             android:background="@drawable/cornerbtn_style"         
 						             android:text="测试" />      
 				            </LinearLayout>	        
 					    </TableRow> 
@@ -538,7 +540,7 @@
 						             android:layout_width="wrap_content"
 									 android:layout_height="70dp"  
 						             android:enabled="false"     
-						             android:background="@drawable/button_selector"        
+						             android:background="@drawable/cornerbtn_style"        
 						             android:text="第三方出货测试" />         
 				            </LinearLayout>	        
 					    </TableRow> 
@@ -568,7 +570,7 @@
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
 						             android:enabled="false" 
-						             android:background="@drawable/button_selector"             
+						             android:background="@drawable/cornerbtn_style"              
 						             android:text="测试" />        
 				            </LinearLayout>	        
 					    </TableRow>
@@ -612,7 +614,7 @@
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
 						             android:enabled="false" 
-						             android:background="@drawable/button_selector"             
+						             android:background="@drawable/cornerbtn_style"              
 						             android:text="测试" />        
 				            </LinearLayout>	        
 					    </TableRow>
@@ -645,7 +647,7 @@
 						             android:layout_width="wrap_content"
 									 android:layout_height="70dp"  
 						             android:enabled="false" 
-						             android:background="@drawable/button_selector"           
+						             android:background="@drawable/cornerbtn_style"           
 						             android:text="测试" />      
 				            </LinearLayout>	        
 					    </TableRow>
@@ -678,7 +680,7 @@
 						             android:layout_width="100dp"
 									 android:layout_height="70dp" 
 						             android:enabled="false"  
-						             android:background="@drawable/button_selector"            
+						             android:background="@drawable/cornerbtn_style"             
 						             android:text="测试" />      
 				            </LinearLayout>	        
 					    </TableRow>	
@@ -696,14 +698,14 @@
 							        android:text="保存"
 							        android:layout_width="100dp"
 									android:layout_height="70dp"  
-									android:background="@drawable/button_selector" 
+									android:background="@drawable/cornerbtn_style2" 
 							    /> 
 							    <Button   
 							        android:id="@+id/btndeviceexit"  
 							        android:text="退出"
 							        android:layout_width="100dp"
 									android:layout_height="70dp" 
-									android:background="@drawable/button_selector"  
+									android:background="@drawable/cornerbtn_style2"  
 							    /> 
 				            </LinearLayout>	        
 					    </TableRow>  
@@ -737,7 +739,7 @@
 			        android:layout_below="@+id/emachinelistview"
 			        android:layout_width="100dp"
 					android:layout_height="70dp"   
-					android:background="@drawable/button_selector"
+					android:background="@drawable/cornerbtn_style2"
 			    /> 
 			    <Button   
 			        android:id="@+id/btnmachinerunCancel"  
@@ -746,7 +748,7 @@
 			        android:text="退出"
 			        android:layout_width="100dp"
 					android:layout_height="70dp" 
-					android:background="@drawable/button_selector" 
+					android:background="@drawable/cornerbtn_style2"
 			    /> 	
 		</RelativeLayout>	 			    
 	</LinearLayout>

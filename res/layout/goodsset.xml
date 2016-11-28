@@ -27,7 +27,7 @@
 				        android:text="选择图片"
 				        android:layout_width="100dp"   
 				        android:layout_height="70dp"  
-				        android:background="@drawable/button_selector" 
+				        android:background="@drawable/cornerbtn_style"
 				    /> 
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -54,6 +54,7 @@
 				        android:minWidth="150px"
 						android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
+				        android:background="@drawable/editsharp3"
 				        android:text="" />
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -80,6 +81,7 @@
 				        android:minWidth="150px"
 						android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
+				        android:background="@drawable/editsharp3"
 				        android:text="" />
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -107,6 +109,7 @@
 						android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
+				        android:background="@drawable/editsharp3"
 				        android:text="0" />
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -134,6 +137,7 @@
 						android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
 				        android:numeric="decimal"
+				        android:background="@drawable/editsharp3"
 				        android:text="0" />
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -160,6 +164,7 @@
 						android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
 				        android:numeric="integer"
+				        android:background="@drawable/editsharp"
 				        android:text="0" />
 	            </LinearLayout>	        
 		    </TableRow>
@@ -186,6 +191,7 @@
 						android:layout_width="wrap_content" 
 				        android:layout_height="wrap_content"
 				        android:numeric="integer"
+				        android:background="@drawable/editsharp"
 				        android:text="0" />
 	            </LinearLayout>	        
 		    </TableRow>  
@@ -276,14 +282,14 @@
 				        android:text="保存"
 				        android:layout_width="100dp"   
 				        android:layout_height="70dp" 
-				        android:background="@drawable/button_selector"  
+				        android:background="@drawable/cornerbtn_style2" 
 				    /> 
 				    <Button   
 				        android:id="@+id/btnaddProexit"  
 				        android:text="返回"
 				        android:layout_width="100dp"   
 				        android:layout_height="70dp"  
-				        android:background="@drawable/button_selector" 
+				        android:background="@drawable/cornerbtn_style2"
 				    /> 
 	            </LinearLayout>	        
 		    </TableRow>  

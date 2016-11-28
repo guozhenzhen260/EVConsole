@@ -33,35 +33,35 @@
 			             android:id="@+id/btnhuosetadd"			             
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
-			             android:background="@drawable/button_selector"             
+			             android:background="@drawable/cornerbtn_style2"            
 			             android:text="添加柜" />		         
 		         <Button
 			             android:id="@+id/btnhuosetdel"
 			             android:layout_toRightOf="@+id/btnhuosetadd"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
-			             android:background="@drawable/button_selector"
+			             android:background="@drawable/cornerbtn_style2"
 			             android:text="删除柜" />
 		         <Button
 			             android:id="@+id/btnhuosetbu"
 			             android:layout_toRightOf="@+id/btnhuosetdel"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
-			             android:background="@drawable/button_selector"
+			             android:background="@drawable/cornerbtn_style2"
 			             android:text="补满本柜" />
 		         <Button
 			             android:id="@+id/btnhuosetclear"
 			             android:layout_toRightOf="@+id/btnhuosetbu"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
-			             android:background="@drawable/button_selector"
+			             android:background="@drawable/cornerbtn_style2"
 			             android:text="清空本柜" />
 		         <Button
 			             android:id="@+id/btnhuosetexit"
 			             android:layout_toRightOf="@+id/btnhuosetclear"
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
-			             android:background="@drawable/button_selector"
+			             android:background="@drawable/cornerbtn_style2"
 			             android:text="退出" />
 		         <TextView 		 
             	    android:minWidth="160px"  
@@ -183,18 +183,19 @@
 							        android:layout_height="wrap_content"
 							        android:layout_weight="1"
 							        android:numeric="integer"
+							        android:background="@drawable/editsharp"
 							        android:text="1" />
 						          <Button
 						             android:id="@+id/btnhuopre"
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"  
-						             android:background="@drawable/button_selector"           
+						             android:background="@drawable/cornerbtn_style"          
 						             android:text="上一道" />
 						           <Button
 						             android:id="@+id/btnhuonext"
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"  
-						             android:background="@drawable/button_selector"           
+						             android:background="@drawable/cornerbtn_style"          
 						             android:text="下一道" />
 					         </LinearLayout>
 					    </TableRow>  	
@@ -354,25 +355,25 @@
 						             android:id="@+id/btnhuochu"
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"  
-						             android:background="@drawable/button_selector"           
+						             android:background="@drawable/cornerbtn_style2"          
 						             android:text="出货" />
 						        <Button
 						             android:id="@+id/btnhuocancel"
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"  
-						             android:background="@drawable/button_selector"          
+						             android:background="@drawable/cornerbtn_style2"         
 						             android:text="重置" />
 						         <Button
 						             android:id="@+id/btnhuochuall"
 						             android:layout_width="wrap_content"
 						             android:layout_height="70dp"    
-						             android:background="@drawable/button_selector"         
+						             android:background="@drawable/cornerbtn_style2"       
 						             android:text="开始循环出货" />
 						         <Button
 						             android:id="@+id/btnhuoexit"
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"
-						             android:background="@drawable/button_selector"
+						             android:background="@drawable/cornerbtn_style2"
 						             android:text="退出" />
 					         </LinearLayout>
 					    </TableRow>			        
@@ -1309,7 +1310,7 @@
 			             android:layout_width="150dp"
 			             android:layout_height="100dp"
 			             android:layout_below="@+id/spinhuopeiCab"    
-			             android:background="@drawable/button_selector"          
+			             android:background="@drawable/cornerbtn_style2"        
 			             android:text="手动配置" />
 			        <Button
 			             android:id="@+id/btnhuosetautohuo"			             
@@ -1317,7 +1318,7 @@
 			             android:layout_height="100dp"
 			             android:layout_toRightOf="@+id/btnhuosetsethuo"
 			             android:layout_below="@+id/spinhuopeiCab"     
-			             android:background="@drawable/button_selector"         
+			             android:background="@drawable/cornerbtn_style2"      
 			             android:text="自动配置" />
 			        <Button
 			             android:id="@+id/btnhuosetclose"			             
@@ -1325,7 +1326,7 @@
 			             android:layout_height="100dp"
 			             android:layout_toRightOf="@+id/btnhuosetautohuo"
 			             android:layout_below="@+id/spinhuopeiCab"   
-			             android:background="@drawable/button_selector"           
+			             android:background="@drawable/cornerbtn_style2"          
 			             android:text="关闭" />
 			    </RelativeLayout>    
 			</ScrollView>    

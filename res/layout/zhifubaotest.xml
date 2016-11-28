@@ -49,6 +49,7 @@
 	        android:textSize="40sp"
             android:textStyle="bold"	
             android:numeric="decimal"	
+            android:background="@drawable/editsharp"
             android:text="0"/>	         		 
    	</LinearLayout>
    	<LinearLayout
@@ -59,31 +60,31 @@
 		    android:id="@+id/btnzhifubaotestok"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="生成二维码"/>	
 	     <Button
 		    android:id="@+id/btnzhifubaotestquery"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="查询"/>	
 	     <Button
 		    android:id="@+id/btnzhifubaotestdelete"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="撤销交易"/>	
 	     <Button
 		    android:id="@+id/btnzhifubaotestpayout"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="退款"/>
 	     <Button
 		    android:id="@+id/btnzhifubaotestcancel"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="退出"/>
    	</LinearLayout>   	
 </LinearLayout>

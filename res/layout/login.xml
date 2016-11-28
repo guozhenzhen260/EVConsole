@@ -37,6 +37,7 @@
 			        android:layout_height="wrap_content"
 			        android:textSize="40sp"
 					android:textStyle="bold"	
+					android:background="@drawable/editsharp3"
 			        android:layout_below="@id/tvLogin"        
 			        />
 				<TextView
@@ -55,7 +56,8 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"  
 			        android:textSize="40sp"
-					android:textStyle="bold"      
+					android:textStyle="bold"    
+					android:background="@drawable/editsharp3"  
 			        android:layout_below="@id/tvbent"        
 			        />
 			    <TextView
@@ -74,7 +76,8 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"  
 			        android:textSize="40sp"
-					android:textStyle="bold"      
+					android:textStyle="bold"     
+					android:background="@drawable/editsharp3" 
 			        android:layout_below="@id/tvcolumn"        
 			        />
 			    <TextView
@@ -93,7 +96,8 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"   
 			        android:textSize="40sp"
-					android:textStyle="bold"     
+					android:textStyle="bold"  
+					android:background="@drawable/editsharp3"   
 			        android:layout_below="@id/tvcard"        
 			        />
 			    <Button
@@ -103,7 +107,7 @@
 			        android:layout_alignParentRight="true"
 			        android:layout_below="@id/txtserver"
 			        android:layout_marginLeft="10dp"
-			        android:background="@drawable/button_selector"
+			        android:background="@drawable/cornerbtn_style2"
 			        android:text="退出" />
 			
 			    <Button
@@ -112,7 +116,7 @@
 					android:layout_height="70dp" 
 			        android:layout_below="@id/txtserver"
 			        android:layout_toLeftOf="@id/btnClose"
-			        android:background="@drawable/button_selector"
+			        android:background="@drawable/cornerbtn_style2"
 			        android:text="修改" />
 			    <Button
 			        android:id="@+id/btnGaoji"
@@ -120,7 +124,7 @@
 					android:layout_height="70dp" 
 			        android:layout_below="@id/txtserver"
 			        android:layout_toLeftOf="@id/btnLogin"
-			        android:background="@drawable/button_selector"
+			        android:background="@drawable/cornerbtn_style"
 			        android:text="高级设置" /> 
 			    <TextView
 			        android:id="@+id/tvprintcom"
@@ -139,6 +143,7 @@
 			        android:layout_height="wrap_content"  
 			        android:textSize="40sp"
 					android:textStyle="bold"      
+					android:background="@drawable/editsharp3"
 			        android:layout_below="@id/tvprintcom"        
 			        /> 
 			    <TextView
@@ -158,6 +163,7 @@
 			        android:layout_height="wrap_content"  
 			        android:textSize="40sp"
 					android:textStyle="bold"      
+					android:background="@drawable/editsharp3"
 			        android:layout_below="@id/tvextracom"        
 			        /> 
 			    <TextView
@@ -176,7 +182,8 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"  
 			        android:textSize="40sp"
-					android:textStyle="bold"      
+					android:textStyle="bold"     
+					android:background="@drawable/editsharp3" 
 			        android:layout_below="@id/tvposip"        
 			        />
 			    <TextView
@@ -198,6 +205,7 @@
 					android:textStyle="bold"      
 			        android:layout_below="@id/tvposipport"   
 			        android:numeric="integer" 
+			        android:background="@drawable/editsharp3"
 			        />
 			    <TextView
 			        android:id="@+id/tvcolumn2"
@@ -216,28 +224,29 @@
 			        android:layout_height="wrap_content"  
 			        android:textSize="40sp"
 					android:textStyle="bold"      
-			        android:layout_below="@id/tvcolumn2"   
+			        android:layout_below="@id/tvcolumn2" 
+			        android:background="@drawable/editsharp3"  
 			        />			           
 			  <Button
 			        android:id="@+id/btnDel"
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
 			        android:layout_below="@id/txtcolumn2"
-			        android:background="@drawable/button_selector"
+			        android:background="@drawable/cornerbtn_style"
 			        android:text="清除商品信息" />   
 			  <Button
 			        android:id="@+id/btnDelImg"
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
 			        android:layout_below="@id/btnDel"
-			        android:background="@drawable/button_selector"
+			        android:background="@drawable/cornerbtn_style"
 			        android:text="清除商品图片缓存" />
 			  <Button
 			        android:id="@+id/btnDelads"
 			        android:layout_width="150dp"
 					android:layout_height="100dp" 
 			        android:layout_below="@id/btnDelImg"
-			        android:background="@drawable/button_selector"
+			        android:background="@drawable/cornerbtn_style"
 			        android:text="清除广告缓存" />         
         </RelativeLayout>
 	</ScrollView>

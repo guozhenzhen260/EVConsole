@@ -30,6 +30,7 @@
 	        android:textSize="40sp"
             android:textStyle="bold"	
             android:numeric="decimal"	
+            android:background="@drawable/editsharp"
             android:text="0"/>	         		 
    	</LinearLayout>
    	<LinearLayout
@@ -40,49 +41,49 @@
 		    android:id="@+id/btncashlesstestopen"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="打开"/>
          <Button
 		    android:id="@+id/btncashlesstestfind"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="查询"/>
    		 <Button
 		    android:id="@+id/btncashlesstestok"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="扣款"/>	
 	     <Button
 		    android:id="@+id/btncashlesstestquery"
 		    android:layout_width="wrap_content"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="取交易信息"/>
 	     <Button
 		    android:id="@+id/btncashlesstestdelete"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="撤销交易"/>	
 	     <Button
 		    android:id="@+id/btncashlesstestpayout"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="退款"/>
 	     <Button
 		    android:id="@+id/btncashlesstestclose"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="关闭"/>
 	     <Button
 		    android:id="@+id/btncashlesstestcancel"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
-			android:background="@drawable/button_selector"
+			android:background="@drawable/cornerbtn_style2"
 	        android:text="退出"/>
    	</LinearLayout>
 </LinearLayout>

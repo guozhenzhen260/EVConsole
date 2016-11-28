@@ -365,7 +365,8 @@
 					        android:textSize="40sp"
 				            android:textStyle="bold"
 				            android:numeric="integer"	
-				            android:hint="请点击输入"	        
+				            android:hint="请点击输入"
+				            android:background="@drawable/editsharp"	        
 					        android:text="" />  
 				     <TextView 		 
 		            	    android:id="@+id/txtordergridend" 
@@ -385,14 +386,15 @@
 					        android:textSize="40sp"
 				            android:textStyle="bold"
 				            android:numeric="integer"
-				            android:hint="请点击输入"		        
+				            android:hint="请点击输入"
+				            android:background="@drawable/editsharp"		        
 					        android:text="" /> 
 				     <Button
 				             android:id="@+id/btnordergridquery"	
 				             android:layout_below="@+id/edtordergridend"	
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"  
-							 android:background="@drawable/button_selector"          
+							 android:background="@drawable/cornerbtn_style"        
 				             android:text="查询记录" />
 				     <Button
 				             android:id="@+id/btnordergriddel"	
@@ -400,7 +402,7 @@
 				             android:layout_toRightOf="@+id/btnordergridquery"		             
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"  
-							 android:background="@drawable/button_selector"         
+							 android:background="@drawable/cornerbtn_style"       
 				             android:text="删除记录" />	
 				     <Button
 				             android:id="@+id/btnordergridalldel"	
@@ -408,7 +410,7 @@
 				             android:layout_toRightOf="@+id/btnordergriddel"		             
 				             android:layout_width="wrap_content"
 							 android:layout_height="70dp"  
-							 android:background="@drawable/button_selector"         
+							 android:background="@drawable/cornerbtn_style"       
 				             android:text="删除所有记录" />      
 			         <TextView 		    
 			            	android:id="@+id/txtordergridtongji"
@@ -432,7 +434,7 @@
 				             android:layout_toRightOf="@+id/spinordergridtongji"	
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"
-							 android:background="@drawable/button_selector"
+							 android:background="@drawable/cornerbtn_style"
 				             android:text="生成柱状图" />
 			         <Button
 				             android:id="@+id/btnordergridLine"
@@ -440,7 +442,7 @@
 				             android:layout_toRightOf="@+id/btnordergridStack"
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"
-							 android:background="@drawable/button_selector"
+							 android:background="@drawable/cornerbtn_style"
 				             android:text="生成折线图" />
 			         <Button
 				             android:id="@+id/btnordergridexit"
@@ -448,7 +450,7 @@
 				             android:layout_toRightOf="@+id/btnordergridLine"
 				             android:layout_width="100dp"
 							 android:layout_height="70dp"
-							 android:background="@drawable/button_selector"
+							 android:background="@drawable/cornerbtn_style2"
 				             android:text="退出" />
 				</RelativeLayout>    
 			</LinearLayout> 

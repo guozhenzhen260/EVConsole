@@ -59,7 +59,8 @@
 		        android:layout_height="wrap_content"
 	            android:textStyle="bold"
 	            android:numeric="integer"
-	            android:hint="请点击输入"		        
+	            android:hint="请点击输入"
+	            android:background="@drawable/editsharp"		        
 		        android:text="" />  
 	     <TextView 		 
            	    android:id="@+id/txtloggridend" 
@@ -77,14 +78,15 @@
 		        android:layout_height="wrap_content"
 	            android:textStyle="bold"
 	            android:numeric="integer"
-	            android:hint="请点击输入"		        
+	            android:hint="请点击输入"
+	            android:background="@drawable/editsharp"		        
 		        android:text="" /> 
 	     <Button
 	             android:id="@+id/btnloggridquery"	
 	             android:layout_below="@+id/edtloggridstart"			             
 	             android:layout_width="100dp"
 				 android:layout_height="70dp" 
-				 android:background="@drawable/button_selector"            
+				 android:background="@drawable/cornerbtn_style"           
 	             android:text="查询记录" />
 	     <Button
 	             android:id="@+id/btnloggriddel"	
@@ -92,7 +94,7 @@
 	             android:layout_toRightOf="@+id/btnloggridquery"		             
 	             android:layout_width="100dp"
 				 android:layout_height="70dp"
-				 android:background="@drawable/button_selector"              
+				 android:background="@drawable/cornerbtn_style"             
 	             android:text="删除记录" />		         
          <Button
 	             android:id="@+id/btnloggridexit"
@@ -100,7 +102,7 @@
 	             android:layout_toRightOf="@+id/btnloggriddel"
 	             android:layout_width="100dp"
 				 android:layout_height="70dp"
-				 android:background="@drawable/button_selector" 
+				 android:background="@drawable/cornerbtn_style2"
 	             android:text="退出" />
 	</RelativeLayout>     
 </LinearLayout>
