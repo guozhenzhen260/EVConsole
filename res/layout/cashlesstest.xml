@@ -8,7 +8,7 @@
    	    android:minWidth="160px"	  
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="读卡器交易结果:"
+		android:text="@string/Payresult"
 		android:textColor="#8C6931"
         android:textSize="25dp"/>
 	<LinearLayout
@@ -20,7 +20,7 @@
           	    android:textSize="40sp"	  
           	    android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="支付金额:"/>
+				android:text="@string/Paymoney"/>
         
          <EditText
             android:id="@+id/edtcashlesstest"
@@ -42,43 +42,43 @@
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="打开"/>
+	        android:text="@string/Open"/>
          <Button
 		    android:id="@+id/btncashlesstestfind"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="查询"/>
+	        android:text="@string/Query"/>
    		 <Button
 		    android:id="@+id/btncashlesstestok"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="扣款"/>	
+	        android:text="@string/Cost"/>	
 	     <Button
 		    android:id="@+id/btncashlesstestquery"
 		    android:layout_width="wrap_content"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="取交易信息"/>
+	        android:text="@string/Costquery"/>
 	     <Button
 		    android:id="@+id/btncashlesstestdelete"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="撤销交易"/>	
+	        android:text="@string/Delete"/>	
 	     <Button
 		    android:id="@+id/btncashlesstestpayout"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="退款"/>
+	        android:text="@string/Paydelete"/>
 	     <Button
 		    android:id="@+id/btncashlesstestclose"
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="关闭"/>
+	        android:text="@string/Close"/>
 	     <Button
 		    android:id="@+id/btncashlesstestcancel"
 		    android:layout_width="100dp"

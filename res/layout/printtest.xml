@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"       
         android:text="自助售货机"
         android:layout_toRightOf="@+id/chktitle1" 
+        android:background="@drawable/editsharp"
         android:textSize="35dp"/>
 	<CheckBox
         android:id="@+id/chktitle2"
@@ -33,6 +34,7 @@
         android:text="交易凭证"
         android:layout_below="@+id/chktitle1"
         android:layout_toRightOf="@+id/chktitle2"
+        android:background="@drawable/editsharp"
         android:textSize="35dp" />
     <CheckBox
         android:id="@+id/chkno"
@@ -68,6 +70,7 @@
         android:text="谢谢使用自助售货机,我们将竭诚为您服务!"
         android:layout_below="@+id/chksum"
         android:layout_toRightOf="@+id/chkthank"
+        android:background="@drawable/editsharp"
         android:textSize="35dp" />
     <CheckBox
         android:id="@+id/chker"
@@ -85,6 +88,7 @@
         android:text="http://www.easivend.com.cn/"
         android:layout_below="@+id/chkthank"
         android:layout_toRightOf="@+id/chker"
+        android:background="@drawable/editsharp"
         android:textSize="35dp" />
     <CheckBox
         android:id="@+id/chkdate"
@@ -125,34 +129,39 @@
 	    android:layout_width="100dp"
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
-        android:text="打开串口"/>
+		android:background="@drawable/cornerbtn_style2"
+        android:text="@string/Open"/>
 	<Button
 	    android:id="@+id/btnquery"
 	    android:layout_width="100dp"
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnopen"
-        android:text="查询"/>
+		android:background="@drawable/cornerbtn_style2"
+        android:text="@string/Query"/>
 	<Button
 	    android:id="@+id/btnprint"
 	    android:layout_width="100dp"
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnquery"
-        android:text="打印"/>
+		android:background="@drawable/cornerbtn_style2"
+        android:text="@string/Print"/>
 	<Button
 	    android:id="@+id/btnclose"
 	    android:layout_width="100dp"
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnprint"
-        android:text="关闭串口"/>
+		android:background="@drawable/cornerbtn_style2"
+        android:text="@string/Close"/>
 	<Button
 	    android:id="@+id/btnsave"
 	    android:layout_width="100dp"
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnclose"
+		android:background="@drawable/cornerbtn_style2"
         android:text="@string/Save"/>
 	<Button
 	    android:id="@+id/btnexit"
@@ -160,5 +169,6 @@
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnsave"
+		android:background="@drawable/cornerbtn_style2"
         android:text="@string/Exit"/>
 </RelativeLayout>

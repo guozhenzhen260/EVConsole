@@ -24,7 +24,7 @@
 			        
 			         <Button   
 				        android:id="@+id/btnImg"  
-				        android:text="选择图片"
+				        android:text="@string/ChoiceGood"
 				        android:layout_width="100dp"   
 				        android:layout_height="70dp"  
 				        android:background="@drawable/cornerbtn_style"

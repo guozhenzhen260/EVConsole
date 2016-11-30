@@ -10,7 +10,15 @@
     <string name="Close">关闭</string>
     <string name="Query">查询</string>
     <string name="Set">配置</string>
-    <!-- 参数设置 -->
+    <string name="Cost">扣款</string>
+    <string name="Costquery">取交易信息</string>
+    <string name="Delete">撤销交易</string>
+    <string name="Paydelete">退款</string>
+    <string name="Payresult">交易结果:</string>
+    <string name="Paymoney">支付金额:</string>
+    <string name="Erwei">生成二维码:</string>
+    <string name="Print">打印</string>
+    <!-- 现金参数设置 -->
     <string name="Devtype">设备类型</string>
     <string name="DevPar">设备参数</string>
     <string name="DevStatus">使能状态</string>
@@ -47,4 +55,7 @@
     <string name="Num14">通道14</string>
     <string name="Num15">通道15</string>
     <string name="Num16">通道16</string>
+    <!-- 商品管理 -->
+    <string name="Clearkey">清空按键设置</string>
+    <string name="ChoiceGood">选择</string>
 </resources>

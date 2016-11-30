@@ -26,7 +26,7 @@
    	    android:minWidth="160px"	  
    	    android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="微信交易结果:"
+		android:text="@string/Payresult"
 		android:textColor="#8C6931"
         android:textSize="25dp"/>
 	<LinearLayout
@@ -38,7 +38,7 @@
            	    android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textSize="40sp"
-				android:text="支付金额:"/>
+				android:text="@string/Paymoney"/>
 	        
 	         <EditText
 	            android:id="@+id/edtweixingtest"
@@ -60,25 +60,25 @@
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
 			    android:background="@drawable/cornerbtn_style2"
-		        android:text="生成二维码"/>	
+		        android:text="@string/Erwei"/>	
 		     <Button
 			    android:id="@+id/btnweixingtestquery"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
 			    android:background="@drawable/cornerbtn_style2"
-		        android:text="查询"/>	
+		        android:text="@string/Query"/>	
 		     <Button
 			    android:id="@+id/btnweixingtestdelete"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
 			    android:background="@drawable/cornerbtn_style2"
-		        android:text="撤销交易"/>	
+		        android:text="@string/Delete"/>	
 		     <Button
 			    android:id="@+id/btnweixingtestpayout"
 			    android:layout_width="100dp"
 			    android:layout_height="70dp"
 			    android:background="@drawable/cornerbtn_style2"
-		        android:text="退款"/>
+		        android:text="@string/Paydelete"/>
 		     <Button
 			    android:id="@+id/btnweixingtestcancel"
 			    android:layout_width="100dp"

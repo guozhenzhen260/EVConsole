@@ -227,7 +227,7 @@
 					             android:layout_width="200dp"
 					             android:layout_height="70dp"
 					             android:background="@drawable/cornerbtn_style2"
-					             android:text="清空按键设置" />
+					             android:text="@string/Clearkey" />
 				         <Button
 					             android:id="@+id/btnproexit"
 					             android:layout_below="@+id/txtproname"  
