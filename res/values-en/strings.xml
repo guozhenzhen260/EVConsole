@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 通用 -->
+    <string name="Save">Save</string>
+    <string name="Exit">Exit</string>
+    <string name="Add">Add</string>
+    <string name="Update">Update</string>
+    <string name="Del">Del</string>
+    <string name="Devtype">DeviceType</string>
+    <string name="DevPar">DeviceParameter</string>
+    <string name="DevStatus">DeviceStatus</string>
+    <string name="ReturnKey">ReturnKey</string>
+    <string name="DevStat">DeviceStatus</string>
+    <string name="TubeNum">TubeNum</string>
+    <string name="TubeMoney">TubeMoney</string>
+</resources>

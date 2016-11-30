@@ -108,7 +108,7 @@
 			        android:layout_below="@id/txtserver"
 			        android:layout_marginLeft="10dp"
 			        android:background="@drawable/cornerbtn_style2"
-			        android:text="退出" />
+			        android:text="@string/Exit" />
 			
 			    <Button
 			        android:id="@+id/btnLogin"
@@ -117,7 +117,7 @@
 			        android:layout_below="@id/txtserver"
 			        android:layout_toLeftOf="@id/btnClose"
 			        android:background="@drawable/cornerbtn_style2"
-			        android:text="修改" />
+			        android:text="@string/Update" />
 			    <Button
 			        android:id="@+id/btnGaoji"
 			        android:layout_width="100dp"

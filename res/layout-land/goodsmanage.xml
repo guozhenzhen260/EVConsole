@@ -121,25 +121,25 @@
 				             android:layout_width="150dp"
 				             android:layout_height="70dp"  
 				             android:background="@drawable/cornerbtn_style2"          
-				             android:text="添加" />	
+				             android:text="@string/Add" />	
 				        <Button
 				             android:id="@+id/btnclassupdate"
 				             android:layout_width="150dp"
 				             android:layout_height="70dp"
 				             android:background="@drawable/cornerbtn_style2"
-				             android:text="修改" />  
+				             android:text="@string/Update" />  
 				        <Button
 				             android:id="@+id/btnclassdel"
 				             android:layout_width="150dp"
 				             android:layout_height="70dp"
 				             android:background="@drawable/cornerbtn_style2"
-				             android:text="删除" /> 
+				             android:text="@string/Del" /> 
 				        <Button
 				             android:id="@+id/btnclassexit"
 				             android:layout_width="150dp"
 				             android:layout_height="70dp"
 				             android:background="@drawable/cornerbtn_style2"
-				             android:text="退出" />            					         
+				             android:text="@string/Exit" />            					         
 		            </LinearLayout>	  	         
 			    </TableRow>					    
 			</TableLayout>
@@ -212,7 +212,7 @@
 					             android:layout_height="70dp"  
 					             android:layout_below="@+id/txtproname" 
 					             android:background="@drawable/cornerbtn_style2"         
-					             android:text="添加" />				         
+					             android:text="@string/Add" />				         
 				         <Button
 					             android:id="@+id/btnprodel"
 					             android:layout_below="@+id/txtproname"  
@@ -220,7 +220,7 @@
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
 					             android:background="@drawable/cornerbtn_style2"
-					             android:text="删除" />
+					             android:text="@string/Del" />
 				         <Button
 					             android:id="@+id/btnprodelselect"
 					             android:layout_below="@+id/txtproname"  
@@ -236,7 +236,7 @@
 					             android:layout_width="150dp"
 					             android:layout_height="70dp"
 					             android:background="@drawable/cornerbtn_style2"
-					             android:text="退出" />				         
+					             android:text="@string/Exit" />				         
 					</RelativeLayout>					
 				</LinearLayout>	
 				

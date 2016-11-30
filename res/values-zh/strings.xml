@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 通用 -->
+    <string name="Save">保存</string>
+    <string name="Exit">退出</string>
+    <string name="Add">添加</string>
+    <string name="Update">修改</string>
+    <string name="Del">删除</string>
+    <string name="Open">打开</string>
+    <string name="Close">关闭</string>
+    <string name="Query">查询</string>
+    <string name="Set">配置</string>
+    <!-- 参数设置 -->
+    <string name="Devtype">设备类型</string>
+    <string name="DevPar">设备参数</string>
+    <string name="DevStatus">使能状态</string>
+    <string name="ReturnKey">退币按钮</string>
+    <string name="DevStat">设备状态</string>
+    <string name="TubeNum">找零通道数量</string>
+    <string name="TubeMoney">找零通道金额</string>
+    <string name="PayinNum">接收通道数量</string>
+    <string name="PayinMoney">接收通道金额</string>
+    <string name="CoinNum">硬币通道数量</string>
+    <string name="CoinMoney">硬币通道金额</string>
+    <string name="PayoutMoney">存币金额:</string>
+    <string name="Payin">当前投入:</string>
+    <string name="WillPayout">期望找零:</string>
+    <string name="PayoutByMoney">按金额找零:</string>
+    <string name="Payout">找币</string>
+    <string name="Payoutrst">找零金额:</string>
+    <string name="PayoutByTube">按枚数出币:通道:</string>
+    <string name="PayoutByTuNum">按枚数出币:枚数:</string>
+    <string name="PayoutrstNum">实际出币枚数:</string>
+    <string name="Num1">通道1</string>
+    <string name="Num2">通道2</string>
+    <string name="Num3">通道3</string>
+    <string name="Num4">通道4</string>
+    <string name="Num5">通道5</string>
+    <string name="Num6">通道6</string>
+    <string name="Num7">通道7</string>
+    <string name="Num8">通道8</string>
+    <string name="Num9">通道9</string>
+    <string name="Num10">通道10</string>
+    <string name="Num11">通道11</string>
+    <string name="Num12">通道12</string>
+    <string name="Num13">通道13</string>
+    <string name="Num14">通道14</string>
+    <string name="Num15">通道15</string>
+    <string name="Num16">通道16</string>
+</resources>

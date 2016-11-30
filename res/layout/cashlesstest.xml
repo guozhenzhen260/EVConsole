@@ -84,6 +84,6 @@
 		    android:layout_width="100dp"
 			android:layout_height="70dp"
 			android:background="@drawable/cornerbtn_style2"
-	        android:text="退出"/>
+	        android:text="@string/Exit"/>
    	</LinearLayout>
 </LinearLayout>

@@ -153,12 +153,12 @@
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnclose"
-        android:text="保存"/>
+        android:text="@string/Save"/>
 	<Button
 	    android:id="@+id/btnexit"
 	    android:layout_width="100dp"
 		android:layout_height="70dp"
 		android:layout_below="@+id/txtztai"
 		android:layout_toRightOf="@+id/btnsave"
-        android:text="退出"/>
+        android:text="@string/Exit"/>
 </RelativeLayout>

@@ -62,7 +62,7 @@
 			             android:layout_width="100dp"
 			             android:layout_height="70dp"
 			             android:background="@drawable/cornerbtn_style2"
-			             android:text="退出" />
+			             android:text="@string/Exit" />
 		         <TextView 		 
             	    android:minWidth="160px"  
             	    android:id="@+id/txthuosetno" 
@@ -374,7 +374,7 @@
 						             android:layout_width="100dp"
 						             android:layout_height="70dp"
 						             android:background="@drawable/cornerbtn_style2"
-						             android:text="退出" />
+						             android:text="@string/Exit" />
 					         </LinearLayout>
 					    </TableRow>			        
 					</TableLayout>	
@@ -386,7 +386,7 @@
 				             android:id="@+id/btnhuoall"
 				             android:layout_width="100dp"
 				             android:layout_height="70dp"
-				             android:background="@drawable/button_selector"
+				             android:background="@drawable/cornerbtn_style"
 				             android:text="详细信息" />
 				        <TextView
 				            android:minWidth="160px"

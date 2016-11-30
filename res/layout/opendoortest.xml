@@ -54,5 +54,5 @@
 			android:layout_below="@id/edthuoid"
 	        android:layout_toRightOf="@id/btnchuhuo"
 	        android:background="@drawable/button_selector"
-	        android:text="退出"/>
+	        android:text="@string/Exit"/>
 </RelativeLayout>
