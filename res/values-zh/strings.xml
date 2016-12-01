@@ -16,7 +16,7 @@
     <string name="Paydelete">退款</string>
     <string name="Payresult">交易结果:</string>
     <string name="Paymoney">支付金额:</string>
-    <string name="Erwei">生成二维码:</string>
+    <string name="Erwei">下订单</string>
     <string name="Print">打印</string>
     <!-- 现金参数设置 -->
     <string name="Devtype">设备类型</string>
