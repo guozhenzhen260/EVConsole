@@ -622,7 +622,7 @@ public final class R {
         public static final int barhuomanager=0x7f0b00e8;
         public static final int barweixingtest=0x7f0b0220;
         public static final int barzhifubaotest=0x7f0b0229;
-        public static final int btnCashless=0x7f0b01ec;
+        public static final int btnCashless=0x7f0b01ea;
         public static final int btnClose=0x7f0b0184;
         public static final int btnDel=0x7f0b0191;
         public static final int btnDelImg=0x7f0b0192;
@@ -646,7 +646,7 @@ public final class R {
         public static final int btnadscancel=0x7f0b0096;
         public static final int btnadsclass=0x7f0b008c;
         public static final int btnadsenter=0x7f0b0098;
-        public static final int btnamount=0x7f0b01e8;
+        public static final int btnamount=0x7f0b01e7;
         public static final int btnbillexit2=0x7f0b0016;
         public static final int btnbilloff=0x7f0b0013;
         public static final int btnbillon=0x7f0b0012;
@@ -654,7 +654,6 @@ public final class R {
         public static final int btnbillquery=0x7f0b0014;
         public static final int btnbillset=0x7f0b0015;
         public static final int btncancel=0x7f0b019e;
-        public static final int btncard=0x7f0b01ea;
         public static final int btncashlesstestcancel=0x7f0b00ad;
         public static final int btncashlesstestclose=0x7f0b00ac;
         public static final int btncashlesstestdelete=0x7f0b00aa;
@@ -663,6 +662,7 @@ public final class R {
         public static final int btncashlesstestopen=0x7f0b00a6;
         public static final int btncashlesstestpayout=0x7f0b00ab;
         public static final int btncashlesstestquery=0x7f0b00a9;
+        public static final int btnchsao=0x7f0b01f5;
         public static final int btnchuhuo=0x7f0b019d;
         public static final int btnclassadd=0x7f0b00c3;
         public static final int btnclassdel=0x7f0b00c5;
@@ -794,9 +794,9 @@ public final class R {
         public static final int btnloggriddel=0x7f0b017a;
         public static final int btnloggridexit=0x7f0b017b;
         public static final int btnloggridquery=0x7f0b0179;
-        public static final int btnmachineSave=0x7f0b01e4;
+        public static final int btnmachineSave=0x7f0b01e3;
         public static final int btnmachinecheck=0x7f0b01d5;
-        public static final int btnmachineexit=0x7f0b01e5;
+        public static final int btnmachineexit=0x7f0b01e4;
         public static final int btnmachinerunCancel=0x7f0b01fb;
         public static final int btnmachinerunSave=0x7f0b01fa;
         public static final int btnopen=0x7f0b020f;
@@ -807,7 +807,7 @@ public final class R {
         public static final int btnordergridexit=0x7f0b01cf;
         public static final int btnordergridquery=0x7f0b01c8;
         public static final int btnprint=0x7f0b0211;
-        public static final int btnprinter=0x7f0b01f5;
+        public static final int btnprinter=0x7f0b01f3;
         public static final int btnprinttest=0x7f0b01d7;
         public static final int btnproadd=0x7f0b00cd;
         public static final int btnprodel=0x7f0b00ce;
@@ -817,13 +817,13 @@ public final class R {
         public static final int btnreturn=0x7f0b00ae;
         public static final int btnsave=0x7f0b0213;
         public static final int btnselectexit=0x7f0b00d2;
-        public static final int btnweixing=0x7f0b01f3;
+        public static final int btnweixing=0x7f0b01f1;
         public static final int btnweixingtestcancel=0x7f0b0227;
         public static final int btnweixingtestdelete=0x7f0b0225;
         public static final int btnweixingtestok=0x7f0b0223;
         public static final int btnweixingtestpayout=0x7f0b0226;
         public static final int btnweixingtestquery=0x7f0b0224;
-        public static final int btnzhifubaoer=0x7f0b01f1;
+        public static final int btnzhifubaoer=0x7f0b01ef;
         public static final int btnzhifubaotestcancel=0x7f0b0230;
         public static final int btnzhifubaotestdelete=0x7f0b022e;
         public static final int btnzhifubaotestok=0x7f0b022c;
@@ -852,7 +852,7 @@ public final class R {
         public static final int editthank=0x7f0b0208;
         public static final int edittitle1=0x7f0b0202;
         public static final int edittitle2=0x7f0b0204;
-        public static final int edtbillAmount=0x7f0b01e3;
+        public static final int edtbillAmount=0x7f0b01e2;
         public static final int edtcabid=0x7f0b019a;
         public static final int edtcashlesstest=0x7f0b00a5;
         public static final int edtclassid=0x7f0b00bf;
@@ -870,7 +870,7 @@ public final class R {
         public static final int edtloggridend=0x7f0b0178;
         public static final int edtloggridstart=0x7f0b0176;
         public static final int edtmainPwd=0x7f0b01db;
-        public static final int edtmarketAmount=0x7f0b01e2;
+        public static final int edtmarketAmount=0x7f0b01e1;
         public static final int edtmarketPrice=0x7f0b00d7;
         public static final int edtordergridend=0x7f0b01c7;
         public static final int edtordergridstart=0x7f0b01c5;
@@ -958,10 +958,10 @@ public final class R {
         public static final int proImage=0x7f0b0215;
         public static final int promarket=0x7f0b0218;
         public static final int prosales=0x7f0b0219;
-        public static final int rbtnclose=0x7f0b01ee;
-        public static final int rbtnzhifubao1=0x7f0b01ef;
-        public static final int rbtnzhifubao2=0x7f0b01f0;
-        public static final int spinCashless=0x7f0b01eb;
+        public static final int rbtnclose=0x7f0b01ec;
+        public static final int rbtnzhifubao1=0x7f0b01ed;
+        public static final int rbtnzhifubao2=0x7f0b01ee;
+        public static final int spinCashless=0x7f0b01e9;
         public static final int spinbillmanagerbill=0x7f0b0001;
         public static final int spincoinmanagercoin=0x7f0b0018;
         public static final int spinhopper=0x7f0b003a;
@@ -969,14 +969,13 @@ public final class R {
         public static final int spinhuosetCab=0x7f0b00e7;
         public static final int spinhuotestCab=0x7f0b00eb;
         public static final int spinordergridtongji=0x7f0b01cc;
-        public static final int spinparamsort=0x7f0b01e1;
+        public static final int spinparamsort=0x7f0b01e0;
         public static final int spinproductclassID=0x7f0b00db;
         public static final int start_seach=0x7f0b01fe;
         public static final int student=0x7f0b0173;
-        public static final int switchamount=0x7f0b01e7;
-        public static final int switchbaozhiProduct=0x7f0b01df;
-        public static final int switchcard=0x7f0b01e9;
-        public static final int switchemptyProduct=0x7f0b01e0;
+        public static final int switchamount=0x7f0b01e6;
+        public static final int switchcard=0x7f0b01e8;
+        public static final int switchemptyProduct=0x7f0b01df;
         public static final int switchhot=0x7f0b00f7;
         public static final int switchisNet=0x7f0b01d6;
         public static final int switchisbuhuo=0x7f0b01d8;
@@ -984,13 +983,14 @@ public final class R {
         public static final int switchisqiangbuy=0x7f0b01da;
         public static final int switchlanguage=0x7f0b01dc;
         public static final int switchlight=0x7f0b00f3;
-        public static final int switchprinter=0x7f0b01f4;
-        public static final int switchweixing=0x7f0b01f2;
+        public static final int switchprinter=0x7f0b01f2;
+        public static final int switchsao=0x7f0b01f4;
+        public static final int switchweixing=0x7f0b01f0;
         public static final int switcold=0x7f0b00f5;
         public static final int tab_billmanager=0x7f0b0000;
         public static final int tab_class=0x7f0b00bc;
         public static final int tab_coinmanager=0x7f0b0017;
-        public static final int tab_device=0x7f0b01e6;
+        public static final int tab_device=0x7f0b01e5;
         public static final int tab_grid=0x7f0b019f;
         public static final int tab_huodaomanager=0x7f0b00df;
         public static final int tab_huodaoset=0x7f0b00fe;
@@ -1179,7 +1179,7 @@ public final class R {
         public static final int video=0x7f0b00b3;
         public static final int webproductDesc=0x7f0b0064;
         public static final int webtishiInfo=0x7f0b006a;
-        public static final int zhifubaogrp=0x7f0b01ed;
+        public static final int zhifubaogrp=0x7f0b01eb;
     }
     public static final class layout {
         public static final int addinaccount=0x7f030000;

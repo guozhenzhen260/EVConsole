@@ -49,13 +49,13 @@ public class ParamManager extends TabActivity
 	private int[] layres=new int[]{R.id.tab_machine,R.id.tab_device,R.id.tab_run};//内嵌布局文件的id
 	private static final int TIME_DIALOG_ID = 0;// 创建时间对话框常量
 	private EditText edtdevID=null,edtdevhCode=null,edtmainPwd=null,edtrstTime=null,edtrstDay=null,edtmarketAmount=null,edtbillAmount=null;
-	private Switch switchisNet = null,switchisbuhuo=null,switchisbuyCar = null,switchisqiangbuy=null,switchlanguage = null,switchbaozhiProduct = null,switchemptyProduct = null,switchamount = null,switchcard = null,
-			switchweixing = null,switchprinter = null;    
+	private Switch switchisNet = null,switchisbuhuo=null,switchisbuyCar = null,switchisqiangbuy=null,switchlanguage = null,switchemptyProduct = null,switchamount = null,switchcard = null,
+			switchweixing = null,switchprinter = null,switchsao=null;    
 	private RadioGroup zhifubaogrp=null;
 	private RadioButton rbtnclose=null,rbtnzhifubao1=null,rbtnzhifubao2=null;
 	private Spinner spinparamsort=null,spinCashless=null;
-	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnCashless=null,btnprinttest=null,
-			btnzhifubaoer=null,btnweixing=null;	
+	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btnCashless=null,btnprinttest=null,
+			btnzhifubaoer=null,btnweixing=null,btnchsao=null;	
 	private int proSortType=6;
 	//排序有关的定义
 	private ShowSortAdapter showSortAdapter=null;
@@ -147,7 +147,6 @@ public class ParamManager extends TabActivity
             }
         });
     	edtrstDay = (EditText) findViewById(R.id.edtrstDay);
-    	switchbaozhiProduct = (Switch)findViewById(R.id.switchbaozhiProduct);
     	switchemptyProduct = (Switch)findViewById(R.id.switchemptyProduct);
     	//排序
     	this.spinparamsort = (Spinner) super.findViewById(R.id.spinparamsort); 
@@ -171,8 +170,7 @@ public class ParamManager extends TabActivity
 			}
 		}); 
     	edtmarketAmount = (EditText) findViewById(R.id.edtmarketAmount);
-    	edtbillAmount = (EditText) findViewById(R.id.edtbillAmount);
-    	loadmachineparam();    	
+    	edtbillAmount = (EditText) findViewById(R.id.edtbillAmount);    	   	
     	btnmachinecheck = (Button) findViewById(R.id.btnmachinecheck);
     	btnmachinecheck.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -230,17 +228,7 @@ public class ParamManager extends TabActivity
             
         }); 
     	switchcard = (Switch)findViewById(R.id.switchcard);
-    	switchcard.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				// TODO Auto-generated method stub
-				btncard.setEnabled(isChecked);	
-			}  
-            
-            
-        });
+    	
     	this.spinCashless = (Spinner) super.findViewById(R.id.spinCashless);
     	spinCashless.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -293,7 +281,18 @@ public class ParamManager extends TabActivity
             
         });
     	switchprinter = (Switch)findViewById(R.id.switchprinter);
-    	
+    	switchsao = (Switch)findViewById(R.id.switchsao);
+    	switchsao.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				btnchsao.setEnabled(isChecked);	
+			}  
+            
+            
+        });
     	    	    	
     	btndeviceSave = (Button) findViewById(R.id.btndeviceSave);
     	btndeviceSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -318,15 +317,6 @@ public class ParamManager extends TabActivity
 		    }
 		});
     	
-    	btncard = (Button) findViewById(R.id.btncard);
-    	btncard.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
-		    @Override
-		    public void onClick(View arg0) {
-		    	Intent intent = new Intent(ParamManager.this, OpendoorTest.class);// 使用AddInaccount窗口初始化Intent
-		    	intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
-		    	startActivity(intent);// 打开AddInaccount
-		    }
-		});
     	btnCashless = (Button) findViewById(R.id.btnCashless);
     	btnCashless.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
 		    @Override
@@ -361,7 +351,16 @@ public class ParamManager extends TabActivity
 		    	startActivity(intent);// 打开AddInaccount
 		    }
 		});
-    	loaddeviceparam();
+    	btnchsao = (Button) findViewById(R.id.btnchsao);
+    	btnchsao.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
+		    @Override
+		    public void onClick(View arg0) {
+		    	Intent intent = new Intent(ParamManager.this, OpendoorTest.class);// 使用AddInaccount窗口初始化Intent
+		    	intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
+		    	startActivity(intent);// 打开AddInaccount
+		    }
+		});
+    	loadmachineparam();
     	
     	
     	//===========================
@@ -473,7 +472,7 @@ public class ParamManager extends TabActivity
     	int rstDay = 0;
     	if(ToolClass.isEmptynull(edtrstDay.getText().toString())!=true)
     		rstDay = Integer.parseInt(edtrstDay.getText().toString());
-    	int baozhiProduct = (switchbaozhiProduct.isChecked()==true)?1:0;
+    	int baozhiProduct = (switchsao.isChecked()==true)?1:0;
     	int emptyProduct = (switchemptyProduct.isChecked()==true)?1:0;
     	if((ToolClass.isEmptynull(devID)!=true)&&(ToolClass.isEmptynull(devhCode)!=true)
     		)
@@ -511,6 +510,9 @@ public class ParamManager extends TabActivity
         }
     }
     
+    //===========================
+	//机器参数配置
+	//===========================
     private void loadmachineparam()
     {
     	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ParamManager.this);// 创建InaccountDAO对象
@@ -518,13 +520,23 @@ public class ParamManager extends TabActivity
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<参数devID="+tb_inaccount.getDevID().toString()+" devhCode="+tb_inaccount.getDevhCode().toString()+" isNet="
-					+tb_inaccount.getIsNet()+" isfenClass="+tb_inaccount.getIsfenClass()+" isbuyCar="+tb_inaccount.getIsbuyCar()+" liebiaoKuan="+tb_inaccount.getLiebiaoKuan()+" mainPwd="
-					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
-					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
-					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
-					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()+" marketAmount="+tb_inaccount.getMarketAmount()+" billAmount="+tb_inaccount.getBillAmount(),"log.txt"); 
-		    edtdevID.setText(tb_inaccount.getDevID().toString());
+//	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<参数devID="+tb_inaccount.getDevID().toString()+" devhCode="+tb_inaccount.getDevhCode().toString()+" isNet="
+//					+tb_inaccount.getIsNet()+" isfenClass="+tb_inaccount.getIsfenClass()+" isbuyCar="+tb_inaccount.getIsbuyCar()+" liebiaoKuan="+tb_inaccount.getLiebiaoKuan()+" mainPwd="
+//					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
+//					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
+//					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
+//					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType()+" marketAmount="+tb_inaccount.getMarketAmount()+" billAmount="+tb_inaccount.getBillAmount(),"log.txt"); 
+//	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<参数devID="+tb_inaccount.getDevID().toString()+" devhCode="+tb_inaccount.getDevhCode().toString()+" isNet="
+//					+tb_inaccount.getIsNet()+" isfenClass="+tb_inaccount.getIsfenClass()+" isbuyCar="+tb_inaccount.getIsbuyCar()+" liebiaoKuan="+tb_inaccount.getLiebiaoKuan()+" mainPwd="
+//					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
+//					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
+//					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
+//					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType(),"log.txt"); 
+		    
+    		//===========================
+    		//机器参数配置
+    		//===========================
+    		edtdevID.setText(tb_inaccount.getDevID().toString());
 		    edtdevhCode.setText(tb_inaccount.getDevhCode().toString());	  
 		    switchisNet.setChecked((tb_inaccount.getIsNet()==1)?true:false);
 		    switchisbuhuo.setChecked((tb_inaccount.getIsfenClass()==1)?true:false);
@@ -534,13 +546,33 @@ public class ParamManager extends TabActivity
 		    switchlanguage.setChecked((tb_inaccount.getLanguage()==1)?true:false);
 		    edtrstTime.setText(tb_inaccount.getRstTime().toString());
 		    edtrstDay.setText(String.valueOf(tb_inaccount.getRstDay()));
-		    switchbaozhiProduct.setChecked((tb_inaccount.getBaozhiProduct()==1)?true:false);
 		    switchemptyProduct.setChecked((tb_inaccount.getEmptyProduct()==1)?true:false);
 		    //设置下拉框默认值
 		    spinparamsort.setSelection(tb_inaccount.getProSortType());
 		    edtmarketAmount.setText(String.valueOf(tb_inaccount.getMarketAmount()));
 		    edtbillAmount.setText(String.valueOf(tb_inaccount.getBillAmount()));
-    	}
+		    //===========================
+			//设备参数配置页面
+			//===========================
+		    switchamount.setChecked((tb_inaccount.getAmount()==1)?true:false);
+		    switchcard.setChecked((tb_inaccount.getCard()==1)?true:false);
+		    spinCashless.setSelection(tb_inaccount.getZhifubaofaca());
+		    if(tb_inaccount.getZhifubaoer()==0)
+		    {
+		    	rbtnclose.setChecked(true);
+		    }
+		    else if(tb_inaccount.getZhifubaoer()==1)
+		    {
+		    	rbtnzhifubao1.setChecked(true);
+		    }
+		    else if(tb_inaccount.getZhifubaoer()==2)
+		    {
+		    	rbtnzhifubao2.setChecked(true);
+		    }
+		    switchweixing.setChecked((tb_inaccount.getWeixing()==1)?true:false);
+		    switchprinter.setChecked((tb_inaccount.getPrinter()==1)?true:false);
+		    switchsao.setChecked((tb_inaccount.getBaozhiProduct()==1)?true:false);
+		}
 	}
     
     //=============
@@ -569,45 +601,7 @@ public class ParamManager extends TabActivity
   		}
 
   	}
-    
-    
-    //===========================
-	//设备参数配置页面
-	//===========================
-    private void loaddeviceparam()
-    {
-    	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ParamManager.this);// 创建InaccountDAO对象
-	    // 获取所有收入信息，并存储到List泛型集合中
-    	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-    	if(tb_inaccount!=null)
-    	{
-	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<参数devID="+tb_inaccount.getDevID().toString()+" devhCode="+tb_inaccount.getDevhCode().toString()+" isNet="
-					+tb_inaccount.getIsNet()+" isfenClass="+tb_inaccount.getIsfenClass()+" isbuyCar="+tb_inaccount.getIsbuyCar()+" liebiaoKuan="+tb_inaccount.getLiebiaoKuan()+" mainPwd="
-					+tb_inaccount.getMainPwd()+" amount="+tb_inaccount.getAmount()+" card="+tb_inaccount.getCard()+" zhifubaofaca="+tb_inaccount.getZhifubaofaca()+" zhifubaoer="+tb_inaccount.getZhifubaoer()
-					+" weixing="+tb_inaccount.getWeixing()+" printer="+tb_inaccount.getPrinter()+" language="+tb_inaccount.getLanguage()
-					+" rstTime="+tb_inaccount.getRstTime().toString()+" rstDay="+tb_inaccount.getRstDay()+" baozhiProduct="+tb_inaccount.getBaozhiProduct()
-					+" emptyProduct="+tb_inaccount.getEmptyProduct()+" proSortType="+tb_inaccount.getProSortType(),"log.txt"); 
-		    
-		    switchamount.setChecked((tb_inaccount.getAmount()==1)?true:false);
-		    switchcard.setChecked((tb_inaccount.getCard()==1)?true:false);
-		    spinCashless.setSelection(tb_inaccount.getZhifubaofaca());
-		    if(tb_inaccount.getZhifubaoer()==0)
-		    {
-		    	rbtnclose.setChecked(true);
-		    }
-		    else if(tb_inaccount.getZhifubaoer()==1)
-		    {
-		    	rbtnzhifubao1.setChecked(true);
-		    }
-		    else if(tb_inaccount.getZhifubaoer()==2)
-		    {
-		    	rbtnzhifubao2.setChecked(true);
-		    }
-		    switchweixing.setChecked((tb_inaccount.getWeixing()==1)?true:false);
-		    switchprinter.setChecked((tb_inaccount.getPrinter()==1)?true:false);
-    	}
-	}
-    
+            
     //===========================
   	//运行参数配置页面
   	//===========================    
