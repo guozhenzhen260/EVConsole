@@ -90,6 +90,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/qxzffang" />
+	<EditText
+        android:id="@+id/editTextTimeCOMA"
+        android:layout_below="@+id/imgjsqd"
+        android:layout_toRightOf="@+id/imgbtnbuszhiamountqxzf"
+        android:textSize="1dp"
+        android:layout_height="1dp"
+        android:layout_width="1dp"/>
 	<ImageView
 	       android:id="@+id/imgxqwhite"
 	       android:layout_width="wrap_content"

@@ -2,6 +2,11 @@ package com.easivend.fragment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.easivend.app.business.BusPort;
 import com.easivend.common.AudioSound;
 import com.easivend.common.OrderDetail;
@@ -24,8 +29,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,6 +65,11 @@ public class BusinessportFragment extends Fragment {
 	private String huoID = null;
     private String prosales = null; 
     private Context context;
+    //扫码
+    private String editstr="";
+	private int editread=0;
+	EditText editTextTimeCOMA;
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
     //密码框
 //    private final static int REQUEST_CODE=1;//声明请求标识
     
@@ -110,16 +123,37 @@ public class BusinessportFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_businessport, container, false);  
 		context=this.getActivity();//获取activity的context	
-		//定时器返回广告页面
-//		timer.schedule(new TimerTask() { 
-//	        @Override 
-//	        public void run() { 	        	  
-//        		  if(pwdcount > 0)
-//	              { 
-//        			  pwdcount=0;
-//	              }		        	  
-//	        } 
-//	    }, 1000, 10000);       // timeTask  
+		//扫码模块
+		editTextTimeCOMA=(EditText)view.findViewById(R.id.editTextTimeCOMA);
+        editTextTimeCOMA.setInputType(InputType.TYPE_NULL);  
+        editTextTimeCOMA.setFocusable(true);
+		editTextTimeCOMA.setFocusableInTouchMode(true);
+		editTextTimeCOMA.requestFocus();
+		editTextTimeCOMA.setText("");
+		editTextTimeCOMA.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				editstr=s.toString().trim();	
+				//Log.i("EV_JNI","String s="+editstr);
+				editread=100;
+			}
+		});
+        timer.scheduleWithFixedDelay(task, 100, 10, TimeUnit.MILLISECONDS); 
 		//=======
 		//操作模块
 		//=======
@@ -302,7 +336,32 @@ public class BusinessportFragment extends Fragment {
     	
 		return view;
 	}
-	
+	//调用倒计时定时器
+    TimerTask task = new TimerTask() { 
+    	@Override 
+        public void run() { 
+  
+    		((Activity)context).runOnUiThread(new Runnable() {      // UI thread 
+		         @Override 
+		        public void run()
+		        { 
+		        	 if(editread>0)
+		        		 editread--;
+		        	 if(editread==0)
+		        	 {
+		        		 if(editstr.equals("")==false)
+		        		 {
+		        			 editstr="";
+		        			 editTextTimeCOMA.setText("");
+		        			 editTextTimeCOMA.setFocusable(true);
+		     				 editTextTimeCOMA.setFocusableInTouchMode(true);
+		     				 editTextTimeCOMA.requestFocus();  
+		        		 }
+		        	 }
+		        } 
+            });
+        }     	    
+    };
 	//num出货柜号,type=1输入数字，type=0回退数字
     private void chuhuo(String num,int type)
     {    	

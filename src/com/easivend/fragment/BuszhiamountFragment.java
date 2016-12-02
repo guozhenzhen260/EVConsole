@@ -1,5 +1,10 @@
 package com.easivend.fragment;
 
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.easivend.app.business.BusPort;
 import com.easivend.app.business.BusPort.BusPortFragInteraction;
 import com.easivend.common.OrderDetail;
@@ -12,10 +17,15 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +39,11 @@ public class BuszhiamountFragment extends Fragment
 	float amount=0;//商品需要支付金额	
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiselpos=null;
 	ImageView ivbuszhier=null,ivbuszhiwei=null;
+	//扫码
+	private String editstr="";
+	private int editread=0;
+	EditText editTextTimeCOMA;
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -97,6 +112,37 @@ public class BuszhiamountFragment extends Fragment
 		txtbuszhiamountbillAmount= (TextView) view.findViewById(R.id.txtbuszhiamountbillAmount);		
 		txtbuszhiamounttime = (TextView) view.findViewById(R.id.txtbuszhiamounttime);
 		txtbuszhiamounttsxx = (TextView) view.findViewById(R.id.txtbuszhiamounttsxx);
+		//扫码模块
+		editTextTimeCOMA=(EditText)view.findViewById(R.id.editTextTimeCOMA);
+        editTextTimeCOMA.setInputType(InputType.TYPE_NULL);  
+        editTextTimeCOMA.setFocusable(true);
+		editTextTimeCOMA.setFocusableInTouchMode(true);
+		editTextTimeCOMA.requestFocus();
+		editTextTimeCOMA.setText("");
+        editTextTimeCOMA.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				editstr=s.toString().trim();	
+				//Log.i("EV_JNI","String s="+editstr);
+				editread=100;
+			}
+		});
+        timer.scheduleWithFixedDelay(task, 100, 10, TimeUnit.MILLISECONDS);  
 		imgbtnbuszhiamountqxzf = (ImageButton) view.findViewById(R.id.imgbtnbuszhiamountqxzf);
 		imgbtnbuszhiamountqxzf.setOnClickListener(new OnClickListener() {
 		    @Override
@@ -170,7 +216,47 @@ public class BuszhiamountFragment extends Fragment
     	}
 		return view;
 	}
-	
+	//调用倒计时定时器
+    TimerTask task = new TimerTask() { 
+    	@Override 
+        public void run() { 
+  
+    		((Activity)context).runOnUiThread(new Runnable() {      // UI thread 
+		         @Override 
+		        public void run()
+		        { 
+		        	 if(editread>0)
+		        		 editread--;
+		        	 if(editread==0)
+		        	 {
+		        		 if(editstr.equals("")==false)
+		        		 {
+		        			 int length=editstr.length();
+		        			 if(length<18)
+		        			 {
+		        				 Log.i("EV_JNI","String edit=readerr!!!");
+		        				 editstr="";
+			        			 editTextTimeCOMA.setText("");
+			        			 editTextTimeCOMA.setFocusable(true);
+			     				 editTextTimeCOMA.setFocusableInTouchMode(true);
+			     				 editTextTimeCOMA.requestFocus();
+		        			 }
+		        			 else
+		        			 {
+		        				 Log.i("EV_JNI","String edit="+editstr);
+		        				 editstr="";
+			        			 editTextTimeCOMA.setText("");
+			        			 editTextTimeCOMA.setFocusable(true);
+			     				 editTextTimeCOMA.setFocusableInTouchMode(true);
+			     				 editTextTimeCOMA.requestFocus();
+		        			 }	        			 
+		        			 
+		        		 }
+		        	 }
+		        } 
+            });
+        }     	    
+    };
 	private class buportInterfaceImp implements BusPortFragInteraction//加载接口
 	{
 		/**

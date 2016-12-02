@@ -301,32 +301,7 @@
 							        android:text="" />
 				            </LinearLayout>	        
 					    </TableRow>  
-					    <View                              
-					        android:layout_height="2px"
-					        android:background="#FF909090"
-					    /> 	
-					    <TableRow 
-					        android:layout_width="wrap_content"
-				            android:layout_height="wrap_content">  
-				            <LinearLayout 
-				                android:layout_width="wrap_content"
-				            	android:layout_height="wrap_content"> 
-				            	<TextView 	
-				            	    android:minWidth="160px"	    
-									android:layout_width="wrap_content"
-									android:layout_height="wrap_content"
-									android:text="显示过保质期商品"/>
-						        
-						         <Switch   
-							       android:layout_marginTop="20dip"  
-							       android:id="@+id/switchbaozhiProduct"  
-							       android:layout_width="wrap_content"  
-							       android:layout_height="wrap_content"  
-							       android:textOn="是"  
-							       android:textOff="否"  							           
-							       android:layout_gravity="center_horizontal"/>    
-				            </LinearLayout>	        
-					    </TableRow>	
+					    	
 					    <View                              
 					        android:layout_height="2px"
 					        android:background="#FF909090"
@@ -534,14 +509,7 @@
 							       android:layout_height="wrap_content"  
 							       android:textOn="使用"  
 							       android:textOff="不使用"  							           
-							       android:layout_gravity="center_horizontal"/> 
-							   <Button
-						             android:id="@+id/btncard"
-						             android:layout_width="wrap_content"
-									 android:layout_height="70dp"  
-						             android:enabled="false"     
-						             android:background="@drawable/cornerbtn_style"        
-						             android:text="第三方出货测试" />         
+							       android:layout_gravity="center_horizontal"/> 							           
 				            </LinearLayout>	        
 					    </TableRow> 
 					    <View                              
@@ -683,7 +651,40 @@
 						             android:background="@drawable/cornerbtn_style"             
 						             android:text="测试" />      
 				            </LinearLayout>	        
-					    </TableRow>	
+					    </TableRow>
+					    <View                              
+					        android:layout_height="2px"
+					        android:background="#FF909090"
+					    /> 
+					    <TableRow 
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content">  
+							<LinearLayout 
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"> 
+								<TextView 	
+									android:minWidth="160px"	    
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:text="非码主动扫码"/>
+								
+								 <Switch   
+								   android:layout_marginTop="20dip"  
+								   android:id="@+id/switchsao"  
+								   android:layout_width="wrap_content"  
+								   android:layout_height="wrap_content"  
+								   android:textOn="使用"  
+								   android:textOff="不使用"  							           
+								   android:layout_gravity="center_horizontal"/>  
+								<Button
+								   android:id="@+id/btnchsao"
+								   android:layout_width="100dp"
+								   android:layout_height="70dp" 
+								   android:enabled="false"  
+								   android:background="@drawable/cornerbtn_style"             
+								   android:text="测试" /> 	 
+							</LinearLayout>	        
+						</TableRow>	
 					    <View                              
 					        android:layout_height="2px"
 					        android:background="#FF909090"
