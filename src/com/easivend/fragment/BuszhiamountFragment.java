@@ -39,6 +39,7 @@ public class BuszhiamountFragment extends Fragment
 	float amount=0;//商品需要支付金额	
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiselpos=null;
 	ImageView ivbuszhier=null,ivbuszhiwei=null;
+	//扫码
 	private String editstr="";
 	private int editread=0;
 	EditText editTextTimeCOMA;
@@ -117,6 +118,7 @@ public class BuszhiamountFragment extends Fragment
         editTextTimeCOMA.setFocusable(true);
 		editTextTimeCOMA.setFocusableInTouchMode(true);
 		editTextTimeCOMA.requestFocus();
+		editTextTimeCOMA.setText("");
         editTextTimeCOMA.addTextChangedListener(new TextWatcher() {
 			
 			@Override
@@ -244,7 +246,9 @@ public class BuszhiamountFragment extends Fragment
 		        				 Log.i("EV_JNI","String edit="+editstr);
 		        				 editstr="";
 			        			 editTextTimeCOMA.setText("");
-			        			 editTextTimeCOMA.setFocusable(false);
+			        			 editTextTimeCOMA.setFocusable(true);
+			     				 editTextTimeCOMA.setFocusableInTouchMode(true);
+			     				 editTextTimeCOMA.requestFocus();
 		        			 }	        			 
 		        			 
 		        		 }

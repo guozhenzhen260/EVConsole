@@ -2,6 +2,10 @@ package com.easivend.fragment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.easivend.common.ClassPictureAdapter;
 import com.easivend.common.Vmc_ClassAdapter;
@@ -11,12 +15,16 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -27,7 +35,11 @@ public class BusgoodsclassFragment extends Fragment
 	ImageView imgbtnbusgoodsback=null;
 	Button btnreturn=null;
 	private Context context;
-	
+	//扫码
+    private String editstr="";
+	private int editread=0;
+	EditText editTextTimeCOMA;
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	//=========================
     //fragment与activity回调相关
     //=========================
@@ -77,6 +89,37 @@ public class BusgoodsclassFragment extends Fragment
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_busgoodsclass, container, false);  
 		context=this.getActivity();//获取activity的context
+		//扫码模块
+		editTextTimeCOMA=(EditText)view.findViewById(R.id.editTextTimeCOMA);
+        editTextTimeCOMA.setInputType(InputType.TYPE_NULL);  
+        editTextTimeCOMA.setFocusable(true);
+		editTextTimeCOMA.setFocusableInTouchMode(true);
+		editTextTimeCOMA.requestFocus();
+		editTextTimeCOMA.setText("");
+		editTextTimeCOMA.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				editstr=s.toString().trim();	
+				//Log.i("EV_JNI","String s="+editstr);
+				editread=100;
+			}
+		});
+        timer.scheduleWithFixedDelay(task, 100, 10, TimeUnit.MILLISECONDS);
 		gvbusgoodsclass=(GridView) view.findViewById(R.id.gvbusgoodsclass); 
 		Vmc_ClassAdapter vmc_classAdapter=new Vmc_ClassAdapter();
 	    String[] strInfos = vmc_classAdapter.showSpinInfo(context);
@@ -122,4 +165,30 @@ public class BusgoodsclassFragment extends Fragment
 		});	 
 		return view;
 	}
+	//调用倒计时定时器
+    TimerTask task = new TimerTask() { 
+    	@Override 
+        public void run() { 
+  
+    		((Activity)context).runOnUiThread(new Runnable() {      // UI thread 
+		         @Override 
+		        public void run()
+		        { 
+		        	 if(editread>0)
+		        		 editread--;
+		        	 if(editread==0)
+		        	 {
+		        		 if(editstr.equals("")==false)
+		        		 {
+		        			 editstr="";
+		        			 editTextTimeCOMA.setText("");
+		        			 editTextTimeCOMA.setFocusable(true);
+		     				 editTextTimeCOMA.setFocusableInTouchMode(true);
+		     				 editTextTimeCOMA.requestFocus();  
+		        		 }
+		        	 }
+		        } 
+            });
+        }     	    
+    };
 }

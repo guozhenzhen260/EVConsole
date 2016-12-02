@@ -812,7 +812,7 @@ public final class R {
         public static final int btnprodelselect=0x7f0b00d0;
         public static final int btnproexit=0x7f0b00d1;
         public static final int btnquery=0x7f0b0211;
-        public static final int btnreturn=0x7f0b00ae;
+        public static final int btnreturn=0x7f0b00af;
         public static final int btnsave=0x7f0b0214;
         public static final int btnselectexit=0x7f0b00d3;
         public static final int btnweixing=0x7f0b01f2;
@@ -845,7 +845,7 @@ public final class R {
         public static final int dialoginte=0x7f0b021d;
         public static final int dialogspincabtype=0x7f0b021c;
         public static final int editMsgView=0x7f0b0200;
-        public static final int editTextTimeCOMA=0x7f0b00b3;
+        public static final int editTextTimeCOMA=0x7f0b00ae;
         public static final int edit_bottombar=0x7f0b01fe;
         public static final int editer=0x7f0b020b;
         public static final int editthank=0x7f0b0209;
@@ -921,7 +921,7 @@ public final class R {
         public static final int isworking=0x7f0b01a1;
         public static final int ivProduct=0x7f0b00d4;
         public static final int ivads=0x7f0b00b5;
-        public static final int ivadstip=0x7f0b00b2;
+        public static final int ivadstip=0x7f0b00b3;
         public static final int ivbusgoodselProduct=0x7f0b0059;
         public static final int ivbushuoquhuo=0x7f0b0066;
         public static final int ivbuszhiamountbill=0x7f0b0073;
@@ -938,11 +938,11 @@ public final class R {
         public static final int ivbuszhiwei=0x7f0b009f;
         public static final int ivbuszhiweib=0x7f0b00a0;
         public static final int ivbuszhiweibeijing=0x7f0b00a3;
-        public static final int ivczjx=0x7f0b00b0;
-        public static final int ivgmys=0x7f0b00af;
+        public static final int ivczjx=0x7f0b00b1;
+        public static final int ivgmys=0x7f0b00b0;
         public static final int ivhuoProID=0x7f0b0162;
         public static final int ivmobile=0x7f0b00b6;
-        public static final int ivquhuo=0x7f0b00b1;
+        public static final int ivquhuo=0x7f0b00b2;
         public static final int job=0x7f0b00be;
         public static final int lvclass=0x7f0b00bf;
         public static final int lvlog=0x7f0b0175;

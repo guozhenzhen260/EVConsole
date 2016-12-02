@@ -1,5 +1,10 @@
 package com.easivend.fragment;
 
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import com.easivend.app.business.BusPort;
 import com.easivend.common.OrderDetail;
 import com.easivend.common.ToolClass;
@@ -12,6 +17,9 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,7 +47,11 @@ public class BusgoodsselectFragment extends Fragment
     private String cabID = null;
 	private String huoID = null;
 	private Context context;
-	
+	//扫码
+    private String editstr="";
+	private int editread=0;
+	EditText editTextTimeCOMA;
+	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
 	//=========================
     //fragment与activity回调相关
     //=========================
@@ -100,8 +113,39 @@ public class BusgoodsselectFragment extends Fragment
 		cabID=bundle.getString("cabID");
 		huoID=bundle.getString("huoID");
 		context=this.getActivity();//获取activity的context
+		//扫码模块
+		editTextTimeCOMA=(EditText)view.findViewById(R.id.editTextTimeCOMA);
+        editTextTimeCOMA.setInputType(InputType.TYPE_NULL);  
+        editTextTimeCOMA.setFocusable(true);
+		editTextTimeCOMA.setFocusableInTouchMode(true);
+		editTextTimeCOMA.requestFocus();
+		editTextTimeCOMA.setText("");
+		editTextTimeCOMA.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				editstr=s.toString().trim();	
+				//Log.i("EV_JNI","String s="+editstr);
+				editread=100;
+			}
+		});
+        timer.scheduleWithFixedDelay(task, 100, 10, TimeUnit.MILLISECONDS);
 		
-		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="+productID+" proImage="
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品proID="+proID+" productID="+productID+" proImage="
 					+proImage+" prosales="+prosales+" procount="
 					+procount+" proType="+proType+" cabID="+cabID+" huoID="+huoID,"log.txt");
 		ivbusgoodselProduct = (ImageView) view.findViewById(R.id.ivbusgoodselProduct);
@@ -168,7 +212,32 @@ public class BusgoodsselectFragment extends Fragment
 		});	
 		return view;
 	}
-	
+	//调用倒计时定时器
+    TimerTask task = new TimerTask() { 
+    	@Override 
+        public void run() { 
+  
+    		((Activity)context).runOnUiThread(new Runnable() {      // UI thread 
+		         @Override 
+		        public void run()
+		        { 
+		        	 if(editread>0)
+		        		 editread--;
+		        	 if(editread==0)
+		        	 {
+		        		 if(editstr.equals("")==false)
+		        		 {
+		        			 editstr="";
+		        			 editTextTimeCOMA.setText("");
+		        			 editTextTimeCOMA.setFocusable(true);
+		     				 editTextTimeCOMA.setFocusableInTouchMode(true);
+		     				 editTextTimeCOMA.requestFocus();  
+		        		 }
+		        	 }
+		        } 
+            });
+        }     	    
+    };
 	private void sendzhifu()
 	{
 		OrderDetail.setProID(proID);
