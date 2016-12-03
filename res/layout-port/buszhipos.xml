@@ -75,7 +75,7 @@
         android:layout_toRightOf="@+id/imgbtnbuszhiposqxzf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/qtzffang" />
+        android:src="@drawable/qtzffangland" />
    	<ImageView
        android:id="@+id/imgzflc"
        android:layout_width="wrap_content"
