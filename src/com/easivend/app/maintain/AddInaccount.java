@@ -680,6 +680,7 @@ public class AddInaccount extends TabActivity
 						str2=" –Õ∫≈:"+model2+"∞Ê±æ∫≈:"+ver2+"¥¢±“¡ø:"+capacity2;
 						txtcoinmanagerpar2.setText(str2);
 						spincoinmanagercoin.setSelection((Integer)Set.get("acceptor"));
+
 						
 						
 						str2="";
