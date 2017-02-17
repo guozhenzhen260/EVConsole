@@ -414,7 +414,10 @@ public class MaintainActivity extends Activity
 	//签到完成，自动开启售货程序
 	private void IntentBus()
 	{
-		
+		if(issale==false)
+		{
+			issale=true;
+		}
 		//如果看门狗没打开，就打开它
 		if(isallopen==0)
 			evDog(1);

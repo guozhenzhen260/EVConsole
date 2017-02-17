@@ -303,94 +303,101 @@ public class MoviewlandFragment extends Fragment {
 		});       
         
 	}  
+    /**得到随机的索引值
+     * @param type 0视频,1图片
+     * @return
+     */
+    private void rNext(int type)
+    {
+        if(type==0)// 0视频
+        {
+        	curIndex=r.nextInt(mMusicList.size());
+        }
+        else if(type==1)//1图片
+        {
+        	curIndex=r.nextInt(imgMusicList.size());
+        }
+    }
+    
+    //图片和视频切换显示
+    private String showOpt()
+    {
+        String rst=null;
+        //视频和图片文件至少要有一个才行
+        //播放视频:没有播放         有视频文件             在空闲状态
+        if((viewvideo==false)&&(mMusicList.size()>0)&&(videopause==false))
+        {
+        	viewvideo=true;//设置开始播放
+            rNext(0);
+            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<播放视频ID="+mMusicList.get(curIndex),"log.txt");
+            rst=mMusicList.get(curIndex);
+        }
+        //播放图片
+        else
+        {
+        	viewvideo=false;
+            if(imgMusicList.size()>0)
+            {
+                rNext(1);
+                ToolClass.Log(ToolClass.INFO, "EV_JNI", "APP<播放图片ID=" + imgMusicList.get(curIndex), "log.txt");
+                rst = imgMusicList.get(curIndex);
+            }
+            else
+            {
+            	viewvideo=true;//设置开始播放
+                rNext(0);
+                ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<播放视频ID="+mMusicList.get(curIndex),"log.txt");
+                rst=mMusicList.get(curIndex);
+            }
+        }
+        return rst;
+    }
     //图片和视频切换显示
     private void show()
     {
-    	//视频和图片文件都要有才行
-    	if((mMusicList.size()>0)||(imgMusicList.size()>0))
-    	{
-	    	//播放视频
-	    	if((viewvideo==false)&&(mMusicList.size()>0)&&(videopause==false))
-	    	{
-	    		viewvideo=true;
-	    		ivads.setVisibility(View.GONE);//图片关闭
-	    		webtishiInfo.setVisibility(View.GONE);//提示关闭
-	    		videoView.setVisibility(View.VISIBLE);//视频打开
-	    		play();
-	    	}
-	    	//播放图片
-	    	else 
-	    	{
-	    		viewvideo=false;
-	    		if(imgMusicList.size()>0)
-	    		{
-		    		videoView.setVisibility(View.GONE);//视频关闭
-		    		webtishiInfo.setVisibility(View.GONE);//提示关闭
-		    		ivads.setVisibility(View.VISIBLE);//图片打开
-		    		showImage();
-	    		}
-	    		else
-	    		{
-	    			show();
-	    		}
-			}
+    	String rst=showOpt();
+    	//是否视频文件
+		if(MediaFileAdapter.isVideoFileType(rst)==true)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<视频可以播放ID="+rst,"log.txt");
+			ivads.setVisibility(View.GONE);//图片关闭
+    		webtishiInfo.setVisibility(View.GONE);//提示关闭
+    		videoView.setVisibility(View.VISIBLE);//视频打开
+    		play();
     	}
+		//是否图片文件
+		else if(MediaFileAdapter.isImgFileType(rst)==true)
+		{
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<图片可以播放ID="+rst,"log.txt");
+    		videoView.setVisibility(View.GONE);//视频关闭
+    		webtishiInfo.setVisibility(View.GONE);//提示关闭
+    		ivads.setVisibility(View.VISIBLE);//图片打开
+    		playImage();
+		}
     }
     //显示图片
-    private void showImage()
+    private void playImage()
     {  
-        curIndex=r.nextInt(imgMusicList.size()); 
-        try 
+    	/*为什么图片一定要转化为 Bitmap格式的！！ */
+        Bitmap bitmap = ToolClass.getLoacalBitmap(imgMusicList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
+        ivads.setImageBitmap(bitmap);// 设置图像的二进制值
+        //延时10s
+        new Handler().postDelayed(new Runnable() 
 		{
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<imageID="+imgMusicList.get(curIndex),"log.txt");
-        	if(checkAds(imgMusicList.get(curIndex)))
-        	{
-	        	/*为什么图片一定要转化为 Bitmap格式的！！ */
-		        Bitmap bitmap = ToolClass.getLoacalBitmap(imgMusicList.get(curIndex)); //从本地取图片(在cdcard中获取)  //
-		        ivads.setImageBitmap(bitmap);// 设置图像的二进制值
-		        //延时10s
-		        new Handler().postDelayed(new Runnable() 
-				{
-	                @Override
-	                public void run() 
-	                {
-	                	show();
-	                }
-	
-				}, SPLASH_DISPLAY_LENGHT);
-        	}
-        	else
-        	{
-        		show();
-        	}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			show();
-		}	
+            @Override
+            public void run() 
+            {
+            	show();
+            }
+
+		}, SPLASH_DISPLAY_LENGHT);	
     }  
     //播放视频
     private void play()
     {  
-        curIndex=r.nextInt(mMusicList.size()); 
-        try 
-		{
-        	
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<videoID="+mMusicList.get(curIndex),"log.txt");
-	        if(checkAds(mMusicList.get(curIndex)))
-	        {
-	        	videoView.setVideoPath(mMusicList.get(curIndex));  
-		        videoView.start(); 
-	        }
-	        else
-	        {
-	        	show();
-	        }
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}	
-    }  
+    	videoView.setVideoPath(mMusicList.get(curIndex));  
+        videoView.start(); 
+    }   
     
     private boolean checkAds(String CLS_URL)
     {
