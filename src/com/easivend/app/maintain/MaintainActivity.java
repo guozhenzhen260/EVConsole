@@ -273,29 +273,47 @@ public class MaintainActivity extends Activity
                 Intent intent = null;// 创建Intent对象
                 switch (arg2) {
                 case 0:
-                	intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
-                	startActivityForResult(intent,REQUEST_CODE);// 打开GoodsManager
-                    break;
+                	if(issale)
+                	{
+	                	intent = new Intent(MaintainActivity.this, GoodsManager.class);// 使用GoodsManager窗口初始化Intent
+	                	startActivityForResult(intent,REQUEST_CODE);// 打开GoodsManager
+                	}
+                	break;
                 case 1:
-                	intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用HuodaoTest窗口初始化Intent
-                    startActivityForResult(intent,REQUEST_CODE);// 打开HuodaoTest
-                    break;
+                	if(issale)
+                	{
+	                	intent = new Intent(MaintainActivity.this, HuodaoTest.class);// 使用HuodaoTest窗口初始化Intent
+	                    startActivityForResult(intent,REQUEST_CODE);// 打开HuodaoTest
+                	}
+                	break;
                 case 2:
-                	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
-                    startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
-                    break;    
+                	if(issale)
+                	{
+	                	intent = new Intent(MaintainActivity.this, ParamManager.class);// 使用ParamManager窗口初始化Intent
+	                    startActivityForResult(intent,REQUEST_CODE);// 打开ParamManager                    
+                	}
+                	break;    
                 case 3:
-                	intent = new Intent(MaintainActivity.this, Order.class);// 使用Accountflag窗口初始化Intent
-                	startActivityForResult(intent,REQUEST_CODE);
-                    break;                
+                	if(issale)
+                	{
+	                	intent = new Intent(MaintainActivity.this, Order.class);// 使用Accountflag窗口初始化Intent
+	                	startActivityForResult(intent,REQUEST_CODE);
+                	}
+                	break;                
                 case 4:
-                	intent = new Intent(MaintainActivity.this, LogOpt.class);// 使用Accountflag窗口初始化Intent
-                	startActivityForResult(intent,REQUEST_CODE);
-                    break;
+                	if(issale)
+                	{
+	                	intent = new Intent(MaintainActivity.this, LogOpt.class);// 使用Accountflag窗口初始化Intent
+	                	startActivityForResult(intent,REQUEST_CODE);
+                	}
+                	break;
                 case 5:
-                	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent
-                	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
-                    break;
+                	if(issale)
+                	{
+	                	intent = new Intent(MaintainActivity.this, Login.class);// 使用Accountflag窗口初始化Intent
+	                	startActivityForResult(intent,REQUEST_CODE);// 打开Accountflag
+                	}
+                	break;
                 case 6:
                 	IntentBus();
                     break;
@@ -396,6 +414,7 @@ public class MaintainActivity extends Activity
 	//签到完成，自动开启售货程序
 	private void IntentBus()
 	{
+		
 		//如果看门狗没打开，就打开它
 		if(isallopen==0)
 			evDog(1);
