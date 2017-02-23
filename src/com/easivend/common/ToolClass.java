@@ -819,6 +819,7 @@ public class ToolClass
 	                   fs.write(buffer, 0, byteread);   
 	               }   
 	               inStream.close();   
+	               fs.close();
 	           }   
 	       }   
 	       catch (Exception e) {   
@@ -1697,6 +1698,8 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+	  	         input.close();
+	  	         scan.close();
 	  	         //文件损坏,则从备份那边覆盖一份过来
 	  	         if(str==null)
 	  	         {
@@ -1716,6 +1719,8 @@ public class ToolClass
 		  	           	str=scan2.next()+"\n";
 		  	          }
 		  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config恢复备份="+str,"log.txt");
+		  	         input2.close();
+		  	         scan2.close();
 	  	         }
 	  	         //将json格式解包
 	  	         list=new HashMap<String,String>();      			
@@ -1818,6 +1823,8 @@ public class ToolClass
 			  	           	str=scan3.next()+"\n";
 			  	          }
 			  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config恢复备份="+str,"log.txt");
+			  	         input3.close();
+			  	         scan3.close();
 			  	         //将json格式解包
 			  	         list=new HashMap<String,String>();      			
 						JSONObject object=new JSONObject(str);      				
@@ -1864,6 +1871,8 @@ public class ToolClass
   	           	str=scan.next()+"\n";
   	          }
   	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+  	         input.close();
+  	         scan.close();
   	         if(str!=null)
   	         {
 	  	        Map<String, String> list=new HashMap<String,String>();      			
@@ -2025,6 +2034,8 @@ public class ToolClass
   	           	str=scan.next()+"\n";
   	          }
   	         ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config="+str,"server.txt");
+  	         input.close();
+  	         scan.close();
   	         if(str!=null)
   	         {
 	  	        Map<String, String> list=new HashMap<String,String>();      			
@@ -2159,6 +2170,14 @@ public class ToolClass
 	            FileWriter writer = new FileWriter(fileName);
 	            writer.write(mapstrString);
 	            writer.close();
+	            
+
+                //2.重置支付宝微信账号
+                AlipayConfigAPI.SetAliConfig(list2);//设置阿里账号
+                WeiConfigAPI.SetWeiConfig(list2);//设置微信账号
+                //加载微信证书
+                ToolClass.setWeiCertFile();
+
   	         }
   	         else
   	         {  	        	
@@ -2249,24 +2268,18 @@ public class ToolClass
   	            FileWriter writer = new FileWriter(fileName, true);
   	            writer.write(mapstrString);
   	            writer.close();
-			 }
-  	        
-  	         //2.重置支付宝微信账号
-  	        //从配置文件获取数据
-  			Map<String, String> list=ToolClass.ReadConfigFile(); 
-  	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
-	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号
-	        //加载微信证书
-			ToolClass.setWeiCertFile();
-//  	         //将json格式解包
-//  	         list=new HashMap<String,String>();      			
-//			JSONObject object=new JSONObject(str);      				
-//			Gson gson=new Gson();
-//			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-//			//Log.i("EV_JNI",perobj.toString());
-//			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
-        	
-        	             
+  	            
+
+                Map<String, String> list=new HashMap<String,String>();
+                Gson gson=new Gson();
+                list=gson.fromJson(jsonObject.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+                //2.重置支付宝微信账号
+                AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
+                WeiConfigAPI.SetWeiConfig(list);//设置微信账号
+                //加载微信证书
+                ToolClass.setWeiCertFile();
+
+			 }  	                 
         } catch (Exception e) {
             e.printStackTrace();
         }        
@@ -2314,6 +2327,8 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         input.close();
+	  	         scan.close();
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
 	  	         huodaolist=new HashMap<Integer,Integer>(); 
@@ -2395,6 +2410,8 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         input.close();
+	  	         scan.close();
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
 	  	         huodaolist2=new HashMap<Integer,Integer>(); 
@@ -2672,6 +2689,8 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         input.close();
+	  	         scan.close();
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
 	  	         elevatorlist=new HashMap<Integer,Integer>(); 
@@ -2773,6 +2792,8 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         input.close();
+	  	         scan.close();
 	  	         //将json格式解包
 	  	         list=new HashMap<String,Integer>();   
 	  	         elevatorlist2=new HashMap<Integer,Integer>(); 
@@ -2921,6 +2942,8 @@ public class ToolClass
 	  	           	str=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+	  	         input.close();
+	  	         scan.close();
 	  	         //将json格式解包
 	  	         list=new HashMap<String,String>();   
 	  	         selectlist=new HashMap<String,String>(); 
