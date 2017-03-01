@@ -281,7 +281,8 @@ public class COMService extends Service {
 				else
 				{
 	        	    //ToolClass.Log(ToolClass.INFO,"EV_COM","COMService cabinet="+bundle.getInt("cabinet"),"com.txt");
-	        	    childhand=comserial.obtainHandler();
+					int cabinet=bundle.getInt("cabinet");
+					childhand=comserial.obtainHandler();
 	        	    Message child3=childhand.obtainMessage();				
 	        		JSONObject ev3=null;
 		    		try {
@@ -299,14 +300,24 @@ public class COMService extends Service {
 		        		{
 		        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 货道出货","com.txt");
 		    				child3.what=COMThread.EV_COLUMN_OPENCHILD;
-		    				ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
+		    				//副柜
+		    				if(cabinet==2)
+		    					ev3.put("column", ToolClass.columnChuhuo2(bundle.getInt("column")));
+		    				//主柜
+		    				else if(cabinet==1)
+		    					ev3.put("column", ToolClass.columnChuhuo(bundle.getInt("column")));
 		        		}
 		        	    //升降机货道
 		        		else if((listinfos3.getCabType()==2)||(listinfos3.getCabType()==3))
 		        		{
 		        	    	ToolClass.Log(ToolClass.INFO,"EV_COM","COMService 升降机出货","com.txt");
 		    				child3.what=COMThread.EV_ELEVATOR_OPENCHILD;
-		    				ev3.put("column", ToolClass.elevatorChuhuo(bundle.getInt("column")));
+		    				//副柜
+		    				if(cabinet==2)
+		    					ev3.put("column", ToolClass.elevatorChuhuo2(bundle.getInt("column")));
+		    				//主柜
+		    				else if(cabinet==1)
+		    					ev3.put("column", ToolClass.elevatorChuhuo(bundle.getInt("column")));
 		        		}	
 		    			ToolClass.Log(ToolClass.INFO,"EV_COM","ServiceSend0.1="+ev3.toString(),"com.txt");
 		    		} catch (JSONException e) {
