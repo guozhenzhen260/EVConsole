@@ -123,7 +123,17 @@ public class MoviewlandFragment extends Fragment {
 				break;	
 		}
 		listFiles(); 
-		startVideo();
+		if((mMusicList.size()==0)&&(imgMusicList.size()==0))
+        {
+            videoView.setVisibility(View.GONE);//关闭视频
+            webtishiInfo.setVisibility(View.GONE);//关闭提示
+            ivads.setVisibility(View.VISIBLE);//打开图片
+        }
+        else
+        {
+            startVideo();
+        }
+
 		/**
 	     * 用来与其他fragment交互的,
 	     * 步骤五、当Fragment被加载到activity的时候，注册回调信息
