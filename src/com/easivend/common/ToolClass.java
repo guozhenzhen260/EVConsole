@@ -1680,7 +1680,7 @@ public class ToolClass
     public static Map<String, String> ReadConfigFile() 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	Map<String, String> list=null;
     	    	
         try {
@@ -1695,13 +1695,13 @@ public class ToolClass
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
 	  	          {
-	  	           	str=scan.next()+"\n";
+	  	           	str+=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
 	  	         input.close();
 	  	         scan.close();
 	  	         //文件损坏,则从备份那边覆盖一份过来
-	  	         if(str==null)
+	  	         if(str=="")
 	  	         {
 	  	        	 //恢复文件
 	  	        	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
@@ -1716,7 +1716,7 @@ public class ToolClass
 		  	          Scanner scan2=new Scanner(input2);
 		  	          while(scan2.hasNext())
 		  	          {
-		  	           	str=scan2.next()+"\n";
+		  	           	str+=scan2.next()+"\n";
 		  	          }
 		  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config恢复备份="+str,"log.txt");
 		  	         input2.close();
@@ -1812,6 +1812,7 @@ public class ToolClass
 		  	        	String copyFile = copyDir+"easivendconfig.txt";
 		  	  		    ToolClass.Log(ToolClass.INFO,"EV_JNI"," 自检文件"+sDir+"损坏,恢复备份="+copyFile,"log.txt");
 		  	  		    copyFile(copyFile,sDir);
+		  	  		    str="";
 		  	  		    
 		  	  		    //重新读入文件信息
 		  	  		    //打开文件
@@ -1820,7 +1821,7 @@ public class ToolClass
 			  	          Scanner scan3=new Scanner(input3);
 			  	          while(scan3.hasNext())
 			  	          {
-			  	           	str=scan3.next()+"\n";
+			  	           	str+=scan3.next()+"\n";
 			  	          }
 			  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config恢复备份="+str,"log.txt");
 			  	         input3.close();
@@ -1848,7 +1849,7 @@ public class ToolClass
     		String posip,String posipport) 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	
     	    	
         try {
@@ -1868,7 +1869,7 @@ public class ToolClass
   	          Scanner scan=new Scanner(input);
   	          while(scan.hasNext())
   	          {
-  	           	str=scan.next()+"\n";
+  	           	str+=scan.next()+"\n";
   	          }
   	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
   	         input.close();
@@ -2010,7 +2011,7 @@ public class ToolClass
     public static void ResetConfigFileServer(JSONObject object2,String VMC_NO) 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	
     	    	
         try {      
@@ -2031,7 +2032,7 @@ public class ToolClass
   	          Scanner scan=new Scanner(input);
   	          while(scan.hasNext())
   	          {
-  	           	str=scan.next()+"\n";
+  	           	str+=scan.next()+"\n";
   	          }
   	         ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config="+str,"server.txt");
   	         input.close();
@@ -2309,7 +2310,7 @@ public class ToolClass
     public static Map<String, Integer> ReadColumnFile() 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	Map<String, Integer> list=null;
     	    	
         try {
@@ -2324,7 +2325,7 @@ public class ToolClass
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
 	  	          {
-	  	           	str=scan.next()+"\n";
+	  	           	str+=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         input.close();
@@ -2392,7 +2393,7 @@ public class ToolClass
     public static Map<String, Integer> ReadColumnFile2() 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	Map<String, Integer> list=null;
     	    	
         try {
@@ -2407,7 +2408,7 @@ public class ToolClass
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
 	  	          {
-	  	           	str=scan.next()+"\n";
+	  	           	str+=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         input.close();
@@ -2671,7 +2672,7 @@ public class ToolClass
     public static Map<String, Integer> ReadElevatorFile() 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	Map<String, Integer> list=null;
     	    	
         try {
@@ -2686,7 +2687,7 @@ public class ToolClass
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
 	  	          {
-	  	           	str=scan.next()+"\n";
+	  	           	str+=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         input.close();
@@ -2774,7 +2775,7 @@ public class ToolClass
     public static Map<String, Integer> ReadElevatorFile2() 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	Map<String, Integer> list=null;
     	    	
         try {
@@ -2789,7 +2790,7 @@ public class ToolClass
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
 	  	          {
-	  	           	str=scan.next()+"\n";
+	  	           	str+=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         input.close();
@@ -2924,7 +2925,7 @@ public class ToolClass
     public static Map<String,String> ReadSelectFile() 
     {
     	File fileName=null;
-    	String  sDir =null,str=null;
+    	String  sDir =null,str="";
     	Map<String,String> list=null;
     	    	
         try {
@@ -2939,7 +2940,7 @@ public class ToolClass
 	  	          Scanner scan=new Scanner(input);
 	  	          while(scan.hasNext())
 	  	          {
-	  	           	str=scan.next()+"\n";
+	  	           	str+=scan.next()+"\n";
 	  	          }
 	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
 	  	         input.close();
