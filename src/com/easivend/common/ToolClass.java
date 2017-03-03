@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.text.ParseException;
@@ -3077,18 +3078,20 @@ public class ToolClass
 	//发送金额函数，浮点的元,转为以分为单位发送到底下
 	public static int MoneySend(float sendMoney)
 	{
-		int values=(int)(sendMoney*100);
-		return values;
+		BigDecimal x1 = new BigDecimal(Float.toString(sendMoney));
+		BigDecimal mulpar= new BigDecimal(100);
+		x1=x1.multiply(mulpar);
+		int values=x1.intValue();
+		return values; 
 	}
 	
 	//接收金额转换函数，接收的分,转为浮点的元
 	public static float MoneyRec(long Money)
 	{
-		float amount1=0,amount2=0;
-		amount1=(float)(Money/100);
-		amount2=(float)(Money%100);
-		amount2=amount2/100;
-		float amount = amount1+amount2;
+		BigDecimal x1 = new BigDecimal(Money);
+		BigDecimal divpar= new BigDecimal(100);		
+		x1=x1.divide(divpar);
+		float amount = x1.floatValue();
 		return amount;
 	}
 	
