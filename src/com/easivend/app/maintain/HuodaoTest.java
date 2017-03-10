@@ -401,7 +401,6 @@ public class HuodaoTest extends TabActivity
 					cabinetTypepeivar=cabinetType[arg2]; 
 					spinhuosetCab.setSelection(arg2);
 					spinhuopeiCab.setSelection(arg2);
-					queryhuodao();	
 				}
 			}
 
