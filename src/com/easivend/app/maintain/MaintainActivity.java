@@ -75,6 +75,7 @@ public class MaintainActivity extends Activity
     private int[] images = new int[] { R.drawable.addoutaccount, R.drawable.addinaccount, R.drawable.outaccountinfo, R.drawable.showinfo,
             R.drawable.inaccountinfo, R.drawable.sysset, R.drawable.accountflag, R.drawable.exit };
     String com=null,bentcom=null,columncom=null,extracom=null,cardcom=null,printcom=null,posip=null,posipport=null,columncom2=null;
+    int posisssl=0;
     final static int REQUEST_CODE=1;   
     //获取货柜信息
    //Map<String,Integer> huoSet=new HashMap<String,Integer>();
@@ -236,11 +237,16 @@ public class MaintainActivity extends Activity
 	        {
 	        	posipport = list.get("posipport");
 	        	ToolClass.setPosipport(posipport);	
-	        }
+	        }	        
 	        if(list.containsKey("isallopen"))//设置副柜串口号
 	        {
 				columncom2 = list.get("isallopen");
 				ToolClass.setColumncom2(columncom2);	
+	        }
+	        if(list.containsKey("posisssl"))//设置ssl加密
+	        {
+	        	posisssl = Integer.parseInt(list.get("posisssl"));	
+	        	ToolClass.setPosisssl(posisssl);
 	        }
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        

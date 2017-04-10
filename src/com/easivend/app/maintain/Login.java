@@ -30,10 +30,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.SwitchPreference;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ public class Login extends Activity
 	private EditText txtlogin,txtbent,txtcolumn,txtcardcom,txtprintcom,txtextracom,txtposip,txtposipport,txtcolumn2;// 创建EditText对象
 	private TextView tvVersion=null,tvprintcom=null,tvextracom=null,tvposip=null,tvposipport=null,tvcolumn2=null;
     private Button btnlogin,btnclose,btnGaoji,btnDel,btnDelImg,btnDelads;// 创建两个Button对象
+    private Switch switchisssl;
     String com =null;
     String bentcom =null;
     String columncom =null;
@@ -50,6 +53,7 @@ public class Login extends Activity
     String printcom =null;
     String posip=null;
     String posipport=null;
+    int posisssl=0;
     String columncom2 =null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,7 @@ public class Login extends Activity
         txtposip = (EditText) findViewById(R.id.txtposip);//获取外协设备串口号文本框
         tvposipport = (TextView) findViewById(R.id.tvposipport);        
         txtposipport = (EditText) findViewById(R.id.txtposipport);//获取外协设备串口号文本框
+        switchisssl= (Switch) findViewById(R.id.switchisssl);//是否打开ssl加密
         tvcolumn2 = (TextView) findViewById(R.id.tvcolumn2);        
         txtcolumn2 = (EditText) findViewById(R.id.txtcolumn2);//获取副弹簧/升降机柜串口号
         tvVersion = (TextView) findViewById(R.id.tvVersion);//本机版本号
@@ -84,6 +89,7 @@ public class Login extends Activity
         txtposip.setVisibility(View.GONE);
         tvposipport.setVisibility(View.GONE); 
         txtposipport.setVisibility(View.GONE);
+        switchisssl.setVisibility(View.GONE);
         tvcolumn2.setVisibility(View.GONE); 
         txtcolumn2.setVisibility(View.GONE);
         btnDel.setVisibility(View.GONE);
@@ -125,9 +131,13 @@ public class Login extends Activity
 	        {
 	        	posipport = list.get("posipport");
 	        }
-	        if(list.containsKey("isallopen"))//设置主柜串口号
+	        if(list.containsKey("isallopen"))//设置副柜串口号
 	        {
 				columncom2 = list.get("isallopen");	
+	        }
+	        if(list.containsKey("posisssl"))//设置ssl加密
+	        {
+	        	posisssl = Integer.parseInt(list.get("posisssl"));	
 	        }
         }
         txtlogin.setText(com);
@@ -138,6 +148,7 @@ public class Login extends Activity
         txtextracom.setText(extracom);
         txtposip.setText(posip);
         txtposipport.setText(posipport);
+        switchisssl.setChecked((posisssl==1)?true:false);
         txtcolumn2.setText(columncom2); 
         btnlogin = (Button) findViewById(R.id.btnLogin);// 获取修改按钮
         btnclose = (Button) findViewById(R.id.btnClose);// 获取取消按钮
@@ -159,9 +170,10 @@ public class Login extends Activity
     	        extracom = ToolClass.replaceBlank(txtextracom.getText().toString()); 
     	        posip = ToolClass.replaceBlank(txtposip.getText().toString()); 
     	        posipport = ToolClass.replaceBlank(txtposipport.getText().toString()); 
+    	        posisssl=(switchisssl.isChecked()==true)?1:0;
     	        columncom2 = ToolClass.replaceBlank(txtcolumn2.getText().toString());
     	        cardcom = ToolClass.replaceBlank(txtcardcom.getText().toString()); 
-            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,printcom,columncom2,posip,posipport);            	
+            	ToolClass.WriteConfigFile(com, bentcom,columncom,extracom,cardcom,printcom,columncom2,posip,posipport,String.valueOf(posisssl));            	
             	ToolClass.addOptLog(Login.this,1,"修改串口:");
 	            // 弹出信息提示
 	            Toast.makeText(Login.this, "〖修改串口〗成功！", Toast.LENGTH_SHORT).show();
@@ -184,6 +196,7 @@ public class Login extends Activity
                     txtposip.setVisibility(View.VISIBLE);
                     tvposipport.setVisibility(View.VISIBLE); 
                     txtposipport.setVisibility(View.VISIBLE);
+                    switchisssl.setVisibility(View.VISIBLE);
                     tvcolumn2.setVisibility(View.VISIBLE); 
                     txtcolumn2.setVisibility(View.VISIBLE);
                     btnDel.setVisibility(View.VISIBLE);
@@ -200,6 +213,7 @@ public class Login extends Activity
                     txtposip.setVisibility(View.GONE);
                     tvposipport.setVisibility(View.GONE); 
                     txtposipport.setVisibility(View.GONE);
+                    switchisssl.setVisibility(View.GONE);
                     tvcolumn2.setVisibility(View.GONE); 
                     txtcolumn2.setVisibility(View.GONE);
                     btnDel.setVisibility(View.GONE);

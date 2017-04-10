@@ -207,11 +207,20 @@
 			        android:numeric="integer" 
 			        android:background="@drawable/editsharp3"
 			        />
+			    <Switch   
+			       android:layout_marginTop="20dip"  
+			       android:id="@+id/switchisssl"  
+			       android:layout_width="wrap_content"  
+			       android:layout_height="wrap_content"  
+			       android:textOn="打开SSL加密"  
+			       android:textOff="关闭SSL加密"  		
+			       android:layout_below="@id/txtposipport"  					           
+			       android:layout_gravity="center_horizontal"/>
 			    <TextView
 			        android:id="@+id/tvcolumn2"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:layout_below="@id/txtposipport"   
+			        android:layout_below="@id/switchisssl"   
 			        android:layout_gravity="center"
 			        android:gravity="center_horizontal"
 			        android:text="请输入副弹簧/升降机柜串口号："

@@ -109,6 +109,7 @@ public class ToolClass
 	public static String EV_DIR=null;//ev包的地址
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1,columncom2_id=-1;//串口id号
 	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="",columncom2="";//串口描述符
+	private static int posisssl=0;
 	private static int bill_err=0,coin_err=0;//纸币器，硬币器故障状态
 	public static String vmc_no="";//本机编号
 	public static Bitmap mark=null;//售完图片
@@ -281,6 +282,13 @@ public class ToolClass
 	}
 	public static void setPosipport(String posipport) {
 		ToolClass.posipport = posipport;
+	}
+	
+	public static int getPosisssl() {
+		return posisssl;
+	}
+	public static void setPosisssl(int posisssl) {
+		ToolClass.posisssl = posisssl;
 	}
 	public static Context getContext() {
 		return context;
@@ -1849,7 +1857,7 @@ public class ToolClass
      * 写入配置文件
      */
     public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String columncom2,
-    		String posip,String posipport) 
+    		String posip,String posipport,String posisssl) 
     {
     	File fileName=null;
     	String  sDir =null,str="";
@@ -1903,6 +1911,7 @@ public class ToolClass
 		            	  &&(me.getKey().equals("server")!=true)
 		            	  &&(me.getKey().equals("posip")!=true)
 		            	  &&(me.getKey().equals("posipport")!=true)
+		            	  &&(me.getKey().equals("posisssl")!=true)
 		              )
 		            	list2.put(me.getKey(), me.getValue());
 		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
@@ -1916,6 +1925,7 @@ public class ToolClass
 		        list2.put("isallopen", columncom2);	
 		        list2.put("posip", posip);
 		        list2.put("posipport", posipport);
+		        list2.put("posisssl", posisssl);
 		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
 		        JSONObject jsonObject = new JSONObject(list2);
 		        String mapstrString=jsonObject.toString();
@@ -1938,6 +1948,7 @@ public class ToolClass
   	        	jsonObject.put("isallopen", columncom2);
   	        	jsonObject.put("posip", posip);
   	        	jsonObject.put("posipport", posipport);
+  	        	jsonObject.put("posisssl", posisssl);
   	        	String mapstrString=jsonObject.toString();
   	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
   	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
