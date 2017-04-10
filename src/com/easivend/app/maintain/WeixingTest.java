@@ -41,7 +41,7 @@ public class WeixingTest extends Activity
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.weixingtest);	
-		//ÉèÖÃºáÆÁ»¹ÊÇÊúÆÁµÄ²¼¾Ö²ßÂÔ
+		//è®¾ç½®æ¨ªå±è¿˜æ˜¯ç«–å±çš„å¸ƒå±€ç­–ç•¥
 		this.setRequestedOrientation(ToolClass.getOrientation());
 		mainhand=new Handler()
 		{
@@ -52,38 +52,38 @@ public class WeixingTest extends Activity
 				// TODO Auto-generated method stub				
 				switch (msg.what)
 				{
-					case Weixinghttp.SETMAIN://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
+					case Weixinghttp.SETMAIN://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
 						imgweixingtest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtweixingtest.setText("Î¢ĞÅ½»Ò×½á¹û:"+msg.obj.toString());
+						txtweixingtest.setText("å¾®ä¿¡äº¤æ˜“ç»“æœ:"+msg.obj.toString());
 						break;
-					case Weixinghttp.SETFAILNETCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
-						txtweixingtest.setText("Î¢ĞÅ½»Ò×½á¹û:"+msg.obj.toString());
+					case Weixinghttp.SETFAILNETCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
+						txtweixingtest.setText("å¾®ä¿¡äº¤æ˜“ç»“æœ:"+msg.obj.toString());
 						break;	
-					case Weixinghttp.SETPAYOUTMAIN://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
-						txtweixingtest.setText("Î¢ĞÅ½»Ò×½á¹û:ÍË¿î³É¹¦");
+					case Weixinghttp.SETPAYOUTMAIN://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
+						txtweixingtest.setText("å¾®ä¿¡äº¤æ˜“ç»“æœ:é€€æ¬¾æˆåŠŸ");
 						break;
-					case Weixinghttp.SETDELETEMAIN://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
-						txtweixingtest.setText("Î¢ĞÅ½»Ò×½á¹û:³·Ïú³É¹¦");
+					case Weixinghttp.SETDELETEMAIN://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
+						txtweixingtest.setText("å¾®ä¿¡äº¤æ˜“ç»“æœ:æ’¤é”€æˆåŠŸ");
 						break;	
-					case Weixinghttp.SETQUERYMAINSUCC://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢	
-						txtweixingtest.setText("Î¢ĞÅ½»Ò×½á¹û:½»Ò×³É¹¦");
+					case Weixinghttp.SETQUERYMAINSUCC://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯	
+						txtweixingtest.setText("å¾®ä¿¡äº¤æ˜“ç»“æœ:äº¤æ˜“æˆåŠŸ");
 						break;		
-					case Weixinghttp.SETFAILPROCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
-					case Weixinghttp.SETFAILBUSCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢	
-					case Weixinghttp.SETFAILQUERYPROCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
-					case Weixinghttp.SETFAILQUERYBUSCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢		
-					case Weixinghttp.SETQUERYMAIN://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢	
-					case Weixinghttp.SETFAILPAYOUTPROCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢		
-					case Weixinghttp.SETFAILPAYOUTBUSCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢
-					case Weixinghttp.SETFAILDELETEPROCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢		
-					case Weixinghttp.SETFAILDELETEBUSCHILD://×ÓÏß³Ì½ÓÊÕÖ÷Ïß³ÌÏûÏ¢	
-						txtweixingtest.setText("Î¢ĞÅ½»Ò×½á¹û:"+msg.obj.toString());
+					case Weixinghttp.SETFAILPROCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
+					case Weixinghttp.SETFAILBUSCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯	
+					case Weixinghttp.SETFAILQUERYPROCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
+					case Weixinghttp.SETFAILQUERYBUSCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯		
+					case Weixinghttp.SETQUERYMAIN://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯	
+					case Weixinghttp.SETFAILPAYOUTPROCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯		
+					case Weixinghttp.SETFAILPAYOUTBUSCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯
+					case Weixinghttp.SETFAILDELETEPROCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯		
+					case Weixinghttp.SETFAILDELETEBUSCHILD://å­çº¿ç¨‹æ¥æ”¶ä¸»çº¿ç¨‹æ¶ˆæ¯	
+						txtweixingtest.setText("å¾®ä¿¡äº¤æ˜“ç»“æœ:"+msg.obj.toString());
 						break;		
 				}				
 			}
 			
 		};	
-		//Æô¶¯ÓÃ»§×Ô¼º¶¨ÒåµÄÀà
+		//å¯åŠ¨ç”¨æˆ·è‡ªå·±å®šä¹‰çš„ç±»
 		final Weixinghttp weixinghttp=new Weixinghttp(mainhand);
 		ExecutorService thread=Executors.newFixedThreadPool(3);
 		thread.execute(weixinghttp);	
@@ -91,24 +91,24 @@ public class WeixingTest extends Activity
 		edtweixingtest = (EditText) findViewById(R.id.edtweixingtest);
 		txtweixingtest = (TextView) findViewById(R.id.txtweixingtest);
 		barweixingtest= (ProgressBar) findViewById(R.id.barweixingtest);
-		//»ñµÃidĞÅÏ¢
+		//è·å¾—idä¿¡æ¯
 		Intent intent=getIntent();
 		final String id=intent.getStringExtra("id");
 		Log.i("EV_JNI","Send0.0="+id);
-		//·¢ËÍ¶©µ¥
+		//å‘é€è®¢å•
 		btnweixingtestok = (Button)findViewById(R.id.btnweixingtestok);
 		btnweixingtestok.setOnClickListener(new OnClickListener() {			
 		    @Override
 		    public void onClick(View arg0) {
 		    	barweixingtest.setVisibility(View.VISIBLE);
-		    	// ½«ĞÅÏ¢·¢ËÍµ½×ÓÏß³ÌÖĞ
+		    	// å°†ä¿¡æ¯å‘é€åˆ°å­çº¿ç¨‹ä¸­
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
 				childmsg.what=Weixinghttp.SETCHILD;
 				JSONObject ev=null;
 				try {
 					ev=new JSONObject();
-					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //¾«È·µ½ºÁÃë 
+					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //ç²¾ç¡®åˆ°æ¯«ç§’ 
 			        String datetime = tempDate.format(new java.util.Date()).toString(); 					
 			        out_trade_no=id+datetime;
 			        ev.put("out_trade_no", out_trade_no);
@@ -122,13 +122,13 @@ public class WeixingTest extends Activity
 				childhand.sendMessage(childmsg);
 		    }
 		});
-		//²éÑ¯
+		//æŸ¥è¯¢
 		btnweixingtestquery = (Button)findViewById(R.id.btnweixingtestquery);	
 		btnweixingtestquery.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	barweixingtest.setVisibility(View.VISIBLE);
-		    	// ½«ĞÅÏ¢·¢ËÍµ½×ÓÏß³ÌÖĞ
+		    	// å°†ä¿¡æ¯å‘é€åˆ°å­çº¿ç¨‹ä¸­
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
 				childmsg.what=Weixinghttp.SETQUERYCHILD;
@@ -146,13 +146,13 @@ public class WeixingTest extends Activity
 				childhand.sendMessage(childmsg);
 		    }
 		});
-		//³·Ïú½»Ò×
+		//æ’¤é”€äº¤æ˜“
 		btnweixingtestdelete = (Button)findViewById(R.id.btnweixingtestdelete);	
 		btnweixingtestdelete.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	barweixingtest.setVisibility(View.VISIBLE);
-		    	// ½«ĞÅÏ¢·¢ËÍµ½×ÓÏß³ÌÖĞ
+		    	// å°†ä¿¡æ¯å‘é€åˆ°å­çº¿ç¨‹ä¸­
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
 				childmsg.what=Weixinghttp.SETDELETECHILD;
@@ -161,6 +161,11 @@ public class WeixingTest extends Activity
 					ev=new JSONObject();
 					ev.put("out_trade_no", out_trade_no);		
 					//ev.put("out_trade_no", "000120150301092857698");	
+                    ev.put("total_fee", edtweixingtest.getText());
+                    ev.put("refund_fee", edtweixingtest.getText());
+                    SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+                    String datetime = tempDate.format(new java.util.Date()).toString();                     
+                    ev.put("out_refund_no", id+datetime);
 					Log.i("EV_JNI","Send0.1="+ev.toString());
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -170,13 +175,13 @@ public class WeixingTest extends Activity
 				childhand.sendMessage(childmsg);
 		    }
 		});
-		//ÍË¿î
+		//é€€æ¬¾
 		btnweixingtestpayout = (Button)findViewById(R.id.btnweixingtestpayout);	
 		btnweixingtestpayout.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View arg0) {
 		    	barweixingtest.setVisibility(View.VISIBLE);
-		    	// ½«ĞÅÏ¢·¢ËÍµ½×ÓÏß³ÌÖĞ
+		    	// å°†ä¿¡æ¯å‘é€åˆ°å­çº¿ç¨‹ä¸­
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
 				childmsg.what=Weixinghttp.SETPAYOUTCHILD;
@@ -187,7 +192,7 @@ public class WeixingTest extends Activity
 					//ev.put("out_trade_no", "000120150301113215800");
 					ev.put("total_fee", edtweixingtest.getText());
 					ev.put("refund_fee", edtweixingtest.getText());
-					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //¾«È·µ½ºÁÃë 
+					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //ç²¾ç¡®åˆ°æ¯«ç§’ 
 			        String datetime = tempDate.format(new java.util.Date()).toString(); 					
 			        ev.put("out_refund_no", id+datetime);
 					Log.i("EV_JNI","Send0.1="+ev.toString());
@@ -199,7 +204,7 @@ public class WeixingTest extends Activity
 				childhand.sendMessage(childmsg);
 		    }
 		});	
-		//ÍË³ö
+		//é€€å‡º
 		btnweixingtestcancel = (Button)findViewById(R.id.btnweixingtestcancel);		
 		btnweixingtestcancel.setOnClickListener(new OnClickListener() {
 		    @Override

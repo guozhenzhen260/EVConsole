@@ -1197,6 +1197,9 @@ BushuoFragInteraction
 	  		try {
 	  			ev=new JSONObject();
 	  			ev.put("out_trade_no", out_trade_no);		
+                ev.put("total_fee", String.valueOf(amount));
+                ev.put("refund_fee", String.valueOf(amount));
+                ev.put("out_refund_no", ToolClass.out_trade_no(BusPort.this));
 	  			//ev.put("out_trade_no", "000120150301092857698");	
 	  			Log.i("EV_JNI","Send0.1="+ev.toString());
 	  		} catch (JSONException e) {
