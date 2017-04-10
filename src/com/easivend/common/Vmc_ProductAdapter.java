@@ -15,7 +15,10 @@
 
 package com.easivend.common;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 
@@ -32,6 +35,7 @@ public class Vmc_ProductAdapter
      private String[] promarket = null;
      private String[] prosales = null;
      private String[] procount = null;
+     List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
      
      // 商品表中的所有商品信息补充到商品数据结构数组中
      //param过滤条件,sort排序条件,classID分类信息
@@ -69,31 +73,47 @@ public class Vmc_ProductAdapter
  	    promarket = new String[listinfos.size()];// 设置字符串数组的长度
  	    prosales = new String[listinfos.size()];// 设置字符串数组的长度
  	    procount = new String[listinfos.size()];// 设置字符串数组的长度
- 	    int m = 0;// 定义一个开始标识
+ 	    int m = 0;// 定义一个开始标识 	
+ 	    list.clear();
  	    // 遍历List泛型集合
  	    for (Tb_vmc_product tb_inaccount : listinfos) 
  	    {
+ 	    	Map<String,Object> map=new HashMap<String, Object>();
  	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
- 	    	proID[m] = tb_inaccount.getProductID()+"-"+tb_inaccount.getProductName();
- 	    	productID[m] = tb_inaccount.getProductID();
- 	    	productName[m] = tb_inaccount.getProductName();
- 	    	proImage[m] = tb_inaccount.getAttBatch1();
- 	    	promarket[m] = String.valueOf(tb_inaccount.getMarketPrice());
- 	    	prosales[m] = String.valueOf(tb_inaccount.getSalesPrice());
+ 	    	map.put("proID", tb_inaccount.getProductID()+"-"+tb_inaccount.getProductName());
+ 	    	map.put("productID", tb_inaccount.getProductID());
+ 	    	map.put("productName", tb_inaccount.getProductName());
+ 	    	map.put("proImage", tb_inaccount.getAttBatch1());
+ 	    	map.put("promarket", String.valueOf(tb_inaccount.getMarketPrice()));
+ 	    	map.put("prosales", String.valueOf(tb_inaccount.getSalesPrice()));
  	    	//得到这个商品id对应的存货数量
-	    	if(productID[m]!=null)
+	    	if(tb_inaccount.getProductID()!=null)
 	    	{
 	    		vmc_columnDAO columnDAO = new vmc_columnDAO(context);// 创建InaccountDAO对象
     		    // 获取所有收入信息，并存储到List泛型集合中
-    		    procount[m] = String.valueOf(columnDAO.getproductCount(productID[m]));
-	    		
-	    	}
-	    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品productID="+proID[m]+" marketPrice="
- 					+promarket[m]+" salesPrice="+prosales[m]+" attBatch1="
- 					+proImage[m]+" procount="+procount[m],"log.txt");
- 	    	
- 	    	m++;// 标识加1
+    		    map.put("procount", String.valueOf(columnDAO.getproductCount(tb_inaccount.getProductID())));
+	    	}	    		    	
+	    	list.add(map); 	    	    	
  	    }
+ 	    try {
+			list=ToolClass.listSort(list);
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品sort="+list.toString(),"log.txt");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+ 	    for(Map<String,Object> map:list)  
+        {  
+ 	        // 将收入相关信息组合成一个字符串，存储到字符串数组的相应位置
+ 	    	proID[m] = map.get("proID").toString();
+ 	    	productID[m] = map.get("productID").toString();
+ 	    	productName[m] = map.get("productName").toString();
+ 	    	proImage[m] = map.get("proImage").toString();
+ 	    	promarket[m] = map.get("promarket").toString();
+ 	    	prosales[m] = map.get("prosales").toString();
+ 	    	procount[m] = map.get("procount").toString();
+ 	    	m++;// 标识加1 	 	    	
+        } 
  	    
  	}
 	public String[] getProID() {

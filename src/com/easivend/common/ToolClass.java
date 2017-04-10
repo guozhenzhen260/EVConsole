@@ -33,6 +33,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -3997,4 +3999,24 @@ public class ToolClass
 	        return dest;
 	    }
 	
+	 public static List<Map<String,Object>> listSort(List<Map<String,Object>> resultList) throws Exception{  
+         // resultList是需要排序的list，其内放的是Map  
+         // 返回的结果集  
+         Collections.sort(resultList,new Comparator<Map<String,Object>>() {  
+ 
+          public int compare(Map<String, Object> o1,Map<String, Object> o2) {  
+ 
+           //o1，o2是list中的Map，可以在其内取得值，按其排序，此例为升序，s1和s2是排序字段值  
+              int s1 = Integer.parseInt(o1.get("procount").toString());  
+              int s2 = Integer.parseInt(o2.get("procount").toString());    
+ 
+           if(s1<s2) {  
+            return 1;  
+           }else {  
+            return -1;  
+           }  
+          }  
+         });  
+       return resultList;   
+     }  
 }
