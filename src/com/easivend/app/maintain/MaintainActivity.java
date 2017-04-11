@@ -246,8 +246,8 @@ public class MaintainActivity extends Activity
 	        if(list.containsKey("posisssl"))//…Ë÷√sslº”√‹
 	        {
 	        	posisssl = Integer.parseInt(list.get("posisssl"));	
-	        	ToolClass.setPosisssl(posisssl);
-	        }
+	        	ToolClass.setPosisssl(posisssl);	        	
+	        }	        
 	        AlipayConfigAPI.SetAliConfig(list);//…Ë÷√∞¢¿Ô’À∫≈
 	        WeiConfigAPI.SetWeiConfig(list);//…Ë÷√Œ¢–≈’À∫≈	        
 	        

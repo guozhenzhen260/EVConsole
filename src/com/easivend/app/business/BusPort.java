@@ -648,7 +648,12 @@ BushuoFragInteraction
 	    	        //打开串口
 	    	        //ip、端口、串口、波特率必须准确
 	    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-    					,ToolClass.getCardcom(), "9600", mIUserCallback);   
+    					,ToolClass.getCardcom(), "9600", mIUserCallback);  
+	    			if(ToolClass.getPosisssl()==1)
+	    	    	{
+	    				ToolClass.Log(ToolClass.INFO,"EV_COM","busport打开ssl加密","com.txt");
+	    				mMyApi.pos_setKeyCert(getApplicationContext(), true, "CUP_cacert.pem");
+	    			}
     			}
     		}
     	}				
@@ -835,7 +840,7 @@ BushuoFragInteraction
 				}				
 			}
 		};
-		
+			
 				
 	}
 	
