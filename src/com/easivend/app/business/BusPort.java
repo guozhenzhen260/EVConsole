@@ -653,7 +653,8 @@ BushuoFragInteraction
 	    	    	{
 	    				ToolClass.Log(ToolClass.INFO,"EV_COM","busport´ò¿ªssl¼ÓÃÜ","com.txt");
 	    				mMyApi.pos_setKeyCert(getApplicationContext(), true, "CUP_cacert.pem");
-	    			}
+	    				mMyApi.pos_signin(mIUserCallback);
+	    	    	}
     			}
     		}
     	}				
