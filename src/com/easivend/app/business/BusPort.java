@@ -460,8 +460,20 @@ BushuoFragInteraction
 				switch (msg.what)
 				{
 					case Zhifubaohttp.SETMAIN://子线程接收主线程消息
-						listterner.BusportSend(msg.obj.toString());
-						iszhier=1;
+						try {
+							JSONObject zhuhe=new JSONObject(msg.obj.toString());
+							String zhuheout_trade_no=zhuhe.getString("out_trade_no");
+							String qr_code=zhuhe.getString("qr_code");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","生成支付宝=out_trade_no="+out_trade_no+">>zhuheout_trade_no="+zhuheout_trade_no,"log.txt");
+							if(zhuheout_trade_no.equals(out_trade_no))
+							{
+								listterner.BusportSend(qr_code);
+								iszhier=1;
+							}							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}						
 						break;
 					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
 						listterner.BusportTsxx("交易结果:重试"+msg.obj.toString()+con);
@@ -549,8 +561,20 @@ BushuoFragInteraction
 				switch (msg.what)
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
-						listterner.BusportSendWei(msg.obj.toString());
-						iszhiwei=1;
+						try {
+							JSONObject zhuhe=new JSONObject(msg.obj.toString());
+							String zhuheout_trade_no=zhuhe.getString("out_trade_no");
+							String code_url=zhuhe.getString("code_url");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","生成微信=out_trade_no="+out_trade_no+">>zhuheout_trade_no="+zhuheout_trade_no,"log.txt");						       
+							if(zhuheout_trade_no.equals(out_trade_no))
+							{
+								listterner.BusportSendWei(code_url);
+								iszhiwei=1;
+							}							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
 						listterner.BusportTsxx("交易结果:重试"+msg.obj.toString()+con);

@@ -141,7 +141,10 @@ public class Zhifubaohttp implements Runnable
 					        	   else if(map2.get("result_code").equals("SUCCESS"))
 						           {
 						        	   tomain.what=SETMAIN;
-									   tomain.obj=map2.get("qr_code");
+						        	   JSONObject zhuhe=new JSONObject();
+						        	   zhuhe.put("qr_code", map2.get("qr_code"));
+						        	   zhuhe.put("out_trade_no", ev.getString("out_trade_no"));
+									   tomain.obj=zhuhe;
 						           }
 					           }
 					           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");				           
@@ -204,7 +207,10 @@ public class Zhifubaohttp implements Runnable
 					   			{
 					   				String qr_code=obj.getString("qr_code");
 					   				tomain.what=SETMAIN;
-					   				tomain.obj=qr_code;
+					   				JSONObject zhuhe=new JSONObject();
+					        	    zhuhe.put("qr_code", qr_code);
+					        	    zhuhe.put("out_trade_no", ev.getString("out_trade_no"));
+					   				tomain.obj=zhuhe;
 					   			}
 					   			else
 					   			{

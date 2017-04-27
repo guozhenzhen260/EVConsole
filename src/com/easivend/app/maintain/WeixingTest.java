@@ -53,8 +53,14 @@ public class WeixingTest extends Activity
 				switch (msg.what)
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
-						imgweixingtest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtweixingtest.setText("微信交易结果:"+msg.obj.toString());
+						try {
+							JSONObject zhuhe=new JSONObject(msg.obj.toString());
+							imgweixingtest.setImageBitmap(ToolClass.createQRImage(zhuhe.getString("code_url")));
+							txtweixingtest.setText("微信交易结果:"+zhuhe.toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}						
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
 						txtweixingtest.setText("微信交易结果:"+msg.obj.toString());

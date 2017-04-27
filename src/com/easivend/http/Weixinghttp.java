@@ -105,7 +105,10 @@ public class Weixinghttp implements Runnable
 				        	   else if(map2.get("result_code").equals("SUCCESS"))
 					           {
 					        	   tomain.what=SETMAIN;
-								   tomain.obj=map2.get("code_url");
+					        	   JSONObject zhuhe=new JSONObject();
+					        	   zhuhe.put("code_url", map2.get("code_url"));
+					        	   zhuhe.put("out_trade_no", ev.getString("out_trade_no"));
+								   tomain.obj=zhuhe;
 					           }
 				           }
 				           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");	

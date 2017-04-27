@@ -53,8 +53,14 @@ public class ZhifubaoTest extends Activity
 				switch (msg.what)
 				{
 					case Zhifubaohttp.SETMAIN://子线程接收主线程消息
-						imgzhifubaotest.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						txtzhifubaotest.setText("支付宝交易结果:"+msg.obj.toString());
+						try {
+							JSONObject zhuhe=new JSONObject(msg.obj.toString());
+							imgzhifubaotest.setImageBitmap(ToolClass.createQRImage(zhuhe.getString("qr_code")));
+							txtzhifubaotest.setText("支付宝交易结果:"+zhuhe.toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						break;
 					case Zhifubaohttp.SETFAILNETCHILD://子线程接收主线程消息
 						txtzhifubaotest.setText("支付宝交易结果:"+msg.obj.toString());
