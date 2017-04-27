@@ -664,7 +664,10 @@ public class ToolClass
 		 {
 			
 		 }
-		 res=res.substring(0, res.indexOf("(INFO)"));// 从收入信息中截取收入编号
+         if(res.indexOf("(INFO)")!=-1)
+             res=res.substring(0, res.indexOf("(INFO)"));// 从收入信息中截取收入编号
+         else if(res.indexOf("(WARN)")!=-1)
+            res=res.substring(0, res.indexOf("(WARN)"));// 从收入信息中截取收入编号
 		 System.out.println(" 文件创建时间1="+res);
          return res;
     }

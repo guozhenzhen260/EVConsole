@@ -335,6 +335,11 @@ public class MaintainActivity extends Activity
             	    				public void onClick(DialogInterface dialog, int which) 
             	    				{
             	    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序关闭...]","log.txt");			
+            	    					//关闭看门狗
+            	    			        if(isallopen==1)
+            	    			        {
+            	    			            evDog(0); 
+            	    			        }  
             	    					// TODO Auto-generated method stub	
             	    					finish();// 关闭当前Activity
             	    				}
@@ -366,10 +371,7 @@ public class MaintainActivity extends Activity
 		// TODO Auto-generated method stub
 		if(requestCode==REQUEST_CODE)
 		{
-			if(isallopen==1)
-			{
-				evDog(0); 
-			}	
+			ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=退出交易页面","log.txt");				
 		}	
 	}
 		
@@ -468,6 +470,7 @@ public class MaintainActivity extends Activity
 			}	
 			startActivityForResult(intbus,REQUEST_CODE);// 打开Accountflag
 		}	
+    	ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=进入交易页面","log.txt");	
 	}
 	
 	//Dog服务的配置:1.保持常打开,0不保持打开
@@ -686,7 +689,7 @@ public class MaintainActivity extends Activity
 		//6.结束服务
 		stopService(new Intent(MaintainActivity.this, COMService.class));
 		//关闭自检重启定时器
-		timer.shutdown();
+		timer.shutdown();		 
 		// TODO Auto-generated method stub
 		super.onDestroy();		
 	}

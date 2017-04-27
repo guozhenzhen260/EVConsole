@@ -17,6 +17,8 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
 {
 	TelephonyManager        Tel;
     MyPhoneStateListener    MyListener;
+    WifiChangeBroadcastReceiver dianLiangBR;
+
     
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -69,7 +71,7 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
         //wifiœ‡πÿ
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.wifi.RSSI_CHANGED");
-        WifiChangeBroadcastReceiver dianLiangBR = new WifiChangeBroadcastReceiver();
+        dianLiangBR = new WifiChangeBroadcastReceiver();
         registerReceiver(dianLiangBR, intentFilter);
         dianLiangBR.setBRInteractionListener(this);
 	}
@@ -103,5 +105,12 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
       	  }
       } 
     };/* End of private Class */
+    
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(dianLiangBR);
+        super.onDestroy();
+    }
+
 
 }
