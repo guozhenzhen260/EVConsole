@@ -363,7 +363,7 @@ BushuoFragInteraction
 		                    if(iszhier==1)
 		                    {
 		                    	queryzhierLen++;
-			                    if(queryzhierLen>=4)
+			                    if(queryzhierLen>=2)
 			                    {
 			                    	queryzhierLen=0;
 			                    	queryzhier();
@@ -373,7 +373,7 @@ BushuoFragInteraction
 		                    else if(iszhier==0)
 		                    {
 		                    	queryzhierLen++;
-			                    if(queryzhierLen>=10)
+			                    if(queryzhierLen>=5)
 			                    {
 			                    	queryzhierLen=0;
 			                    	//发送订单
@@ -391,7 +391,7 @@ BushuoFragInteraction
 		                    if(iszhiwei==1)
 		                    {
 		                    	queryzhiweiLen++;
-			                    if(queryzhiweiLen>=4)
+			                    if(queryzhiweiLen>=2)
 			                    {
 			                    	queryzhiweiLen=0;
 			                    	queryzhiwei();
@@ -401,7 +401,7 @@ BushuoFragInteraction
 		                    else if(iszhiwei==0)
 		                    {
 		                    	queryzhiweiLen++;
-			                    if(queryzhiweiLen>=10)
+			                    if(queryzhiweiLen>=5)
 			                    {
 			                    	queryzhiweiLen=0;
 			                    	//发送订单
@@ -1274,7 +1274,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;			
+			recLen=3;			
   		}
   		//立即关闭
   		else
@@ -1408,7 +1408,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;	
+			recLen=3;	
   		}
   		//立即关闭
   		else
@@ -1663,7 +1663,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=10;	
+			recLen=3;	
   		}
   		//立即关闭
   		else
@@ -1850,7 +1850,7 @@ BushuoFragInteraction
             	}
             }
 
-		}, 6000);
+		}, 4000);
     	
     	
 	}
@@ -2314,8 +2314,19 @@ BushuoFragInteraction
 		{
 			deletezhipos();
 		}
-    	//支付宝微信模块,以及pos模块
-    	//非现金金额
+    	//支付宝微信模块
+    	//支付宝模块:生成二维码需要撤销
+        if(iszhier==1)
+		{
+			deletezhier();
+		}
+		//微信模块:生成二维码需要撤销
+        if(iszhiwei==1)
+		{
+			deletezhiwei();
+		}
+    	
+    	//支付宝微信模块,以及pos模块非现金金额
     	if(zhifutype.equals("0")!=true)
     	{
     		OrderDetail.setSmallCard(amount);
@@ -2344,16 +2355,7 @@ BushuoFragInteraction
 			ComA.setBaudRate("9600");// 1.2 设定波特率
 			OpenComPort(ComA); // 1.3 打开串口			
         }
-    	//延时
-	    new Handler().postDelayed(new Runnable() 
-		{
-            @Override
-            public void run() 
-            {   
-            	viewSwitch(BUSHUO, null);
-            }
-
-		}, 2500);    	
+        viewSwitch(BUSHUO, null);   	
     }
     //清参数
   	public void clearamount()
