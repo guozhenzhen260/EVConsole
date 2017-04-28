@@ -2618,7 +2618,7 @@ BushuoFragInteraction
 								    	zhiposcheck=true;
 									}
 			
-								}, 700);
+								}, 40);
 				    		}
 			            }
 		    		}    		
