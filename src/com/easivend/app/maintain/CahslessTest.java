@@ -134,6 +134,7 @@ public class CahslessTest extends Activity {
 		    	//ip、端口、串口、波特率必须准确"121.40.30.62", 18080
 				mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
 						,ToolClass.getCardcom(), "9600", mIUserCallback);
+				mMyApi.pos_setKeyCert(ToolClass.getContext(), true, "CUP_cacert.pem");
 		    }
 		});
 		//查询
