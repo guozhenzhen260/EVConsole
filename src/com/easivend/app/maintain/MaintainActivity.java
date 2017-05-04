@@ -394,10 +394,8 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=签到成功","log.txt");			
 				if(dialog.isShowing())
 					dialog.dismiss();
-				timer.scheduleWithFixedDelay(task, 10,10, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
-					issale=true;
 					//签到完成，自动开启售货程序
 					IntentBus();
 				}
@@ -406,10 +404,8 @@ public class MaintainActivity extends Activity
 				ToolClass.Log(ToolClass.INFO,"EV_JNI","activity=失败，网络故障","log.txt");	
 				if(dialog.isShowing())
 					dialog.dismiss();
-				timer.scheduleWithFixedDelay(task, 10,10, TimeUnit.SECONDS);       // timeTask 
 				if(issale==false)
 				{
-					issale=true;
 					//签到完成，自动开启售货程序
 					IntentBus();
 				}
@@ -425,6 +421,7 @@ public class MaintainActivity extends Activity
 		if(issale==false)
 		{
 			issale=true;
+			timer.scheduleWithFixedDelay(task, 10,10, TimeUnit.SECONDS);       // timeTask 
 		}
 		//如果看门狗没打开，就打开它
 		if(isallopen==0)
