@@ -38,6 +38,7 @@ public class CahslessTest extends Activity {
 	public final static int PAYOUTFAIL=12;//退款失败
 	public final static int FINDSUCCESS=13;//查询成功
 	public final static int FINDFAIL=14;//查询失败
+	public final static int READCARD=15;//已经读到卡
 	private int isPossel=0;//0没有设置Pos，1有设置Pos有查询功能,其他值有设置pos没有查询功能
 	private TextView txtcashlesstest=null;
 	private EditText edtcashlesstest=null;
@@ -79,6 +80,9 @@ public class CahslessTest extends Activity {
 					case CLOSEFAIL:	
 						txtcashlesstest.setText(msg.obj.toString());
 						break;
+					case CahslessTest.READCARD:
+						txtcashlesstest.setText("已读到卡");
+	  					break;	
 					case COSTSUCCESS:
 						txtcashlesstest.setText(msg.obj.toString());
 						break;
@@ -134,7 +138,11 @@ public class CahslessTest extends Activity {
 		    	//ip、端口、串口、波特率必须准确"121.40.30.62", 18080
 				mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
 						,ToolClass.getCardcom(), "9600", mIUserCallback);
-				mMyApi.pos_setKeyCert(ToolClass.getContext(), true, "CUP_cacert.pem");
+				if(ToolClass.getPosisssl()==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_COM","busport打开ssl加密","com.txt");
+					mMyApi.pos_setKeyCert(ToolClass.getContext(), true, "CUP_cacert.pem");
+				}				
 		    }
 		});
 		//查询
@@ -420,7 +428,13 @@ public class CahslessTest extends Activity {
 				if(dpl.getType().equals(DisplayType._4.getType())){
 					ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 通讯提示<<"+dpl.getMsg(),"com.txt");
 				}
-
+				else if(dpl.getType().equals(DisplayType._h.getType()))
+  				{
+  					Message childmsg=mainhand.obtainMessage();
+  					childmsg.what=CahslessTest.READCARD;
+					childmsg.obj="已读到卡";  	
+					mainhand.sendMessage(childmsg);
+  				}
 			}
 		}
 	};

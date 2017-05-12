@@ -110,6 +110,7 @@ public class ToolClass
 	private static int bentcom_id=-1,com_id=-1,columncom_id=-1,extracom_id=-1,columncom2_id=-1;//´®¿ÚidºÅ
 	private static String bentcom="",com="",columncom="",extracom="",cardcom="",printcom="",posip="",posipport="",columncom2="";//´®¿ÚÃèÊö·û
 	private static int posisssl=0;
+	private static boolean possign=false;
 	private static int bill_err=0,coin_err=0;//Ö½±ÒÆ÷£¬Ó²±ÒÆ÷¹ÊÕÏ×´Ì¬
 	public static String vmc_no="";//±¾»ú±àºÅ
 	public static Bitmap mark=null;//ÊÛÍêÍ¼Æ¬
@@ -289,6 +290,13 @@ public class ToolClass
 	}
 	public static void setPosisssl(int posisssl) {
 		ToolClass.posisssl = posisssl;
+	}
+	
+	public static boolean isPossign() {
+		return possign;
+	}
+	public static void setPossign(boolean possign) {
+		ToolClass.possign = possign;
 	}
 	public static Context getContext() {
 		return context;

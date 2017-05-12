@@ -316,7 +316,8 @@ public class Weixinghttp implements Runnable
 					        	   tomain.what=SETFAILDELETEBUSCHILD;
 								   tomain.obj=map8.get("err_code")+map8.get("err_code_des");
 								   //支付完成同时，按下撤销按钮，报的故障"扣款和撤销建议间隔10秒以上"
-								   if(map8.get("err_code").equals("USERPAYING"))
+								   if(map8.get("err_code").equals("USERPAYING")
+									||map8.get("err_code").equals("ORDERPAID"))
 								   {
 								      ToolClass.Log(ToolClass.INFO,"EV_JNI","准备退款...","log.txt");
 								      Payoutind(ev4.getString("out_trade_no"),ev4.getString("out_refund_no"),ev4.getString("total_fee"),ev4.getString("refund_fee"));

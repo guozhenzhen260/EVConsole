@@ -657,7 +657,7 @@ BushuoFragInteraction
     	Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
     	if(tb_inaccount!=null)
     	{
-    		if(tb_inaccount.getZhifubaofaca()>0)
+    		if(tb_inaccount.getZhifubaofaca()>0)  
     		{
     			if((ToolClass.isEmptynull(ToolClass.getPosip())==false)
 			      &&(ToolClass.getPosip().equals("null")==false)
@@ -677,7 +677,12 @@ BushuoFragInteraction
 	    	    	{
 	    				ToolClass.Log(ToolClass.INFO,"EV_COM","busport打开ssl加密","com.txt");
 	    				mMyApi.pos_setKeyCert(ToolClass.getContext(), true, "CUP_cacert.pem");
-	    				mMyApi.pos_signin(mIUserCallback);
+	    				if(ToolClass.isPossign()==false)
+	    				{
+	    					ToolClass.setPossign(true);
+	    					ToolClass.Log(ToolClass.INFO,"EV_COM","busport打开ssl签到","com.txt");
+		    				mMyApi.pos_signin(mIUserCallback);
+	    				}
 	    	    	}
     			}
     		}
@@ -698,6 +703,10 @@ BushuoFragInteraction
 					case CahslessTest.CLOSESUCCESS:
 						break;
 					case CahslessTest.CLOSEFAIL:	
+						break;
+					case CahslessTest.READCARD:
+						ToolClass.Log(ToolClass.INFO,"EV_COM","COMAPI <<已读到卡","com.txt");
+	  					iszhipos=2;
 						break;
 					case CahslessTest.COSTSUCCESS:
 						listterner.BusportTsxx("提示信息：付款完成");
@@ -1491,7 +1500,7 @@ BushuoFragInteraction
                     if (rst.code.equals(ErrCode._00.getCode())) {//返回00，代表成功
                     	ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到成功","com.txt");
                     } else {
-                        ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到失败,code:"+rst.code+",info:"+rst.code_info,"com.txt");						
+                        ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 签到失败,code111:"+rst.code+",info:"+rst.code_info,"com.txt");						
                     }
                 }
 				//结算【结算时间可能会非常长】
@@ -1650,8 +1659,14 @@ BushuoFragInteraction
   				//【提示信息类型】type的说明，见com.landfoneapi.mispos.DisplayType
   				if(dpl.getType().equals(DisplayType._4.getType())){
   					ToolClass.Log(ToolClass.INFO,"EV_COM","COMAPI 通讯提示<<"+dpl.getMsg(),"com.txt");
+  				}  				
+  				else if(dpl.getType().equals(DisplayType._h.getType()))
+  				{
+  					Message childmsg=posmainhand.obtainMessage();
+  					childmsg.what=CahslessTest.READCARD;
+					childmsg.obj="已读到卡";  	
+					posmainhand.sendMessage(childmsg);
   				}
-
   			}
   		}
   	};
@@ -2897,7 +2912,9 @@ BushuoFragInteraction
 			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 撤销读卡器","com.txt");
 //	    	mMyApi.pos_release();//串口不用关闭了
 			gotoswitch=0;
+			iszhipos=0;
             mMyApi.pos_cancel();  
+//			mMyApi=null;
 		}
 		//退出时，返回intent
         Intent intent=new Intent();
