@@ -726,6 +726,7 @@ BushuoFragInteraction
 						break;
 					case CahslessTest.COSTFAIL:	
 						listterner.BusportTsxx("提示信息：扣款失败"+cashbalance);
+						iszhipos=0;
 						break;
 					case CahslessTest.QUERYSUCCESS:
 					case CahslessTest.QUERYFAIL:	
