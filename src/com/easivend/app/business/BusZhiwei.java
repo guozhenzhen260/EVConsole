@@ -135,10 +135,22 @@ public class BusZhiwei extends Activity
 				switch (msg.what)
 				{
 					case Weixinghttp.SETMAIN://子线程接收主线程消息
-						ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(msg.obj.toString()));
-						//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
-						txtbuszhiweirst.setText("交易结果:请扫描二维码");
-						iszhiwei=1;
+						try {
+							JSONObject zhuhe=new JSONObject(msg.obj.toString());
+							String zhuheout_trade_no=zhuhe.getString("out_trade_no");
+							String code_url=zhuhe.getString("code_url");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","生成微信=out_trade_no="+out_trade_no+">>zhuheout_trade_no="+zhuheout_trade_no,"log.txt");						       
+							if(zhuheout_trade_no.equals(out_trade_no))
+							{
+								ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(code_url));
+								//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
+								txtbuszhiweirst.setText("交易结果:请扫描二维码");
+								iszhiwei=1;
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						break;
 					case Weixinghttp.SETFAILNETCHILD://子线程接收主线程消息
 						txtbuszhiweirst.setText("交易结果:重试"+msg.obj.toString()+con);
