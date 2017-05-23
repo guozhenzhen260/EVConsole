@@ -1749,7 +1749,7 @@ BushuoFragInteraction
 				    	}
 		            }
 
-				}, 600);
+				}, 300);
 			}
         }
 		
@@ -1818,7 +1818,7 @@ BushuoFragInteraction
         					ToolClass.setLAST_CHUHUO(true);
         					OrderDetail.addLog(BusPort.this);	
         					AudioSound.playbusfinish();
-        					zhierDestroy(1);
+        					zhierDestroy(0);
         				}
         				//³ö»õÊ§°Ü,ÍËÇ®
         				else
@@ -1838,7 +1838,7 @@ BushuoFragInteraction
         					ToolClass.setLAST_CHUHUO(true);
         					OrderDetail.addLog(BusPort.this);
         					AudioSound.playbusfinish();
-        					zhiweiDestroy(1);
+        					zhiweiDestroy(0);
         				}
         				//³ö»õÊ§°Ü,ÍËÇ®
         				else
@@ -1866,7 +1866,7 @@ BushuoFragInteraction
             	}
             }
 
-		}, 4000);
+		}, 1300);
     	
     	
 	}
