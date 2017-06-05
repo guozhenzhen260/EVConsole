@@ -511,10 +511,13 @@ BushuoFragInteraction
 						break;	
 					case Zhifubaohttp.SETQUERYMAINSUCC://交易成功
 						listterner.BusportTsxx("交易结果:交易成功");
-						iszhier=2;
-//						//reamin_amount=String.valueOf(amount);
-						zhifutype="3";						
-						tochuhuo();
+						if(iszhier==1)
+						{
+							iszhier=2;
+	//						//reamin_amount=String.valueOf(amount);
+							zhifutype="3";						
+							tochuhuo();
+						}
 						break;
 					case Zhifubaohttp.SETQUERYMAIN://子线程接收主线程消息
 					case Zhifubaohttp.SETFAILPROCHILD://子线程接收主线程消息
@@ -613,9 +616,12 @@ BushuoFragInteraction
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息		
 						listterner.BusportTsxx("交易结果:交易成功");
 						//reamin_amount=String.valueOf(amount);
-						iszhiwei=2;
-                        zhifutype="4";                        
-						tochuhuo();
+						if(iszhiwei==1)
+						{
+							iszhiwei=2;
+	                        zhifutype="4";                        
+							tochuhuo();
+						}
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
