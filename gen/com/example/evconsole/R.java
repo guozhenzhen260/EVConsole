@@ -1230,8 +1230,9 @@ public final class R {
         public static final int selecttimepick=0x7f03002c;
         public static final int viewspinner=0x7f03002d;
         public static final int weixingtest=0x7f03002e;
-        public static final int zhifubaotest=0x7f03002f;
-        public static final int zhitipwd=0x7f030030;
+        public static final int yinliantest=0x7f03002f;
+        public static final int zhifubaotest=0x7f030030;
+        public static final int zhitipwd=0x7f030031;
     }
     public static final class menu {
         public static final int maintain=0x7f0a0000;
