@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -176,7 +178,7 @@ BushuoFragInteraction
 	//==出货页面相关
 	//=================
 	private int status=0;//出货结果	
-	ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+    Timer timer = new Timer();
     private final int SPLASH_DISPLAY_LENGHT = 5*60; //  5*60延迟5分钟	
     private int recLen = SPLASH_DISPLAY_LENGHT; 
     private boolean isbus=true;//true表示在广告页面，false在其他页面
@@ -291,7 +293,7 @@ BushuoFragInteraction
 		IntentFilter comfilter=new IntentFilter();
 		comfilter.addAction("android.intent.action.comrec");
 		comBroadreceiver.registerReceiver(comreceiver,comfilter);
-		timer.scheduleWithFixedDelay(new Runnable() { 
+        timer.schedule(new TimerTask() { 
 	        @Override 
 	        public void run() { 
 	        	  //ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<portthread="+Thread.currentThread().getId(),"log.txt");
@@ -444,7 +446,7 @@ BushuoFragInteraction
 		        		}
 	        	  }
 	        } 
-	    }, 1, 1, TimeUnit.SECONDS);       // timeTask 
+	    }, 1000, 1000);       // timeTask 
 		//初始化默认fragment
 		initView();
 		//***********************
@@ -2900,7 +2902,7 @@ BushuoFragInteraction
   	}
 	@Override
 	protected void onDestroy() {
-		timer.shutdown(); 
+		timer.cancel(); 
 		//=============
 		//Server服务相关
 		//=============

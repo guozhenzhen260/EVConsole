@@ -61,7 +61,7 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
             	}	
         	}
         }
-        ToolClass.Log(ToolClass.INFO,"EV_JNI","启动网络监测服务="+ToolClass.getNetType(),"jni.txt");
+        ToolClass.Log(ToolClass.INFO,"EV_JNI","启动网络监测服务="+ToolClass.getNetType(),"log.txt");
 		
         
         //4g相关
@@ -80,7 +80,7 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
     public void setText(String content) {
         if (content != null) 
         {
-        	ToolClass.Log(ToolClass.INFO,"EV_JNI","wifi信号:"+content,"jni.txt");
+        	ToolClass.Log(ToolClass.INFO,"EV_JNI","wifi信号:"+content,"log.txt");
         	if(ToolClass.getNetType()==2)
         	{
         		ToolClass.setNetStr("wifi信号:"+content);
@@ -97,7 +97,7 @@ public class MobileService extends Service implements WifiChangeBroadcastReceive
       {
           super.onSignalStrengthsChanged(signalStrength);
           ToolClass.Log(ToolClass.INFO,"EV_JNI","GSM 信号 = "
-                  + String.valueOf(signalStrength.getGsmSignalStrength()),"jni.txt");
+                  + String.valueOf(signalStrength.getGsmSignalStrength()),"log.txt");
           if(ToolClass.getNetType()==3)
       	  {
 	          ToolClass.setNetStr("GSM 信号 = "

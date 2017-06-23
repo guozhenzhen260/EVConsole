@@ -395,21 +395,21 @@
 	            	android:orientation="horizontal"> 
 	            	 <Button   
 				        android:id="@+id/btnhuoaddSave"  
-				        android:text="@string/Save"
+				        android:text="保存"
 				        android:layout_width="100dp"
 						android:layout_height="70dp" 
 						android:background="@drawable/cornerbtn_style2" 
 				    /> 
 				    <Button   
 				        android:id="@+id/btnhuodelSave"  
-				        android:text="@string/Del"
+				        android:text="删除"
 				        android:layout_width="100dp"
 						android:layout_height="70dp"  
 						android:background="@drawable/cornerbtn_style2"
 				    /> 
 				    <Button   
 				        android:id="@+id/btnhuoexit"  
-				        android:text="@string/Exit"
+				        android:text="退出"
 				        android:layout_width="100dp"
 						android:layout_height="70dp"  
 						android:background="@drawable/cornerbtn_style2"

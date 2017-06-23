@@ -494,7 +494,7 @@ public class ToolClass
 	/**
      * 追加文件：使用FileWriter
      */
-    public static void AppendLogFile(String content,String filename) 
+    public static synchronized void AppendLogFile(String content,String filename) 
     {
     	String  sDir =null;
     	File fileName=null;
