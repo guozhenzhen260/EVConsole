@@ -694,7 +694,7 @@ public class EVServerhttp implements Runnable {
 						//竖屏
 						else
 						{
-							temp="安卓竖屏";
+							temp="安卓竖屏银联二维码版";
 						}
 						parammap7.put("CLIENT_VERSION",temp+ToolClass.getVersion());	
 						parammap7.put("CLIENT_DESC","本机版本号");	

@@ -203,108 +203,60 @@ public class BusgoodsSelect extends Activity
     	if(tb_inaccount!=null)
     	{
     		int zhifucount=0;
-    		//有打开提货码功能
-    		if(tb_inaccount.getPrinter()==1)
+    		ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
+			if(tb_inaccount.getAmount()==0)
     		{
-    			//可以提货
-    			if(ToolClass.getzhitihuotype(BusgoodsSelect.this, cabID, huoID))
-        		{
-        			ivbuszhiseltihuo.setVisibility(View.VISIBLE);//打开
-        			ivbuszhiselamount.setVisibility(View.GONE);//关闭
-        			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
-        			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
-        			zhifucount++;
-        		}
-    			else
-    			{
-    				ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
-    				if(tb_inaccount.getAmount()!=1)
-            		{
-            			ivbuszhiselamount.setVisibility(View.GONE);//关闭
-            		}
-            		else
-            		{
-            			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
-            			zhifucount++;
-            		}	
-            		if(tb_inaccount.getZhifubaoer()!=1)
-            		{
-            			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
-            		}
-            		else
-            		{
-            			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
-            			zhifucount++;
-            		}
-            		if(tb_inaccount.getWeixing()!=1)
-            		{
-            			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
-            		}
-            		else
-            		{
-            			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
-            			zhifucount++;
-            		}
-    			}
+    			ivbuszhiselamount.setVisibility(View.GONE);//关闭
     		}
-    		//没有打开提货码功能
     		else
     		{
-    			ivbuszhiseltihuo.setVisibility(View.GONE);//关闭
-    			if(tb_inaccount.getAmount()==0)
-        		{
-        			ivbuszhiselamount.setVisibility(View.GONE);//关闭
-        		}
-        		else
-        		{
-        			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
-        			zhifucount++;
-        		}	
-        		if(tb_inaccount.getZhifubaoer()==0)
-        		{
-        			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
-        		}
-        		else
-        		{
-        			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
-        			zhifucount++;
-        		}
-        		if(tb_inaccount.getWeixing()==0)
-        		{
-        			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
-        		}
-        		else
-        		{
-        			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
-        			zhifucount++;
-        		}
-        		if(tb_inaccount.getZhifubaofaca()==0)
-        		{
-        			ivbuszhiselpos.setVisibility(View.GONE);//关闭
-        		}
-        		else
-        		{
-        			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
-        			zhifucount++;
-        		}
-        		switch(zhifucount)
-        		{
-        			case 3:
-        			case 4:		
-        				ivbuszhiselamount.setImageResource(R.drawable.amountnormalland);
-        				ivbuszhiselzhier.setImageResource(R.drawable.zhiernormalland);
-        				ivbuszhiselweixing.setImageResource(R.drawable.weixingnormalland);
-        				ivbuszhiselpos.setImageResource(R.drawable.zhiposnormal);
-        				break;
-        			case 2:
-        			case 1:	
-        				ivbuszhiselamount.setImageResource(R.drawable.amountlargeland);
-        				ivbuszhiselzhier.setImageResource(R.drawable.zhierlargeland);
-        				ivbuszhiselweixing.setImageResource(R.drawable.weixinglargeland);
-        				ivbuszhiselpos.setImageResource(R.drawable.zhiposlarge);
-        				break;	
-        		}
-    		}    		    			
+    			ivbuszhiselamount.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
+    		}	
+    		if(tb_inaccount.getZhifubaoer()==0)
+    		{
+    			ivbuszhiselzhier.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselzhier.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
+    		}
+    		if(tb_inaccount.getWeixing()==0)
+    		{
+    			ivbuszhiselweixing.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
+    		}
+    		if(tb_inaccount.getZhifubaofaca()==0)
+    		{
+    			ivbuszhiselpos.setVisibility(View.GONE);//关闭
+    		}
+    		else
+    		{
+    			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
+    			zhifucount++;
+    		}
+    		switch(zhifucount)
+    		{
+    			case 3:
+    			case 4:		
+    				ivbuszhiselamount.setImageResource(R.drawable.amountnormalland);
+    				ivbuszhiselzhier.setImageResource(R.drawable.zhiernormalland);
+    				ivbuszhiselweixing.setImageResource(R.drawable.weixingnormalland);
+    				ivbuszhiselpos.setImageResource(R.drawable.zhiposnormal);
+    				break;
+    			case 2:
+    			case 1:	
+    				ivbuszhiselamount.setImageResource(R.drawable.amountlargeland);
+    				ivbuszhiselzhier.setImageResource(R.drawable.zhierlargeland);
+    				ivbuszhiselweixing.setImageResource(R.drawable.weixinglargeland);
+    				ivbuszhiselpos.setImageResource(R.drawable.zhiposlarge);
+    				break;	
+    		}   		    			
     	}		
     	imgbtnbusgoodsback=(ImageView)findViewById(R.id.imgbtnbusgoodsback);
     	imgbtnbusgoodsback.setOnClickListener(new OnClickListener() {

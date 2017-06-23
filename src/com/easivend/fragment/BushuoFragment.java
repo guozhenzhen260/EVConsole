@@ -317,5 +317,10 @@ public class BushuoFragment extends Fragment
 			// TODO Auto-generated method stub
 			
 		}
+		
+		@Override
+		public void BusportSendYinlian(String str) {
+			// TODO Auto-generated method stub
+		}
 	}
 }
