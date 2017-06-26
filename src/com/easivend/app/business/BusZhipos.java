@@ -230,20 +230,18 @@ public class BusZhipos extends Activity
     	{    		
     		if(tb_inaccount.getZhifubaofaca()>0)
     		{
-    			if((ToolClass.isEmptynull(ToolClass.getPosip())==false)
-			      &&(ToolClass.getPosip().equals("null")==false)
-			      &&(ToolClass.isEmptynull(ToolClass.getPosipport())==false)
-			      &&(ToolClass.getPosipport().equals("null")==false)
-			      &&(ToolClass.isEmptynull(ToolClass.getCardcom())==false)
-			      &&(ToolClass.getCardcom().equals("null")==false)
-			    )
+    			if(
+                        (ToolClass.isEmptynull(ToolClass.getCardcom())==false)
+                        &&(ToolClass.getCardcom().equals("null")==false)
+                        )			    
     			{
     				isPossel=tb_inaccount.getZhifubaofaca();
 	    			ToolClass.Log(ToolClass.INFO,"EV_COM","COMActivity 打开读卡器"+ToolClass.getCardcom(),"com.txt");
-	    	        //打开串口
-	    			//ip、端口、串口、波特率必须准确
-	    			mMyApi.pos_init(ToolClass.getPosip(), Integer.parseInt(ToolClass.getPosipport())
-	    					,ToolClass.getCardcom(), "9600", mIUserCallback);	   			
+	    			//打开串口
+    	    		int posipport=(ToolClass.getPosipport().equals(""))?0:Integer.parseInt(ToolClass.getPosipport());
+    		        //ip、端口、串口、波特率必须准确"121.40.30.62", 18080
+    				mMyApi.pos_init(ToolClass.getPosip(), posipport
+    						,ToolClass.getCardcom(), "9600", mIUserCallback); 	   			
     			}
     		}
     	}				
