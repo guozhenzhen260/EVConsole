@@ -46,9 +46,11 @@ public class WeiConfigAPI
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weisubmch_id="+WeiConfig.getWeisubmch_id(),"log.txt");
     	
     	str=list.get("isweisub");
-    	WeiConfig.setIsweisub(Float.parseFloat(str));
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isweisub="+WeiConfig.getIsweisub(),"log.txt");
-    	
+        if(str.equals("")==false) {
+            WeiConfig.setIsweisub(Float.parseFloat(str));
+            ToolClass.Log(ToolClass.INFO, "EV_JNI", "APP<<isweisub=" + WeiConfig.getIsweisub(), "log.txt");
+        }
+
 //    	str=list.get("weicert_pwd");
 //    	WeiConfig.setWeicert_pwd(str);
 //    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<weicert_pwd="+WeiConfig.getWeicert_pwd(),"log.txt");

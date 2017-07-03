@@ -40,9 +40,11 @@ public class AlipayConfigAPI {
     	AlipayConfig.setSubpartner(str);
     	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<subpartner="+AlipayConfig.getSubpartner(),"log.txt");
     	
-    	str=list.get("isalisub");    	
-    	AlipayConfig.setIsalisub(Float.parseFloat(str));
-    	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<isalisub="+AlipayConfig.getIsalisub(),"log.txt");
+        str=list.get("isalisub");
+        if(str.equals("")==false) {
+            AlipayConfig.setIsalisub(Float.parseFloat(str));
+            ToolClass.Log(ToolClass.INFO, "EV_JNI", "APP<<isalisub=" + AlipayConfig.getIsalisub(), "log.txt");
+        }
     	 
     	if(list.containsKey("aliprivateKey"))//ÉèÖÃË½Ô¿
         {

@@ -212,12 +212,7 @@ public class MaintainActivity extends Activity
 	        {
 				columncom = list.get("columncom");
 				ToolClass.setColumncom(columncom);	
-	        }
-	        if(list.containsKey("extracom"))//设置外协串口号
-	        {
-	        	extracom = list.get("extracom");
-	        	ToolClass.setExtracom(extracom);	
-	        }
+	        }	        
 	        if(list.containsKey("cardcom"))//设置读卡器串口号
 	        {
 	        	cardcom = list.get("cardcom");
@@ -228,12 +223,17 @@ public class MaintainActivity extends Activity
 	        	printcom = list.get("printcom");
 	        	ToolClass.setPrintcom(printcom);
 	        }
-	        if(list.containsKey("posip"))//设置外协串口号
+	        if(list.containsKey("extracom"))//设置外协串口号
+	        {
+	        	extracom = list.get("extracom");
+	        	ToolClass.setExtracom(extracom);	
+	        }
+	        if(list.containsKey("posip"))//设置读卡器ip
 	        {
 	        	posip = list.get("posip");
 	        	ToolClass.setPosip(posip);	
 	        }
-	        if(list.containsKey("posipport"))//设置外协串口号
+	        if(list.containsKey("posipport"))//设置读卡器端口
 	        {
 	        	posipport = list.get("posipport");
 	        	ToolClass.setPosipport(posipport);	
@@ -251,8 +251,6 @@ public class MaintainActivity extends Activity
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
 	        WeiConfigAPI.SetWeiConfig(list);//设置微信账号	        
 	        
-	        //2.作文件备份
-  	        ToolClass.ResetConfigFile();  
 		}
 		else
 		{

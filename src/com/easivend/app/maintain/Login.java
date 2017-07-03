@@ -71,9 +71,9 @@ public class Login extends Activity
         tvextracom = (TextView) findViewById(R.id.tvextracom);        
         txtextracom = (EditText) findViewById(R.id.txtextracom);//获取外协设备串口号文本框
         tvposip = (TextView) findViewById(R.id.tvposip);        
-        txtposip = (EditText) findViewById(R.id.txtposip);//获取外协设备串口号文本框
+        txtposip = (EditText) findViewById(R.id.txtposip);//获取读卡器ip文本框
         tvposipport = (TextView) findViewById(R.id.tvposipport);        
-        txtposipport = (EditText) findViewById(R.id.txtposipport);//获取外协设备串口号文本框
+        txtposipport = (EditText) findViewById(R.id.txtposipport);//获取读卡器端口文本框
         switchisssl= (Switch) findViewById(R.id.switchisssl);//是否打开ssl加密
         tvcolumn2 = (TextView) findViewById(R.id.tvcolumn2);        
         txtcolumn2 = (EditText) findViewById(R.id.txtcolumn2);//获取副弹簧/升降机柜串口号
@@ -110,11 +110,7 @@ public class Login extends Activity
 			if(list.containsKey("columncom"))//设置主柜串口号
 	        {
 				columncom = list.get("columncom");
-	        }
-			if(list.containsKey("extracom"))//设置外协串口号
-	        {
-	        	extracom = list.get("extracom");	
-	        }
+	        }			
 			if(list.containsKey("cardcom"))//设置读卡器串口号
 	        {
 	        	cardcom = list.get("cardcom");
@@ -123,11 +119,15 @@ public class Login extends Activity
 	        {
 	        	printcom = list.get("printcom");
 	        }
-			if(list.containsKey("posip"))//设置外协串口号
+			if(list.containsKey("extracom"))//设置外协串口号
+	        {
+	        	extracom = list.get("extracom");	
+	        }
+			if(list.containsKey("posip"))//设置读卡器ip
 	        {
 	        	posip = list.get("posip");
 	        }
-	        if(list.containsKey("posipport"))//设置外协串口号
+	        if(list.containsKey("posipport"))//设置读卡器端口
 	        {
 	        	posipport = list.get("posipport");
 	        }

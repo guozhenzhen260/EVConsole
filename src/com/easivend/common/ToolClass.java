@@ -1703,166 +1703,92 @@ public class ToolClass
     {
     	File fileName=null;
     	String  sDir =null,str="";
-    	Map<String, String> list=null;
-    	    	
-        try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
-        	  fileName=new File(sDir);
-        	  //如果存在，才读文件
-        	  if(fileName.exists())
-        	  {
-	    	  	 //打开文件
-	    		  FileInputStream input = new FileInputStream(sDir);
-	    		 //输出信息
-	  	          Scanner scan=new Scanner(input);
-	  	          while(scan.hasNext())
-	  	          {
-	  	           	str+=scan.next()+"\n";
-	  	          }
-	  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
-	  	         input.close();
-	  	         scan.close();
-	  	         //文件损坏,则从备份那边覆盖一份过来
-	  	         if(str=="")
-	  	         {
-	  	        	 //恢复文件
-	  	        	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
-	  	        	String copyFile = copyDir+"easivendconfig.txt";
-	  	  		    ToolClass.Log(ToolClass.INFO,"EV_JNI"," 文件"+sDir+"损坏,恢复备份="+copyFile,"log.txt");
-	  	  		    copyFile(copyFile,sDir);
-	  	  		    
-	  	  		    //重新读入文件信息
-	  	  		    //打开文件
-		    		  FileInputStream input2 = new FileInputStream(sDir);
-		    		 //输出信息
-		  	          Scanner scan2=new Scanner(input2);
-		  	          while(scan2.hasNext())
-		  	          {
-		  	           	str+=scan2.next()+"\n";
-		  	          }
-		  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config恢复备份="+str,"log.txt");
-		  	         input2.close();
-		  	         scan2.close();
-	  	         }
-	  	         //将json格式解包
-	  	         list=new HashMap<String,String>();      			
-				JSONObject object=new JSONObject(str);      				
-				Gson gson=new Gson();
-				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString(),"log.txt");
-        	  }
-        	             
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //对所有的串口配置进行检测，如果全部为空，则说明文件损坏，需要重新导入
-        finally
-        {
-        	boolean errfile=true;//true代表文件损坏
-        	if(list!=null)
-    		{
-    			if(list.containsKey("com"))//设置现金串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("com"))==false)
-    			        	&&(list.get("com").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    			if(list.containsKey("bentcom"))//设置格子柜串口号
-    			{
-    				if((ToolClass.isEmptynull(list.get("bentcom"))==false)
-    			        	&&(list.get("bentcom").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    			if(list.containsKey("columncom"))//设置主柜串口号
-    			{
-    				if((ToolClass.isEmptynull(list.get("columncom"))==false)
-    			        	&&(list.get("columncom").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    	        if(list.containsKey("extracom"))//设置外协串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("extracom"))==false)
-    			        	&&(list.get("extracom").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    	        if(list.containsKey("cardcom"))//设置读卡器串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("cardcom"))==false)
-    			        	&&(list.get("cardcom").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }	
-    	        if(list.containsKey("printcom"))//设置打印机串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("printcom"))==false)
-    			        	&&(list.get("printcom").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    	        if(list.containsKey("posip"))//设置外协串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("posip"))==false)
-    			        	&&(list.get("posip").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    	        if(list.containsKey("posipport"))//设置外协串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("posipport"))==false)
-    			        	&&(list.get("posipport").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }
-    	        if(list.containsKey("isallopen"))//设置副柜串口号
-    	        {
-    				if((ToolClass.isEmptynull(list.get("isallopen"))==false)
-    			        	&&(list.get("isallopen").equals("null")==false)
-    			        )
-    					errfile=false;
-    	        }        
-    	        if(errfile)
-    	        {
-    	        	try
-    	        	{
-	    	        	//恢复文件
-		  	        	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
-		  	        	String copyFile = copyDir+"easivendconfig.txt";
-		  	  		    ToolClass.Log(ToolClass.INFO,"EV_JNI"," 自检文件"+sDir+"损坏,恢复备份="+copyFile,"log.txt");
-		  	  		    copyFile(copyFile,sDir);
-		  	  		    str="";
-		  	  		    
-		  	  		    //重新读入文件信息
-		  	  		    //打开文件
-			    		  FileInputStream input3 = new FileInputStream(sDir);
-			    		 //输出信息
-			  	          Scanner scan3=new Scanner(input3);
-			  	          while(scan3.hasNext())
-			  	          {
-			  	           	str+=scan3.next()+"\n";
-			  	          }
-			  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config恢复备份="+str,"log.txt");
-			  	         input3.close();
-			  	         scan3.close();
-			  	         //将json格式解包
-			  	         list=new HashMap<String,String>();      			
-						JSONObject object=new JSONObject(str);      				
-						Gson gson=new Gson();
-						list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-						//Log.i("EV_JNI",perobj.toString());
-						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自检config2="+list.toString(),"log.txt");
-	    	        } catch (Exception e) {
-	    	            e.printStackTrace();
-	    	        }
-    	        }
-    		}
-        }
+		boolean isaccess=true;//true配置文件中没有数据,false有数据
+
+		//1.读取配置文件,文件是私有的
+		SharedPreferences user = context.getSharedPreferences("easivendconfig",0);
+		Map<String,String>  list=new HashMap<String,String>();
+		//读取普通配置文件
+		list.put("com",user.getString("com",""));//设置现金串口号
+		list.put("bentcom",user.getString("bentcom",""));//设置格子柜串口号
+		list.put("columncom",user.getString("columncom",""));//设置主柜串口号
+		list.put("cardcom",user.getString("cardcom",""));//设置读卡器串口号
+		list.put("printcom",user.getString("printcom",""));//设置打印机串口号
+		list.put("extracom",user.getString("extracom",""));//设置外协串口号
+		list.put("posip",user.getString("posip",""));//设置读卡器ip
+		list.put("posipport",user.getString("posipport",""));//设置读卡器端口
+		list.put("isallopen",user.getString("isallopen",""));//设置副柜串口号
+		list.put("posisssl",user.getString("posisssl",""));//设置身份证串口号
+		//第三方商城
+		list.put("onecakeshort",user.getString("onecakeshort",""));//设置短连接地址
+		list.put("isOnecakeshort",user.getString("isOnecakeshort",""));//设置是否使用短连接
+		list.put("onecakews",user.getString("onecakews",""));//设置长连接地址
+		list.put("onecakephone",user.getString("onecakephone",""));//设置手机固码地址
+		//支付宝账号
+		list.put("alikey",user.getString("alikey",""));
+		list.put("alipartner",user.getString("alipartner",""));
+		list.put("aliseller_email",user.getString("aliseller_email",""));
+		list.put("alisubpartner",user.getString("alisubpartner",""));
+		list.put("isalisub",user.getString("isalisub",""));
+		list.put("server",user.getString("server",""));
+		//微信账号
+		list.put("weiappid",user.getString("weiappid",""));
+		list.put("weikey",user.getString("weikey",""));
+		list.put("weimch_id",user.getString("weimch_id",""));
+		list.put("weisubmch_id",user.getString("weisubmch_id",""));
+		list.put("isweisub",user.getString("isweisub",""));
+		Set<Entry<String, String>> allmap8=list.entrySet();  //实例化
+		Iterator<Entry<String, String>> iter8=allmap8.iterator();
+		while(iter8.hasNext())
+		{
+			Entry<String, String> me=iter8.next();
+			if(
+					(me.getValue().equals("")!=true)
+					)
+			{
+				isaccess=false;
+			}
+		}
+		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<configSharedPreferences="+list.toString(),"log.txt");
+
+		//2.读取ev文件
+		if(isaccess)
+		{
+			try {
+				  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
+				  fileName=new File(sDir);
+				  //如果存在，才读文件
+				  if(fileName.exists())
+				  {
+					 //打开文件
+					  FileInputStream input = new FileInputStream(sDir);
+					 //输出信息
+					  Scanner scan=new Scanner(input);
+					  while(scan.hasNext())
+					  {
+						str+=scan.next()+"\n";
+					  }
+					  input.close();
+					  scan.close();
+					 ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
+
+					 //将json格式解包
+					 list=new HashMap<String,String>();
+					JSONObject object=new JSONObject(str);
+					Gson gson=new Gson();
+					list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
+					//Log.i("EV_JNI",perobj.toString());
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString(),"log.txt");
+					WriteSharedPreferencesEV(list);
+				  }
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
         return list;
     }
+
     
     /**
      * 写入配置文件
@@ -1870,116 +1796,44 @@ public class ToolClass
     public static void WriteConfigFile(String com,String bentcom,String columncom,String extracom,String cardcom,String printcom,String columncom2,
     		String posip,String posipport,String posisssl) 
     {
-    	File fileName=null;
-    	String  sDir =null,str="";
-    	
-    	    	
-        try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
-        	 
-        	  fileName=new File(sDir);
-        	  //如果不存在，则创建文件
-          	  if(!fileName.exists())
-          	  {  
-      	        fileName.createNewFile(); 
-      	      } 
-        	  
-          	  //1.将数据从文件中读入
-    	  	  //打开文件
-    		  FileInputStream input = new FileInputStream(sDir);
-    		  //输出信息
-  	          Scanner scan=new Scanner(input);
-  	          while(scan.hasNext())
-  	          {
-  	           	str+=scan.next()+"\n";
-  	          }
-  	         ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config="+str,"log.txt");
-  	         input.close();
-  	         scan.close();
-  	         if(str!=null)
-  	         {
-	  	        Map<String, String> list=new HashMap<String,String>();      			
-				JSONObject object=new JSONObject(str);      				
-				Gson gson=new Gson();
-				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString(),"log.txt");
-				Map<String,String> list2=new HashMap<String,String>();
-				//输出内容
-		        Set<Map.Entry<String,String>> allset=list.entrySet();  //实例化
-		        Iterator<Map.Entry<String,String>> iter=allset.iterator();
-		        while(iter.hasNext())
-		        {
-		            Map.Entry<String,String> me=iter.next();
-		            if(
-		            		(me.getKey().equals("com")!=true)
-		            	  &&(me.getKey().equals("bentcom")!=true)
-		            	  &&(me.getKey().equals("columncom")!=true)
-		            	  &&(me.getKey().equals("extracom")!=true)
-		            	  &&(me.getKey().equals("cardcom")!=true)
-		            	  &&(me.getKey().equals("printcom")!=true)
-		            	  &&(me.getKey().equals("isallopen")!=true)
-		            	  &&(me.getKey().equals("server")!=true)
-		            	  &&(me.getKey().equals("posip")!=true)
-		            	  &&(me.getKey().equals("posipport")!=true)
-		            	  &&(me.getKey().equals("posisssl")!=true)
-		              )
-		            	list2.put(me.getKey(), me.getValue());
-		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
-		        } 	
-		        list2.put("com", com);
-		        list2.put("bentcom", bentcom);
-		        list2.put("columncom", columncom);
-		        list2.put("extracom", extracom);
-		        list2.put("cardcom", cardcom);
-		        list2.put("printcom", printcom);
-		        list2.put("isallopen", columncom2);	
-		        list2.put("posip", posip);
-		        list2.put("posipport", posipport);
-		        list2.put("posisssl", posisssl);
-		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+list2.toString(),"log.txt");
-		        JSONObject jsonObject = new JSONObject(list2);
-		        String mapstrString=jsonObject.toString();
-		        ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config4="+mapstrString,"log.txt");
-		        //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-	            FileWriter writer = new FileWriter(fileName);
-	            writer.write(mapstrString);
-	            writer.close();
-  	         }
-  	         else
-  	         {
-  	        	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<com="+com+","+bentcom);
-  	        	JSONObject jsonObject = new JSONObject();
-  	        	jsonObject.put("com", com);
-  	        	jsonObject.put("bentcom", bentcom);
-  	        	jsonObject.put("columncom", columncom);
-  	        	jsonObject.put("extracom", extracom);
-  	        	jsonObject.put("cardcom", cardcom);
-  	        	jsonObject.put("printcom", printcom);
-  	        	jsonObject.put("isallopen", columncom2);
-  	        	jsonObject.put("posip", posip);
-  	        	jsonObject.put("posipport", posipport);
-  	        	jsonObject.put("posisssl", posisssl);
-  	        	String mapstrString=jsonObject.toString();
-  	        	ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+mapstrString,"log.txt");
-  	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-  	            FileWriter writer = new FileWriter(fileName, true);
-  	            writer.write(mapstrString);
-  	            writer.close();
-			 }
-//  	         //将json格式解包
-//  	         list=new HashMap<String,String>();      			
-//			JSONObject object=new JSONObject(str);      				
-//			Gson gson=new Gson();
-//			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-//			//Log.i("EV_JNI",perobj.toString());
-//			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config2="+list.toString());
-        	//2.作文件备份
-  	        ResetConfigFile();             
-        } catch (Exception e) {
-            e.printStackTrace();
-        }        
+		//文件是私有的
+		SharedPreferences  user = context.getSharedPreferences("easivendconfig",0);
+		//需要接口进行编辑
+		SharedPreferences.Editor list=user.edit();
+		//设置
+		list.putString("com",com);//设置现金串口号
+		list.putString("bentcom",bentcom);//设置格子柜串口号
+		list.putString("columncom",columncom);//设置主柜串口号
+		list.putString("cardcom",cardcom);//设置读卡器串口号
+		list.putString("printcom",printcom);//设置打印机串口号
+		list.putString("extracom",extracom);//设置外协串口号
+		list.putString("posip",posip);//设置读卡器ip
+		list.putString("posipport",posipport);//设置读卡器端口
+		list.putString("isallopen",columncom2);//设置副柜串口号
+		list.putString("posisssl",posisssl);
+		//提交更新
+		list.commit();
+	}
+    
+    //写信息到配置文件中
+    private static void WriteSharedPreferencesEV(Map<String, String> list)
+    {
+        //文件是私有的
+        SharedPreferences  user = context.getSharedPreferences("easivendconfig",0);
+        //需要接口进行编辑
+        SharedPreferences.Editor edit=user.edit();
+        Set<Entry<String, String>> allmap8=list.entrySet();  //实例化
+        Iterator<Entry<String, String>> iter8=allmap8.iterator();
+        while(iter8.hasNext())
+        {
+            Entry<String, String> me=iter8.next();
+            //设置
+            edit.putString(me.getKey(), me.getValue());
+        }
+        //提交更新
+        edit.commit();
     }
+
     
     /**
      * 加载微信证书文件
@@ -2033,301 +1887,117 @@ public class ToolClass
     /**
      * 重新更新支付宝微信文件,后台服务器下发用
      */
-    public static void ResetConfigFileServer(JSONObject object2,String VMC_NO) 
-    {
-    	File fileName=null;
-    	String  sDir =null,str="";
-    	
-    	    	
-        try {      
-        	  //1.从服务器中下载的信息修改配置文件
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
-        	 
-        	  fileName=new File(sDir);
-        	  //如果不存在，则创建文件
-          	  if(!fileName.exists())
-          	  {  
-      	        fileName.createNewFile(); 
-      	      } 
-        	  
-          	  //1.将数据从文件中读入
-    	  	  //打开文件
-    		  FileInputStream input = new FileInputStream(sDir);
-    		  //输出信息
-  	          Scanner scan=new Scanner(input);
-  	          while(scan.hasNext())
-  	          {
-  	           	str+=scan.next()+"\n";
-  	          }
-  	         ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config="+str,"server.txt");
-  	         input.close();
-  	         scan.close();
-  	         if(str!=null)
-  	         {
-	  	        Map<String, String> list=new HashMap<String,String>();      			
-				JSONObject object=new JSONObject(str);      				
-				Gson gson=new Gson();
-				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config2="+list.toString(),"server.txt");
-				Map<String,String> list2=new HashMap<String,String>();
-				//输出内容
-		        Set<Map.Entry<String,String>> allset=list.entrySet();  //实例化
-		        Iterator<Map.Entry<String,String>> iter=allset.iterator();
-		        while(iter.hasNext())
-		        {
-		            Map.Entry<String,String> me=iter.next();
-		            if(
-		            	  //支付宝	
-		            		(me.getKey().equals("alipartner")!=true)
-		            	  &&(me.getKey().equals("aliseller_email")!=true)
-		            	  &&(me.getKey().equals("alikey")!=true)
-		            	  &&(me.getKey().equals("alisubpartner")!=true)
-		            	  &&(me.getKey().equals("isalisub")!=true)
-		            	  &&(me.getKey().equals("aliprivateKey")!=true)
-		            	  //微信	
-		            	  &&(me.getKey().equals("weiappid")!=true)
-		            	  &&(me.getKey().equals("weimch_id")!=true)
-		            	  &&(me.getKey().equals("weikey")!=true)
-		            	  &&(me.getKey().equals("weisubmch_id")!=true)
-		            	  &&(me.getKey().equals("isweisub")!=true)
-		              )
-		            	list2.put(me.getKey(), me.getValue());
-		            	//ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<config3="+me.getKey()+"--"+me.getValue());
-		        } 	
-		        //支付宝
-		        int ALIPAYMODE=1;
-		        if((ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
-		        	&&(object2.get("ALIPAYMODE").toString().equals("null")==false)
-		        )
-		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
-		       
-		        //搜索支付宝是否已经打开
-		        int getZhifubaoer=0;
-		        vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
-			    // 获取所有收入信息，并存储到List泛型集合中
-		    	Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
-		    	if(tb_inaccount!=null)
-		    	{
-		    		getZhifubaoer=tb_inaccount.getZhifubaoer();
-		    	}
-		    	
-		        //2.0
-		        if(ALIPAYMODE==2)
-		        {
-		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
-		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
-	  			    //创建Tb_inaccount对象 
-	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
-	    					0,0, 0,0,0,"","");
-	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
-	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
-			        
-		        	list2.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
-	  	        	list2.put("aliseller_email", "");
-	  	        	list2.put("alikey", "");
-	  	        	list2.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
-	  	        	if((ToolClass.isEmptynull(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString())==false)
-	  			        	&&(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString().equals("null")==false)
-	  			        )
-	  	        	{
-	  	        		list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString());
-	  	        	}
-	  	        	else
-	  	        	{
-	  	        		list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
-	  	        	}	
-	  	        	
-	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
-	  	        	{
-	  	        		list2.put("isalisub", "0");
-	  	        	}
-	  	        	else
-	  	        	{
-	  	        		list2.put("isalisub", "0.995");
-	  	        	}
-		        }
-		        //1.0
-		        else
-		        {
-		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
-		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
-	  			    //创建Tb_inaccount对象 
-	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
-	    					0,0, 0,0,0,"","");
-	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
-	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
-			        
-			        list2.put("alipartner", object2.get("ALI_PARTNER").toString());
-	  	        	list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
-	  	        	list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
-	  	        	list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
-	  	        	list2.put("aliprivateKey", "");
-	  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
-	  	        	{
-	  	        		list2.put("isalisub", "0");
-	  	        	}
-	  	        	else
-	  	        	{
-	  	        		list2.put("isalisub", "0.995");
-	  	        	}	
-		        }
-  	        	
-  	        	//微信
-  	        	list2.put("weiappid", object2.get("WX_APP_ID").toString());
-  	        	list2.put("weimch_id", object2.get("WX_MCHID").toString());
-  	        	list2.put("weikey", object2.get("WX_KEY").toString());
-  	        	list2.put("weisubmch_id", object2.get("WX_OTHER_MCHID").toString());
-  	        	if(ToolClass.isEmptynull(object2.get("WX_OTHER_MCHID").toString()))
-  	        	{
-  	        		list2.put("isweisub", "0");
-  	        	}
-  	        	else
-  	        	{
-  	        		list2.put("isweisub", "1");
-  	        	}
-		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config3="+list2.toString(),"server.txt");
-		        JSONObject jsonObject = new JSONObject(list2);
-		        String mapstrString=jsonObject.toString();
-		        ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config4="+mapstrString,"server.txt");
-		        //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-	            FileWriter writer = new FileWriter(fileName);
-	            writer.write(mapstrString);
-	            writer.close();
-	            
+    public static void ResetConfigFileServer(JSONObject object2,String VMC_NO)
+	{
+		try {
+			Map<String,String> list2=new HashMap<String,String>();
+			//支付宝
+			int ALIPAYMODE=1;
+			if((ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
+					&&(object2.get("ALIPAYMODE").toString().equals("null")==false)
+					)
+				ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
 
-                //2.重置支付宝微信账号
-                AlipayConfigAPI.SetAliConfig(list2);//设置阿里账号
-                WeiConfigAPI.SetWeiConfig(list2);//设置微信账号
-                //加载微信证书
-                ToolClass.setWeiCertFile();
+			//搜索支付宝是否已经打开
+			int getZhifubaoer=0;
+            vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
+            // 获取所有收入信息，并存储到List泛型集合中
+			Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
+			if(tb_inaccount!=null)
+			{
+				getZhifubaoer=tb_inaccount.getZhifubaoer();
+			}
 
-  	         }
-  	         else
-  	         {  	        	
-  	        	JSONObject jsonObject = new JSONObject();
-  	            //支付宝
-  	        	int ALIPAYMODE=1;
-		        if(ToolClass.isEmptynull(object2.get("ALIPAYMODE").toString())==false)
-		        	ALIPAYMODE=Integer.parseInt(object2.get("ALIPAYMODE").toString());
-		        //搜索支付宝是否已经打开
-		        int getZhifubaoer=0;
-		        vmc_system_parameterDAO parameterDAOrd = new vmc_system_parameterDAO(context);// 创建InaccountDAO对象
-			    // 获取所有收入信息，并存储到List泛型集合中
-		    	Tb_vmc_system_parameter tb_inaccount = parameterDAOrd.find();
-		    	if(tb_inaccount!=null)
-		    	{
-		    		getZhifubaoer=tb_inaccount.getZhifubaoer();
-		    	}
-		    	
-		        //2.0
-		        if(ALIPAYMODE==2)
-		        {
-		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
-		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
-	  			    //创建Tb_inaccount对象 
-	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-	    					0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
-	    					0,0, 0,0,0,"","");
-	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
-	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
-			        
-	    			jsonObject.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
-	    			jsonObject.put("aliseller_email", "");
-	  	        	jsonObject.put("alikey", "");
-	  	        	jsonObject.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
-	  	        	jsonObject.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
-	  	        	if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
-	  	        	{
-	  	        		jsonObject.put("isalisub", "0");
-	  	        	}
-	  	        	else
-	  	        	{
-	  	        		jsonObject.put("isalisub", "0.995");
-	  	        	}
-		        }
-		        //1.0
-		        else
-		        {
-		        	ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
-		        	vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
-	  			    //创建Tb_inaccount对象 
-	    			Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
-	    					0,0,"",0,0,0,1,0,0,0,"",0,
-	    					0,0, 0,0,0,"","");
-	    			ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");	
-	    			parameterDAO.updatezhifubao(tb_vmc_system_parameter); 
-			        
-			        jsonObject.put("alipartner", object2.get("ALI_PARTNER").toString());
-	  	        	jsonObject.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
-	  	        	jsonObject.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
-	  	        	jsonObject.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
-	  	        	jsonObject.put("aliprivateKey", "");
-	  	        	if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
-	  	        	{
-	  	        		jsonObject.put("isalisub", "0");
-	  	        	}
-	  	        	else
-	  	        	{
-	  	        		jsonObject.put("isalisub", "0.995");
-	  	        	}	
-		        }	
-  	        	
-  	        	//微信
-  	        	jsonObject.put("weiappid", object2.get("WX_APP_ID"));
-  	        	jsonObject.put("weimch_id", object2.get("WX_MCHID"));
-  	        	jsonObject.put("weikey", object2.get("WX_KEY"));
-  	        	jsonObject.put("weisubmch_id", object2.get("WX_OTHER_MCHID"));
-  	        	if(ToolClass.isEmptynull(object2.get("WX_OTHER_MCHID").toString()))
-  	        	{
-  	        		jsonObject.put("isweisub", "0");
-  	        	}
-  	        	else
-  	        	{
-  	        		jsonObject.put("isweisub", "1");
-  	        	}
-  	        	String mapstrString=jsonObject.toString();
-  	        	ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config2="+mapstrString,"server.txt");
-  	            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-  	            FileWriter writer = new FileWriter(fileName, true);
-  	            writer.write(mapstrString);
-  	            writer.close();
-  	            
+			//2.0
+			if(ALIPAYMODE==2)
+			{
+				ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
+                vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+                //创建Tb_inaccount对象 
+                Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+                      0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
+                      0,0, 0,0,0,"","");
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");    
+                parameterDAO.updatezhifubao(tb_vmc_system_parameter);
 
-                Map<String, String> list=new HashMap<String,String>();
-                Gson gson=new Gson();
-                list=gson.fromJson(jsonObject.toString(), new TypeToken<Map<String, Object>>(){}.getType());
-                //2.重置支付宝微信账号
-                AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
-                WeiConfigAPI.SetWeiConfig(list);//设置微信账号
-                //加载微信证书
-                ToolClass.setWeiCertFile();
+				list2.put("alipartner", object2.get("ALIPAYTWO_PID").toString());
+				list2.put("aliseller_email", "");
+				list2.put("alikey", "");
+				list2.put("alisubpartner", object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString());
+				if((ToolClass.isEmptynull(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString())==false)
+						&&(object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString().equals("null")==false)
+						)
+				{
+					list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_ANDROID_KEY").toString());
+				}
+				else
+				{
+					list2.put("aliprivateKey", object2.get("ALIPAYTWO_MERCHANT_PRIVATE_KEY").toString());
+				}
 
-			 }  	                 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }        
-    }
-    
-    //作配置文件备份
-    public static void ResetConfigFile()
-    {
-    	String sDir = ToolClass.getEV_DIR()+File.separator+"easivendconfig.txt";
-    	String copyDir = ToolClass.getEV_DIR()+File.separator+"CONFIG"+File.separator;
-		File dirName = new File(copyDir);
-		//如果目录不存在，则创建目录
-  		 if (!dirName.exists()) 
-  		 {  
-  			//按照指定的路径创建文件夹  
-  			dirName.mkdirs(); 
-  		 } 
-		String copyFile = copyDir+"easivendconfig.txt";
-		ToolClass.Log(ToolClass.INFO,"EV_SERVER"," 原文件"+sDir+"选定,copy目标文件="+copyFile,"server.txt"); 
-		  
-		copyFile(sDir,copyFile);
-    }
+				if(ToolClass.isEmptynull(object2.get("ALIPAYTWO_ALIOTHERPARTNER").toString()))
+				{
+					list2.put("isalisub", "0");
+				}
+				else
+				{
+					list2.put("isalisub", "0.995");
+				}
+			}
+			//1.0
+			else
+			{
+				ALIPAYMODE=(getZhifubaoer>0)?ALIPAYMODE:getZhifubaoer;
+                vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(ToolClass.getContext());// 创建InaccountDAO对象
+                //创建Tb_inaccount对象 
+                Tb_vmc_system_parameter tb_vmc_system_parameter = new Tb_vmc_system_parameter(VMC_NO, "", 0,0, 
+                      0,0,"",0,0,0,ALIPAYMODE,0,0,0,"",0,
+                      0,0, 0,0,0,"","");
+                ToolClass.Log(ToolClass.INFO,"EV_SERVER","重置支付宝VMC_NO="+tb_vmc_system_parameter.getDevID()+",zhifubaoer="+tb_vmc_system_parameter.getZhifubaoer(),"server.txt");    
+                parameterDAO.updatezhifubao(tb_vmc_system_parameter);
+
+				list2.put("alipartner", object2.get("ALI_PARTNER").toString());
+				list2.put("aliseller_email", object2.get("ALI_SELLER_EMAIL").toString());
+				list2.put("alikey", object2.get("ALI_SECURITY_KEY").toString());
+				list2.put("alisubpartner", object2.get("ALI_OTHER_PARTNER").toString());
+				list2.put("aliprivateKey", "");
+				if(ToolClass.isEmptynull(object2.get("ALI_OTHER_PARTNER").toString()))
+				{
+					list2.put("isalisub", "0");
+				}
+				else
+				{
+					list2.put("isalisub", "0.995");
+				}
+			}
+
+			//微信
+			list2.put("weiappid", object2.get("WX_APP_ID").toString());
+			list2.put("weimch_id", object2.get("WX_MCHID").toString());
+			list2.put("weikey", object2.get("WX_KEY").toString());
+			list2.put("weisubmch_id", object2.get("WX_OTHER_MCHID").toString());
+			if(ToolClass.isEmptynull(object2.get("WX_OTHER_MCHID").toString()))
+			{
+				list2.put("isweisub", "0");
+			}
+			else
+			{
+				list2.put("isweisub", "1");
+			}
+			ToolClass.Log(ToolClass.INFO,"EV_SERVER","APP<<config3="+list2.toString(),"server.txt");
+			WriteSharedPreferencesEV(list2);
+
+			//2.重置支付宝微信账号
+			AlipayConfigAPI.SetAliConfig(list2);//设置阿里账号
+			WeiConfigAPI.SetWeiConfig(list2);//设置微信账号
+			//加载微信证书
+			ToolClass.setWeiCertFile();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
     
     /**
      * 读取货道配置文件
