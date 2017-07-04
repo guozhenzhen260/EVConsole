@@ -55,7 +55,7 @@ public class ParamManager extends TabActivity
 	private RadioButton rbtnclose=null,rbtnzhifubao1=null,rbtnzhifubao2=null;
 	private Spinner spinparamsort=null,spinCashless=null;
 	private Button btnmachinecheck=null,btnmachineSave=null,btnmachineexit=null,btndeviceSave=null,btndeviceexit=null,btnamount=null,btncard=null,btnCashless=null,btnprinttest=null,
-			btnzhifubaoer=null,btnweixing=null;	
+            btnzhifubaoer=null,btnweixing=null,btnprinter=null;  
 	private int proSortType=6;
 	//排序有关的定义
 	private ShowSortAdapter showSortAdapter=null;
@@ -293,7 +293,18 @@ public class ParamManager extends TabActivity
             
         });
     	switchprinter = (Switch)findViewById(R.id.switchprinter);
-    	
+        switchprinter.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                    boolean isChecked) {
+                // TODO Auto-generated method stub
+                btnprinter.setEnabled(isChecked);    
+            }  
+            
+            
+        });
+
     	    	    	
     	btndeviceSave = (Button) findViewById(R.id.btndeviceSave);
     	btndeviceSave.setOnClickListener(new OnClickListener() {// 为退出按钮设置监听事件
@@ -360,6 +371,17 @@ public class ParamManager extends TabActivity
 		    	intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
 		    	startActivity(intent);// 打开AddInaccount
 		    }
+		});
+    	btnprinter = (Button) findViewById(R.id.btnprinter);
+    	btnprinter.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(ParamManager.this, YinlianTest.class);
+				intent.putExtra("id", ToolClass.replaceBlank(edtdevhCode.getText().toString()));
+                startActivity(intent);
+			}
 		});
     	loaddeviceparam();
     	

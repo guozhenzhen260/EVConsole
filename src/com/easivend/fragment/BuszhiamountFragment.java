@@ -28,7 +28,7 @@ public class BuszhiamountFragment extends Fragment
 	ImageView imgbtnbusgoodsback=null;
 	float amount=0;//商品需要支付金额	
 	ImageView ivbuszhiselamount=null,ivbuszhiselzhier=null,ivbuszhiselweixing=null,ivbuszhiselpos=null;
-	ImageView ivbuszhier=null,ivbuszhiwei=null;
+	ImageView ivbuszhier=null,ivbuszhiwei=null,ivbusyinlian=null;
 //	private String proID = null;
 //	private String productID = null;
 //	private String proType = null;
@@ -122,6 +122,7 @@ public class BuszhiamountFragment extends Fragment
 		ivbuszhiselweixing = (ImageView) view.findViewById(R.id.ivbuszhiselweixing);	
 		ivbuszhiselpos = (ImageView) view.findViewById(R.id.ivbuszhiselpos);
 		ivbuszhier = (ImageView) view.findViewById(R.id.ivbuszhier);
+		ivbusyinlian = (ImageView) view.findViewById(R.id.ivbusyinlian);
 		ivbuszhiwei = (ImageView) view.findViewById(R.id.ivbuszhiwei);
 		//*********************
 		//搜索可以得到的支付方式
@@ -159,14 +160,24 @@ public class BuszhiamountFragment extends Fragment
     			ivbuszhiselweixing.setVisibility(View.VISIBLE);//打开
     			ivbuszhiwei.setVisibility(View.VISIBLE);//打开
     		}
-    		if(tb_inaccount.getZhifubaofaca()==0)
+    		//pos机                                                                             银联二维码
+    		if((tb_inaccount.getZhifubaofaca()==0)&&(tb_inaccount.getPrinter()==0))
     		{
     			ivbuszhiselpos.setVisibility(View.GONE);//关闭
+    			ivbusyinlian.setVisibility(View.GONE);//关闭
     		}
-    		else
+    		//pos机打开
+    		else if(tb_inaccount.getZhifubaofaca()==1)
     		{
     			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
+    			ivbusyinlian.setVisibility(View.GONE);//关闭
     		}    		
+    		//银联二维码打开
+    		else if(tb_inaccount.getPrinter()==1)
+    		{
+    			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
+    			ivbusyinlian.setVisibility(View.VISIBLE);//打开
+    		} 
     	}
 		return view;
 	}
@@ -206,6 +217,12 @@ public class BuszhiamountFragment extends Fragment
 		public void BusportSendWei(String str) {
 			// TODO Auto-generated method stub
 			ivbuszhiwei.setImageBitmap(ToolClass.createQRImage(str));
+		}
+		
+		@Override
+		public void BusportSendYinlian(String str) {
+			// TODO Auto-generated method stub
+			ivbusyinlian.setImageBitmap(ToolClass.createQRImage(str));
 		}
 
 		

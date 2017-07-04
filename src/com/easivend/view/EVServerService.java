@@ -1195,7 +1195,7 @@ public class EVServerService extends Service {
 	    
 	    int orderStatus=0;//1未支付,2出货成功,3出货未完成
 	    int payStatue=0;//0未付款,1正在付款,2付款完成,3付款失败
-	    int payTyp=0;//0现金,1支付宝声波,2银联,3支付宝二维码,4微信
+	    int payTyp=0;//0现金,1支付宝声波,2银联,3支付宝二维码,4微信，7银联
 	    int actualQuantity=0;//实际出货,1成功,0失败
 	    String RefundAmount="";//找零金额
 	    int Status=0;//0：未退款；1：正在退款；2：退款成功；3：退款失败'
@@ -1221,7 +1221,7 @@ public class EVServerService extends Service {
 					payStatue=2;
 					actualQuantity=0;
 				}
-		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描-1取货码
+		    	// 支付方式0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描-1取货码,7银联
 		    	if(payTypevalue[x]==0)
 				{
 		    		payTyp=0;
@@ -1245,6 +1245,10 @@ public class EVServerService extends Service {
 				else if(payTypevalue[x]==-1)
 				{
 					payTyp=-1;
+				}
+				else
+				{
+					payTyp=payTypevalue[x];
 				}
 		    	
 		    	if(RealStatusvalue[x]==0)

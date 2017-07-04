@@ -22,6 +22,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cn.yoc.unionPay.sdk.SDKConfig;
+
 import com.easivend.dao.vmc_system_parameterDAO;
 import com.easivend.evprotocol.COMThread;
 import com.easivend.http.EVServerhttp;
@@ -43,6 +45,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -116,12 +119,24 @@ public class MaintainActivity extends Activity
 		//设置横屏还是竖屏的布局策略
 		this.setRequestedOrientation(ToolClass.getOrientation());
 		//获取本应用context
-		ToolClass.setContext(getApplicationContext());
+		ToolClass.setContext(getApplicationContext());		
 		
 		//启动网络监测服务
 		startService(new Intent(this,MobileService.class));
 		//加载声音文件
 		AudioSound.initsound();
+        //是否加载银联二维码
+        vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(this);// 创建InaccountDAO对象
+        // 获取所有收入信息，并存储到List泛型集合中
+        Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+        if(tb_inaccount!=null)
+        {
+            if(tb_inaccount.getPrinter()==1)
+            {
+                SDKConfig.getConfig().loadPropertiesFromPath(this, Environment.getExternalStorageDirectory().getPath() + "/ev");
+            }
+        }
+
 		//==========
 		//Dog服务相关
 		//==========

@@ -47,6 +47,7 @@ import com.easivend.fragment.BuszhiamountFragment.BuszhiamountFragInteraction;
 import com.easivend.fragment.MoviewlandFragment.MovieFragInteraction;
 import com.easivend.http.EVServerhttp;
 import com.easivend.http.Weixinghttp;
+import com.easivend.http.Yinlianhttp;
 import com.easivend.http.Zhifubaohttp;
 import com.easivend.model.Tb_vmc_product;
 import com.easivend.model.Tb_vmc_system_parameter;
@@ -129,7 +130,8 @@ BushuoFragInteraction
 	//==现金支付页面相关
 	//=================
 	private int queryLen = 0; 
-	private int queryamountLen = 0,queryzhierLen = 0,queryzhiweiLen = 0,queryzhiposLen = 0; 
+	private int queryamountLen = 0,queryzhierLen = 0,queryzhiweiLen = 0,queryzhiposLen = 0,
+			queryzhiyinlianLen = 0; 
 	private int billdev=1;//是否需要打开纸币器,1需要
     private int iszhienable=0;//1发送打开指令,0还没发送打开指令，2本次投币已经结束
     private boolean isempcoin=false;//false还未发送关纸币器指令，true因为缺币，已经发送关纸币器指令
@@ -161,6 +163,16 @@ BushuoFragInteraction
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次投币已经结束
     private int iszhiweisel=0;//0没有设置微信，1有设置微信
     private boolean weicheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
+    //=================
+  	//==银联支付页面相关
+  	//=================    
+    //线程进行微信二维码操作
+    private ExecutorService yinlianthread=null;
+    private Handler yinlianmainhand=null,yinlianchildhand=null;   
+    Yinlianhttp yinlianhttp=null;
+    private int iszhiyinlian=0;//1成功生成了二维码,0没有成功生成二维码，2本次投币已经结束
+    private int iszhiyinliansel=0;//0没有设置微信，1有设置微信
+    private boolean yinliancheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
     //=================
   	//==pos支付页面相关
   	//=================
@@ -240,6 +252,7 @@ BushuoFragInteraction
         //非现金页面
         void BusportSend(String str);      //二维码
         void BusportSendWei(String str);      //微信
+        void BusportSendYinlian(String str);//银联二维码
     }
     public interface BusPortMovieFragInteraction
     {
@@ -408,6 +421,34 @@ BushuoFragInteraction
 			                    	queryzhiweiLen=0;
 			                    	//发送订单
 			                		sendzhiwei();
+			                    }
+		                    }
+		        		}
+		        		
+		        		//=================
+		        		//==银联支付页面相关
+		        		//=================
+		        		if(iszhiyinliansel>0)
+		        		{
+		                    //发送查询交易指令
+		                    if(iszhiyinlian==1)
+		                    {
+		                    	queryzhiyinlianLen++;
+			                    if(queryzhiyinlianLen>=2)
+			                    {
+			                    	queryzhiyinlianLen=0;
+			                    	queryzhiyinlian();
+			                    }
+		                    }
+		                    //发送订单交易指令
+		                    else if(iszhiyinlian==0)
+		                    {
+		                    	queryzhiyinlianLen++;
+			                    if(queryzhiyinlianLen>=5)
+			                    {
+			                    	queryzhiyinlianLen=0;
+			                    	//发送订单
+			                		sendzhiyinlian();
 			                    }
 		                    }
 		        		}
@@ -655,6 +696,109 @@ BushuoFragInteraction
 		//启动用户自己定义的类
 		weixinghttp=new Weixinghttp(weixingmainhand);
 		weixingthread=Executors.newCachedThreadPool();
+		
+		//***********************
+		//线程进行银联二维码操作
+		//***********************
+		yinlianmainhand=new Handler()
+		{
+			@Override
+			public void handleMessage(Message msg) {
+				//barweixingtest.setVisibility(View.GONE);
+				yinliancheck=false;
+				// TODO Auto-generated method stub				
+				switch (msg.what)
+				{
+					case Yinlianhttp.SETMAIN://子线程接收主线程消息
+						try {
+							JSONObject zhuhe=new JSONObject(msg.obj.toString());
+							String zhuheout_trade_no=zhuhe.getString("out_trade_no");
+							String code_url=zhuhe.getString("code_url");
+							ToolClass.Log(ToolClass.INFO,"EV_JNI","生成银联=out_trade_no="+out_trade_no+">>zhuheout_trade_no="+zhuheout_trade_no,"log.txt");						       
+							if(zhuheout_trade_no.equals(out_trade_no))
+							{
+								listterner.BusportSendYinlian(code_url);
+								iszhiyinlian=1;
+							}							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+						break;
+					case Yinlianhttp.SETFAILNETCHILD://子线程接收主线程消息
+						listterner.BusportTsxx("交易结果:重试"+msg.obj.toString()+con);
+						con++;	
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
+							OrderDetail.addLog(BusPort.this);
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							zhiweiDestroy(1);
+						}
+						break;	
+					case Yinlianhttp.SETPAYOUTMAIN://子线程接收主线程消息
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(1);//记录退币成功
+							OrderDetail.setRealCard(amount);//记录退币金额
+							OrderDetail.addLog(BusPort.this);
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款成功");
+							dialog.dismiss();
+							zhiweiDestroy(1);
+						}
+						break;
+					case Yinlianhttp.SETDELETEMAIN://子线程接收主线程消息
+//								listterner.BusportTsxx("交易结果:撤销成功");
+//								clearamount();
+//						    	viewSwitch(BUSPORT, null);
+						break;	
+					case Yinlianhttp.SETQUERYMAINSUCC://子线程接收主线程消息		
+						listterner.BusportTsxx("交易结果:交易成功");
+						//reamin_amount=String.valueOf(amount);
+						if(iszhiyinlian==1)
+						{
+							iszhiyinlian=2;
+	                        zhifutype="7";                        
+							tochuhuo();
+						}
+						break;
+					case Yinlianhttp.SETFAILPROCHILD://子线程接收主线程消息
+					case Yinlianhttp.SETFAILBUSCHILD://子线程接收主线程消息	
+					case Yinlianhttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
+					case Yinlianhttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息		
+					case Yinlianhttp.SETQUERYMAIN://子线程接收主线程消息	
+					case Yinlianhttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
+					case Yinlianhttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+					case Yinlianhttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
+					case Yinlianhttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息
+						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
+							OrderDetail.addLog(BusPort.this);
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							zhiweiDestroy(1);
+						}
+						break;		
+				}				
+			}
+			
+		};
+		//启动用户自己定义的类
+		yinlianhttp=new Yinlianhttp(yinlianmainhand);
+		yinlianthread=Executors.newCachedThreadPool();
 		
 		
 		//***********************
@@ -1106,6 +1250,11 @@ BushuoFragInteraction
     	{
     		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiwei退币按钮无效","log.txt");
     	}
+		//微信模块如果本次扫码已经结束，可以购买，则不进行退款操作
+		else if(iszhiyinlian==2)
+    	{
+    		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<zhiyinlian退币按钮无效","log.txt");
+    	}
 		//pos模块如果本次已经刷卡，可以购买，则不进行退款操作
     	if(iszhipos==2)
     	{
@@ -1122,6 +1271,11 @@ BushuoFragInteraction
             if(iszhiwei==1)
 			{
 				deletezhiwei();
+			}
+            //银联模块:生成二维码需要撤销
+            if(iszhiyinlian==1)
+			{
+				
 			}
 			//pos模块:发送扣款了，需要撤销
 			if(zhiposcheck)
@@ -1419,6 +1573,114 @@ BushuoFragInteraction
   	
     //关闭页面:type=1延时10s关闭,0立即关闭
   	private void zhiweiDestroy(int type)
+  	{
+  		//延时关闭
+  		if(type==1)
+  		{
+  			clearamount();
+			recLen=3;	
+  		}
+  		//立即关闭
+  		else
+  		{
+  			clearamount();
+	    	viewSwitch(BUSPORT, null);
+  		}
+  	}
+ 
+  	//=======================
+  	//实现Buszhiyinlian页面相关接口
+  	//=======================
+    //判断是否处在二维码的线程操作中,true表示可以操作了,false不能操作
+  	private boolean yinliancheckopt()
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinliancheck="+yinliancheck,"log.txt");
+  		if(yinliancheck==false)
+  		{
+  			yinliancheck=true;
+  			return true;
+  		}
+  		else
+  		{
+  			return false;
+		}
+  	}  
+    //发送订单
+  	private void sendzhiyinlian()
+  	{	
+  		if(yinliancheckopt())
+  		{
+	      	// 将信息发送到子线程中
+	      	yinlianchildhand=yinlianhttp.obtainHandler();
+	  		Message childmsg=yinlianchildhand.obtainMessage();
+	  		childmsg.what=Yinlianhttp.SETCHILD;
+	  		JSONObject ev=null;
+	  		try {
+	  			ev=new JSONObject();	  			
+	  	        ev.put("out_trade_no", out_trade_no);
+	  			ev.put("total_fee", String.valueOf(amount));
+	  			Log.i("EV_JNI","Send0.1="+ev.toString());
+	  		} catch (JSONException e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	  		childmsg.obj=ev;
+	  		yinlianchildhand.sendMessage(childmsg);
+  		}
+  	}
+  	//查询交易
+  	private void queryzhiyinlian()
+  	{
+  		if(yinliancheckopt())
+  		{
+	  		// 将信息发送到子线程中
+	  		yinlianchildhand=yinlianhttp.obtainHandler();
+	  		Message childmsg=yinlianchildhand.obtainMessage();
+	  		childmsg.what=Yinlianhttp.SETQUERYCHILD;
+	  		JSONObject ev=null;
+	  		try {
+	  			ev=new JSONObject();
+	  			ev.put("out_trade_no", out_trade_no);		
+	  			//ev.put("out_trade_no", "000120150301113215800");	
+	  			Log.i("EV_JNI","Send0.1="+ev.toString());
+	  		} catch (JSONException e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	  		childmsg.obj=ev;
+	  		yinlianchildhand.sendMessage(childmsg);
+  		}
+  	}
+  	//退款交易
+  	private void payoutzhiyinlian()
+  	{
+  		//if(yinliancheckopt())
+  		AudioSound.playbuspayout();
+  		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinliancheckopt="+yinliancheck,"log.txt");
+  		{
+	  		// 将信息发送到子线程中
+	  		yinlianchildhand=yinlianhttp.obtainHandler();
+	  		Message childmsg=yinlianchildhand.obtainMessage();
+	  		childmsg.what=Yinlianhttp.SETPAYOUTCHILD;
+	  		JSONObject ev=null;
+	  		try {
+	  			ev=new JSONObject();
+	  			ev.put("out_trade_no", out_trade_no);		
+	  			ev.put("total_fee", String.valueOf(amount));
+	  			ev.put("refund_fee", String.valueOf(amount));
+	  			ev.put("out_refund_no", ToolClass.out_trade_no(BusPort.this));
+	  			Log.i("EV_JNI","Send0.1="+ev.toString());
+	  		} catch (JSONException e) {
+	  			// TODO Auto-generated catch block
+	  			e.printStackTrace();
+	  		}
+	  		childmsg.obj=ev;
+	  		yinlianchildhand.sendMessage(childmsg);
+  		}  		
+  	}
+  		  	
+    //关闭页面:type=1延时10s关闭,0立即关闭
+  	private void zhiyinlianDestroy(int type)
   	{
   		//延时关闭
   		if(type==1)
@@ -1854,7 +2116,27 @@ BushuoFragInteraction
         					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
         					payoutzhiwei();//退款操作									
         				}
-            			break;  
+            			break; 
+            		//银联页面	
+            		case 7:            			
+            			//出货成功,结束交易
+        				if(status==1)
+        				{
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinlian无退款","log.txt");
+        					ToolClass.setLAST_CHUHUO(true);
+        					OrderDetail.addLog(BusPort.this);
+        					AudioSound.playbusfinish();
+        					zhiweiDestroy(0);
+        				}
+        				//出货失败,退钱
+        				else
+        				{	
+        					ispayoutopt=1;
+        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinlian退款amount="+amount,"log.txt");
+        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+        					payoutzhiyinlian();//退款操作									
+        				}
+            			break;	
             		//自提密码页面		
             		case 5:
             			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自提密码页面","log.txt");
@@ -2347,6 +2629,10 @@ BushuoFragInteraction
 		{
 			deletezhiwei();
 		}
+        //银联模块:生成二维码需要撤销
+        if(iszhiyinlian==1)
+		{
+		}
     	
     	//支付宝微信模块,以及pos模块非现金金额
     	if(zhifutype.equals("0")!=true)
@@ -2403,6 +2689,9 @@ BushuoFragInteraction
   	    //微信页面
   		iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码
   		weicheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
+  		//银联页面
+  		iszhiyinlian=0;//1成功生成了二维码,0没有成功生成二维码
+  		yinliancheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
   		//pos页面
   		iszhipos=0;//0未刷卡,2刷卡扣款已经完成并且金额足够  	
   	  	cashbalance = "";//查询参数  	    
@@ -2598,6 +2887,26 @@ BushuoFragInteraction
 				            	//发送订单
 				        		sendzhiwei();
 				        		queryzhiweiLen=0;
+				            }
+
+						}, 20);
+		    		}
+		    		//银联二维码
+		    		if(tb_inaccount.getPrinter()>0)
+		    		{
+		    			iszhiyinliansel=1;
+		    			//打开
+		    			//新建一个线程并启动
+			            yinlianthread.execute(yinlianhttp);
+						//延时
+					    new Handler().postDelayed(new Runnable() 
+						{
+				            @Override
+				            public void run() 
+				            {   
+				            	//发送订单
+				        		sendzhiyinlian();
+				        		queryzhiyinlianLen=0;
 				            }
 
 						}, 20);

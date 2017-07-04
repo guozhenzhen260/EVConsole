@@ -665,7 +665,7 @@
 				            	    android:minWidth="160px" 
 									android:layout_width="wrap_content"
 									android:layout_height="wrap_content"
-									android:text="提货密码"/> 
+									android:text="银联二维码"/> 
 						        
 						         <Switch   
 							       android:layout_marginTop="20dip"  
