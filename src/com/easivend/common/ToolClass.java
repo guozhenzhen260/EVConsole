@@ -2006,53 +2006,59 @@ public class ToolClass
     {
     	File fileName=null;
     	String  sDir =null,str="";
-    	Map<String, Integer> list=null;
-    	    	
-        try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig.txt";
-        	  fileName=new File(sDir);
-        	  //如果存在，才读文件
-        	  if(fileName.exists())
-        	  {
-	    	  	 //打开文件
-	    		  FileInputStream input = new FileInputStream(sDir);
-	    		 //输出信息
-	  	          Scanner scan=new Scanner(input);
-	  	          while(scan.hasNext())
-	  	          {
-	  	           	str+=scan.next()+"\n";
-	  	          }
-	  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
-	  	         input.close();
-	  	         scan.close();
-	  	         //将json格式解包
-	  	         list=new HashMap<String,Integer>();   
-	  	         huodaolist=new HashMap<Integer,Integer>(); 
-				JSONObject object=new JSONObject(str);      				
-				Gson gson=new Gson();
-				list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
-				//输出内容
-		        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
-		        Iterator<Entry<String, Integer>> iter=allmap.iterator();
-		        while(iter.hasNext())
-		        {
-		            Entry<String, Integer> me=iter.next();	
-	            	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
-		        } 			
-				//Log.i("EV_JNI",perobj.toString());
-				ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
-        	  }
-        	  else
-        	  {
-        		  WriteColumnFile("");
-        		  list=new HashMap<String,Integer>();
-        		  huodaolist=new HashMap<Integer,Integer>();
-        	  }
-        	             
-        } catch (Exception e) {
+    	huodaolist=new HashMap<Integer,Integer>(); 
+    	//1.读取配置文件,文件是私有的
+		SharedPreferences user = context.getSharedPreferences("evColumnconfig",0);
+		Map<String,Integer>  list=new HashMap<String,Integer>();
+		str=user.getString("column","");
+		//2.读取evColumnconfig文件
+    	if(str.equals(""))  
+    	{
+	        try {
+	        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig.txt";
+	        	  fileName=new File(sDir);
+	        	  //如果存在，才读文件
+	        	  if(fileName.exists())
+	        	  {
+		    	  	 //打开文件
+		    		  FileInputStream input = new FileInputStream(sDir);
+		    		 //输出信息
+		  	          Scanner scan=new Scanner(input);
+		  	          while(scan.hasNext())
+		  	          {
+		  	           	str+=scan.next()+"\n";
+		  	          }
+		  	         ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config="+str,"com.txt");
+		  	         input.close();
+		  	         scan.close();		  	         
+	        	  }
+	        	  //保存到配置文件中
+	        	  WriteColumnFile(str);	        	 
+	        	             
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+    	}
+    	//3.载入到list列表
+    	try {
+	    	//将json格式解包 
+			JSONObject object=new JSONObject(str);      				
+			Gson gson=new Gson();
+			list=gson.fromJson(object.toString(), new TypeToken<Map<String, Integer>>(){}.getType());
+			//输出内容
+	        Set<Entry<String, Integer>> allmap=list.entrySet();  //实例化
+	        Iterator<Entry<String, Integer>> iter=allmap.iterator();
+	        while(iter.hasNext())
+	        {
+	            Entry<String, Integer> me=iter.next();	
+	        	huodaolist.put(Integer.parseInt(me.getKey()),(Integer)me.getValue());		            
+	        } 			
+			//Log.i("EV_JNI",perobj.toString());
+			ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<config2="+huodaolist.toString(),"com.txt");
+		} catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+		return list;
     }
     
     /**
@@ -2334,28 +2340,13 @@ public class ToolClass
      */
     public static void WriteColumnFile(String str) 
     {
-    	File fileName=null;
-    	String  sDir =null;
-    	
-    	    	
-        try {
-        	  sDir = ToolClass.getEV_DIR()+File.separator+"evColumnconfig.txt";
-        	 
-        	  fileName=new File(sDir);
-        	  //如果不存在，则创建文件
-          	  if(!fileName.exists())
-          	  {  
-      	        fileName.createNewFile(); 
-      	      }  
-  	         
-  	          //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-  	          FileWriter writer = new FileWriter(fileName, false);
-  	          writer.write(str);
-  	          writer.close();	
-  	          
-        } catch (Exception e) {
-            e.printStackTrace();
-        }        
+    	//文件是私有的
+		SharedPreferences  user = context.getSharedPreferences("evColumnconfig",0);
+		//需要接口进行编辑
+		SharedPreferences.Editor list=user.edit();
+		list.putString("column",str);
+		//提交更新
+		list.commit(); 
     }
     
     /*=============
