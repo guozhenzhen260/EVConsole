@@ -125,18 +125,7 @@ public class MaintainActivity extends Activity
 		startService(new Intent(this,MobileService.class));
 		//加载声音文件
 		AudioSound.initsound();
-        //是否加载银联二维码
-        vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(this);// 创建InaccountDAO对象
-        // 获取所有收入信息，并存储到List泛型集合中
-        Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
-        if(tb_inaccount!=null)
-        {
-            if(tb_inaccount.getPrinter()==1)
-            {
-                SDKConfig.getConfig().loadPropertiesFromPath(this, Environment.getExternalStorageDirectory().getPath() + "/ev");
-            }
-        }
-
+        
 		//==========
 		//Dog服务相关
 		//==========
@@ -209,6 +198,17 @@ public class MaintainActivity extends Activity
 		//读取本机是否授权交易
 		ToolClass.setCLIENT_STATUS_SERVICE(ToolClass.ReadSharedPreferencesAccess());
 		ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<[程序启动,授权"+ToolClass.isCLIENT_STATUS_SERVICE()+"...]log路径:"+ToolClass.getEV_DIR()+File.separator+"logs","log.txt");			
+		//是否加载银联二维码
+        vmc_system_parameterDAO parameterDAO = new vmc_system_parameterDAO(this);// 创建InaccountDAO对象
+        // 获取所有收入信息，并存储到List泛型集合中
+        Tb_vmc_system_parameter tb_inaccount = parameterDAO.find();
+        if(tb_inaccount!=null)
+        {
+            if(tb_inaccount.getPrinter()==1)
+            {
+                SDKConfig.getConfig().loadPropertiesFromPath(ToolClass.getEV_DIR()+File.separator+"unionCert");
+            }
+        }
 		//从配置文件获取数据
 		Map<String, String> list=ToolClass.ReadConfigFile();
 		if(list!=null)

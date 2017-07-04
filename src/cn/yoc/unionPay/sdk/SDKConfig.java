@@ -210,6 +210,7 @@ public class SDKConfig {
 			InputStream in = null;
 			if (file.exists()) {
 				try {
+                    this.keyPath = rootPath;
 					in = new FileInputStream(file);
 					properties = new Properties();
 					properties.load(in);

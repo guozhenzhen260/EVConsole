@@ -165,19 +165,17 @@ public class BuszhiamountFragment extends Fragment
     		{
     			ivbuszhiselpos.setVisibility(View.GONE);//关闭
     			ivbusyinlian.setVisibility(View.GONE);//关闭
-    		}
-    		//pos机打开
-    		else if(tb_inaccount.getZhifubaofaca()==1)
-    		{
-    			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
-    			ivbusyinlian.setVisibility(View.GONE);//关闭
     		}    		
-    		//银联二维码打开
-    		else if(tb_inaccount.getPrinter()==1)
+    		else
     		{
     			ivbuszhiselpos.setVisibility(View.VISIBLE);//打开
-    			ivbusyinlian.setVisibility(View.VISIBLE);//打开
-    		} 
+    			//银联二维码打开
+    			if(tb_inaccount.getPrinter()==1)
+        		{
+    				ivbusyinlian.setVisibility(View.VISIBLE);//打开        			
+        		} 
+    		}  
+    		
     	}
 		return view;
 	}
