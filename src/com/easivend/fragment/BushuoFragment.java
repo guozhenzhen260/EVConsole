@@ -31,7 +31,7 @@ public class BushuoFragment extends Fragment
     private int count = 0;
     private int zhifutype = 0;//0现金，1银联，2支付宝声波，3支付宝二维码，4微信扫描
     private TextView txtbushuoname = null;
-    private ImageView ivbushuoquhuo=null;
+    private ImageView ivbushuoquhuo=null,imgbtnbusgoodsback=null;
     private int tempx=0;
     private int cabinetvar=0,huodaoNo=0,cabinetTypevar=0;
     private vmc_columnDAO columnDAO =null; 
@@ -73,6 +73,7 @@ public class BushuoFragment extends Fragment
          */
         void BushuoChuhuoOpt(int cabinetvar,int huodaoNo,int cabinetTypevar);      //发送出货指令
         void BushuoFinish(int status);      //结束出货页面
+        void BushuoNow();      //马上结束页面
     }
     @Override
     public void onDetach() {
@@ -126,6 +127,19 @@ public class BushuoFragment extends Fragment
 	     * @param activity
 	     */
 		BusPort.setCallBack(new buportInterfaceImp());
+		this.imgbtnbusgoodsback =(ImageView) view.findViewById(R.id.imgbtnbusgoodsback);
+		imgbtnbusgoodsback.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				//出货成功
+				if(status==1)
+				{
+					listterner.BushuoNow();//退出页面
+				}
+			}
+		});
 		return view;
 	}
     

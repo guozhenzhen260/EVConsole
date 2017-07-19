@@ -1444,7 +1444,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;			
+			recLen=5;			
   		}
   		//立即关闭
   		else
@@ -1578,7 +1578,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;	
+			recLen=5;	
   		}
   		//立即关闭
   		else
@@ -1686,7 +1686,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;	
+			recLen=5;	
   		}
   		//立即关闭
   		else
@@ -1947,7 +1947,7 @@ BushuoFragInteraction
   		if(type==1)
   		{
   			clearamount();
-			recLen=3;	
+			recLen=5;	
   		}
   		//立即关闭
   		else
@@ -2021,142 +2021,141 @@ BushuoFragInteraction
 			}
         }
 		
-		new Handler().postDelayed(new Runnable() 
-		{
-            @Override
-            public void run() 
-            {	  
-            	//=============
-        		//打印机相关
-        		//=============
-        		if(isPrinter>0)
-        		{        			
-        			CloseComPort(ComA);// 2.1 关闭串口
-        		}
-            	switch(OrderDetail.getPayType())
-            	{
-            		//现金页面
-            		case 0:            			
-            			//viewSwitch(BUSZHIAMOUNT, null);
-            			//1.
-          				//出货成功,扣钱
-        				if(status==1)
-        				{
-        					//扣钱
-        		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
-        					ToolClass.setLAST_CHUHUO(true);
-        					Intent intent=new Intent();
-        			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
-        					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
-        					intent.setAction("android.intent.action.comsend");//action与接收器相同
-        					comBroadreceiver.sendBroadcast(intent);					
-        				}
-        				//出货失败,不扣钱
-        				else
-        				{	
-        					payback();
-        				}				
-            			break;
-            		//pos页面	
-            		case 1:
-            			//出货成功,结束交易
-        				if(status==1)
-        				{
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
-        					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);
-        			        AudioSound.playbusfinish();
-        					zhiposDestroy(1);
-        				}
-        				//出货失败,退钱
-        				else
-        				{	
-        					ispayoutopt=1;
-        					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<pos退款amount="+amount,"com.txt");
-        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-        					payoutzhipos();//退款操作									
-        				}
-            			break;	
-            		//支付宝页面	
-            		case 3:            			
-            			//出货成功,结束交易
-        				if(status==1)
-        				{
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
-        					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);	
-        					AudioSound.playbusfinish();
-        					zhierDestroy(0);
-        				}
-        				//出货失败,退钱
-        				else
-        				{	
-        					ispayoutopt=1;
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");					
-        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-        					payoutzhier();//退款操作	
-        				}
-            			break;
-            		//微信页面	
-            		case 4:            			
-            			//出货成功,结束交易
-        				if(status==1)
-        				{
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
-        					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);
-        					AudioSound.playbusfinish();
-        					zhiweiDestroy(0);
-        				}
-        				//出货失败,退钱
-        				else
-        				{	
-        					ispayoutopt=1;
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
-        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-        					payoutzhiwei();//退款操作									
-        				}
-            			break; 
-            		//银联页面	
-            		case 7:            			
-            			//出货成功,结束交易
-        				if(status==1)
-        				{
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinlian无退款","log.txt");
-        					ToolClass.setLAST_CHUHUO(true);
-        					OrderDetail.addLog(BusPort.this);
-        					AudioSound.playbusfinish();
-        					zhiweiDestroy(0);
-        				}
-        				//出货失败,退钱
-        				else
-        				{	
-        					ispayoutopt=1;
-        					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinlian退款amount="+amount,"log.txt");
-        					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
-        					payoutzhiyinlian();//退款操作									
-        				}
-            			break;	
-            		//自提密码页面		
-            		case 5:
-            			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自提密码页面","log.txt");
-            			clearamount();
-        				recLen=3;
-            			break;	
-            		//取货码页面		
-            		case -1:
-            			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
-            			ToolClass.setLAST_CHUHUO(true);
-            			OrderDetail.addLog(BusPort.this);					
-        				clearamount();
-        				recLen=3;
-            			break;
-            	}
-            }
-
-		}, 1300);
+		//=============
+		//打印机相关
+		//=============
+		if(isPrinter>0)
+		{        			
+			CloseComPort(ComA);// 2.1 关闭串口
+		}
+    	switch(OrderDetail.getPayType())
+    	{
+    		//现金页面
+    		case 0:            			
+    			//viewSwitch(BUSZHIAMOUNT, null);
+    			//1.
+  				//出货成功,扣钱
+				if(status==1)
+				{
+					//扣钱
+		  	    	//EVprotocolAPI.EV_mdbCost(ToolClass.getCom_id(),ToolClass.MoneySend(amount));
+					ToolClass.setLAST_CHUHUO(true);
+					Intent intent=new Intent();
+			    	intent.putExtra("EVWhat", EVprotocol.EV_MDB_COST);	
+					intent.putExtra("cost", ToolClass.MoneySend((float)amount));	
+					intent.setAction("android.intent.action.comsend");//action与接收器相同
+					comBroadreceiver.sendBroadcast(intent);					
+				}
+				//出货失败,不扣钱
+				else
+				{	
+					payback();
+				}				
+    			break;
+    		//pos页面	
+    		case 1:
+    			//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<pos无退款","log.txt");
+					ToolClass.setLAST_CHUHUO(true);
+					OrderDetail.addLog(BusPort.this);
+			        AudioSound.playbusfinish();
+					zhiposDestroy(1);
+				}
+				//出货失败,退钱
+				else
+				{	
+					ispayoutopt=1;
+					ToolClass.Log(ToolClass.INFO,"EV_COM","APP<<pos退款amount="+amount,"com.txt");
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhipos();//退款操作									
+				}
+    			break;	
+    		//支付宝页面	
+    		case 3:            			
+    			//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali无退款","log.txt");
+					ToolClass.setLAST_CHUHUO(true);
+					OrderDetail.addLog(BusPort.this);	
+					AudioSound.playbusfinish();
+					zhierDestroy(1);
+				}
+				//出货失败,退钱
+				else
+				{	
+					ispayoutopt=1;
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<ali退款amount="+amount,"log.txt");					
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhier();//退款操作	
+				}
+    			break;
+    		//微信页面	
+    		case 4:            			
+    			//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei无退款","log.txt");
+					ToolClass.setLAST_CHUHUO(true);
+					OrderDetail.addLog(BusPort.this);
+					AudioSound.playbusfinish();
+					zhiweiDestroy(1);
+				}
+				//出货失败,退钱
+				else
+				{	
+					ispayoutopt=1;
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<wei退款amount="+amount,"log.txt");
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhiwei();//退款操作									
+				}
+    			break; 
+    		//银联页面	
+    		case 7:            			
+    			//出货成功,结束交易
+				if(status==1)
+				{
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinlian无退款","log.txt");
+					ToolClass.setLAST_CHUHUO(true);
+					OrderDetail.addLog(BusPort.this);
+					AudioSound.playbusfinish();
+					zhiweiDestroy(1);
+				}
+				//出货失败,退钱
+				else
+				{	
+					ispayoutopt=1;
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<yinlian退款amount="+amount,"log.txt");
+					dialog= ProgressDialog.show(BusPort.this,"正在退款中","请稍候...");
+					payoutzhiyinlian();//退款操作									
+				}
+    			break;	
+    		//自提密码页面		
+    		case 5:
+    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<自提密码页面","log.txt");
+    			clearamount();
+				recLen=5;
+    			break;	
+    		//取货码页面		
+    		case -1:
+    			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<取货码页面","log.txt");
+    			ToolClass.setLAST_CHUHUO(true);
+    			OrderDetail.addLog(BusPort.this);					
+				clearamount();
+				recLen=5;
+    			break;
+    	}
     	
     	
+	}
+    
+    //马上退出出货页面
+    @Override
+	public void BushuoNow() {
+		// TODO Auto-generated method stub
+		recLen=1;
 	}
     
     //出货完成后，进入退币流程
@@ -3237,6 +3236,7 @@ BushuoFragInteraction
         setResult(MaintainActivity.RESULT_CANCELED,intent);
 		super.onDestroy();		
 	}
+	
 
 	
 	
