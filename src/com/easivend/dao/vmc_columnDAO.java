@@ -594,28 +594,41 @@ public class vmc_columnDAO
 	       // 开启一个事务
 	  	  db.beginTransaction();
 	  	  try {
-	          // 执行删除商品表
-	          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0,lasttime=(datetime('now', 'localtime')) where cabID=? and columnID=?", 
-	          		new Object[] { cabID,columnID});    
-	          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
-	          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中
-	          //遍历所有的收入信息
-	          if (cursor.moveToNext()) 
-	          {
-	        	  int pathRemain=cursor.getInt(cursor.getColumnIndex("pathRemain"));
-	        	  if(pathRemain==0)
-	        	  {
-	        		  db.execSQL("update vmc_column set columnStatus=3 where cabID=? and columnID=?", 
-	        	          		new Object[] { cabID,columnID}); 
-	        	  }
-	          }
-	          if(!cursor.isClosed()) 
-	   		 {  
-	        	cursor.close();  
-	   		 } 
-	       
+	  		  Cursor cur = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
+	  				new String[] { cabID,columnID});// 根据编号查找支出信息，并存储到Cursor类中
+	  		  //遍历所有的收入信息
+	  		  if (cur.moveToNext()) 
+	  		  {
+	  			  int curpathRemain=cur.getInt(cur.getColumnIndex("pathRemain"));
+	  			  if(curpathRemain>0)
+	  			  {
+			          // 执行删除商品表
+			          db.execSQL("update vmc_column set pathRemain=(pathRemain-1),isupload=0,lasttime=(datetime('now', 'localtime')) where cabID=? and columnID=?", 
+			          		new Object[] { cabID,columnID});    
+			          Cursor cursor = db.rawQuery("select pathRemain from vmc_column where cabID=? and columnID=?", 
+			          		new String[] { cabID,columnID}); // 根据编号查找支出信息，并存储到Cursor类中
+			          //遍历所有的收入信息
+			          if (cursor.moveToNext()) 
+			          {
+			        	  int pathRemain=cursor.getInt(cursor.getColumnIndex("pathRemain"));
+			        	  if(pathRemain==0)
+			        	  {
+			        		  db.execSQL("update vmc_column set columnStatus=3 where cabID=? and columnID=?", 
+			        	          		new Object[] { cabID,columnID}); 
+			        	  }
+			          }
+			          if(!cursor.isClosed()) 
+			   		  {  
+			        	cursor.close();  
+			   		  } 
+	  			  }
+	  		  }
+	  		  if(!cur.isClosed()) 
+	   		  {  
+	  			cur.close();  
+	   		  } 
 	          // 设置事务的标志为成功，如果不调用setTransactionSuccessful() 方法，默认会回滚事务。
-		        db.setTransactionSuccessful();
+		      db.setTransactionSuccessful();
 		    } catch (Exception e) {
 		        // process it
 		        e.printStackTrace();
