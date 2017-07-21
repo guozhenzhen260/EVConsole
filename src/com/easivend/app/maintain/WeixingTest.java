@@ -73,14 +73,16 @@ public class WeixingTest extends Activity
 						break;	
 					case Weixinghttp.SETQUERYMAINSUCC://子线程接收主线程消息	
 						txtweixingtest.setText("微信交易结果:交易成功");
-						break;		
+						break;	
+					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
+					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+						txtweixingtest.setText("微信交易结果:退款失败");
+						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
 					case Weixinghttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETQUERYMAIN://子线程接收主线程消息	
-					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
-					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息	
 						txtweixingtest.setText("微信交易结果:"+msg.obj.toString());

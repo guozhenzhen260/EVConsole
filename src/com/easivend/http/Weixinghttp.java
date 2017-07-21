@@ -267,7 +267,7 @@ public class Weixinghttp implements Runnable
 				            System.out.println(e);
 				          //向主线程返回信息
 				           Message tomain=mainhand.obtainMessage();	
-				    	   tomain.what=SETFAILNETCHILD;
+				    	   tomain.what=SETFAILPAYOUTPROCHILD;
 				    	   tomain.obj="netfail";
 				    	   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");				           
 						   mainhand.sendMessage(tomain); // 发送消息
@@ -317,7 +317,8 @@ public class Weixinghttp implements Runnable
 								   tomain.obj=map8.get("err_code")+map8.get("err_code_des");
 								   //支付完成同时，按下撤销按钮，报的故障"扣款和撤销建议间隔10秒以上"
 								   if(map8.get("err_code").equals("USERPAYING")
-									||map8.get("err_code").equals("ORDERPAID"))
+									||map8.get("err_code").equals("ORDERPAID")
+									||map8.get("err_code").equals("SYSTEMERROR"))
 								   {
 								      ToolClass.Log(ToolClass.INFO,"EV_JNI","准备退款...","log.txt");
 								      Payoutind(ev4.getString("out_trade_no"),ev4.getString("out_refund_no"),ev4.getString("total_fee"),ev4.getString("refund_fee"));
@@ -362,71 +363,76 @@ public class Weixinghttp implements Runnable
 		Looper.loop();//用户自己定义的类，创建线程需要自己准备loop
 	}
 	
-	private void Payoutind(String out_trade_no,String out_refund_no,String total_feetmp,String refund_feetmp)
+	private void Payoutind(final String out_trade_no,final String out_refund_no,final String total_feetmp,final String refund_feetmp)
     {
         ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>退款]["+Thread.currentThread().getId()+"]","log.txt");
-        Map<String, String> sPara3 = new HashMap<String, String>();
-        //1.添加订单信息
-        JSONObject ev3=null;
-        ev3 = new JSONObject();                            
-        sPara3.put("out_trade_no", out_trade_no);//订单编号
-        sPara3.put("out_refund_no", out_refund_no);//退款单编号
-        long fee3=ToolClass.MoneySend(Float.parseFloat(total_feetmp));
-        String total_fee=String.valueOf(fee3);
-        sPara3.put("total_fee",total_fee);//订单总金额
-        
-        fee3=ToolClass.MoneySend(Float.parseFloat(refund_feetmp));
-        String refund_fee=String.valueOf(fee3);
-        sPara3.put("refund_fee",refund_fee);//订单总金额    
-        ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara3.toString(),"log.txt");
-        //2.生成支付请求消息
-        Map<String, String> map5 = WeiConfigAPI.PostWeiPayout(sPara3);
-        try {
-            //3.发送支付订单信息
-            String url3 = "https://api.mch.weixin.qq.com/secapi/pay/refund";                        
-            String content3= WeiConfigAPI.sendPost(url3, map5);
-            
-            //4.解包返回的信息
-            InputStream is = new ByteArrayInputStream(content3.getBytes());// 获取返回数据
-               
-           Map<String, String> map6=WeiConfigAPI.PendWeiPayout(is);
-           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map6.toString(),"log.txt");
-           //向主线程返回信息
-            Message tomain=mainhand.obtainMessage();
-          //协议失败
-           if(map6.get("return_code").equals("FAIL"))
-           {
-               tomain.what=SETFAILPAYOUTPROCHILD;
-               tomain.obj=map6.get("return_msg");
-           }
-           else
-           {
-               //业务处理失败
-               if(map6.get("result_code").equals("FAIL"))
-               {
-                   tomain.what=SETFAILPAYOUTBUSCHILD;
-                   tomain.obj=map6.get("err_code")+map6.get("err_code_des");
-               }
-               //通过支付宝提供的订单直接生成二维码
-               else if(map6.get("result_code").equals("SUCCESS"))
-               {
-                   tomain.what=SETPAYOUTMAIN;
-                   tomain.obj=map6.get("trade_state");
-               }
-           }
-           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");    
-           mainhand.sendMessage(tomain); // 发送消息    
-           
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            System.out.println(e);
-          //向主线程返回信息
-           Message tomain=mainhand.obtainMessage();    
-           tomain.what=SETFAILNETCHILD;
-           tomain.obj="netfail";
-           ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");                           
-           mainhand.sendMessage(tomain); // 发送消息
-        } 
+        new Thread()
+        {
+        	public void run(){
+        		Map<String, String> sPara3 = new HashMap<String, String>();
+                //1.添加订单信息
+                JSONObject ev3=null;
+                ev3 = new JSONObject();                            
+                sPara3.put("out_trade_no", out_trade_no);//订单编号
+                sPara3.put("out_refund_no", out_refund_no);//退款单编号
+                long fee3=ToolClass.MoneySend(Float.parseFloat(total_feetmp));
+                String total_fee=String.valueOf(fee3);
+                sPara3.put("total_fee",total_fee);//订单总金额
+                
+                fee3=ToolClass.MoneySend(Float.parseFloat(refund_feetmp));
+                String refund_fee=String.valueOf(fee3);
+                sPara3.put("refund_fee",refund_fee);//订单总金额    
+                ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara3.toString(),"log.txt");
+                //2.生成支付请求消息
+                Map<String, String> map5 = WeiConfigAPI.PostWeiPayout(sPara3);
+                try {
+                    //3.发送支付订单信息
+                    String url3 = "https://api.mch.weixin.qq.com/secapi/pay/refund";                        
+                    String content3= WeiConfigAPI.sendPost(url3, map5);
+                    
+                    //4.解包返回的信息
+                    InputStream is = new ByteArrayInputStream(content3.getBytes());// 获取返回数据
+                       
+                   Map<String, String> map6=WeiConfigAPI.PendWeiPayout(is);
+                   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map6.toString(),"log.txt");
+                   //向主线程返回信息
+                    Message tomain=mainhand.obtainMessage();
+                  //协议失败
+                   if(map6.get("return_code").equals("FAIL"))
+                   {
+                       tomain.what=SETFAILPAYOUTPROCHILD;
+                       tomain.obj=map6.get("return_msg");
+                   }
+                   else
+                   {
+                       //业务处理失败
+                       if(map6.get("result_code").equals("FAIL"))
+                       {
+                           tomain.what=SETFAILPAYOUTBUSCHILD;
+                           tomain.obj=map6.get("err_code")+map6.get("err_code_des");
+                       }
+                       //通过支付宝提供的订单直接生成二维码
+                       else if(map6.get("result_code").equals("SUCCESS"))
+                       {
+                           tomain.what=SETPAYOUTMAIN;
+                           tomain.obj=map6.get("trade_state");
+                       }
+                   }
+                   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec3="+tomain.obj,"log.txt");    
+                   mainhand.sendMessage(tomain); // 发送消息    
+                   
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    System.out.println(e);
+                  //向主线程返回信息
+                   Message tomain=mainhand.obtainMessage();    
+                   tomain.what=SETFAILPAYOUTPROCHILD;
+                   tomain.obj="netfail";
+                   ToolClass.Log(ToolClass.INFO,"EV_JNI","rec="+tomain.obj,"log.txt");                           
+                   mainhand.sendMessage(tomain); // 发送消息
+                }
+            }
+        }.start();         
     }
 
 }
