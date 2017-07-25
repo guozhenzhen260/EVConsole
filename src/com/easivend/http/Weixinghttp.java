@@ -31,11 +31,12 @@ public class Weixinghttp implements Runnable
 	public final static int SETPAYOUTMAIN=13;//what标记,发送给主线程退款结果
 	public final static int SETFAILPAYOUTPROCHILD=14;//what标记,发送给主线程交易协议失败
 	public final static int SETFAILPAYOUTBUSCHILD=15;//what标记,发送给主线程交易信息失败
+	public final static int SETPAYOUTCHILDSERVER=16;//what标记,server发送给子线程支付宝退款
 	//撤销交易
-	public final static int SETDELETECHILD=16;//what标记,发送给子线程支付宝撤销交易
-	public final static int SETDELETEMAIN=17;//what标记,发送给主线程退款结果
-	public final static int SETFAILDELETEPROCHILD=18;//what标记,发送给主线程交易协议失败
-	public final static int SETFAILDELETEBUSCHILD=19;//what标记,发送给主线程交易信息失败
+	public final static int SETDELETECHILD=17;//what标记,发送给子线程支付宝撤销交易
+	public final static int SETDELETEMAIN=18;//what标记,发送给主线程退款结果
+	public final static int SETFAILDELETEPROCHILD=19;//what标记,发送给主线程交易协议失败
+	public final static int SETFAILDELETEBUSCHILD=20;//what标记,发送给主线程交易信息失败
 	private Handler mainhand=null,childhand=null;
 	
 	public Weixinghttp(Handler mainhand) {
@@ -348,7 +349,67 @@ public class Weixinghttp implements Runnable
 				        }
 							
 					break;
-				default:
+					case SETPAYOUTCHILDSERVER://子线程接收主线程消息
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","[APIweixing>>退款]["+Thread.currentThread().getId()+"]"+msg.obj.toString(),"log.txt");
+						Map<String, String> sPara5 = new HashMap<String, String>();
+						//1.添加订单信息
+						JSONObject ev5=null;
+						try {
+							ev5 = new JSONObject(msg.obj.toString());							
+							sPara5.put("out_trade_no", ev5.getString("out_trade_no"));//订单编号
+							sPara5.put("out_refund_no", ev5.getString("out_refund_no"));//退款单编号
+							long fee3=ToolClass.MoneySend(Float.parseFloat(ev5.getString("total_fee")));
+							String total_fee=String.valueOf(fee3);
+							sPara5.put("total_fee",total_fee);//订单总金额
+							
+							fee3=ToolClass.MoneySend(Float.parseFloat(ev5.getString("refund_fee")));
+							String refund_fee=String.valueOf(fee3);
+							sPara5.put("refund_fee",refund_fee);//订单总金额	
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						ToolClass.Log(ToolClass.INFO,"EV_JNI","Send0.2="+sPara5.toString(),"log.txt");
+						//2.生成支付请求消息
+						Map<String, String> map6 = WeiConfigAPI.PostWeiPayout(sPara5);
+						try {
+							//3.发送支付订单信息
+							String url3 = "https://api.mch.weixin.qq.com/secapi/pay/refund";			            
+							String content3= WeiConfigAPI.sendPost(url3, map6);
+							
+				            //4.解包返回的信息
+				            InputStream is = new ByteArrayInputStream(content3.getBytes());// 获取返回数据
+					           
+				           Map<String, String> map8=WeiConfigAPI.PendWeiPayout(is);
+					       ToolClass.Log(ToolClass.INFO,"EV_JNI","rec2="+map8.toString(),"log.txt");
+					       //协议失败
+				           if(map8.get("return_code").equals("FAIL"))
+				           {
+				        	   ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutSend=微信退款失败","log.txt");
+				           }
+				           else
+				           {
+				        	   //业务处理失败
+				        	   if(map8.get("result_code").equals("FAIL"))
+					           {
+				        		   ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutSend=微信退款失败","log.txt");
+					           }
+				        	   //通过支付宝提供的订单直接生成二维码
+				        	   else if(map8.get("result_code").equals("SUCCESS"))
+					           {
+				        		   ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutSend=微信退款成功","log.txt");
+				        		   ToolClass.WriteSharedPreferencesWeipayDel(msg.obj.toString());
+					           }
+				           }
+				           
+				        } catch (Exception e) {
+				            // TODO Auto-generated catch block
+				            System.out.println(e);
+				            ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutSend=微信退款失败","log.txt");
+				        } 
+						
+					break;	
+					default:
 						//向主线程返回信息
 			           Message tomain=mainhand.obtainMessage();	
 			    	   tomain.what=SETFAILNETCHILD;

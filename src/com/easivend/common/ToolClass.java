@@ -53,6 +53,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.conn.ssl.SSLContexts;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -1696,6 +1697,114 @@ public class ToolClass
     	}
     }
     
+    /**
+     * 读取退款失败订单
+     */
+    public static JSONArray ReadSharedPreferencesWeiPayout() 
+    {    	
+    	//1.读取配置文件,文件是私有的
+		SharedPreferences user = context.getSharedPreferences("weipayoutconfig",0);
+		//读取普通配置文件
+		JSONArray arr = new JSONArray();
+		String weipayout=user.getString("weipayout","");
+		if(weipayout.equals("")==false)
+		{
+			try {
+				arr = new JSONArray(weipayout);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			for(int	i = 0;i<arr.length(); i++) 
+			{
+			    JSONObject object;
+				try {
+					object = (JSONObject) arr.get(i);
+//					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutRead=["+i+"]"+object.toString(),"log.txt");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}					
+			}
+		}		
+		
+        return arr;
+    }
+    /**
+     * 写退款失败订单
+     */
+    public static void WriteSharedPreferencesWeiPayout(JSONObject weipar)
+    {
+        //文件是私有的
+        SharedPreferences  user = context.getSharedPreferences("weipayoutconfig",0);
+        //需要接口进行编辑
+        SharedPreferences.Editor edit=user.edit();  
+        JSONArray arr=ReadSharedPreferencesWeiPayout();
+        arr.put(weipar);
+        //设置
+        edit.putString("weipayout", arr.toString());
+        
+        for(int	i = 0;i<arr.length(); i++) 
+		{
+		    JSONObject object;
+			try {
+				object = (JSONObject) arr.get(i);
+				ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutWrite=["+i+"]"+object.toString(),"log.txt");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}				
+		}
+        //提交更新
+        edit.commit();
+    }
+    /**
+     * 删除退款失败订单
+     */
+    public static void WriteSharedPreferencesWeipayDel(String str)
+    {
+    	try {
+			JSONObject obj=new JSONObject(str);
+			//文件是私有的
+	        SharedPreferences  user = context.getSharedPreferences("weipayoutconfig",0);
+	        //需要接口进行编辑
+	        SharedPreferences.Editor edit=user.edit();  
+	        JSONArray arr=ReadSharedPreferencesWeiPayout();
+	        JSONArray zhuhearr=new JSONArray();
+	        	        
+	        for(int	i = 0;i<arr.length(); i++) 
+			{
+			    JSONObject object;
+				try {
+					object = (JSONObject) arr.get(i);
+					if(object.getString("out_refund_no").equals(obj.getString("out_refund_no")))
+						continue;
+					zhuhearr.put(object);					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+	        //设置
+	        edit.putString("weipayout", zhuhearr.toString());
+	        for(int	i = 0;i<zhuhearr.length(); i++) 
+			{
+			    JSONObject object;
+				try {
+					object = (JSONObject) arr.get(i);
+					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutWrite=["+i+"]"+object.toString(),"log.txt");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+	        //提交更新
+	        edit.commit();
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}        
+    }
     /**
      * 读取配置文件
      */

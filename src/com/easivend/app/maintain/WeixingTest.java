@@ -36,6 +36,7 @@ public class WeixingTest extends Activity
 	
 	private Handler mainhand=null,childhand=null;
 	private String out_trade_no=null;
+	private JSONObject weipayout=new JSONObject();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -77,6 +78,7 @@ public class WeixingTest extends Activity
 					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 						txtweixingtest.setText("微信交易结果:退款失败");
+						ToolClass.WriteSharedPreferencesWeiPayout(weipayout);
 						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
@@ -164,22 +166,20 @@ public class WeixingTest extends Activity
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
 				childmsg.what=Weixinghttp.SETDELETECHILD;
-				JSONObject ev=null;
 				try {
-					ev=new JSONObject();
-					ev.put("out_trade_no", out_trade_no);		
+					weipayout.put("out_trade_no", out_trade_no);		
 					//ev.put("out_trade_no", "000120150301092857698");	
-                    ev.put("total_fee", edtweixingtest.getText());
-                    ev.put("refund_fee", edtweixingtest.getText());
+					weipayout.put("total_fee", edtweixingtest.getText());
+					weipayout.put("refund_fee", edtweixingtest.getText());
                     SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //��ȷ������ 
                     String datetime = tempDate.format(new java.util.Date()).toString();                     
-                    ev.put("out_refund_no", id+datetime);
-					Log.i("EV_JNI","Send0.1="+ev.toString());
+                    weipayout.put("out_refund_no", id+datetime);
+					Log.i("EV_JNI","Send0.1="+weipayout.toString());
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				childmsg.obj=ev;
+				childmsg.obj=weipayout;
 				childhand.sendMessage(childmsg);
 		    }
 		});
@@ -192,23 +192,21 @@ public class WeixingTest extends Activity
 		    	// 将信息发送到子线程中
 		    	childhand=weixinghttp.obtainHandler();
 				Message childmsg=childhand.obtainMessage();
-				childmsg.what=Weixinghttp.SETPAYOUTCHILD;
-				JSONObject ev=null;
+				childmsg.what=Weixinghttp.SETPAYOUTCHILD;				
 				try {
-					ev=new JSONObject();
-					ev.put("out_trade_no", out_trade_no);		
+					weipayout.put("out_trade_no", out_trade_no);		
 					//ev.put("out_trade_no", "000120150301113215800");
-					ev.put("total_fee", edtweixingtest.getText());
-					ev.put("refund_fee", edtweixingtest.getText());
+					weipayout.put("total_fee", edtweixingtest.getText());
+					weipayout.put("refund_fee", edtweixingtest.getText());
 					SimpleDateFormat tempDate = new SimpleDateFormat("yyyyMMddHHmmssSSS"); //精确到毫秒 
 			        String datetime = tempDate.format(new java.util.Date()).toString(); 					
-			        ev.put("out_refund_no", id+datetime);
-					Log.i("EV_JNI","Send0.1="+ev.toString());
+			        weipayout.put("out_refund_no", id+datetime);
+					Log.i("EV_JNI","Send0.1="+weipayout.toString());
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				childmsg.obj=ev;
+				childmsg.obj=weipayout;
 				childhand.sendMessage(childmsg);
 		    }
 		});	

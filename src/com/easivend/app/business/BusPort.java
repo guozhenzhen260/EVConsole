@@ -163,6 +163,7 @@ BushuoFragInteraction
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次投币已经结束
     private int iszhiweisel=0;//0没有设置微信，1有设置微信
     private boolean weicheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
+    private JSONObject weipayout=new JSONObject();
     //=================
   	//==银联支付页面相关
   	//=================    
@@ -666,13 +667,27 @@ BushuoFragInteraction
 							tochuhuo();
 						}
 						break;
+					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
+					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+						ToolClass.WriteSharedPreferencesWeiPayout(weipayout);
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
+							OrderDetail.addLog(BusPort.this);
+							//结束交易页面
+							listterner.BusportTsxx("交易结果:退款失败");
+							dialog.dismiss();
+							zhiweiDestroy(1);
+						}
+						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
 					case Weixinghttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息		
-					case Weixinghttp.SETQUERYMAIN://子线程接收主线程消息	
-					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
-					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+					case Weixinghttp.SETQUERYMAIN://子线程接收主线程消息						
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息
 						//listterner.BusportTsxx("交易结果:"+msg.obj.toString());
@@ -1528,19 +1543,17 @@ BushuoFragInteraction
 	  		weixingchildhand=weixinghttp.obtainHandler();
 	  		Message childmsg=weixingchildhand.obtainMessage();
 	  		childmsg.what=Weixinghttp.SETPAYOUTCHILD;
-	  		JSONObject ev=null;
 	  		try {
-	  			ev=new JSONObject();
-	  			ev.put("out_trade_no", out_trade_no);		
-	  			ev.put("total_fee", String.valueOf(amount));
-	  			ev.put("refund_fee", String.valueOf(amount));
-	  			ev.put("out_refund_no", ToolClass.out_trade_no(BusPort.this));
-	  			Log.i("EV_JNI","Send0.1="+ev.toString());
-	  		} catch (JSONException e) {
-	  			// TODO Auto-generated catch block
-	  			e.printStackTrace();
-	  		}
-	  		childmsg.obj=ev;
+				weipayout.put("out_trade_no", out_trade_no);	
+				weipayout.put("total_fee", String.valueOf(amount));
+				weipayout.put("refund_fee", String.valueOf(amount));
+				weipayout.put("out_refund_no", ToolClass.out_trade_no(BusPort.this));
+				Log.i("EV_JNI","Send0.1="+weipayout.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	  		childmsg.obj=weipayout;
 	  		weixingchildhand.sendMessage(childmsg);
   		}  		
   	}
@@ -1556,17 +1569,17 @@ BushuoFragInteraction
 	  		weixingchildhand=weixinghttp.obtainHandler();
 	  		Message childmsg=weixingchildhand.obtainMessage();
 	  		childmsg.what=Weixinghttp.SETDELETECHILD;
-	  		JSONObject ev=null;
 	  		try {
-	  			ev=new JSONObject();
-	  			ev.put("out_trade_no", out_trade_no);		
-	  			//ev.put("out_trade_no", "000120150301092857698");	
-	  			Log.i("EV_JNI","Send0.1="+ev.toString());
-	  		} catch (JSONException e) {
-	  			// TODO Auto-generated catch block
-	  			e.printStackTrace();
-	  		}
-	  		childmsg.obj=ev;
+				weipayout.put("out_trade_no", out_trade_no);		
+				weipayout.put("total_fee", String.valueOf(amount));
+				weipayout.put("refund_fee", String.valueOf(amount));
+                weipayout.put("out_refund_no", ToolClass.out_trade_no(BusPort.this));
+				Log.i("EV_JNI","Send0.1="+weipayout.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	  		childmsg.obj=weipayout;
 	  		weixingchildhand.sendMessage(childmsg);
   		}
   	}

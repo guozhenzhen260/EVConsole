@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,7 @@ import com.easivend.dao.vmc_columnDAO;
 import com.easivend.dao.vmc_orderDAO;
 import com.easivend.dao.vmc_productDAO;
 import com.easivend.http.EVServerhttp;
+import com.easivend.http.Weixinghttp;
 import com.easivend.model.Tb_vmc_class;
 import com.easivend.model.Tb_vmc_column;
 import com.easivend.model.Tb_vmc_product;
@@ -43,6 +45,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.view.View;
 
 public class EVServerService extends Service {
 	private Thread thread=null;
@@ -55,6 +59,7 @@ public class EVServerService extends Service {
     ActivityReceiver receiver;
     ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
     ScheduledExecutorService terminal = Executors.newScheduledThreadPool(1);
+    ScheduledExecutorService weipay = Executors.newScheduledThreadPool(1);
 	Map<String,Integer> huoSet=null;
     private String LAST_CLASS_TIME="",LAST_CLASSJOIN_TIME="",LAST_PRODUCT_TIME="",
     		LAST_EDIT_TIME="",LAST_VERSION_TIME="",LAST_LOG_TIME=""
@@ -65,6 +70,12 @@ public class EVServerService extends Service {
     private int isspretry=0;//有不存在的商品时，重试3次，不行就跳过
     Map<String,String> classjoin=new HashMap<String, String>();//商品类型对应的商品id的map 
     AlarmManager alarm=null;//闹钟服务
+    //微信支付定时监控服务
+    private Handler weimainhand=null,weichildhand=null;
+    Weixinghttp weixinghttp=new Weixinghttp(weimainhand);
+    ExecutorService weithread=Executors.newFixedThreadPool(3);
+    boolean weibool=false;
+    
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -167,7 +178,7 @@ public class EVServerService extends Service {
 		receiver=new ActivityReceiver();
 		IntentFilter filter=new IntentFilter();
 		filter.addAction("android.intent.action.vmserversend");
-		localBroadreceiver.registerReceiver(receiver,filter);						
+		localBroadreceiver.registerReceiver(receiver,filter);		
 	}
 
 		
@@ -874,6 +885,47 @@ public class EVServerService extends Service {
 	        	}	        	
 	        } 
 	    },5*60,15*60,TimeUnit.SECONDS);       // 10*60timeTask 
+  		
+  		//*************
+  		//启动线程监控定时器
+  		//*************
+  		weipay.scheduleWithFixedDelay(new Runnable() {   			
+	        @Override 
+	        public void run() { 
+	        	if(ToolClass.getSsl()!=null)
+	        	{
+	        		JSONArray arr=ToolClass.ReadSharedPreferencesWeiPayout();
+	        		if(arr.length()>0)
+	        		{
+	        			JSONObject object;
+	    				try {
+	    					object = (JSONObject) arr.get(0);
+	    					if(weibool==false)
+	    					{
+		    					ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutSend="+object.toString(),"log.txt");
+		    					//新建一个线程并启动
+		    					weithread.execute(weixinghttp); 		    					
+	    					}
+	    					else
+	    					{	
+	    						ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<WeiPayoutSend>>","log.txt");
+		    					// 将信息发送到子线程中 
+		    					weichildhand=weixinghttp.obtainHandler();
+		    					Message childmsg=weichildhand.obtainMessage();
+		    					childmsg.what=Weixinghttp.SETPAYOUTCHILDSERVER;	
+		    					childmsg.obj=object;
+		    					weichildhand.sendMessage(childmsg);
+	    					}
+	    					weibool=!weibool; 
+	    				} catch (JSONException e) {
+	    					// TODO Auto-generated catch block
+	    					e.printStackTrace();
+	    				}
+	    				
+	        		}
+	        	}
+	        } 
+	    },15,15,TimeUnit.SECONDS);       // 10*60timeTask 
 	}	
 	
 	//更新商品分类信息
