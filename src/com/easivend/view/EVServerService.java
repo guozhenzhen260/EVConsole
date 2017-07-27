@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.easivend.common.SerializableMap;
+import com.easivend.common.SystemDateTime;
 import com.easivend.common.ToolClass;
 import com.easivend.common.Vmc_OrderAdapter;
 import com.easivend.dao.vmc_classDAO;
@@ -438,8 +439,11 @@ public class EVServerService extends Service {
 						localBroadreceiver.sendBroadcast(intent);
 						break;
 					case EVServerhttp.SETHEARTMAIN://子线程接收主线程消息获取心跳信息
-						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功","server.txt");
-						
+						ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 获取心跳信息成功"+msg.obj.toString(),"server.txt");
+						if(ischeck==false)
+						{
+							updateSystemDate(msg.obj.toString());
+						}
 						//初始化六、发送交易记录命令到子线程中
 		            	childhand=serverhttp.obtainHandler();
 		        		Message childheartmsg2=childhand.obtainMessage();
@@ -1690,6 +1694,30 @@ public class EVServerService extends Service {
   	    	this.alarm.cancel(sender);	    	
       	}
       }
+  	
+  	//设置系统时间
+  	private void updateSystemDate(String str)
+  	{
+  		ToolClass.Log(ToolClass.INFO,"EV_SERVER","Service 设置时间","server.txt");
+		try {
+			JSONObject obj=new JSONObject(str);
+			String time=obj.getString("Time");
+			String Date=time.substring(0,time.indexOf('T'));
+			time=time.substring(time.indexOf('T')+1,(time.length()-1));
+			String a[] = Date.split("-");  
+			int year=Integer.parseInt(a[0]);
+			int month=Integer.parseInt(a[1]);
+			int day=Integer.parseInt(a[2]);
+			String b[]=time.split(":"); 
+			int hour=Integer.parseInt(b[0]);
+			int minute=Integer.parseInt(b[1]);
+			SystemDateTime sysdate=new SystemDateTime();
+			sysdate.setDateTime(year, month, day, hour, minute); 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  	}
   	
   	@Override
 	public void onDestroy() {

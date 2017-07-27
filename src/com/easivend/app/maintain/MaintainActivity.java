@@ -260,7 +260,7 @@ public class MaintainActivity extends Activity
 	        }
 	        if(list.containsKey("posisssl"))//设置ssl加密
 	        {
-	        	posisssl = Integer.parseInt(list.get("posisssl"));	
+	        	posisssl = (list.get("posisssl").equals(""))?0:Integer.parseInt(list.get("posisssl"));	
 	        	ToolClass.setPosisssl(posisssl);	        	
 	        }	        
 	        AlipayConfigAPI.SetAliConfig(list);//设置阿里账号
