@@ -64,6 +64,7 @@ public class BusZhiwei extends Activity
     private int iszhiwei=0;//1成功生成了二维码,0没有成功生成二维码，2本次交易已经结束
     private boolean ercheck=false;//true正在二维码的线程操作中，请稍后。false没有二维码的线程操作
     private int ispayoutopt=0;//1正在进行退币操作,0未进行退币操作
+    private JSONObject weipayout=new JSONObject();
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -195,13 +196,28 @@ public class BusZhiwei extends Activity
 						timer.shutdown(); 
 						tochuhuo();
 						break;
+					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
+					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
+						ToolClass.WriteSharedPreferencesWeiPayout(weipayout);
+						if(ispayoutopt==1)
+						{
+							//记录日志退币完成
+							OrderDetail.setRealStatus(3);//记录退币失败
+							OrderDetail.setRealCard(0);//记录退币金额
+							OrderDetail.setDebtAmount(amount);//欠款金额
+							OrderDetail.addLog(BusZhiwei.this);
+							ispayoutopt=0;
+							//结束交易页面
+							txtbuszhiweirst.setText("交易结果:退款失败");
+							dialog.dismiss();
+							finish();
+						}
+						break;
 					case Weixinghttp.SETFAILPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILBUSCHILD://子线程接收主线程消息	
 					case Weixinghttp.SETFAILQUERYPROCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILQUERYBUSCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETQUERYMAIN://子线程接收主线程消息	
-					case Weixinghttp.SETFAILPAYOUTPROCHILD://子线程接收主线程消息		
-					case Weixinghttp.SETFAILPAYOUTBUSCHILD://子线程接收主线程消息
 					case Weixinghttp.SETFAILDELETEPROCHILD://子线程接收主线程消息		
 					case Weixinghttp.SETFAILDELETEBUSCHILD://子线程接收主线程消息		
 						//txtbuszhiweirst.setText("交易结果:"+msg.obj.toString());
@@ -297,19 +313,17 @@ public class BusZhiwei extends Activity
 	    	childhand=weixinghttp.obtainHandler();
 			Message childmsg=childhand.obtainMessage();
 			childmsg.what=Zhifubaohttp.SETPAYOUTCHILD;
-			JSONObject ev=null;
 			try {
-				ev=new JSONObject();
-				ev.put("out_trade_no", out_trade_no);		
-				ev.put("total_fee", String.valueOf(amount));
-				ev.put("refund_fee", String.valueOf(amount));
-				ev.put("out_refund_no", ToolClass.out_trade_no(BusZhiwei.this));
-				Log.i("EV_JNI","Send0.1="+ev.toString());
+				weipayout.put("out_trade_no", out_trade_no);		
+				weipayout.put("total_fee", String.valueOf(amount));
+				weipayout.put("refund_fee", String.valueOf(amount));
+				weipayout.put("out_refund_no", ToolClass.out_trade_no(BusZhiwei.this));
+				Log.i("EV_JNI","Send0.1="+weipayout.toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			childmsg.obj=ev;
+			childmsg.obj=weipayout;
 			childhand.sendMessage(childmsg);
   		}  		
 	}
@@ -323,17 +337,18 @@ public class BusZhiwei extends Activity
 			childhand=weixinghttp.obtainHandler();
 			Message childmsg=childhand.obtainMessage();
 			childmsg.what=Weixinghttp.SETDELETECHILD;
-			JSONObject ev=null;
 			try {
-				ev=new JSONObject();
-				ev.put("out_trade_no", out_trade_no);		
+				weipayout.put("out_trade_no", out_trade_no);
+				weipayout.put("total_fee", String.valueOf(amount));
+				weipayout.put("refund_fee", String.valueOf(amount));
+				weipayout.put("out_refund_no", ToolClass.out_trade_no(BusZhiwei.this));
 				//ev.put("out_trade_no", "000120150301092857698");	
-				Log.i("EV_JNI","Send0.1="+ev.toString());
+				Log.i("EV_JNI","Send0.1="+weipayout.toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			childmsg.obj=ev;
+			childmsg.obj=weipayout;
 			childhand.sendMessage(childmsg);
   		}
   		txtbuszhiweirst.setText("交易结果:撤销成功");
