@@ -359,7 +359,7 @@ public class BusZhier extends Activity
 		            if(iszhier==1)
 		            {
 		                queryLen++;
-		                if(queryLen>=4)
+		                if(queryLen>=2)
 		                {
 		                	queryLen=0;
 		                	queryzhier();
@@ -369,7 +369,7 @@ public class BusZhier extends Activity
 		            else if(iszhier==0)
 		            {
 		                queryLen++;
-		                if(queryLen>=10)
+		                if(queryLen>=5)
 		                {
 		                	queryLen=0;
 		                	//·¢ËÍ¶©µ¥

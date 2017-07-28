@@ -376,7 +376,7 @@ public class BusZhiwei extends Activity
 		            if(iszhiwei==1)
 		            {
 		                queryLen++;
-		                if(queryLen>=4)
+		                if(queryLen>=2)
 		                {
 		                	queryLen=0;
 		                	queryzhiwei();
@@ -386,7 +386,7 @@ public class BusZhiwei extends Activity
 		            else if(iszhiwei==0)
 		            {
 		                queryLen++;
-		                if(queryLen>=10)
+		                if(queryLen>=5)
 		                {
 		                	queryLen=0;
 		                	//·¢ËÍ¶©µ¥
