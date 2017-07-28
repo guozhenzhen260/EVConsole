@@ -137,7 +137,7 @@ public class Login extends Activity
 	        }
 	        if(list.containsKey("posisssl"))//…Ë÷√sslº”√‹
 	        {
-	        	posisssl = Integer.parseInt(list.get("posisssl"));	
+                posisssl = (list.get("posisssl").equals(""))?0:Integer.parseInt(list.get("posisssl"));    
 	        }
         }
         txtlogin.setText(com);
