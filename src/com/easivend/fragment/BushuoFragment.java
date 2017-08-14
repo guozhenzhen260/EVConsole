@@ -37,6 +37,7 @@ public class BushuoFragment extends Fragment
     private vmc_columnDAO columnDAO =null; 
     //出货结果
     private int status=0;//出货结果	
+    private boolean chuoptrst=false;//true代表出货操作完成
     private Context context;
     //=========================
     //fragment与activity回调相关
@@ -101,6 +102,7 @@ public class BushuoFragment extends Fragment
 		count=OrderDetail.getShouldNo();//数量
 		zhifutype=OrderDetail.getPayType();
 		txtbushuoname=(TextView)view.findViewById(R.id.txtbushuoname);
+        chuoptrst=false;
 		
   	    ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<商品orderID="+OrderDetail.getOrdereID()+"proID="+proID+" productID="
 				+productID+" proType="
@@ -134,7 +136,7 @@ public class BushuoFragment extends Fragment
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				//出货成功
-				if(status==1)
+				if(chuoptrst)
 				{
 					listterner.BushuoNow();//退出页面
 				}
@@ -234,6 +236,7 @@ public class BushuoFragment extends Fragment
 			// TODO Auto-generated method stub
 			status=sta;//出货结果	
 			ToolClass.Log(ToolClass.INFO,"EV_JNI","APP<<Fragment出货结果"+"device=["+cabinetvar+"],hdid=["+huodaoNo+"],status=["+status+"]","log.txt");	
+            chuoptrst=true;
 			//1.更新出货结果
 			//不是自提密码的，才扣除存货余量
 			if(OrderDetail.getPayType()!=5)
