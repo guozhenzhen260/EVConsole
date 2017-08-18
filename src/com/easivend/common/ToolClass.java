@@ -1733,7 +1733,7 @@ public class ToolClass
     /**
      * Ð´ÍË¿îÊ§°Ü¶©µ¥
      */
-    public static void WriteSharedPreferencesWeiPayout(JSONObject weipar)
+    public static synchronized void WriteSharedPreferencesWeiPayout(JSONObject weipar)
     {
         //ÎÄ¼þÊÇË½ÓÐµÄ
         SharedPreferences  user = context.getSharedPreferences("weipayoutconfig",0);
@@ -1761,7 +1761,7 @@ public class ToolClass
     /**
      * É¾³ýÍË¿îÊ§°Ü¶©µ¥
      */
-    public static void WriteSharedPreferencesWeipayDel(String str)
+    public static synchronized void WriteSharedPreferencesWeipayDel(String str)
     {
     	try {
 			JSONObject obj=new JSONObject(str);
